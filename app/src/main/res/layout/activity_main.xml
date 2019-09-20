@@ -8,6 +8,18 @@
     android:layout_height="match_parent"
     tools:context="com.application.trust.Activities.ActivityMain">
 
+    <com.blure.complexview.ComplexView
+        android:id="@+id/ShadowActionBar"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:radius="20dp"
+        app:shadow="true"
+        app:shadowColor="#9B9B9B"
+        app:shadowSpread="10" />
+
     <ImageView
         android:id="@+id/actionBar"
         android:layout_width="0dp"
@@ -23,7 +35,12 @@
         android:id="@+id/burgerMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_alignTop="@+id/actionBar"
+        android:layout_alignBottom="@+id/actionBar"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_toEndOf="@+id/actionBar"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="@+id/actionBar"
         app:layout_constraintStart_toStartOf="@id/actionBar"
@@ -40,4 +57,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/style_buttons_navigation" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <layer-list>
-            <item>
-                <shape>
-                    <gradient
-                        android:angle="-90"
-                        android:endColor="@color/shadowEndColor"
-                        android:startColor="@color/shadowStartColor" />
-                    <corners
-                        android:bottomLeftRadius="30dp"
-                        android:bottomRightRadius="30dp"/>
-                    <padding android:bottom="5dp"/>
-                </shape>
-            </item>
-
-            <item>
-                <shape
-                    android:shape="rectangle">
-                    <solid android:color = "@color/colorWhite"/>
-                    <corners
-                        android:bottomLeftRadius="30dp"
-                        android:bottomRightRadius="30dp"/>
-                </shape>
-            </item>
-        </layer-list>
-    </item>
+        <item>
+            <shape
+                android:shape="rectangle">
+                <solid android:color = "@color/colorWhite"/>
+                <corners
+                    android:bottomLeftRadius="30dp"
+                    android:bottomRightRadius="30dp"/>
+            </shape>
+        </item>
 </selector>
