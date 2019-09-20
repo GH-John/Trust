@@ -1,4 +1,4 @@
-package com.appllication.trust;
+package com.application.trust;
 
 import org.junit.Test;
 

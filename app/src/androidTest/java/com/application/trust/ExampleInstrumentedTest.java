@@ -1,4 +1,4 @@
-package com.appllication.trust;
+package com.application.trust;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.appllication.trust", appContext.getPackageName());
+        assertEquals("com.application.trust", appContext.getPackageName());
     }
 }

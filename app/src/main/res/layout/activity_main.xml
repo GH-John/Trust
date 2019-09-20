@@ -6,7 +6,7 @@
     android:id="@+id/layoutMainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activities.MainActivity">
+    tools:context="com.application.trust.Activities.ActivityMain">
 
     <ImageView
         android:id="@+id/actionBar"
@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/action_bar_style"
+        app:srcCompat="@drawable/style_action_bar"
         tools:ignore="ContentDescription"
         tools:targetApi="lollipop" />
 
@@ -39,5 +39,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/buttons_navigation_style" />
+        app:srcCompat="@drawable/style_buttons_navigation" />
 </androidx.constraintlayout.widget.ConstraintLayout>
