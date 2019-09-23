@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#FFFFFF</color>
     <color name="colorAccent">#3598D6</color>
 
+    <color name="backgroundApp">#FFFFFF</color>
+
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlue">#3598D6</color>
+    <color name="colorBlack">#000000</color>
     <color name="shadowColor">#9B9B9B</color>
 </resources>
