@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layoutAllAnnouncements"
-    android:background="@color/backgroundApp"
+    android:background="@color/second"
     tools:context="com.application.trust.Fragments.FragmentAllAnnouncements">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,5 +9,12 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlue">#3598D6</color>
     <color name="colorBlack">#000000</color>
-    <color name="shadowColor">#9B9B9B</color>
+    <color name="shadowColor">#66818181</color>
+    <color name="transparent">#00FFFFFF</color>
+
+    <color name="first">#C01818</color>
+    <color name="second">#37C018</color>
+    <color name="three">#18C09E</color>
+    <color name="four">#C018BD</color>
+    <color name="five">#C0A418</color>
 </resources>

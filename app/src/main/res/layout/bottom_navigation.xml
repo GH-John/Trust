@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutBottomNavigation"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/panelBottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="UnusedAttribute" />
+
+    <ImageView
+        android:id="@+id/itemUserStatistics"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
+        app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
+        app:layout_constraintStart_toEndOf="@+id/itemUserProposals"
+        app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
+        app:srcCompat="@drawable/item_statistics"
+        tools:ignore="VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/itemUserProposals"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
+        app:layout_constraintEnd_toStartOf="@+id/itemUserStatistics"
+        app:layout_constraintStart_toEndOf="@+id/itemAddAnnouncement"
+        app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
+        app:srcCompat="@drawable/item_proposals"
+        tools:ignore="VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/itemAllAnnouncement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
+        app:layout_constraintEnd_toStartOf="@+id/itemUserAnnouncement"
+        app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
+        app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
+        app:srcCompat="@drawable/item_all_announcement"
+        tools:ignore="VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/itemUserAnnouncement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/itemAllAnnouncement"
+        app:layout_constraintEnd_toStartOf="@+id/itemAddAnnouncement"
+        app:layout_constraintStart_toEndOf="@+id/itemAllAnnouncement"
+        app:layout_constraintTop_toTopOf="@+id/itemAllAnnouncement"
+        app:srcCompat="@drawable/item_user_announcement"
+        tools:ignore="VectorDrawableCompat" />
+
+    <ImageView
+        android:id="@+id/itemAddAnnouncement"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_marginBottom="40dp"
+        android:contentDescription="@string/todo"
+        android:elevation="2dp"
+        android:translationZ="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
+        app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
+        app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
+        app:srcCompat="@drawable/item_add_announcement"
+        tools:ignore="UnusedAttribute,VectorDrawableCompat" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

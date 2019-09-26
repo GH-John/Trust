@@ -1,29 +1,30 @@
 package com.application.trust.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.application.trust.R;
-import com.application.trust.StructureProject.ButtonsNavigation.Panels;
-
-import java.util.Objects;
-
-import static android.graphics.Paint.Style.FILL;
-import static android.graphics.Paint.Style.STROKE;
+import com.application.trust.StructureProject.Panels.ActionBar.ActionBarView;
+import com.application.trust.StructureProject.Panels.BottomNavigation.BottomNavigationView;
 
 public class ActivityMain extends AppCompatActivity {
 
-    ImageView test;
+    private BottomNavigationView customBottomNavigation;
+    private ActionBarView customActionBar;
+    private Fragment containerContentDisplay;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        customBottomNavigation = findViewById(R.id.customBottomNavigation);
+        customActionBar = findViewById(R.id.customActionBar);
 
-//        test = findViewById(R.id.testImage);
-//
-//        test.setImageDrawable(new Panels(this, test, R.color.colorWhite, FILL));
+        customBottomNavigation.startListenerBottomNavigation(this, R.id.containerContentDisplay);
+        customActionBar.startListenerActionBar(this, R.id.containerContentDisplay);
     }
 }

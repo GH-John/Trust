@@ -1,39 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutActionBar"
-    android:background="@color/backgroundApp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.blure.complexview.ComplexView
-        android:id="@+id/shadowActionBar"
-        android:layout_width="0dp"
-        android:layout_height="73dp"
-        app:layout_constraintBottom_toBottomOf="@+id/panelActionBar"
-        app:layout_constraintEnd_toEndOf="@+id/panelActionBar"
-        app:layout_constraintStart_toStartOf="@+id/panelActionBar"
-        app:layout_constraintTop_toTopOf="@+id/panelActionBar"
-        app:layout_constraintVertical_bias="0.0"
-        app:radius="12dp"
-        app:shadow="true"
-        app:shadowColor="#9B9B9B"
-        app:shadowSpread="12" />
-
     <ImageView
         android:id="@+id/panelActionBar"
-        tools:ignore="ContentDescription"
-        tools:targetApi="lollipop"
         android:layout_width="0dp"
         android:layout_height="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/style_action_bar" />
+        tools:ignore="ContentDescription"
+        tools:targetApi="lollipop" />
 
     <ImageView
-        android:id="@+id/burgerMenu"
+        android:id="@+id/itemBurgerMenu"
         tools:ignore="VectorDrawableCompat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,5 +32,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/panelActionBar"
         app:layout_constraintStart_toStartOf="@id/panelActionBar"
         app:layout_constraintTop_toTopOf="@+id/panelActionBar"
-        app:srcCompat="@drawable/ic_burger_menu" />
+        app:srcCompat="@drawable/item_burger_menu" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

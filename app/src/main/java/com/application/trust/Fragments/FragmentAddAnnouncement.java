@@ -1,4 +1,4 @@
-package com.application.trust.StructureProject.ActionBar;
+package com.application.trust.Fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment;
 
 import com.application.trust.R;
 
-public class FragmentActionBar extends Fragment {
+public class FragmentAddAnnouncement extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_action_bar, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_announcement, container, false);
         return view;
     }
 }
