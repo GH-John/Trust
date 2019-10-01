@@ -1,4 +1,4 @@
-package com.application.trust.StructureProject.Panels.ActionBar;
+package com.application.trust.StructureProject.Panels.SideBar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -17,30 +17,30 @@ import androidx.annotation.Nullable;
 
 import com.application.trust.StructureProject.Panels.DrawPanel;
 
-public class PanelActionBar extends Drawable implements DrawPanel {
+public class PanelSideBar extends Drawable implements DrawPanel {
+
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Path path = new Path();
     private DisplayMetrics metrics;
     private Context context;
 
-    private final float HEIGHT_PANEL = 18.0f;
-    private final float ROUNDING_BOTTOM_LEFT_CORNER = 80.0f;
+    private final float ROUNDING_TOP_RIGHT_CORNER = 80.0f;
     private final float ROUNDING_BOTTOM_RIGHT_CORNER = 80.0f;
-    private final float HEIGHT_DISPLAY;
-    private final float WIDTH_DISPLAY;
+    private final float HEIGHT_PANEL;
+    private final float WIDTH_PANEL;
 
-    public PanelActionBar(Context context,
-                          int ResourcesFillColor,
-                          float[] radii,
-                          int ResourcesShadowColor,
-                          float shadowRadius,
-                          float shadowDX,
-                          float shadowDY)
+    public PanelSideBar(Context context,
+                        int ResourcesFillColor,
+                        float[] radii,
+                        int ResourcesShadowColor,
+                        float shadowRadius,
+                        float shadowDX,
+                        float shadowDY)
     {
         this.context = context;
         setMetrics(context);
-        this.HEIGHT_DISPLAY = metrics.heightPixels / 12f;
-        this.WIDTH_DISPLAY = metrics.widthPixels;
+        this.HEIGHT_PANEL = metrics.heightPixels;
+        this.WIDTH_PANEL = (metrics.widthPixels / 1.30f);
         setPaintForPath(ResourcesFillColor, ResourcesShadowColor, shadowRadius, shadowDX, shadowDY);
         setPathPanel(radii);
     }
@@ -56,17 +56,17 @@ public class PanelActionBar extends Drawable implements DrawPanel {
     }
 
     @Override
-    public DisplayMetrics getMetrics(){
+    public DisplayMetrics getMetrics() {
         return metrics;
     }
 
-    @Override
     @SuppressLint("NewApi")
+    @Override
     public void setPaintForPath(int ResourcesFillColor,
-                                 int ResourcesShadowColor,
-                                 float shadowRadius,
-                                 float shadowDX,
-                                 float shadowDY)
+                                int ResourcesShadowColor,
+                                float shadowRadius,
+                                float shadowDX,
+                                float shadowDY)
     {
         paint.setColor(context.getColor(ResourcesFillColor));
         paint.setStyle(Paint.Style.FILL);
@@ -74,24 +74,24 @@ public class PanelActionBar extends Drawable implements DrawPanel {
     }
 
     @Override
-    public void setPathPanel(float[] radii){
+    public void setPathPanel(float[] radii) {
         path.reset();
 
         float[] corners = new float[]{
                 0, 0,        // Top left radius in px
-                0, 0,        // Top right radius in px
+                ROUNDING_TOP_RIGHT_CORNER, ROUNDING_TOP_RIGHT_CORNER,
                 ROUNDING_BOTTOM_RIGHT_CORNER, ROUNDING_BOTTOM_RIGHT_CORNER,
-                ROUNDING_BOTTOM_LEFT_CORNER, ROUNDING_BOTTOM_LEFT_CORNER
+                0, 0
         };
 
-        path.addRoundRect(new RectF(0, 0, WIDTH_DISPLAY, HEIGHT_DISPLAY - HEIGHT_PANEL),
+        path.addRoundRect(new RectF(0, 0, WIDTH_PANEL, HEIGHT_PANEL),
                 corners, Path.Direction.CCW);
 
         path.close();
     }
 
     @Override
-    public Path getPathPanel(){
+    public Path getPathPanel() {
         return path;
     }
 

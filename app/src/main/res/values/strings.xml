@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">Trust</string>
     <string name="todo">TODO</string>
+
+    <string name="itemList_1">Все объявления</string>
+    <string name="itemList_2">Мои объявления</string>
+    <string name="itemList_3">Статистика</string>
+    <string name="itemList_4">Избранные</string>
+    <string name="itemList_5">Сообщения</string>
+    <string name="itemList_6">Заявки</string>
+    <string name="itemList_7">Пополнить кошелек</string>
+    <string name="itemList_8">Услуги</string>
+    <string name="itemList_9">Правила</string>
+    <string name="itemList_10">Обратная связь</string>
+    <string name="itemList_11">Запрещенные товары и услуги</string>
 </resources>

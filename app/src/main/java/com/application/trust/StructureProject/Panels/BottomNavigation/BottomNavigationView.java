@@ -3,6 +3,7 @@ package com.application.trust.StructureProject.Panels.BottomNavigation;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Outline;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -18,6 +19,7 @@ import com.application.trust.Fragments.FragmentUserAnnouncements;
 import com.application.trust.Fragments.FragmentUserProposals;
 import com.application.trust.Fragments.FragmentUserStatistics;
 import com.application.trust.R;
+import com.application.trust.StructureProject.Panels.DrawPanel;
 
 public class BottomNavigationView extends ConstraintLayout implements IBottomNavigation {
     private ImageView panelBottomNavigation,
@@ -34,7 +36,7 @@ public class BottomNavigationView extends ConstraintLayout implements IBottomNav
         inflateBottomNavigation(context, attrs);
         stylePanelBottomNavigation
                 (context, new PanelBottomNavigation(context,
-                        R.color.colorWhite, R.color.shadowColor, 10f,0f,0f));
+                        R.color.colorWhite, new float[8], R.color.shadowColor, 10f,0f,0f));
         styleItemBottomNavigation(context);
     }
 
@@ -50,8 +52,8 @@ public class BottomNavigationView extends ConstraintLayout implements IBottomNav
 
     @SuppressLint({"NewApi", "ResourceAsColor"})
     @Override
-    public void stylePanelBottomNavigation(Context context, PanelBottomNavigation panelBottomNavigation) {
-        this.panelBottomNavigation.setImageDrawable(panelBottomNavigation);
+    public void stylePanelBottomNavigation(Context context, DrawPanel drawPanel) {
+        this.panelBottomNavigation.setImageDrawable((Drawable)drawPanel);
     }
 
     @Override

@@ -15,8 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="UnusedAttribute" />
+        app:layout_constraintVertical_bias="1.0"/>
 
     <ImageView
         android:id="@+id/itemUserStatistics"
@@ -27,8 +26,7 @@
         app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
         app:layout_constraintStart_toEndOf="@+id/itemUserProposals"
         app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/item_statistics"
-        tools:ignore="VectorDrawableCompat" />
+        app:srcCompat="@drawable/item_statistics"/>
 
     <ImageView
         android:id="@+id/itemUserProposals"
@@ -39,8 +37,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemUserStatistics"
         app:layout_constraintStart_toEndOf="@+id/itemAddAnnouncement"
         app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/item_proposals"
-        tools:ignore="VectorDrawableCompat" />
+        app:srcCompat="@drawable/item_proposals"/>
 
     <ImageView
         android:id="@+id/itemAllAnnouncement"
@@ -51,8 +48,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemUserAnnouncement"
         app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
         app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/item_all_announcement"
-        tools:ignore="VectorDrawableCompat" />
+        app:srcCompat="@drawable/item_all_announcement"/>
 
     <ImageView
         android:id="@+id/itemUserAnnouncement"
@@ -63,8 +59,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemAddAnnouncement"
         app:layout_constraintStart_toEndOf="@+id/itemAllAnnouncement"
         app:layout_constraintTop_toTopOf="@+id/itemAllAnnouncement"
-        app:srcCompat="@drawable/item_user_announcement"
-        tools:ignore="VectorDrawableCompat" />
+        app:srcCompat="@drawable/item_user_announcement"/>
 
     <ImageView
         android:id="@+id/itemAddAnnouncement"
@@ -78,6 +73,6 @@
         app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
         app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
         app:srcCompat="@drawable/item_add_announcement"
-        tools:ignore="UnusedAttribute,VectorDrawableCompat" />
+        tools:ignore="UnusedAttribute" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,7 +15,9 @@ import android.view.WindowManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class PanelBottomNavigation extends Drawable {
+import com.application.trust.StructureProject.Panels.DrawPanel;
+
+public class PanelBottomNavigation extends Drawable implements DrawPanel {
     private class Point {
         float x, y;
 
@@ -38,16 +40,17 @@ public class PanelBottomNavigation extends Drawable {
     private final float HEIGHT_DISPLAY;
     private final float WIDTH_DISPLAY;
 
-    PanelBottomNavigation(Context context, int ResourcesFillColor, int ResourcesShadowColor, float shadowRadius, float shadowDX, float shadowDY){
+    PanelBottomNavigation(Context context, int ResourcesFillColor, float[] radii, int ResourcesShadowColor, float shadowRadius, float shadowDX, float shadowDY){
         this.context = context;
-        getMetrics(context);
+        setMetrics(context);
         this.HEIGHT_DISPLAY = metrics.heightPixels / 12.0f;
         this.WIDTH_DISPLAY = metrics.widthPixels;
-        setPaintForPath(ResourcesFillColor, ROUNDING_ALL_CORNERS, ResourcesShadowColor, shadowRadius, shadowDX, shadowDY);
-        setPathPanels();
+        setPaintForPath(ResourcesFillColor, ResourcesShadowColor, shadowRadius, shadowDX, shadowDY);
+        setPathPanel(radii);
     }
 
-    private void getMetrics(Context context){
+    @Override
+    public void setMetrics(Context context){
         metrics = new DisplayMetrics();
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 
@@ -56,16 +59,23 @@ public class PanelBottomNavigation extends Drawable {
         }
     }
 
+    @Override
+    public DisplayMetrics getMetrics(){
+        return metrics;
+    }
+
+    @Override
     @SuppressLint("NewApi")
-    public void setPaintForPath(int ResourcesFillColor, float roundingCorners, int ResourcesShadowColor, float shadowRadius, float shadowDX, float shadowDY){
+    public void setPaintForPath(int ResourcesFillColor, int ResourcesShadowColor, float shadowRadius, float shadowDX, float shadowDY){
         paint.setColor(context.getColor(ResourcesFillColor));
         paint.setStyle(Paint.Style.FILL);
         paint.setShadowLayer(shadowRadius, shadowDX, shadowDY, context.getColor(ResourcesShadowColor));
-        cornerPathEffect = new CornerPathEffect(roundingCorners);
+        cornerPathEffect = new CornerPathEffect(ROUNDING_ALL_CORNERS);
         paint.setPathEffect(cornerPathEffect);
     }
 
-    private void setPathPanels(){
+    @Override
+    public void setPathPanel(float[] radii){
         Point[] arrayPoints = {
                 new Point(0f, HEIGHT_DISPLAY),
                 new Point(WIDTH_DISPLAY, HEIGHT_DISPLAY),
@@ -87,6 +97,11 @@ public class PanelBottomNavigation extends Drawable {
         }
 
         path.close();
+    }
+
+    @Override
+    public Path getPathPanel(){
+        return path;
     }
 
     @Override

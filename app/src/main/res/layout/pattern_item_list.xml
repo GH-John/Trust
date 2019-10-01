@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPatternItemList"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="5dp">
+
+    <ImageView
+        android:id="@+id/backgroundItemList"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="@string/todo"
+        android:elevation="2dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:translationZ="0dp"
+        app:srcCompat="@drawable/style_item_list"
+        tools:ignore="UnusedAttribute" />
+
+    <ImageView
+        android:id="@+id/iconItemList"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/backgroundItemList"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:contentDescription="@string/todo"
+        android:translationZ="10dp"
+        app:srcCompat="@drawable/item_all_announcement"
+        tools:ignore="UnusedAttribute" />
+
+    <TextView
+        android:id="@+id/nameItemList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/iconItemList"
+        android:layout_alignEnd="@+id/backgroundItemList"
+        android:layout_alignBottom="@+id/iconItemList"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/iconItemList"
+        android:fontFamily="@font/gotham_office_regular"
+        android:gravity="center"
+        android:text="Some Text"
+        android:textAlignment="viewStart"
+        android:textColor="@color/colorBlack"
+        android:textSize="14sp"
+        android:translationZ="10dp"
+        tools:ignore="HardcodedText,RtlCompat,UnusedAttribute" />
+
+</RelativeLayout>
