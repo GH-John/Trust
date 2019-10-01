@@ -4,36 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPatternItemList"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="5dp">
+    android:layout_height="44dp"
+    android:layout_marginBottom="2dp">
 
     <ImageView
         android:id="@+id/backgroundItemList"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:contentDescription="@string/todo"
-        android:elevation="2dp"
+        android:paddingStart="2dp"
         android:paddingTop="2dp"
+        android:paddingEnd="2dp"
         android:paddingBottom="2dp"
-        android:translationZ="0dp"
-        app:srcCompat="@drawable/style_item_list"
-        tools:ignore="UnusedAttribute" />
+        app:srcCompat="@drawable/style_item_list" />
 
     <ImageView
         android:id="@+id/iconItemList"
         android:layout_width="25dp"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/backgroundItemList"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="15dp"
         android:contentDescription="@string/todo"
-        android:translationZ="10dp"
-        app:srcCompat="@drawable/item_all_announcement"
-        tools:ignore="UnusedAttribute" />
+        app:srcCompat="@drawable/bn_item_all_announcement" />
 
     <TextView
         android:id="@+id/nameItemList"
@@ -54,7 +52,6 @@
         android:textAlignment="viewStart"
         android:textColor="@color/colorBlack"
         android:textSize="14sp"
-        android:translationZ="10dp"
-        tools:ignore="HardcodedText,RtlCompat,UnusedAttribute" />
+        tools:ignore="HardcodedText,RtlCompat" />
 
 </RelativeLayout>

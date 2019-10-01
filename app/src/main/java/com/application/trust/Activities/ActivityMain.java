@@ -13,7 +13,8 @@ import com.application.trust.R;
 import com.application.trust.StructureProject.Panels.ActionBar.ActionBarView;
 import com.application.trust.StructureProject.Panels.BottomNavigation.BottomNavigationView;
 import com.application.trust.StructureProject.Panels.SideBar.ItemList.ItemListAdapter;
-import com.application.trust.StructureProject.Panels.SideBar.ItemList.ItemListData;
+import com.application.trust.StructureProject.Panels.SideBar.ItemList.InflateItemList;
+import com.application.trust.StructureProject.Panels.SideBar.ItemList.PanelItemList;
 
 public class ActivityMain extends AppCompatActivity {
 
@@ -38,7 +39,10 @@ public class ActivityMain extends AppCompatActivity {
         customBottomNavigation.startListenerBottomNavigation(this, R.id.containerContentDisplay);
         customActionBar.startListenerActionBar(this, R.id.containerContentDisplay);
 
-        itemListView.setAdapter(new ItemListAdapter(R.layout.pattern_item_list, ItemListData.getitemListData()));
+        PanelItemList panelItemList = new PanelItemList(this,R.color.colorWhite, new float[8],
+                R.color.shadowColor, 5f, 0f, 2f);
+
+        itemListView.setAdapter(new ItemListAdapter(R.layout.pattern_item_list, InflateItemList.getitemListData(panelItemList)));
         itemListView.setLayoutManager(new LinearLayoutManager(this));
     }
 }

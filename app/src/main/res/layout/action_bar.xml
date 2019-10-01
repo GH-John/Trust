@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/panelActionBar"
         app:layout_constraintStart_toStartOf="@id/panelActionBar"
         app:layout_constraintTop_toTopOf="@+id/panelActionBar"
-        app:srcCompat="@drawable/item_burger_menu"
+        app:srcCompat="@drawable/ab_item_burger_menu"
         tools:visibility="visible" />
 
     <TextView
@@ -57,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/panelActionBar"
         app:layout_constraintEnd_toStartOf="@+id/itemSort"
         app:layout_constraintTop_toTopOf="@+id/panelActionBar"
-        app:srcCompat="@drawable/item_search" />
+        app:srcCompat="@drawable/ab_item_search" />
 
     <ImageView
         android:id="@+id/itemSort"
@@ -68,7 +68,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/panelActionBar"
         app:layout_constraintEnd_toStartOf="@+id/itemRefresh"
         app:layout_constraintTop_toTopOf="@+id/panelActionBar"
-        app:srcCompat="@drawable/item_sort" />
+        app:srcCompat="@drawable/ab_item_sort" />
 
     <ImageView
         android:id="@+id/itemRefresh"
@@ -80,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/panelActionBar"
         app:layout_constraintEnd_toStartOf="@+id/itemViewList"
         app:layout_constraintTop_toTopOf="@+id/panelActionBar"
-        app:srcCompat="@drawable/item_refresh"
+        app:srcCompat="@drawable/ab_item_refresh"
         tools:visibility="visible" />
 
     <ImageView
@@ -93,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/panelActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/panelActionBar"
-        app:srcCompat="@drawable/item_view_list"
+        app:srcCompat="@drawable/ab_item_view_list"
         tools:visibility="visible" />
 
     <ImageView
@@ -107,7 +107,7 @@
         app:layout_constraintStart_toEndOf="@+id/itemBurgerMenu"
         app:layout_constraintTop_toTopOf="@+id/panelActionBar"
         app:layout_constraintVertical_bias="0.484"
-        app:srcCompat="@drawable/item_back"
+        app:srcCompat="@drawable/ab_item_back"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

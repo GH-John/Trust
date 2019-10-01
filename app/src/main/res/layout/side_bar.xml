@@ -38,7 +38,7 @@
         android:translationZ="2dp"
         app:layout_constraintEnd_toEndOf="@+id/panelSideBar"
         app:layout_constraintTop_toTopOf="@+id/panelSideBar"
-        app:srcCompat="@drawable/ic_account"
+        app:srcCompat="@drawable/sb_item_user_account"
         tools:ignore="UnusedAttribute" />
 
     <TextView

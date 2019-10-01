@@ -26,7 +26,7 @@
         app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
         app:layout_constraintStart_toEndOf="@+id/itemUserProposals"
         app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/item_statistics"/>
+        app:srcCompat="@drawable/bn_item_statistics"/>
 
     <ImageView
         android:id="@+id/itemUserProposals"
@@ -37,7 +37,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemUserStatistics"
         app:layout_constraintStart_toEndOf="@+id/itemAddAnnouncement"
         app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/item_proposals"/>
+        app:srcCompat="@drawable/bn_item_proposals"/>
 
     <ImageView
         android:id="@+id/itemAllAnnouncement"
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemUserAnnouncement"
         app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
         app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/item_all_announcement"/>
+        app:srcCompat="@drawable/bn_item_all_announcement"/>
 
     <ImageView
         android:id="@+id/itemUserAnnouncement"
@@ -59,7 +59,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemAddAnnouncement"
         app:layout_constraintStart_toEndOf="@+id/itemAllAnnouncement"
         app:layout_constraintTop_toTopOf="@+id/itemAllAnnouncement"
-        app:srcCompat="@drawable/item_user_announcement"/>
+        app:srcCompat="@drawable/bn_item_user_announcement"/>
 
     <ImageView
         android:id="@+id/itemAddAnnouncement"
@@ -72,7 +72,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
         app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
         app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/item_add_announcement"
+        app:srcCompat="@drawable/bn_item_add_announcement"
         tools:ignore="UnusedAttribute" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

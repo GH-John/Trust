@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,13 +18,13 @@ import java.util.List;
 
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder>
 {
-    private List<ItemList> itemLists;
+    private List<ContentItemList> contentItemLists;
     private int idPatternLayout;
     private Context context;
 
-    public ItemListAdapter(int idPatternLayout, List<ItemList> itemList){
+    public ItemListAdapter(int idPatternLayout, List<ContentItemList> contentItemList){
         this.idPatternLayout = idPatternLayout;
-        this.itemLists = itemList;
+        this.contentItemLists = contentItemList;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
@@ -49,22 +50,22 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     @SuppressLint("NewApi")
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final ItemList itemList = this.itemLists.get(position);
-        holder.iconItemList.setImageResource(itemList.getIdIconItemList());
-        holder.nameItemList.setText(context.getString(itemList.getIdNameItemList()));
-        holder.backgroundItemList.setImageResource(itemList.getIdStyleItemList());
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        final ContentItemList contentItemList = this.contentItemLists.get(position);
+        holder.iconItemList.setImageResource(contentItemList.getIdIconPanel());
+        holder.nameItemList.setText(context.getString(contentItemList.getIdNamePanel()));
+        holder.backgroundItemList.setImageDrawable(contentItemList.getStylePanel());
 
         holder.backgroundItemList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(context, String.valueOf(position), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return itemLists.size();
+        return contentItemLists.size();
     }
 }
