@@ -2,15 +2,16 @@
     <string name="app_name">Trust</string>
     <string name="todo">TODO</string>
 
-    <string name="itemList_1">Все объявления</string>
-    <string name="itemList_2">Мои объявления</string>
-    <string name="itemList_3">Статистика</string>
-    <string name="itemList_4">Избранные</string>
-    <string name="itemList_5">Сообщения</string>
-    <string name="itemList_6">Заявки</string>
-    <string name="itemList_7">Пополнить кошелек</string>
-    <string name="itemList_8">Услуги</string>
-    <string name="itemList_9">Правила</string>
-    <string name="itemList_10">Обратная связь</string>
-    <string name="itemList_11">Запрещенные товары и услуги</string>
+    <string name="new_announcements">Новое объявление</string>
+    <string name="itemList_all_announcements">Все объявления</string>
+    <string name="itemList_user_announcements">Мои объявления</string>
+    <string name="itemList_statistics">Статистика</string>
+    <string name="itemList_favorites">Избранные</string>
+    <string name="itemList_message">Сообщения</string>
+    <string name="itemList_proposals">Заявки</string>
+    <string name="itemList_wallet">Кошелек</string>
+    <string name="itemList_services">Услуги</string>
+    <string name="itemList_regulations">Правила</string>
+    <string name="itemList_customer_service">Обратная связь</string>
+    <string name="itemList_prohibited">Запрещенные товары и услуги</string>
 </resources>

@@ -24,23 +24,23 @@ public class PanelSideBar extends Drawable implements DrawPanel {
     private DisplayMetrics metrics;
     private Context context;
 
-    private final float ROUNDING_TOP_RIGHT_CORNER = 80.0f;
-    private final float ROUNDING_BOTTOM_RIGHT_CORNER = 80.0f;
     private final float HEIGHT_PANEL;
     private final float WIDTH_PANEL;
 
     public PanelSideBar(Context context,
                         int ResourcesFillColor,
-                        float[] radii,
                         int ResourcesShadowColor,
                         float shadowRadius,
                         float shadowDX,
-                        float shadowDY)
+                        float shadowDY,
+                        float[] radii,
+                        int width,
+                        int height)
     {
         this.context = context;
         setMetrics(context);
-        this.HEIGHT_PANEL = metrics.heightPixels;
-        this.WIDTH_PANEL = (metrics.widthPixels / 1.30f);
+        this.WIDTH_PANEL = width;
+        this.HEIGHT_PANEL = height;
         setPaintForPath(ResourcesFillColor, ResourcesShadowColor, shadowRadius, shadowDX, shadowDY);
         setPathPanel(radii);
     }
@@ -77,15 +77,8 @@ public class PanelSideBar extends Drawable implements DrawPanel {
     public void setPathPanel(float[] radii) {
         path.reset();
 
-        float[] corners = new float[]{
-                0, 0,        // Top left radius in px
-                ROUNDING_TOP_RIGHT_CORNER, ROUNDING_TOP_RIGHT_CORNER,
-                ROUNDING_BOTTOM_RIGHT_CORNER, ROUNDING_BOTTOM_RIGHT_CORNER,
-                0, 0
-        };
-
         path.addRoundRect(new RectF(0, 0, WIDTH_PANEL, HEIGHT_PANEL),
-                corners, Path.Direction.CCW);
+                radii, Path.Direction.CCW);
 
         path.close();
     }

@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemUserAnnouncement"
         app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
         app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
-        app:srcCompat="@drawable/bn_item_all_announcement"/>
+        app:srcCompat="@drawable/bn_item_search_announcements"/>
 
     <ImageView
         android:id="@+id/itemUserAnnouncement"
@@ -59,7 +59,7 @@
         app:layout_constraintEnd_toStartOf="@+id/itemAddAnnouncement"
         app:layout_constraintStart_toEndOf="@+id/itemAllAnnouncement"
         app:layout_constraintTop_toTopOf="@+id/itemAllAnnouncement"
-        app:srcCompat="@drawable/bn_item_user_announcement"/>
+        app:srcCompat="@drawable/bn_item_user_announcements" />
 
     <ImageView
         android:id="@+id/itemAddAnnouncement"

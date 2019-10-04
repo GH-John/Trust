@@ -6,13 +6,20 @@
 
     <color name="backgroundApp">#FFFFFF</color>
 
+    <color name="colorPink">#EE2FD1</color>
+    <color name="colorBlue">#299AE2</color>
+
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorBlue">#3598D6</color>
     <color name="colorBlack">#000000</color>
     <color name="shadowColor">#663A3A3A</color>
+    <color name="shadowItemList">#32585858</color>
     <color name="backgroundColorSideBar">#802A2A2A</color>
 
     <color name="colorHeaderName">#3A3A3A</color>
+
+    <color name="colorNameUserAccount">#3A3A3A</color>
+
+    <color name="colorNameItemList">#3A3A3A</color>
 
     <color name="first">#C01818</color>
     <color name="second">#37C018</color>

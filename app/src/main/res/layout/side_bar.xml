@@ -20,7 +20,7 @@
 
     <ImageView
         android:id="@+id/panelSideBar"
-        android:layout_width="280dp"
+        android:layout_width="275dp"
         android:layout_height="0dp"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,8 +34,8 @@
         android:layout_marginTop="15dp"
         android:layout_marginEnd="20dp"
         android:contentDescription="@string/todo"
-        android:elevation="2dp"
-        android:translationZ="2dp"
+        android:elevation="6dp"
+        android:translationZ="1dp"
         app:layout_constraintEnd_toEndOf="@+id/panelSideBar"
         app:layout_constraintTop_toTopOf="@+id/panelSideBar"
         app:srcCompat="@drawable/sb_item_user_account"
@@ -50,8 +50,9 @@
         android:contentDescription="@string/todo"
         android:fontFamily="@font/gotham_office_regular"
         android:text="Красуцкий Евгений"
-        android:textAlignment="center"
-        android:textSize="18sp"
+        android:textAlignment="textEnd"
+        android:textColor="@color/colorNameUserAccount"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/itemUserAccount"
         app:layout_constraintEnd_toStartOf="@+id/itemUserAccount"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,10 +64,20 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="5dp"
         app:layout_constraintBottom_toBottomOf="@id/panelSideBar"
         app:layout_constraintEnd_toEndOf="@+id/panelSideBar"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/itemUserAccount" />
+        app:layout_constraintTop_toBottomOf="@id/itemUserAccount"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <com.application.trust.StructureProject.Panels.SideBar.Btn.BtnAddView
+        android:id="@+id/customBtnAdd"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        app:layout_constraintBottom_toBottomOf="@+id/panelSideBar"
+        app:layout_constraintEnd_toEndOf="@id/panelSideBar"
+        app:layout_constraintStart_toStartOf="@+id/panelSideBar" />
 </androidx.constraintlayout.widget.ConstraintLayout>
