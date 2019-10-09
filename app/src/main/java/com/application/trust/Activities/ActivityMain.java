@@ -20,18 +20,20 @@ import com.application.trust.Patterns.Observer;
 import com.application.trust.Patterns.ObserverManager;
 import com.application.trust.R;
 
-public class ActivityMain extends AppCompatActivity{
+public class ActivityMain extends AppCompatActivity {
 
     private CustomBottomNavigation customBottomNavigation;
     private CustomActionBar customActionBar;
     private CustomContainer customContainer;
     private CustomSideBar customSideBar;
 
-    private FragmentAllAnnouncements fragmentAllAnnouncements;
     private FragmentUserAnnouncements fragmentUserAnnouncements;
+    private FragmentAllAnnouncements fragmentAllAnnouncements;
     private FragmentAddAnnouncement fragmentAddAnnouncement;
-    private FragmentUserProposals fragmentUserProposals;
     private FragmentUserStatistics fragmentUserStatistics;
+    private FragmentUserProposals fragmentUserProposals;
+
+    private ObserverManager<Observable, Observer> observerManager;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -44,26 +46,27 @@ public class ActivityMain extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         inflate();
 
-        ObserverManager<Observable, Observer> observerManager = new ObserverManager<>();
-        observerManager.addObserver(customContainer, customActionBar);
         customContainer.addFragments(fragmentAllAnnouncements,
-                                        fragmentUserAnnouncements,
-                                        fragmentAddAnnouncement,
-                                        fragmentUserProposals,
-                                        fragmentUserStatistics);
+                fragmentUserAnnouncements,
+                fragmentAddAnnouncement,
+                fragmentUserStatistics,
+                fragmentUserProposals);
+        observerManager.addObserver(customContainer, customActionBar);
         customContainer.setManager(observerManager);
     }
 
-    private void inflate(){
+    private void inflate() {
         customBottomNavigation = findViewById(R.id.customBottomNavigation);
         customActionBar = findViewById(R.id.customActionBar);
         customContainer = findViewById(R.id.customContainer);
         customSideBar = findViewById(R.id.customSideBar);
 
-        fragmentAllAnnouncements = new FragmentAllAnnouncements();
         fragmentUserAnnouncements = new FragmentUserAnnouncements();
+        fragmentAllAnnouncements = new FragmentAllAnnouncements();
         fragmentAddAnnouncement = new FragmentAddAnnouncement();
-        fragmentUserProposals = new FragmentUserProposals();
         fragmentUserStatistics = new FragmentUserStatistics();
+        fragmentUserProposals = new FragmentUserProposals();
+
+        observerManager = new ObserverManager<>();
     }
 }

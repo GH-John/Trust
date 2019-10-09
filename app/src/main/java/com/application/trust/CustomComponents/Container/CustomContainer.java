@@ -26,26 +26,30 @@ public class CustomContainer extends ConstraintLayout implements Observable {
         inflateContainer(context, attrs);
     }
 
-    private void inflateContainer(Context context, AttributeSet attrs){
+    private void inflateContainer(Context context, AttributeSet attrs) {
         inflate(context, R.layout.custom_container, this);
-        containerContentDisplay = ((AppCompatActivity)context).getSupportFragmentManager()
+        containerContentDisplay = ((AppCompatActivity) context).getSupportFragmentManager()
                 .findFragmentById(R.id.containerContentDisplay);
         fragmentList = new ArrayList<>();
     }
 
-    public void writeInConteinerFragment(int index){
-
+    public void viewFragmentInConteiner(int index) {
 
         notifyObservers();
     }
 
-    public void addFragments(Fragment... fragments){
+    public void addFragments(Fragment... fragments) {
         fragmentList.addAll(Arrays.asList(fragments));
     }
 
     @Override
     public void setManager(ObserverManager manager) {
         observerManager = manager;
+    }
+
+    @Override
+    public void createLink() {
+
     }
 
     @Override

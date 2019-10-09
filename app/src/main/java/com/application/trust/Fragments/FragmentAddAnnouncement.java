@@ -7,13 +7,19 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
+import com.application.trust.CustomComponents.Container.PluginFragment;
 import com.application.trust.R;
 
-public class FragmentAddAnnouncement extends Fragment {
+public class FragmentAddAnnouncement extends Fragment implements PluginFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_announcement, container, false);
         return view;
+    }
+
+    @Override
+    public void update() {
+
     }
 }
