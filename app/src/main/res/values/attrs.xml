@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="BottomNavigationView">
+    <declare-styleable name="CustomBottomNavigation">
 
     </declare-styleable>
 
-    <declare-styleable name="ActionBarView">
+    <declare-styleable name="CustomActionBar">
 
     </declare-styleable>
 
-    <declare-styleable name="SideBarView">
+    <declare-styleable name="CustomSideBar">
 
     </declare-styleable>
 </resources>

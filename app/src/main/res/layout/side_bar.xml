@@ -8,43 +8,38 @@
     android:id="@+id/layoutSideBar">
 
     <ImageView
-        android:id="@+id/backgroundSideBar"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@color/backgroundColorSideBar" />
-
-    <ImageView
         android:id="@+id/panelSideBar"
         android:layout_width="275dp"
         android:layout_height="0dp"
         android:contentDescription="@string/todo"
+        android:paddingRight="4dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlHardcoded,RtlSymmetry"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/itemUserAccount"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="20dp"
         android:contentDescription="@string/todo"
         android:elevation="6dp"
         android:translationZ="1dp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/panelSideBar"
         app:layout_constraintTop_toTopOf="@+id/panelSideBar"
         app:srcCompat="@drawable/sb_item_user_account"
-        tools:ignore="UnusedAttribute" />
+        tools:ignore="UnusedAttribute"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/itemUserName"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/todo"
@@ -53,11 +48,13 @@
         android:textAlignment="textEnd"
         android:textColor="@color/colorNameUserAccount"
         android:textSize="20sp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/itemUserAccount"
         app:layout_constraintEnd_toStartOf="@+id/itemUserAccount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/itemUserAccount"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        tools:visibility="visible" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/itemListView"
@@ -66,18 +63,39 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="5dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/panelSideBar"
         app:layout_constraintEnd_toEndOf="@+id/panelSideBar"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/panelSideBar"
         app:layout_constraintTop_toBottomOf="@id/itemUserAccount"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="visible" />
 
-    <com.application.trust.StructureProject.Panels.SideBar.Btn.BtnAddView
+    <com.application.trust.CustomComponents.Panels.SideBar.Btn.CustomBtnAdd
         android:id="@+id/customBtnAdd"
         android:layout_width="0dp"
         android:layout_height="46dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/panelSideBar"
         app:layout_constraintEnd_toEndOf="@id/panelSideBar"
-        app:layout_constraintStart_toStartOf="@+id/panelSideBar" />
+        app:layout_constraintStart_toStartOf="@+id/panelSideBar"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/itemAddAnnouncement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:contentDescription="@string/todo"
+        android:elevation="6dp"
+        android:translationZ="1dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/itemListView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bn_item_add_announcement"
+        tools:ignore="UnusedAttribute"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,17 +9,16 @@
     android:background="@color/backgroundApp"
     tools:context="com.application.trust.Activities.ActivityMain">
 
-    <fragment
-        android:id="@+id/containerContentDisplay"
-        android:name="com.application.trust.Fragments.FragmentAllAnnouncements"
+    <com.application.trust.CustomComponents.Container.CustomContainer
+        android:id="@+id/customContainer"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <com.application.trust.StructureProject.Panels.ActionBar.ActionBarView
+    <com.application.trust.CustomComponents.Panels.ActionBar.CustomActionBar
         android:id="@+id/customActionBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -27,7 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.application.trust.StructureProject.Panels.BottomNavigation.BottomNavigationView
+    <com.application.trust.CustomComponents.Panels.BottomNavigation.CustomBottomNavigation
         android:id="@+id/customBottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -35,16 +34,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.application.trust.StructureProject.Panels.SideBar.SideBarView
+    <com.application.trust.CustomComponents.Panels.SideBar.CustomSideBar
         android:id="@+id/customSideBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        tools:visibility="visible">
+
+    </com.application.trust.CustomComponents.Panels.SideBar.CustomSideBar>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
