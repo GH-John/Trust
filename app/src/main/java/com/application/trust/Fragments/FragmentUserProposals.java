@@ -4,13 +4,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.application.trust.CustomComponents.Container.PluginFragment;
+import com.application.trust.CustomComponents.Panels.ActionBar.AdapterActionBar;
 import com.application.trust.R;
 
-public class FragmentUserProposals extends Fragment implements PluginFragment {
+public class FragmentUserProposals extends Fragment implements AdapterActionBar {
+    ImageView itemBurgerMenu;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,22 @@ public class FragmentUserProposals extends Fragment implements PluginFragment {
     }
 
     @Override
-    public void update() {
+    public int getIdPatternResource() {
+        return R.layout.pattern_ab_user_proposals;
+    }
 
+    @Override
+    public void initializeItems(ViewGroup viewGroup) {
+        itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
+    }
+
+    @Override
+    public void initializeItemsListener(ViewGroup viewGroup) {
+        itemBurgerMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "propBurger", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

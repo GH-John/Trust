@@ -1,9 +1,11 @@
 package com.application.trust.Patterns;
 
+import androidx.fragment.app.Fragment;
+
+import com.application.trust.CustomComponents.Container.ManagerFragmentLinks;
+
 public interface Observable {
-    void setManager(ObserverManager manager);
+    void setManagers(ObserverManager observerManager, ManagerFragmentLinks managerFragmentLinks);
 
-    void createLink();
-
-    void notifyObservers();
+    void notifyObservers(Fragment fragment);
 }

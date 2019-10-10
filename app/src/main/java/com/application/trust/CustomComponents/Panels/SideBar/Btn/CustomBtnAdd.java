@@ -20,7 +20,7 @@ public class CustomBtnAdd extends ConstraintLayout implements IBtnAdd{
     public CustomBtnAdd(Context context, AttributeSet attrs) {
         super(context, attrs);
         inflateBtnAdd(context, attrs);
-        startListener(R.id.containerContentDisplay);
+        startListener(R.id.containerFragments);
     }
 
     private void inflateBtnAdd(Context context, AttributeSet attrs){

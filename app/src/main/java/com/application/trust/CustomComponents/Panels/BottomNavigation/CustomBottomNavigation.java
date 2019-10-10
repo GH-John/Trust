@@ -8,125 +8,110 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.application.trust.Fragments.FragmentAddAnnouncement;
-import com.application.trust.Fragments.FragmentAllAnnouncements;
-import com.application.trust.Fragments.FragmentUserAnnouncements;
-import com.application.trust.Fragments.FragmentUserProposals;
-import com.application.trust.Fragments.FragmentUserStatistics;
+import com.application.trust.CustomComponents.Container.FragmentLink;
+import com.application.trust.CustomComponents.Container.ManagerFragmentLinks;
 import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.Patterns.Observable;
+import com.application.trust.Patterns.Observer;
+import com.application.trust.Patterns.ObserverManager;
 import com.application.trust.R;
 
-public class CustomBottomNavigation extends ConstraintLayout implements IBottomNavigation {
-    private ImageView panelBottomNavigation,
-                      itemAddAnnouncement,
-                      itemAllAnnouncements,
-                      itemUserAnnouncements,
-                      itemUserProposals,
-                      itemUserStatistics;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-    private Fragment containerContentDisplay;
+public class CustomBottomNavigation extends ConstraintLayout implements IBottomNavigation, Observable, FragmentLink {
+    private ImageView panelBottomNavigation,
+            itemUserAnnouncements,
+            itemAllAnnouncements,
+            itemAddAnnouncement,
+            itemUserStatistics,
+            itemUserProposals;
+
     private Context context;
+    private Fragment containerContentDisplay;
+
+    private List<View> listItem;
+    private Map<Fragment, View> mapFragmentLinks;
+    private ObserverManager<Observable, Observer> observerManager;
+    private ManagerFragmentLinks<Fragment, View, FragmentLink> managerFragmentLinks;
 
     public CustomBottomNavigation(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         inflateBottomNavigation(context, attrs);
-        stylePanel(context, new PanelBottomNavigation(context,
-                        R.color.colorWhite, new float[8], R.color.shadowColor, 10f,0f,0f));
-        styleItem(context);
-        startListener(R.id.containerContentDisplay);
+        createListItem();
+        stylePanel(new PanelBottomNavigation(context,
+                R.color.colorWhite, new float[8], R.color.shadowColor, 10f, 0f, 0f));
+        styleItems();
     }
 
-    private void inflateBottomNavigation(Context context, AttributeSet attrs){
+    private void inflateBottomNavigation(Context context, AttributeSet attrs) {
         inflate(context, R.layout.bottom_navigation, this);
-        panelBottomNavigation = findViewById(R.id.panelBottomNavigation);
-        itemAddAnnouncement = findViewById(R.id.itemAddAnnouncement);
-        itemAllAnnouncements = findViewById(R.id.itemAllAnnouncement);
         itemUserAnnouncements = findViewById(R.id.itemUserAnnouncement);
-        itemUserProposals = findViewById(R.id.itemUserProposals);
+        panelBottomNavigation = findViewById(R.id.panelBottomNavigation);
+        itemAllAnnouncements = findViewById(R.id.itemAllAnnouncement);
+        itemAddAnnouncement = findViewById(R.id.itemAddAnnouncement);
         itemUserStatistics = findViewById(R.id.itemUserStatistics);
+        itemUserProposals = findViewById(R.id.itemUserProposals);
+
+        listItem = new LinkedList<>();
+        mapFragmentLinks = new HashMap<>();
+    }
+
+    private void createListItem() {
+        listItem.add(itemUserAnnouncements);
+        listItem.add(itemAllAnnouncements);
+        listItem.add(itemAddAnnouncement);
+        listItem.add(itemUserStatistics);
+        listItem.add(itemUserProposals);
     }
 
     @SuppressLint({"NewApi", "ResourceAsColor"})
     @Override
-    public void stylePanel(Context context, DrawPanel drawPanel) {
-        this.panelBottomNavigation.setImageDrawable((Drawable)drawPanel);
+    public void stylePanel(DrawPanel drawPanel) {
+        this.panelBottomNavigation.setImageDrawable((Drawable) drawPanel);
     }
 
     @Override
-    public void startListener(final int idContainerContent) {
-        itemAddAnnouncement.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(),"add", Toast.LENGTH_LONG).show();
-                if(!(((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainerContent)
-                        instanceof FragmentAddAnnouncement))
-                    changeFragmentContainer(new FragmentAddAnnouncement(), idContainerContent);
-            }
-        });
+    public void hidePanel() {
 
-        itemAllAnnouncements.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(),"all", Toast.LENGTH_LONG).show();
-                if(!(((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainerContent)
-                        instanceof FragmentAllAnnouncements))
-                    changeFragmentContainer(new FragmentAllAnnouncements(), idContainerContent);
-            }
-        });
-
-        itemUserAnnouncements.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(),"userAnn", Toast.LENGTH_LONG).show();
-                if(!(((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainerContent)
-                        instanceof FragmentUserAnnouncements))
-                    changeFragmentContainer(new FragmentUserAnnouncements(), idContainerContent);
-            }
-        });
-
-        itemUserProposals.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(),"userProp", Toast.LENGTH_LONG).show();
-                if(!(((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainerContent)
-                        instanceof FragmentUserProposals))
-                    changeFragmentContainer(new FragmentUserProposals(), idContainerContent);
-            }
-        });
-
-        itemUserStatistics.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(getContext(),"userStat", Toast.LENGTH_LONG).show();
-                if(!(((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainerContent)
-                        instanceof FragmentUserStatistics))
-                    changeFragmentContainer(new FragmentUserStatistics(), idContainerContent);
-            }
-        });
     }
 
-    private void changeFragmentContainer(Fragment fragment, int idContainerContent){
-        ((AppCompatActivity)context).getSupportFragmentManager()
-                .beginTransaction()
-                .replace(idContainerContent, fragment)
-                .addToBackStack(String.valueOf(fragment.getClass()))
-                .commit();
+    @Override
+    public void expandPanel() {
+
+    }
+
+    @Override
+    public void itemListener(ManagerFragmentLinks managerFragmentLinks) {
+        if (mapFragmentLinks.size() == 0) {
+            createItemLinks(managerFragmentLinks);
+        } else {
+            for (final Fragment fragment : mapFragmentLinks.keySet()) {
+                mapFragmentLinks.get(fragment).setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        notifyObservers(fragment);
+                    }
+                });
+            }
+        }
     }
 
     @SuppressLint({"NewApi", "ResourceAsColor"})
     @Override
-    public void styleItem(Context context) {
+    public void styleItems() {
         ViewOutlineProvider viewOutlineProvider = new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0,0, view.getWidth(), view.getHeight(), 90);
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), 90);
             }
         };
 
@@ -135,7 +120,28 @@ public class CustomBottomNavigation extends ConstraintLayout implements IBottomN
     }
 
     @Override
-    public void styleHide(Context context) {
+    public void createItemLinks(ManagerFragmentLinks managerFragmentLinks) {
+        int i = 0;
 
+        for (Fragment fragment : (Set<Fragment>) managerFragmentLinks.getCollectionFragmets(this)) {
+            mapFragmentLinks.put(fragment, listItem.get(i));
+            i++;
+        }
+        managerFragmentLinks.addItemLinks(this, mapFragmentLinks);
+
+        itemListener(managerFragmentLinks);
+    }
+
+    @Override
+    public void setManagers(ObserverManager observerManager, ManagerFragmentLinks managerFragmentLinks) {
+        this.observerManager = observerManager;
+        this.managerFragmentLinks = managerFragmentLinks;
+
+        createItemLinks(managerFragmentLinks);
+    }
+
+    @Override
+    public void notifyObservers(Fragment fragment) {
+        observerManager.notifyObservers(this, fragment);
     }
 }

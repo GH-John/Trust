@@ -2,11 +2,15 @@ package com.application.trust.Activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
 
-import com.application.trust.CustomComponents.Container.CustomContainer;
+import com.application.trust.CustomComponents.Container.ContainerFragments;
+import com.application.trust.CustomComponents.Container.FragmentLink;
+import com.application.trust.CustomComponents.Container.ManagerFragmentLinks;
 import com.application.trust.CustomComponents.Panels.ActionBar.CustomActionBar;
 import com.application.trust.CustomComponents.Panels.BottomNavigation.CustomBottomNavigation;
 import com.application.trust.CustomComponents.Panels.SideBar.CustomSideBar;
@@ -22,18 +26,19 @@ import com.application.trust.R;
 
 public class ActivityMain extends AppCompatActivity {
 
-    private CustomBottomNavigation customBottomNavigation;
-    private CustomActionBar customActionBar;
-    private CustomContainer customContainer;
     private CustomSideBar customSideBar;
+    private CustomActionBar customActionBar;
+    private ContainerFragments containerFragments;
+    private CustomBottomNavigation customBottomNavigation;
 
-    private FragmentUserAnnouncements fragmentUserAnnouncements;
-    private FragmentAllAnnouncements fragmentAllAnnouncements;
-    private FragmentAddAnnouncement fragmentAddAnnouncement;
-    private FragmentUserStatistics fragmentUserStatistics;
     private FragmentUserProposals fragmentUserProposals;
+    private FragmentUserStatistics fragmentUserStatistics;
+    private FragmentAddAnnouncement fragmentAddAnnouncement;
+    private FragmentAllAnnouncements fragmentAllAnnouncements;
+    private FragmentUserAnnouncements fragmentUserAnnouncements;
 
     private ObserverManager<Observable, Observer> observerManager;
+    private ManagerFragmentLinks<Fragment, View, FragmentLink> managerFragmentLinks;
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -44,29 +49,54 @@ public class ActivityMain extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        inflate();
 
-        customContainer.addFragments(fragmentAllAnnouncements,
+        initializeComponents();
+        initializeFragments();
+        initializeManagers();
+
+        setManagersComponents();
+    }
+
+    private void initializeComponents() {
+        customSideBar = findViewById(R.id.customSideBar);
+        customActionBar = findViewById(R.id.customActionBar);
+        containerFragments = new ContainerFragments(this);
+        customBottomNavigation = findViewById(R.id.customBottomNavigation);
+    }
+
+    private void initializeFragments() {
+        fragmentUserProposals = new FragmentUserProposals();
+        fragmentUserStatistics = new FragmentUserStatistics();
+        fragmentAddAnnouncement = new FragmentAddAnnouncement();
+        fragmentAllAnnouncements = new FragmentAllAnnouncements();
+        fragmentUserAnnouncements = new FragmentUserAnnouncements();
+    }
+
+    private void initializeManagers() {
+        observerManager = new ObserverManager<>();
+        observerManager.addObserver(containerFragments, customActionBar);
+        observerManager.addObserver(customBottomNavigation, containerFragments);
+
+        managerFragmentLinks = new ManagerFragmentLinks<>();
+
+        managerFragmentLinks.addComponentLinks(customBottomNavigation,
                 fragmentUserAnnouncements,
+                fragmentAllAnnouncements,
                 fragmentAddAnnouncement,
                 fragmentUserStatistics,
                 fragmentUserProposals);
-        observerManager.addObserver(customContainer, customActionBar);
-        customContainer.setManager(observerManager);
+
+        managerFragmentLinks.addComponentLinks(customActionBar,
+                fragmentUserAnnouncements,
+                fragmentAllAnnouncements,
+                fragmentAddAnnouncement,
+                fragmentUserStatistics,
+                fragmentUserProposals);
     }
 
-    private void inflate() {
-        customBottomNavigation = findViewById(R.id.customBottomNavigation);
-        customActionBar = findViewById(R.id.customActionBar);
-        customContainer = findViewById(R.id.customContainer);
-        customSideBar = findViewById(R.id.customSideBar);
+    private void setManagersComponents() {
+        containerFragments.setManagers(observerManager, managerFragmentLinks);
 
-        fragmentUserAnnouncements = new FragmentUserAnnouncements();
-        fragmentAllAnnouncements = new FragmentAllAnnouncements();
-        fragmentAddAnnouncement = new FragmentAddAnnouncement();
-        fragmentUserStatistics = new FragmentUserStatistics();
-        fragmentUserProposals = new FragmentUserProposals();
-
-        observerManager = new ObserverManager<>();
+        customBottomNavigation.setManagers(observerManager, managerFragmentLinks);
     }
 }

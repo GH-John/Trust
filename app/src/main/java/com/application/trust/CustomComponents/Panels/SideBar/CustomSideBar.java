@@ -44,7 +44,7 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar {
         stylePanelItemList(getContext(), new PanelItemList(context,R.color.colorWhite,
                 R.color.shadowItemList, 6f, 0f, 3f,
                 new float[]{80f,80f, 0f,0f, 80f,80f, 0f,0f}));
-        startListener(R.id.containerContentDisplay);
+        startListener(R.id.containerFragments);
     }
 
     private void inflateSideBar(Context context, AttributeSet attrs){
@@ -105,7 +105,7 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar {
     @Override
     public void startListener(int idContainerContent) {
 
-        setAdapterItemList(context, new ItemListAdapter(R.layout.pattern_item_list,
+        setAdapterItemList(context, new ItemListAdapter(R.layout.pattern_sb_item_list,
                 InflateItemList.getItemListData(panelItemList)));
         itemAddAnnouncement.setOnClickListener(new OnClickListener() {
             @Override

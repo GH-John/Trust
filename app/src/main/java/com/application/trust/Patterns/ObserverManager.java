@@ -2,6 +2,8 @@ package com.application.trust.Patterns;
 
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,10 +73,10 @@ public class ObserverManager<K extends Observable, V extends Observer> {
         return this.collection;
     }
 
-    public synchronized void notifyObservers(K observable) {
+    public synchronized void notifyObservers(K observable, Fragment fragment) {
         Set<V> collectionObservers = this.collection.get(observable);
         for (V observer : collectionObservers) {
-            observer.update();
+            observer.update(fragment);
         }
     }
 
