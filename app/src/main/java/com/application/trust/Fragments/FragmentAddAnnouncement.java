@@ -24,7 +24,7 @@ public class FragmentAddAnnouncement extends Fragment implements AdapterActionBa
 
     @Override
     public int getIdPatternResource() {
-        return R.layout.pattern_ab_add_announcement;
+        return R.layout.ab_pattern_add_announcement;
     }
 
     @Override

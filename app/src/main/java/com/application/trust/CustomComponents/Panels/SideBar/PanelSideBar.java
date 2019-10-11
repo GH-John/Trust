@@ -17,10 +17,10 @@ import com.application.trust.CustomComponents.Panels.DrawPanel;
 
 public class PanelSideBar extends Drawable implements DrawPanel {
 
-    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Path path = new Path();
-    private Context context;
     private float[] radii;
+    private Context context;
+    private Path path = new Path();
+    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public PanelSideBar(Context context,
                         int ResourcesFillColor,
@@ -28,24 +28,26 @@ public class PanelSideBar extends Drawable implements DrawPanel {
                         float shadowRadius,
                         float shadowDX,
                         float shadowDY,
-                        float[] radii)
-    {
+                        float[] radii) {
         this.context = context;
         this.radii = radii;
-        setPaint(ResourcesFillColor, ResourcesShadowColor, shadowRadius, shadowDX, shadowDY);
+        setPaint(ResourcesFillColor, ResourcesShadowColor,
+                shadowRadius,
+                shadowDX, shadowDY);
     }
 
     @SuppressLint("NewApi")
     @Override
     public void setPaint(int ResourcesFillColor,
-                                int ResourcesShadowColor,
-                                float shadowRadius,
-                                float shadowDX,
-                                float shadowDY)
-    {
+                         int ResourcesShadowColor,
+                         float shadowRadius,
+                         float shadowDX,
+                         float shadowDY) {
         paint.setColor(context.getColor(ResourcesFillColor));
         paint.setStyle(Paint.Style.FILL);
-        paint.setShadowLayer(shadowRadius, shadowDX, shadowDY, context.getColor(ResourcesShadowColor));
+        paint.setShadowLayer(shadowRadius,
+                shadowDX, shadowDY,
+                context.getColor(ResourcesShadowColor));
     }
 
     @Override

@@ -24,7 +24,7 @@ public class FragmentUserStatistics extends Fragment implements AdapterActionBar
 
     @Override
     public int getIdPatternResource() {
-        return R.layout.pattern_ab_user_statistics;
+        return R.layout.ab_pattern_user_statistics;
     }
 
     @Override

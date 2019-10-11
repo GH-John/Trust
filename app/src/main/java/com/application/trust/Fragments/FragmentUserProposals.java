@@ -29,7 +29,7 @@ public class FragmentUserProposals extends Fragment implements AdapterActionBar 
 
     @Override
     public int getIdPatternResource() {
-        return R.layout.pattern_ab_user_proposals;
+        return R.layout.ab_pattern_user_proposals;
     }
 
     @Override

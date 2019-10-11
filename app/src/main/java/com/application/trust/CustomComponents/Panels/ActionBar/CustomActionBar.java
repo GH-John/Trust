@@ -3,7 +3,7 @@ package com.application.trust.CustomComponents.Panels.ActionBar;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,7 +17,7 @@ import com.application.trust.R;
 
 public class CustomActionBar extends ConstraintLayout implements IActionBar, FragmentLink, Observer {
     private ImageView panelActionBar;
-    private LayoutInflater inflater;
+    private ViewGroup patternContainer;
 
     public CustomActionBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -28,8 +28,8 @@ public class CustomActionBar extends ConstraintLayout implements IActionBar, Fra
     }
 
     private void inflateActionBar(Context context, AttributeSet attrs) {
-        inflate(context, R.layout.action_bar_container, this);
-        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflate(context, R.layout.ab_container, this);
+        patternContainer = findViewById(R.id.patternContainer);
         panelActionBar = findViewById(R.id.panelActionBar);
     }
 
@@ -41,9 +41,11 @@ public class CustomActionBar extends ConstraintLayout implements IActionBar, Fra
     @Override
     public void update(Fragment fragment) {
         if(fragment instanceof AdapterActionBar) {
-            inflater.inflate(((AdapterActionBar)fragment).getIdPatternResource(), this);
-            ((AdapterActionBar)fragment).initializeItems(this);
-            ((AdapterActionBar)fragment).initializeItemsListener(this);
+            patternContainer.removeAllViewsInLayout();
+            inflate(getContext(), ((AdapterActionBar)fragment).getIdPatternResource(),
+                    patternContainer);
+            ((AdapterActionBar)fragment).initializeItems(patternContainer);
+            ((AdapterActionBar)fragment).initializeItemsListener(patternContainer);
         }
     }
 

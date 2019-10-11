@@ -27,7 +27,7 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
 
     @Override
     public int getIdPatternResource() {
-        return R.layout.pattern_ab_all_announcements;
+        return R.layout.ab_pattern_all_announcements;
     }
 
     @Override

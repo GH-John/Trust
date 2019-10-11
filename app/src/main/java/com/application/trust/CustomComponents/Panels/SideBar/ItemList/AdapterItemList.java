@@ -16,13 +16,13 @@ import com.application.trust.R;
 
 import java.util.List;
 
-public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder>
+public class AdapterItemList extends RecyclerView.Adapter<AdapterItemList.ViewHolder>
 {
     private List<ContentItemList> contentItemLists;
     private int idPatternLayout;
     private Context context;
 
-    public ItemListAdapter(int idPatternLayout, List<ContentItemList> contentItemList){
+    public AdapterItemList(int idPatternLayout, List<ContentItemList> contentItemList){
         this.idPatternLayout = idPatternLayout;
         this.contentItemLists = contentItemList;
     }
@@ -35,7 +35,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             iconItemList = itemView.findViewById(R.id.iconItemList);
-            backgroundItemList = itemView.findViewById(R.id.backgroundItemList);
+            backgroundItemList = itemView.findViewById(R.id.panelItemList);
             nameItemList = itemView.findViewById(R.id.nameItemList);
         }
     }
