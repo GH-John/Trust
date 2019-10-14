@@ -10,5 +10,6 @@ interface ISideBar {
     void stylePanelItemList(Context context, DrawPanel drawPanel);
     void styleItemSideBar(Context context);
     void setAdapterItemList(Context context, AdapterItemList adapter);
-    void startListener(int idContainerContent);
+    void startPosition();
+    void initializeListeners();
 }

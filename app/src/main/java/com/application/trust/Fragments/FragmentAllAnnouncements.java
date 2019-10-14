@@ -11,17 +11,19 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 
 import com.application.trust.CustomComponents.Panels.ActionBar.AdapterActionBar;
+import com.application.trust.CustomComponents.Panels.SideBar.AdapterSideBar;
 import com.application.trust.R;
 
-public class FragmentAllAnnouncements extends Fragment implements AdapterActionBar {
+public class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, AdapterSideBar {
     private ImageView itemBurgerMenu,
             itemSearch,
             itemSort;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_all_announcements, container, false);
+        view = inflater.inflate(R.layout.fragment_all_announcements, container, false);
         return view;
     }
 
@@ -59,5 +61,10 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
                 Toast.makeText(getContext(), "allBurger", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public View touchListener() {
+        return view;
     }
 }

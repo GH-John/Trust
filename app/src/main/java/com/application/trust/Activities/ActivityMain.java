@@ -76,6 +76,7 @@ public class ActivityMain extends AppCompatActivity {
         observerManager = new ObserverManager<>();
         observerManager.addObserver(containerFragments, customActionBar);
         observerManager.addObserver(customBottomNavigation, containerFragments);
+        observerManager.addObserver(containerFragments,customSideBar);
 
         managerFragmentLinks = new ManagerFragmentLinks<>();
 

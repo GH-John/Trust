@@ -33,6 +33,7 @@ public class ContainerFragments implements Observer, Observable {
     public void setManagers(ObserverManager observerManager, ManagerFragmentLinks managerFragmentLinks) {
         this.observerManager = observerManager;
         this.managerFragmentLinks = managerFragmentLinks;
+        notifyObservers(container);
     }
 
     @Override
