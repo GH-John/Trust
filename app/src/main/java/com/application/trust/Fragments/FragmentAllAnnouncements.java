@@ -1,8 +1,10 @@
 package com.application.trust.Fragments;
 
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,9 +14,11 @@ import androidx.fragment.app.Fragment;
 
 import com.application.trust.CustomComponents.Panels.ActionBar.AdapterActionBar;
 import com.application.trust.CustomComponents.Panels.SideBar.AdapterSideBar;
+import com.application.trust.CustomComponents.Panels.SideBar.CustomSideBar;
 import com.application.trust.R;
 
-public class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, AdapterSideBar {
+public class FragmentAllAnnouncements extends Fragment implements View.OnTouchListener, AdapterActionBar, AdapterSideBar {
+    private CustomSideBar customSideBar;
     private ImageView itemBurgerMenu,
             itemSearch,
             itemSort;
@@ -24,6 +28,7 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_all_announcements, container, false);
+        view.setOnTouchListener(this);
         return view;
     }
 
@@ -40,7 +45,7 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
     }
 
     @Override
-    public void initializeItemsListener(ViewGroup viewGroup) {
+    public void initializeItemsListener(final ViewGroup viewGroup) {
         itemSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,13 +63,21 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
         itemBurgerMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "allBurger", Toast.LENGTH_LONG).show();
+                customSideBar.expand();
             }
         });
     }
 
     @Override
-    public View touchListener() {
-        return view;
+    public void setCustomSideBar(CustomSideBar sideBar) {
+        this.customSideBar = sideBar;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        customSideBar.swipeListener(event);
+
+        return true;
     }
 }

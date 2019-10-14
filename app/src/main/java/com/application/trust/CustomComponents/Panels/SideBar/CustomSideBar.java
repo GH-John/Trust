@@ -43,7 +43,8 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     private final int DISTANCES = 100;
     private int MIN_MARGIN;
     private int MAX_MARGIN;
-    private float dX = 0f, mX = 0f, position = 0f, distances = 0f;
+
+    private float dX = 0f, dY = 0f, mX = 0f, mY = 0f, dragAngle = 0f, margin = 0f, distances = 0f;
 
     public CustomSideBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -84,13 +85,15 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     }
 
     @Override
-    public void stylePanelSideBar(Context context, DrawPanel drawPanel) {
-        panelSideBar.setImageDrawable((Drawable) drawPanel);
-    }
-
-    @Override
-    public void stylePanelItemList(Context context, DrawPanel drawPanel) {
-        panelItemList = (PanelItemList) drawPanel;
+    public void initializeListeners() {
+        setAdapterItemList(context, new AdapterItemList(R.layout.sb_pattern_item_list,
+                InflateItemList.getItemListData(panelItemList)));
+        itemAddAnnouncement.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "add click", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @SuppressLint("NewApi")
@@ -109,9 +112,31 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     }
 
     @Override
+    public void stylePanelSideBar(Context context, DrawPanel drawPanel) {
+        panelSideBar.setImageDrawable((Drawable) drawPanel);
+    }
+
+    @Override
+    public void stylePanelItemList(Context context, DrawPanel drawPanel) {
+        panelItemList = (PanelItemList) drawPanel;
+    }
+
+    @Override
     public void setAdapterItemList(Context context, AdapterItemList adapter) {
         itemListView.setAdapter(adapter);
         itemListView.setLayoutManager(new LinearLayoutManager(context));
+    }
+
+    @Override
+    public void hide() {
+        containerParams.rightMargin = MAX_MARGIN;
+        containerSideBar.setLayoutParams(containerParams);
+    }
+
+    @Override
+    public void expand() {
+        containerParams.rightMargin = MIN_MARGIN;
+        containerSideBar.setLayoutParams(containerParams);
     }
 
     @Override
@@ -137,66 +162,47 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     }
 
     @Override
-    public void initializeListeners() {
-        setAdapterItemList(context, new AdapterItemList(R.layout.sb_pattern_item_list,
-                InflateItemList.getItemListData(panelItemList)));
-        itemAddAnnouncement.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "add click", Toast.LENGTH_LONG).show();
+    public void swipeListener(MotionEvent event) {
+        action = event.getAction();
+        margin = containerParams.getMarginEnd();
+
+        if (action == MotionEvent.ACTION_DOWN) {
+            margin = containerParams.getMarginEnd();
+            dX = event.getX();
+            dY = event.getY();
+        }
+
+        if (action == MotionEvent.ACTION_MOVE) {
+            mX = event.getX();
+            mY = event.getY();
+            distances = Math.abs(Math.round(mX - dX)) / 10;
+            dragAngle = getAndle(dX, dY, mX, mY);
+            if (dragAngle <= 45f && distances > 20) {
+                if (isSwipeLeft(dX, mX) && margin < MAX_MARGIN) {
+                    containerParams.rightMargin = (int) margin + (int) (distances);
+                } else if (isSwipeRight(dX, mX) && margin > MIN_MARGIN) {
+                    containerParams.rightMargin = (int) margin - (int) (distances);
+                }
+                containerSideBar.setLayoutParams(containerParams);
             }
-        });
+        }
+
+        if (action == MotionEvent.ACTION_UP) {
+            if (dragAngle <= 45f) {
+                if (isSwipeLeft(dX, mX) && margin < MAX_MARGIN) {
+                    margin = containerParams.getMarginEnd();
+                    containerParams.rightMargin = MAX_MARGIN;
+                } else if (isSwipeRight(dX, mX) && margin > MIN_MARGIN) {
+                    margin = containerParams.getMarginEnd();
+                    containerParams.rightMargin = MIN_MARGIN;
+                }
+                containerSideBar.setLayoutParams(containerParams);
+            }
+        }
     }
 
-    @Override
-    public void update(Fragment fragment) {
-        if (fragment instanceof AdapterSideBar) {
-            ((AdapterSideBar) fragment).touchListener().setOnTouchListener(new OnTouchListener() {
-                @SuppressLint("ClickableViewAccessibility")
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    action = event.getAction() & MotionEvent.ACTION_MASK;
-                    position = containerParams.getMarginEnd();
-
-                    if (action == MotionEvent.ACTION_DOWN) {
-                        dX = event.getX();
-                    }
-
-                    if (action == MotionEvent.ACTION_MOVE) {
-                        mX = event.getX();
-                        distances = Math.round(mX - dX);
-
-                        if (isSwipeLeft(dX, mX) && position != MAX_MARGIN && position < MAX_MARGIN) {
-                            containerParams.rightMargin = (int) position + 10;
-                            containerSideBar.setLayoutParams(containerParams);
-//                            Toast.makeText(getContext(), "Left - " + position + " : " + MAX_MARGIN, Toast.LENGTH_LONG).show();
-                        } else if (isSwipeRight(dX, mX) && position != MIN_MARGIN && position > MIN_MARGIN) {
-                            containerParams.rightMargin = (int) position - 10;
-                            containerSideBar.setLayoutParams(containerParams);
-//                            Toast.makeText(getContext(), "Right - " + position + " : " + MIN_MARGIN, Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    if (action == MotionEvent.ACTION_UP) {
-                        if (isSwipeLeft(dX, mX) && position < MAX_MARGIN) {
-                            Toast.makeText(getContext(), "Left - " + position + " : " + MAX_MARGIN, Toast.LENGTH_LONG).show();
-                            for (int i = 1; i != MAX_MARGIN; i++) {
-                                containerParams.rightMargin = (int)position + i;
-                                containerSideBar.setLayoutParams(containerParams);
-                            }
-                        } else if (isSwipeRight(dX, mX) && position > MIN_MARGIN) {
-                            Toast.makeText(getContext(), "Right - " + position + " : " + MIN_MARGIN, Toast.LENGTH_LONG).show();
-                            for (int i = 1; i != MIN_MARGIN; i++) {
-                                containerParams.rightMargin = (int)position - i;
-                                containerSideBar.setLayoutParams(containerParams);
-                            }
-
-                        }
-                    }
-                    return true;
-                }
-            });
-        }
+    private float getAndle(float x1, float y1, float x2, float y2) {
+        return Math.abs((float) Math.atan((y2 - y1) / (x2 - x1))) * 100f;
     }
 
     private boolean isSwipeLeft(float dX, float mX) {
@@ -205,5 +211,12 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
 
     private boolean isSwipeRight(float dX, float mX) {
         return dX < mX;
+    }
+
+    @Override
+    public void update(Fragment fragment) {
+        if (fragment instanceof AdapterSideBar) {
+            ((AdapterSideBar) fragment).setCustomSideBar(this);
+        }
     }
 }

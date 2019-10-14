@@ -14,7 +14,7 @@ import com.application.trust.R;
 public class ContainerFragments implements Observer, Observable {
     private int idContainer;
     private Context context;
-    private Fragment container;
+    private Fragment containerFragments;
 
     private ObserverManager<Observable, Observer> observerManager;
     private ManagerFragmentLinks<Fragment, View, FragmentLink> managerFragmentLinks;
@@ -26,14 +26,14 @@ public class ContainerFragments implements Observer, Observable {
 
     private void inflateContainer(Context context) {
         idContainer = R.id.containerFragments;
-        container = ((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainer);
+        containerFragments = ((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainer);
     }
 
     @Override
     public void setManagers(ObserverManager observerManager, ManagerFragmentLinks managerFragmentLinks) {
         this.observerManager = observerManager;
         this.managerFragmentLinks = managerFragmentLinks;
-        notifyObservers(container);
+        notifyObservers(containerFragments);
     }
 
     @Override
@@ -42,8 +42,8 @@ public class ContainerFragments implements Observer, Observable {
     }
 
     private void changeFragmentContainer(Fragment fragment) {
-        container = ((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainer);
-        if(!container.equals(fragment)) {
+        containerFragments = ((AppCompatActivity)context).getSupportFragmentManager().findFragmentById(idContainer);
+        if(!containerFragments.equals(fragment)) {
             ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
                     .replace(idContainer, fragment)
                     .addToBackStack(String.valueOf(fragment.getClass()))
