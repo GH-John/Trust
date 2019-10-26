@@ -40,11 +40,11 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     private DisplayMetrics displayMetrics;
 
     private int action;
-    private final int DISTANCES = 100;
     private int MIN_MARGIN;
     private int MAX_MARGIN;
 
-    private float dX = 0f, dY = 0f, mX = 0f, mY = 0f, dragAngle = 0f, margin = 0f, distances = 0f;
+    private float dX = 0.0f, dY = 0.0f, mX = 0.0f, mY = 0.0f,
+            dragAngle = 0.0f, currentMargin = 0.0f, distances = 0.0f, blackoutAlpha = 0.0f;
 
     public CustomSideBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -131,12 +131,14 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     public void hide() {
         containerParams.rightMargin = MAX_MARGIN;
         containerSideBar.setLayoutParams(containerParams);
+//        setAlphaBlackout(0.0f);
     }
 
     @Override
     public void expand() {
         containerParams.rightMargin = MIN_MARGIN;
         containerSideBar.setLayoutParams(containerParams);
+//        setAlphaBlackout(1.0f);
     }
 
     @Override
@@ -144,8 +146,8 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
         int widthDisplayPx = convertDpToPixels(getDpWidthDisplay());
         MIN_MARGIN = widthDisplayPx - containerParams.width;
         MAX_MARGIN = widthDisplayPx;
-        containerParams.rightMargin = MAX_MARGIN;
-        blackoutSideBar.setAlpha(0f);
+        distances = (MAX_MARGIN - MIN_MARGIN) * 10 / 100;
+        hide();
     }
 
     private float getDpWidthDisplay() {
@@ -162,12 +164,12 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     }
 
     @Override
-    public void swipeListener(MotionEvent event) {
+    public void swipeListener(View view, MotionEvent event) {
         action = event.getAction();
-        margin = containerParams.getMarginEnd();
+        currentMargin = containerParams.getMarginEnd();
 
         if (action == MotionEvent.ACTION_DOWN) {
-            margin = containerParams.getMarginEnd();
+            currentMargin = containerParams.getMarginEnd();
             dX = event.getX();
             dY = event.getY();
         }
@@ -175,13 +177,22 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
         if (action == MotionEvent.ACTION_MOVE) {
             mX = event.getX();
             mY = event.getY();
-            distances = Math.abs(Math.round(mX - dX)) / 10;
             dragAngle = getAndle(dX, dY, mX, mY);
-            if (dragAngle <= 45f && distances > 20) {
-                if (isSwipeLeft(dX, mX) && margin < MAX_MARGIN) {
-                    containerParams.rightMargin = (int) margin + (int) (distances);
-                } else if (isSwipeRight(dX, mX) && margin > MIN_MARGIN) {
-                    containerParams.rightMargin = (int) margin - (int) (distances);
+            if (dragAngle <= 45f) {
+                if (isSwipeLeft(dX, mX) && currentMargin < MAX_MARGIN) {
+                    containerParams.rightMargin = (int) currentMargin + (int) (distances);
+//                    setAlphaBlackout(blackoutAlpha -= 0.05f);
+                } else if (currentMargin > MAX_MARGIN) {
+                    containerParams.rightMargin = MAX_MARGIN;
+//                    setAlphaBlackout(0.0f);
+                }
+
+                if (isSwipeRight(dX, mX) && currentMargin > MIN_MARGIN) {
+                    containerParams.rightMargin = (int) currentMargin - (int) (distances);
+//                    setAlphaBlackout(blackoutAlpha += 0.05f);
+                } else if (currentMargin < MIN_MARGIN) {
+                    containerParams.rightMargin = MIN_MARGIN;
+//                    setAlphaBlackout(1.0f);
                 }
                 containerSideBar.setLayoutParams(containerParams);
             }
@@ -189,16 +200,22 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
 
         if (action == MotionEvent.ACTION_UP) {
             if (dragAngle <= 45f) {
-                if (isSwipeLeft(dX, mX) && margin < MAX_MARGIN) {
-                    margin = containerParams.getMarginEnd();
+                if (isSwipeLeft(dX, mX) && currentMargin < MAX_MARGIN) {
+                    currentMargin = containerParams.getMarginEnd();
                     containerParams.rightMargin = MAX_MARGIN;
-                } else if (isSwipeRight(dX, mX) && margin > MIN_MARGIN) {
-                    margin = containerParams.getMarginEnd();
+//                    setAlphaBlackout(0.0f);
+                } else if (isSwipeRight(dX, mX) && currentMargin > MIN_MARGIN) {
+                    currentMargin = containerParams.getMarginEnd();
                     containerParams.rightMargin = MIN_MARGIN;
+//                    setAlphaBlackout(1.0f);
                 }
                 containerSideBar.setLayoutParams(containerParams);
             }
         }
+    }
+
+    private void setAlphaBlackout(float alpha) {
+        blackoutSideBar.setAlpha(alpha);
     }
 
     private float getAndle(float x1, float y1, float x2, float y2) {
@@ -215,6 +232,7 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
 
     @Override
     public void update(Fragment fragment) {
+        hide();
         if (fragment instanceof AdapterSideBar) {
             ((AdapterSideBar) fragment).setCustomSideBar(this);
         }

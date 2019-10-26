@@ -1,4 +1,4 @@
-package com.application.trust.Fragments;
+package com.application.trust.Workspace.Fragments;
 
 
 import android.os.Bundle;

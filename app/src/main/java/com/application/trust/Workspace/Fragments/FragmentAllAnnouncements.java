@@ -1,4 +1,4 @@
-package com.application.trust.Fragments;
+package com.application.trust.Workspace.Fragments;
 
 
 import android.annotation.SuppressLint;
@@ -76,8 +76,7 @@ public class FragmentAllAnnouncements extends Fragment implements View.OnTouchLi
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        customSideBar.swipeListener(event);
-
+        customSideBar.swipeListener(v, event);
         return true;
     }
 }

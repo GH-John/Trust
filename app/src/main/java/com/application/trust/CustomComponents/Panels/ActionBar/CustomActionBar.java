@@ -10,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.application.trust.CustomComponents.Container.FragmentLink;
-import com.application.trust.CustomComponents.Container.ManagerFragmentLinks;
+import com.application.trust.CustomComponents.Container.ComponentLinkManager;
 import com.application.trust.CustomComponents.Panels.DrawPanel;
 import com.application.trust.Patterns.Observer;
 import com.application.trust.R;
@@ -50,7 +50,7 @@ public class CustomActionBar extends ConstraintLayout implements IActionBar, Fra
     }
 
     @Override
-    public void createItemLinks(ManagerFragmentLinks managerFragmentLinks) {
+    public void createLinkWithFragment(ComponentLinkManager componentLinkManager) {
 
     }
 }

@@ -1,6 +1,6 @@
 package com.application.trust.CustomComponents.Panels.BottomNavigation;
 
-import com.application.trust.CustomComponents.Container.ManagerFragmentLinks;
+import com.application.trust.CustomComponents.Container.ComponentLinkManager;
 import com.application.trust.CustomComponents.Panels.DrawPanel;
 
 interface IBottomNavigation {
@@ -8,5 +8,5 @@ interface IBottomNavigation {
     void hidePanel();
     void expandPanel();
     void styleItems();
-    void itemListener(ManagerFragmentLinks managerFragmentLinks);
+    void itemListener(ComponentLinkManager componentLinkManager);
 }

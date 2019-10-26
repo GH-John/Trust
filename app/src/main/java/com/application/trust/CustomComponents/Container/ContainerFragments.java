@@ -17,7 +17,7 @@ public class ContainerFragments implements Observer, Observable {
     private Fragment containerFragments;
 
     private ObserverManager<Observable, Observer> observerManager;
-    private ManagerFragmentLinks<Fragment, View, FragmentLink> managerFragmentLinks;
+    private ComponentLinkManager<Fragment, View, FragmentLink> componentLinkManager;
 
     public ContainerFragments(Context context) {
         this.context = context;
@@ -30,9 +30,9 @@ public class ContainerFragments implements Observer, Observable {
     }
 
     @Override
-    public void setManagers(ObserverManager observerManager, ManagerFragmentLinks managerFragmentLinks) {
+    public void setManagers(ObserverManager observerManager, ComponentLinkManager componentLinkManager) {
         this.observerManager = observerManager;
-        this.managerFragmentLinks = managerFragmentLinks;
+        this.componentLinkManager = componentLinkManager;
         notifyObservers(containerFragments);
     }
 

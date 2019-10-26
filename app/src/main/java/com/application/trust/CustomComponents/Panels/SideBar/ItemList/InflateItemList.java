@@ -1,15 +1,15 @@
 package com.application.trust.CustomComponents.Panels.SideBar.ItemList;
 
-import com.application.trust.Fragments.FragmentAllAnnouncements;
-import com.application.trust.Fragments.FragmentCustomerService;
-import com.application.trust.Fragments.FragmentProhibited;
-import com.application.trust.Fragments.FragmentRegulations;
-import com.application.trust.Fragments.FragmentServices;
-import com.application.trust.Fragments.FragmentUserAnnouncements;
-import com.application.trust.Fragments.FragmentUserFavorites;
-import com.application.trust.Fragments.FragmentUserProposals;
-import com.application.trust.Fragments.FragmentUserStatistics;
-import com.application.trust.Fragments.FragmentUserWallet;
+import com.application.trust.Workspace.Fragments.FragmentAllAnnouncements;
+import com.application.trust.Workspace.Fragments.FragmentCustomerService;
+import com.application.trust.Workspace.Fragments.FragmentProhibited;
+import com.application.trust.Workspace.Fragments.FragmentRegulations;
+import com.application.trust.Workspace.Fragments.FragmentServices;
+import com.application.trust.Workspace.Fragments.FragmentUserAnnouncements;
+import com.application.trust.Workspace.Fragments.FragmentUserFavorites;
+import com.application.trust.Workspace.Fragments.FragmentUserProposals;
+import com.application.trust.Workspace.Fragments.FragmentUserStatistics;
+import com.application.trust.Workspace.Fragments.FragmentUserWallet;
 import com.application.trust.R;
 
 import java.util.ArrayList;

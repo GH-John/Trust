@@ -13,7 +13,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.application.trust.CustomComponents.Container.FragmentLink;
-import com.application.trust.CustomComponents.Container.ManagerFragmentLinks;
+import com.application.trust.CustomComponents.Container.ComponentLinkManager;
 import com.application.trust.CustomComponents.Panels.DrawPanel;
 import com.application.trust.Patterns.Observable;
 import com.application.trust.Patterns.Observer;
@@ -40,7 +40,7 @@ public class CustomBottomNavigation extends ConstraintLayout implements IBottomN
     private List<View> listItem;
     private Map<Fragment, View> mapFragmentLinks;
     private ObserverManager<Observable, Observer> observerManager;
-    private ManagerFragmentLinks<Fragment, View, FragmentLink> managerFragmentLinks;
+    private ComponentLinkManager<Fragment, View, FragmentLink> componentLinkManager;
 
     public CustomBottomNavigation(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -48,7 +48,8 @@ public class CustomBottomNavigation extends ConstraintLayout implements IBottomN
         inflateBottomNavigation(context, attrs);
         createListItem();
         stylePanel(new PanelBottomNavigation(context,
-                R.color.colorWhite, new float[8], R.color.shadowColor, 10f, 0f, 0f));
+                R.color.colorWhite, new float[8], R.color.shadowColor,
+                10f, 0f, 0f));
         styleItems();
     }
 
@@ -90,9 +91,9 @@ public class CustomBottomNavigation extends ConstraintLayout implements IBottomN
     }
 
     @Override
-    public void itemListener(ManagerFragmentLinks managerFragmentLinks) {
+    public void itemListener(ComponentLinkManager componentLinkManager) {
         if (mapFragmentLinks.size() == 0) {
-            createItemLinks(managerFragmentLinks);
+            createLinkWithFragment(componentLinkManager);
         } else {
             for (final Fragment fragment : mapFragmentLinks.keySet()) {
                 mapFragmentLinks.get(fragment).setOnClickListener(new OnClickListener() {
@@ -120,24 +121,24 @@ public class CustomBottomNavigation extends ConstraintLayout implements IBottomN
     }
 
     @Override
-    public void createItemLinks(ManagerFragmentLinks managerFragmentLinks) {
+    public void createLinkWithFragment(ComponentLinkManager componentLinkManager) {
         int i = 0;
 
-        for (Fragment fragment : (Set<Fragment>) managerFragmentLinks.getCollectionFragmets(this)) {
+        for (Fragment fragment : (Set<Fragment>) componentLinkManager.getCollectionFragmets(this)) {
             mapFragmentLinks.put(fragment, listItem.get(i));
             i++;
         }
-        managerFragmentLinks.addItemLinks(this, mapFragmentLinks);
+        componentLinkManager.addItemLinks(this, mapFragmentLinks);
 
-        itemListener(managerFragmentLinks);
+        itemListener(componentLinkManager);
     }
 
     @Override
-    public void setManagers(ObserverManager observerManager, ManagerFragmentLinks managerFragmentLinks) {
+    public void setManagers(ObserverManager observerManager, ComponentLinkManager componentLinkManager) {
         this.observerManager = observerManager;
-        this.managerFragmentLinks = managerFragmentLinks;
+        this.componentLinkManager = componentLinkManager;
 
-        createItemLinks(managerFragmentLinks);
+        createLinkWithFragment(componentLinkManager);
     }
 
     @Override

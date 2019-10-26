@@ -4,5 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layoutFragmentProhibited"
-    tools:context="com.application.trust.Fragments.FragmentProhibited">
+    tools:context=".Workspace.Fragments.FragmentProhibited">
 </androidx.constraintlayout.widget.ConstraintLayout>

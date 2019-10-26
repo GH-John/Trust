@@ -2,6 +2,13 @@
     <string name="app_name">Trust</string>
     <string name="todo">TODO</string>
 
+    <string-array name="previewDescription">
+        <item>Площадка объявлений, на которой любой пользователь сможет заработать</item>
+        <item>item 2</item>
+        <item>item 3</item>
+        <item>item 3</item>
+    </string-array>
+
     <string name="new_announcements">Новое объявление</string>
     <string name="itemList_all_announcements">Все объявления</string>
     <string name="itemList_user_announcements">Мои объявления</string>

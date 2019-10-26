@@ -2,6 +2,7 @@ package com.application.trust.CustomComponents.Panels.SideBar;
 
 import android.content.Context;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.application.trust.CustomComponents.Panels.DrawPanel;
 import com.application.trust.CustomComponents.Panels.SideBar.ItemList.AdapterItemList;
@@ -15,5 +16,5 @@ interface ISideBar {
     void hide();
     void expand();
     void startPosition();
-    void swipeListener(MotionEvent event);
+    void swipeListener(View view, MotionEvent event);
 }

@@ -6,5 +6,5 @@
     android:layout_height="match_parent"
     android:id="@+id/layoutProposals"
     android:background="@color/four"
-    tools:context="com.application.trust.Fragments.FragmentUserProposals">
+    tools:context=".Workspace.Fragments.FragmentUserProposals">
 </androidx.constraintlayout.widget.ConstraintLayout>

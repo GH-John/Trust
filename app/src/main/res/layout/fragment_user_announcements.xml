@@ -6,5 +6,5 @@
     android:layout_height="match_parent"
     android:id="@+id/layoutUserAnnouncement"
     android:background="@color/three"
-    tools:context="com.application.trust.Fragments.FragmentUserAnnouncements">
+    tools:context=".Workspace.Fragments.FragmentUserAnnouncements">
 </androidx.constraintlayout.widget.ConstraintLayout>
