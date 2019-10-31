@@ -11,51 +11,76 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.application.trust.EntrySystem.Activities.ActivityAuthorization;
 import com.application.trust.R;
-import com.application.trust.Workspace.Activities.ActivityMain;
 
 public class ActivityPreview extends AppCompatActivity {
 
-    private ViewPager previewViewPager;
-    private LinearLayout dotsLayout;
-    private PreviewAdapter previewAdapter;
     private Button btnSkip;
+    private LinearLayout dotsLayout;
+    private ViewPager previewViewPager;
+    private AdapterPreview adapterPreview;
 
     private ImageView[] dots;
     private Drawable dotSelected;
     private Drawable dotUnselected;
+    private ViewPager.OnPageChangeListener pageListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
 
+        initializationComponents();
+        initializationListeners();
+
+        setAdapter();
+        setStartIndicator();
+    }
+
+    private void initializationComponents() {
         previewViewPager = findViewById(R.id.previewViewPager);
         dotsLayout = findViewById(R.id.dotsLayout);
         btnSkip = findViewById(R.id.btnSkip);
+        dotSelected = this.getDrawable(R.drawable.dot_selected);
+        dotUnselected = this.getDrawable(R.drawable.dot_unselected);
+    }
 
+    private void initializationListeners() {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ActivityPreview.this, ActivityMain.class));
+                startActivity(new Intent(ActivityPreview.this, ActivityAuthorization.class));
             }
         });
 
-        previewAdapter = new PreviewAdapter(this);
-        previewViewPager.setAdapter(previewAdapter);
+        pageListener = new ViewPager.OnPageChangeListener() {
 
-        dotSelected = this.getDrawable(R.drawable.dot_selected);
-        dotUnselected = this.getDrawable(R.drawable.dot_unselected);
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        createArrayDotsIndicator(previewAdapter.getCount(),
-                dotUnselected);
+            }
 
-        chageIndicator(0, dotUnselected, dotSelected);
+            @Override
+            public void onPageSelected(int position) {
+                changeIndicator(position, dotUnselected, dotSelected);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
 
         previewViewPager.addOnPageChangeListener(pageListener);
     }
 
-    public void createArrayDotsIndicator(int setDotCount, Drawable drawable){
+    private void setAdapter() {
+        adapterPreview = new AdapterPreview(this);
+        previewViewPager.setAdapter(adapterPreview);
+    }
+
+    public void createArrayDotsIndicator(int setDotCount, Drawable drawable) {
         LinearLayout.LayoutParams layoutParams;
         dots = new ImageView[setDotCount];
         for (int i = 0; i < dots.length; i++) {
@@ -68,36 +93,24 @@ public class ActivityPreview extends AppCompatActivity {
         }
     }
 
-    ViewPager.OnPageChangeListener pageListener = new ViewPager.OnPageChangeListener(){
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            chageIndicator(position, dotUnselected, dotSelected);
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
-
-    public void chageIndicator(int position, Drawable dotUnselected, Drawable dotSelected){
-        if(dots.length > 0){
-            if(position > 0) {
+    public void changeIndicator(int position, Drawable dotUnselected, Drawable dotSelected) {
+        if (dots.length > 0) {
+            if (position > 0) {
                 dots[position - 1].setImageDrawable(dotUnselected);
                 dots[position].setImageDrawable(dotSelected);
-                if(position < dots.length - 1){
+                if (position < dots.length - 1) {
                     dots[position + 1].setImageDrawable(dotUnselected);
                 }
-            }else if(position == 0){
+            } else if (position == 0) {
                 dots[position].setImageDrawable(dotSelected);
                 dots[position + 1].setImageDrawable(dotUnselected);
             }
         }
+    }
+
+    private void setStartIndicator() {
+        createArrayDotsIndicator(adapterPreview.getCount(),
+                dotUnselected);
+        changeIndicator(0, dotUnselected, dotSelected);
     }
 }

@@ -13,12 +13,12 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.application.trust.R;
 
-public class PreviewAdapter extends PagerAdapter {
+public class AdapterPreview extends PagerAdapter {
 
     private Context context;
     private LayoutInflater layoutInflater;
 
-    public PreviewAdapter(Context context) {
+    public AdapterPreview(Context context) {
         this.context = context;
     }
 

@@ -50,21 +50,21 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initializeComponents();
-        initializeFragments();
-        initializeManagers();
+        initializationComponents();
+        initializationFragments();
+        initializationManagers();
 
         setManagersComponents();
     }
 
-    private void initializeComponents() {
+    private void initializationComponents() {
         customSideBar = findViewById(R.id.customSideBar);
         customActionBar = findViewById(R.id.customActionBar);
         containerFragments = new ContainerFragments(this);
         customBottomNavigation = findViewById(R.id.customBottomNavigation);
     }
 
-    private void initializeFragments() {
+    private void initializationFragments() {
         fragmentUserProposals = new FragmentUserProposals();
         fragmentUserStatistics = new FragmentUserStatistics();
         fragmentAddAnnouncement = new FragmentAddAnnouncement();
@@ -72,7 +72,7 @@ public class ActivityMain extends AppCompatActivity {
         fragmentUserAnnouncements = new FragmentUserAnnouncements();
     }
 
-    private void initializeManagers() {
+    private void initializationManagers() {
         observerManager = new ObserverManager<>();
         observerManager.addObserver(containerFragments, customActionBar, customSideBar);
         observerManager.addObserver(customBottomNavigation, containerFragments);

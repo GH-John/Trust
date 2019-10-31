@@ -1,13 +1,28 @@
 <resources>
-    <string name="app_name">Trust</string>
+    <string name="app_name">Arenda</string>
     <string name="todo">TODO</string>
 
     <string-array name="previewDescription">
         <item>Площадка объявлений, на которой любой пользователь сможет заработать</item>
         <item>item 2</item>
         <item>item 3</item>
-        <item>item 3</item>
+        <item>item 4</item>
     </string-array>
+
+    <string name="check_internet_connect">Проверьте интернет соединение</string>
+
+    <string name="success_registration">Добро пожаловать</string>
+    <string name="unsuccess_registration">Ошибка регистрации</string>
+
+    <string name="success_authorization">С возвращением</string>
+    <string name="unsuccess_authorization">Ошибка авторизации</string>
+
+    <string name="description_validation">В качестве дополнительной меры безопасности введите свой номер телефона и подтвердите его с помощью высланного на него кода</string>
+    <string name="phone_hint">+375(__)___-__-__</string>
+    <string name="phoneCode">Код</string>
+    <string name="btn_confirm_phone_validation">Подтвердить</string>
+    <string name="btn_text_sign_google">Войти через Google</string>
+    <string name="header_sign_google">Упрощенный вход в систему</string>
 
     <string name="new_announcements">Новое объявление</string>
     <string name="itemList_all_announcements">Все объявления</string>
@@ -21,4 +36,23 @@
     <string name="itemList_regulations">Правила</string>
     <string name="itemList_customer_service">Обратная связь</string>
     <string name="itemList_prohibited">Запрещенные товары и услуги</string>
+
+    <string name="btn_skip">Пропустить</string>
+
+    <string name="header_authorization">Авторизация</string>
+    <string name="btn_sign">Войти</string>
+    <string name="btn_registration_auth">Регистрация</string>
+
+    <string name="header_registration">Регистрация</string>
+    <string name="radio_btn_private_person">Частное лицо</string>
+    <string name="radio_btn_business">Бизнес</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Пароль</string>
+    <string name="hint_user_name">Имя</string>
+    <string name="hint_user_last_name">Фамилия</string>
+    <string name="hint_phone">+375(__)___-__-__</string>
+    <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
+    <string name="hint_code">Код</string>
+    <string name="hint_get_code">Получить код</string>
+    <string name="btn_registration_reg">Зарегистрироваться</string>
 </resources>
