@@ -8,75 +8,76 @@
     android:background="@color/backgroundApp"
     tools:context="com.application.trust.EntrySystem.Activities.ActivityRegistration">
 
+    <ImageView
+        android:id="@+id/imagePinReg"
+        android:layout_width="260dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="40dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/headerReg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginStart="40dp"
         android:fontFamily="@font/gotham_office_bold_regular"
         android:text="@string/header_registration"
         android:textColor="@color/colorHeaderName"
         android:textSize="30sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/imagePinReg"
+        app:layout_constraintEnd_toEndOf="@+id/imagePinReg"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/imagePinReg"
+        app:layout_constraintTop_toTopOf="@+id/imagePinReg" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="50dp"
-        android:orientation="horizontal"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="40dp"
         android:gravity="center"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerReg">
+        app:layout_constraintTop_toBottomOf="@+id/imagePinReg">
 
         <RadioButton
             android:id="@+id/rBtnPrivatePerson"
+            style="@style/DefaultStyleRadioBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center|left"
-            android:buttonTint="@color/colorAccent"
-            android:fontFamily="@font/gotham_office_regular"
+            android:layout_weight="1"
+            android:checked="true"
             android:text="@string/radio_btn_private_person"
-            android:textColor="@color/colorText"
-            android:textSize="14sp"
             tools:ignore="RtlHardcoded" />
 
         <RadioButton
             android:id="@+id/rBtnBusiness"
+            style="@style/DefaultStyleRadioBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|right"
-            android:buttonTint="@color/colorAccent"
-            android:fontFamily="@font/gotham_office_regular"
             android:text="@string/radio_btn_business"
-            android:textColor="@color/colorText"
-            android:textSize="14sp"
             tools:ignore="RtlHardcoded" />
-
     </RadioGroup>
 
     <EditText
         android:id="@+id/fieldNameReg"
+        style="@style/DefaultStyleField"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="50dp"
-        android:backgroundTint="@color/colorTransparent"
-        android:ems="10"
-        android:fontFamily="@font/gotham_office_regular"
+        android:layout_height="50dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="40dp"
         android:hint="@string/hint_user_name"
         android:inputType="textPersonName"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:textColor="@color/colorText"
-        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup"
@@ -84,18 +85,12 @@
 
     <EditText
         android:id="@+id/fieldLastNameReg"
+        style="@style/DefaultStyleField"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorTransparent"
-        android:ems="10"
-        android:fontFamily="@font/gotham_office_regular"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:hint="@string/hint_user_last_name"
         android:inputType="textPersonName"
-        android:textColor="@color/colorText"
-        android:textSize="14sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         app:layout_constraintEnd_toEndOf="@+id/fieldNameReg"
         app:layout_constraintStart_toStartOf="@+id/fieldNameReg"
         app:layout_constraintTop_toBottomOf="@+id/fieldNameReg"
@@ -103,18 +98,12 @@
 
     <EditText
         android:id="@+id/fieldEmailReg"
+        style="@style/DefaultStyleField"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/colorTransparent"
-        android:ems="10"
-        android:fontFamily="@font/gotham_office_regular"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
         android:hint="@string/hint_email"
         android:inputType="textEmailAddress"
-        android:textColor="@color/colorText"
-        android:textSize="14sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         app:layout_constraintEnd_toEndOf="@+id/fieldLastNameReg"
         app:layout_constraintStart_toStartOf="@+id/fieldLastNameReg"
         app:layout_constraintTop_toBottomOf="@+id/fieldLastNameReg"
@@ -122,18 +111,12 @@
 
     <EditText
         android:id="@+id/fieldPassReg"
+        style="@style/DefaultStyleField"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorTransparent"
-        android:ems="10"
-        android:fontFamily="@font/gotham_office_regular"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
-        android:textColor="@color/colorText"
-        android:textSize="14sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         app:layout_constraintEnd_toEndOf="@+id/fieldEmailReg"
         app:layout_constraintStart_toStartOf="@+id/fieldEmailReg"
         app:layout_constraintTop_toBottomOf="@+id/fieldEmailReg"
@@ -141,18 +124,12 @@
 
     <EditText
         android:id="@+id/fieldPhoneReg"
+        style="@style/DefaultStyleField"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="@color/colorTransparent"
-        android:ems="10"
-        android:fontFamily="@font/gotham_office_regular"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
         android:hint="@string/hint_phone"
         android:inputType="phone"
-        android:textColor="@color/colorText"
-        android:textSize="14sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
         app:layout_constraintEnd_toEndOf="@+id/fieldPassReg"
         app:layout_constraintStart_toStartOf="@+id/fieldPassReg"
         app:layout_constraintTop_toBottomOf="@+id/fieldPassReg"
@@ -160,18 +137,13 @@
 
     <EditText
         android:id="@+id/fieldCodeReg"
+        style="@style/DefaultStyleField"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/colorTransparent"
-        android:ems="10"
-        android:fontFamily="@font/gotham_office_regular"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:hint="@string/hint_code"
-        android:inputType="textPersonName"
-        android:textColor="@color/colorText"
-        android:textSize="14sp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
+        android:inputType="number"
+        android:maxLength="4"
         app:layout_constraintEnd_toEndOf="@+id/fieldPhoneReg"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/fieldPhoneReg"
@@ -180,36 +152,36 @@
 
     <Button
         android:id="@+id/btnGetCodeReg"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
         android:background="@color/colorWhite"
         android:fontFamily="@font/gotham_office_bold_regular"
         android:text="@string/hint_get_code"
         android:textColor="@color/colorText"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/fieldCodeReg"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/fieldCodeReg"
         app:layout_constraintTop_toBottomOf="@+id/fieldPhoneReg" />
 
     <TextView
         android:id="@+id/descriptionGetCodeReg"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:fontFamily="@font/gotham_office_regular"
         android:text="@string/hint_description_get_code"
         android:textColor="@color/colorText"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="@+id/btnGetCodeReg"
-        app:layout_constraintEnd_toEndOf="@+id/fieldCodeReg"
-        app:layout_constraintStart_toEndOf="@+id/btnGetCodeReg"
+        app:layout_constraintEnd_toStartOf="@+id/btnGetCodeReg"
+        app:layout_constraintStart_toStartOf="@+id/fieldPhoneReg"
         app:layout_constraintTop_toTopOf="@+id/btnGetCodeReg"
         tools:ignore="SmallSp" />
 
     <Button
         android:id="@+id/btnReg"
         android:layout_width="220dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorAccent"
         android:fontFamily="@font/gotham_office_bold_regular"
@@ -221,8 +193,8 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
-        android:id="@+id/progressBarReg"
         style="?android:attr/progressBarStyle"
+        android:id="@+id/progressBarReg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -230,6 +202,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
-
+        tools:visibility="invisible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

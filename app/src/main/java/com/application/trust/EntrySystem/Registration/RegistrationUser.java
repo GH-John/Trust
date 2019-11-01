@@ -2,12 +2,18 @@ package com.application.trust.EntrySystem.Registration;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -23,53 +29,73 @@ public class RegistrationUser {
     private final Context context;
     private final String URL_REGISTRATION;
 
-    public RegistrationUser(Context context, String URL_REGISTRATION) {
+    private ProgressBar progressBar;
+    private StringRequest request;
+    private AppCompatActivity startActivity;
+
+    public RegistrationUser(Context context, String URL_REGISTRATION, AppCompatActivity startActivity) {
         this.context = context;
         this.URL_REGISTRATION = URL_REGISTRATION;
+        this.startActivity = startActivity;
+        this.progressBar = new ProgressBar(context);
     }
 
     @SuppressLint("ShowToast")
-    public boolean registration(final String name,
+    public void registration(final String name,
                                 final String lastName,
                                 final String email,
                                 final String password,
                                 final String phone,
                                 final String accountType) {
-        final boolean[] statusReg = new boolean[1];
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL_REGISTRATION, new Response.Listener<String>() {
+        progressBar.setVisibility(View.VISIBLE);
+        request = new StringRequest(Request.Method.POST, URL_REGISTRATION, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
 
-                    String success = jsonObject.getString("success");
+                    String code = jsonObject.getString("code");
 
-                    if (success.equals("1")) {
-                        statusReg[0] = true;
-                        Toast.makeText(context, context.getResources()
-                                .getString(R.string.success_registration) + " " + name, Toast.LENGTH_LONG).show();
+                    switch (code) {
+                        case "0": {
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources()
+                                    .getString(R.string.error_user_exists));
+                            break;
+                        }
+                        case "1":
+                            progressBar.setVisibility(View.GONE);
+                            context.startActivity(new Intent(context, startActivity.getClass()));
+                            messageOutput(context.getResources()
+                                    .getString(R.string.success_registration) + " "
+                                    + name);
+                            break;
+                        case "101":
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources().getString(R.string.error_check_internet_connect));
+                            break;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    statusReg[0] = false;
-                    Toast.makeText(context, context.getResources()
-                                    .getString(R.string.unsuccess_registration) + " "
-                                    + e.toString() + " "
-                                    + context.getResources().getString(R.string.check_internet_connect),
-                            Toast.LENGTH_LONG).show();
+
+                    progressBar.setVisibility(View.GONE);
+                    messageOutput(context.getResources()
+                            .getString(R.string.error_unsuccess_registration) + " " + e.toString());
                 }
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        statusReg[0] = false;
-                        Toast.makeText(context, context.getResources()
-                                        .getString(R.string.unsuccess_registration) + " "
-                                        + volleyError.toString() + " "
-                                        + context.getResources().getString(R.string.check_internet_connect),
-                                Toast.LENGTH_LONG).show();
+                        if(volleyError instanceof TimeoutError){
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources()
+                                    .getString(R.string.error_check_internet_connect));
+                        }else {
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources()
+                                    .getString(R.string.error_unsuccess_registration) + " " + volleyError.toString());
+                        }
                     }
                 }) {
             @Override
@@ -86,8 +112,23 @@ public class RegistrationUser {
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+        requestQueue.add(request);
+    }
 
-        return statusReg[0];
+    public void requestCancel(){
+        if(request != null)
+            request.cancel();
+    }
+
+    public void setProgressBar(ProgressBar progressBar){
+        this.progressBar = progressBar;
+    }
+
+    public ProgressBar getProgressBar(){
+        return this.progressBar;
+    }
+
+    private void messageOutput(String str){
+        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
     }
 }

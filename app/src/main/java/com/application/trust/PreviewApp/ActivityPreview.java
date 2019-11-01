@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.application.trust.CustomComponents.BtnStyle.BtnBackground;
+import com.application.trust.CustomComponents.BtnStyle.SetBtnStyle;
 import com.application.trust.EntrySystem.Activities.ActivityAuthorization;
 import com.application.trust.R;
 
@@ -24,6 +26,7 @@ public class ActivityPreview extends AppCompatActivity {
     private ImageView[] dots;
     private Drawable dotSelected;
     private Drawable dotUnselected;
+    private BtnBackground btnBackground;
     private ViewPager.OnPageChangeListener pageListener;
 
     @Override
@@ -32,6 +35,7 @@ public class ActivityPreview extends AppCompatActivity {
         setContentView(R.layout.activity_preview);
 
         initializationComponents();
+        initializationStyle();
         initializationListeners();
 
         setAdapter();
@@ -44,6 +48,14 @@ public class ActivityPreview extends AppCompatActivity {
         btnSkip = findViewById(R.id.btnSkip);
         dotSelected = this.getDrawable(R.drawable.dot_selected);
         dotUnselected = this.getDrawable(R.drawable.dot_unselected);
+    }
+
+    private void initializationStyle() {
+        btnBackground = new BtnBackground(this, R.color.colorAccent,
+                R.color.shadowColor, 6f, 0f, 3f,
+                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
+
+        SetBtnStyle.setStyle(btnBackground, btnSkip);
     }
 
     private void initializationListeners() {

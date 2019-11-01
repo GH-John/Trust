@@ -34,7 +34,7 @@
     <Button
         android:id="@+id/btnSkip"
         android:layout_width="150dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_marginBottom="16dp"
         android:background="@color/colorAccent"
         android:fontFamily="@font/gotham_office_bold_regular"

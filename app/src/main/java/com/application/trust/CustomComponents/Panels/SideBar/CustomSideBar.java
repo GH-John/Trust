@@ -54,7 +54,7 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
                 R.color.colorWhite, R.color.shadowItemList,
                 6f, 0f, 3f,
                 new float[]{80f, 80f, 0f, 0f, 80f, 80f, 0f, 0f}));
-        initializeListeners();
+        initializationListeners();
         startPosition();
     }
 
@@ -85,7 +85,7 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
     }
 
     @Override
-    public void initializeListeners() {
+    public void initializationListeners() {
         setAdapterItemList(context, new AdapterItemList(R.layout.sb_pattern_item_list,
                 InflateItemList.getItemListData(panelItemList)));
         itemAddAnnouncement.setOnClickListener(new OnClickListener() {

@@ -2,11 +2,17 @@ package com.application.trust.EntrySystem.Authorization;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -23,57 +29,75 @@ public class AuthorizationUser {
     private final Context context;
     private final String URL_AUTHORIZATION;
 
-    public AuthorizationUser(Context context, String URL_AUTHORIZATION) {
+    private StringRequest request;
+    private ProgressBar progressBar;
+    private AppCompatActivity startActivity;
+
+    public AuthorizationUser(Context context, String URL_AUTHORIZATION, AppCompatActivity startActivity) {
         this.context = context;
         this.URL_AUTHORIZATION = URL_AUTHORIZATION;
+        this.startActivity = startActivity;
+        this.progressBar = new ProgressBar(context);
     }
 
     @SuppressLint("ShowToast")
-    public boolean authorization(final String email, final String password) {
-        final boolean[] statusAuth = new boolean[1];
-
-        StringRequest stringRequest = new StringRequest(StringRequest.Method.POST, URL_AUTHORIZATION, new Response.Listener<String>() {
+    public void authorization(final String email, final String password) {
+        progressBar.setVisibility(View.VISIBLE);
+        request = new StringRequest(StringRequest.Method.POST, URL_AUTHORIZATION, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    String success = jsonObject.getString("success");
-                    JSONArray jsonArray = jsonObject.getJSONArray("login");
+                    JSONArray jsonArray = jsonObject.getJSONArray("authorization");
 
-                    if (success.equals("1")) {
-                        statusAuth[0] = true;
+                    String code = jsonObject.getString("code");
 
-                        JSONObject object;
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            object = jsonArray.getJSONObject(i);
+                    switch(code){
+                        case "1":{
+                            JSONObject object;
+                            String name = "";
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                object = jsonArray.getJSONObject(i);
 
-                            String name = object.getString("name").trim();
+                                name = object.getString("name").trim();
+                            }
+                            progressBar.setVisibility(View.GONE);
+                            context.startActivity(new Intent(context, startActivity.getClass()));
+                            messageOutput(context.getResources()
+                                    .getString(R.string.success_authorization) + " " + name);
+                            break;
+                        }
 
-                            Toast.makeText(context, context.getResources()
-                                    .getString(R.string.success_authorization) + " " + name, Toast.LENGTH_LONG).show();
+                        case "101": {
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources().getString(R.string.error_server_connect));
+                            break;
                         }
                     }
 
                 } catch (JSONException e) {
-                    statusAuth[0] = false;
-                    Toast.makeText(context, context.getResources()
-                                    .getString(R.string.unsuccess_authorization) + " "
-                                    + e.toString() + " "
-                                    + context.getResources().getString(R.string.check_internet_connect),
-                            Toast.LENGTH_LONG).show();
                     e.printStackTrace();
+
+                    progressBar.setVisibility(View.GONE);
+                    messageOutput(context.getResources()
+                            .getString(R.string.error_unsuccess_authorization) + " "
+                            + e.toString());
                 }
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        statusAuth[0] = false;
-                        Toast.makeText(context, context.getResources()
-                                        .getString(R.string.unsuccess_authorization) + " "
-                                        + volleyError.toString() + " "
-                                        + context.getResources().getString(R.string.check_internet_connect),
-                                Toast.LENGTH_LONG).show();
+                        if(volleyError instanceof TimeoutError){
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources()
+                                    .getString(R.string.error_check_internet_connect));
+                        }else {
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources()
+                                    .getString(R.string.error_unsuccess_authorization) + " "
+                                    + volleyError.toString());
+                        }
                     }
                 }) {
             @Override
@@ -86,8 +110,23 @@ public class AuthorizationUser {
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(stringRequest);
+        requestQueue.add(request);
+    }
 
-        return statusAuth[0];
+    public void requestCancel(){
+        if(request != null)
+            request.cancel();
+    }
+
+    public void setProgressBar(ProgressBar progressBar){
+        this.progressBar = progressBar;
+    }
+
+    public ProgressBar getProgressBar(){
+        return this.progressBar;
+    }
+
+    private void messageOutput(String str){
+        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
     }
 }

@@ -11,13 +11,16 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
             android:name=".EntrySystem.Activities.ActivityAuthorization"
+            android:noHistory="true"
             tools:ignore="InnerclassSeparator">
         </activity>
         <activity
             android:name=".EntrySystem.Activities.ActivityRegistration"
+            android:noHistory="true"
             tools:ignore="InnerclassSeparator" />
         <activity
             android:name=".PreviewApp.ActivityPreview"
@@ -33,13 +36,6 @@
             android:name=".Workspace.Activities.ActivityMain"
             android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
         </activity>
     </application>
 
