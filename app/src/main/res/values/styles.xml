@@ -12,15 +12,62 @@
         <item name="windowActionBar">false</item>
     </style>
 
+    <style name="DefaultStyleTextRegular">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:fontFamily">@font/gotham_office_regular</item>
+    </style>
+
+    <style name="DefaultStyleTextBoldRegular">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:fontFamily">@font/gotham_office_bold_regular</item>
+    </style>
+
+    <style name="DefaultStyleTextRegular.Header">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorHeaderName</item>
+    </style>
+
     <style name="DefaultStyleField">
         <item name="android:ems">10</item>
-        <item name="android:height">50dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:paddingLeft">20dp</item>
         <item name="android:paddingRight">20dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:layout_marginStart">24dp</item>
         <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColorHint">@color/colorHint</item>
         <item name="android:backgroundTint">@color/colorTransparent</item>
         <item name="android:fontFamily">@font/gotham_office_regular</item>
+    </style>
+
+    <style name="DefaultStyleImageView">
+        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+    </style>
+
+    <style name="DefaultStylePrimaryBtn">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/gotham_office_bold_regular</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+    
+    <style name="DefaultStyleSecondaryBtn">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:fontFamily">@font/gotham_office_bold_regular</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+
+    <style name="DefaultStyleRadioGroup">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_marginStart">24dp</item>
     </style>
 
     <style name="DefaultStyleRadioBtn">

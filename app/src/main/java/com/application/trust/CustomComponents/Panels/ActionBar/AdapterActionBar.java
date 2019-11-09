@@ -4,6 +4,6 @@ import android.view.ViewGroup;
 
 public interface AdapterActionBar {
     int getIdPatternResource();
-    void initializeItems(ViewGroup viewGroup);
-    void initializeItemsListener(ViewGroup viewGroup);
+    void initializationComponentsActionBar(ViewGroup viewGroup);
+    void initializationListenersActionBar(ViewGroup viewGroup);
 }

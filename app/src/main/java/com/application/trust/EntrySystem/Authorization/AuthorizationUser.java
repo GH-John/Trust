@@ -68,6 +68,20 @@ public class AuthorizationUser {
                             break;
                         }
 
+                        case "2":{
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources()
+                                    .getString(R.string.unsuccess_authorization_password));
+                            break;
+                        }
+
+                        case "3":{
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources()
+                                    .getString(R.string.unsuccess_authorization_login));
+                            break;
+                        }
+
                         case "101": {
                             progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources().getString(R.string.error_server_connect));

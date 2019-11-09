@@ -44,8 +44,8 @@ public class CustomActionBar extends ConstraintLayout implements IActionBar, Fra
             patternContainer.removeAllViewsInLayout();
             inflate(getContext(), ((AdapterActionBar)fragment).getIdPatternResource(),
                     patternContainer);
-            ((AdapterActionBar)fragment).initializeItems(patternContainer);
-            ((AdapterActionBar)fragment).initializeItemsListener(patternContainer);
+            ((AdapterActionBar)fragment).initializationComponentsActionBar(patternContainer);
+            ((AdapterActionBar)fragment).initializationListenersActionBar(patternContainer);
         }
     }
 

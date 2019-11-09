@@ -31,7 +31,7 @@ public class ActivityAuthorization extends AppCompatActivity {
     private BtnBackground btnBackground;
 
     private AuthorizationUser authorizationUser;
-    private static String URL_AUTHORIZATION = "http://192.168.43.241/AndroidConnectWithServer/php/AuthorizationUser.php";
+    private static String URL_AUTHORIZATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/AuthorizationUser.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +39,17 @@ public class ActivityAuthorization extends AppCompatActivity {
         setContentView(R.layout.activity_authorization);
 
         initializationComponents();
-        initializationStyle();
+        initializationStyles();
         initializationListeners();
     }
 
-    private void initializationComponents(){
+    @Override
+    protected void onStop() {
+        super.onStop();
+        authorizationUser.requestCancel();
+    }
+
+    private void initializationComponents() {
         fieldEmailAuth = findViewById(R.id.fieldEmailAuth);
         fieldPassAuth = findViewById(R.id.fieldPassAuth);
 
@@ -57,7 +63,7 @@ public class ActivityAuthorization extends AppCompatActivity {
         authorizationUser = new AuthorizationUser(this, URL_AUTHORIZATION, new ActivityMain());
     }
 
-    private void initializationStyle(){
+    private void initializationStyles() {
         pinBackground = new PinBackground(this, R.color.colorWhite,
                 R.color.shadowColor, 6f, 0f, 3f,
                 new float[]{0f, 0f, 20f, 20f, 20f, 20f, 0f, 0f});
@@ -83,7 +89,7 @@ public class ActivityAuthorization extends AppCompatActivity {
         SetBtnStyle.setStyle(btnBackground, btnRegAuth);
     }
 
-    private void initializationListeners(){
+    private void initializationListeners() {
         btnRegAuth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +100,7 @@ public class ActivityAuthorization extends AppCompatActivity {
         btnSignAuth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!fieldIsEmpty(fieldEmailAuth, fieldPassAuth) && !fieldIsIncorrectChars(fieldEmailAuth, fieldPassAuth)) {
+                if (!fieldIsEmpty(fieldEmailAuth, fieldPassAuth) && !fieldIsIncorrectChars(fieldEmailAuth, fieldPassAuth)) {
                     authorizationUser.setProgressBar(progressBarAuth);
 
                     authorizationUser.authorization(
@@ -105,15 +111,9 @@ public class ActivityAuthorization extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        authorizationUser.requestCancel();
-    }
-
-    public boolean fieldIsEmpty(EditText ... fields){
+    public boolean fieldIsEmpty(EditText... fields) {
         int countEmpty = 0;
-        if(fields.length > 0) {
+        if (fields.length > 0) {
             for (EditText field : fields) {
                 if (field.getText().toString().isEmpty()) {
                     field.setError(getResources().getString(R.string.error_empty_field));
@@ -125,10 +125,10 @@ public class ActivityAuthorization extends AppCompatActivity {
         return true;
     }
 
-    public boolean fieldIsIncorrectChars(EditText ... fields){
+    public boolean fieldIsIncorrectChars(EditText... fields) {
         int countIncorrectFields = 0;
         char[] incorrectChars = {' '};
-        if(fields.length > 0) {
+        if (fields.length > 0) {
             for (char incoChars : incorrectChars) {
                 for (EditText field : fields) {
                     if (field.getText().toString().matches(" ")) {

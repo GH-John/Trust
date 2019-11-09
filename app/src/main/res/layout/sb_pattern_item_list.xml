@@ -33,6 +33,7 @@
         app:srcCompat="@drawable/ic_logo" />
 
     <TextView
+        style="@style/DefaultStyleTextRegular"
         android:id="@+id/nameItemList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,11 +46,9 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="0dp"
         android:layout_toEndOf="@+id/iconItemList"
-        android:fontFamily="@font/gotham_office_regular"
         android:gravity="center"
         android:text="Some Text"
         android:textAlignment="viewStart"
-        android:textColor="@color/colorNameItemList"
         android:textSize="14sp"
         tools:ignore="HardcodedText,RtlCompat" />
 

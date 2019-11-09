@@ -53,14 +53,14 @@
             app:layout_constraintBottom_toBottomOf="@id/panelSideBar"
             app:layout_constraintEnd_toEndOf="@id/panelSideBar"
             app:layout_constraintStart_toStartOf="@id/panelSideBar"
-            app:srcCompat="@drawable/bn_item_add_announcement"
+            app:srcCompat="@drawable/sb_item_add_announcement"
             tools:ignore="UnusedAttribute"
             tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/itemUserAccount"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
             android:contentDescription="@string/todo"
@@ -74,25 +74,24 @@
             tools:visibility="visible" />
 
         <TextView
+            style="@style/DefaultStyleTextRegular.Header"
             android:id="@+id/itemUserName"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="40dp"
             android:contentDescription="@string/todo"
-            android:fontFamily="@font/gotham_office_regular"
             android:gravity="center"
-            android:text="Красуцкий Евгений"
+            android:text="@string/text_user_name"
             android:textAlignment="textEnd"
             android:textColor="@color/colorNameUserAccount"
-            android:textSize="20sp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/itemUserAccount"
+            app:layout_constraintBottom_toTopOf="@+id/itemListView"
             app:layout_constraintEnd_toStartOf="@+id/itemUserAccount"
             app:layout_constraintStart_toStartOf="@id/panelSideBar"
-            app:layout_constraintTop_toTopOf="@+id/itemUserAccount"
-            tools:ignore="HardcodedText,RtlCompat"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toTopOf="@+id/panelSideBar"
+            tools:visibility="visible"
+            tools:ignore="RtlCompat" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/itemListView"

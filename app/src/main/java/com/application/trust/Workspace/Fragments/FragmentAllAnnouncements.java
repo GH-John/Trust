@@ -38,14 +38,14 @@ public class FragmentAllAnnouncements extends Fragment implements View.OnTouchLi
     }
 
     @Override
-    public void initializeItems(ViewGroup viewGroup) {
+    public void initializationComponentsActionBar(ViewGroup viewGroup) {
         itemSort = viewGroup.findViewById(R.id.itemSort);
         itemSearch = viewGroup.findViewById(R.id.itemSearch);
         itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
     }
 
     @Override
-    public void initializeItemsListener(final ViewGroup viewGroup) {
+    public void initializationListenersActionBar(final ViewGroup viewGroup) {
         itemSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

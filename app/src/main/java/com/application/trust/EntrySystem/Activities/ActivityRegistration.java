@@ -20,6 +20,12 @@ import com.application.trust.EntrySystem.Registration.RegistrationUser;
 import com.application.trust.R;
 import com.application.trust.Workspace.Activities.ActivityMain;
 
+import ru.tinkoff.decoro.MaskImpl;
+import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
+import ru.tinkoff.decoro.slots.Slot;
+import ru.tinkoff.decoro.watchers.FormatWatcher;
+import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
+
 public class ActivityRegistration extends AppCompatActivity {
     private ProgressBar progressBarReg;
     private RadioGroup radioGroup;
@@ -40,7 +46,7 @@ public class ActivityRegistration extends AppCompatActivity {
     private BtnBackground btnBackground;
 
     private RegistrationUser registrationUser;
-    private static String URL_REGISTRATION = "http://192.168.43.241/AndroidConnectWithServer/php/RegistrationUser.php";
+    private static String URL_REGISTRATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/RegistrationUser.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +54,14 @@ public class ActivityRegistration extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
 
         initializationComponents();
-        initializationStyle();
+        initializationStyles();
         initializationListeners();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        registrationUser.requestCancel();
     }
 
     private void initializationComponents() {
@@ -72,7 +84,7 @@ public class ActivityRegistration extends AppCompatActivity {
         registrationUser = new RegistrationUser(this, URL_REGISTRATION, new ActivityMain());
     }
 
-    private void initializationStyle(){
+    private void initializationStyles(){
         pinBackground = new PinBackground(this, R.color.colorWhite,
                 R.color.shadowColor, 6f, 0f, 3f,
                 new float[]{0f, 0f, 20f, 20f, 20f, 20f, 0f, 0f});
@@ -104,6 +116,12 @@ public class ActivityRegistration extends AppCompatActivity {
     }
 
     private void initializationListeners() {
+        Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots(getResources().getString(R.string.hint_phone));
+        FormatWatcher formatWatcher = new MaskFormatWatcher(
+                MaskImpl.createTerminated(slots)
+        );
+        formatWatcher.installOn(fieldPhoneReg);
+
         btnReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,12 +142,6 @@ public class ActivityRegistration extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        registrationUser.requestCancel();
     }
 
     public boolean fieldIsEmpty(EditText ... fields){

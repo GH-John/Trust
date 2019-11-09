@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,7 +22,6 @@ public class ActivityPreview extends AppCompatActivity {
     private ViewPager previewViewPager;
     private AdapterPreview adapterPreview;
 
-    private ImageView[] dots;
     private Drawable dotSelected;
     private Drawable dotUnselected;
     private BtnBackground btnBackground;
@@ -75,7 +73,7 @@ public class ActivityPreview extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                changeIndicator(position, dotUnselected, dotSelected);
+                adapterPreview.changeIndicator(position, dotUnselected, dotSelected);
             }
 
             @Override
@@ -88,41 +86,11 @@ public class ActivityPreview extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        adapterPreview = new AdapterPreview(this);
+        adapterPreview = new AdapterPreview(this, dotsLayout, dotUnselected, dotSelected);
         previewViewPager.setAdapter(adapterPreview);
     }
 
-    public void createArrayDotsIndicator(int setDotCount, Drawable drawable) {
-        LinearLayout.LayoutParams layoutParams;
-        dots = new ImageView[setDotCount];
-        for (int i = 0; i < dots.length; i++) {
-            dots[i] = new ImageView(this);
-            dots[i].setImageDrawable(drawable);
-            dotsLayout.addView(dots[i]);
-            layoutParams = new LinearLayout.LayoutParams(dots[i].getLayoutParams());
-            layoutParams.leftMargin = 20;
-            dots[i].setLayoutParams(layoutParams);
-        }
-    }
-
-    public void changeIndicator(int position, Drawable dotUnselected, Drawable dotSelected) {
-        if (dots.length > 0) {
-            if (position > 0) {
-                dots[position - 1].setImageDrawable(dotUnselected);
-                dots[position].setImageDrawable(dotSelected);
-                if (position < dots.length - 1) {
-                    dots[position + 1].setImageDrawable(dotUnselected);
-                }
-            } else if (position == 0) {
-                dots[position].setImageDrawable(dotSelected);
-                dots[position + 1].setImageDrawable(dotUnselected);
-            }
-        }
-    }
-
     private void setStartIndicator() {
-        createArrayDotsIndicator(adapterPreview.getCount(),
-                dotUnselected);
-        changeIndicator(0, dotUnselected, dotSelected);
+
     }
 }

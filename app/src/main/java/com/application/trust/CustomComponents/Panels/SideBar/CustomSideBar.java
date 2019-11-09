@@ -107,6 +107,7 @@ public class CustomSideBar extends ConstraintLayout implements ISideBar, Observe
         };
         itemUserAccount.setOutlineProvider(viewOutlineProvider);
         itemUserAccount.setClipToOutline(true);
+
         itemAddAnnouncement.setOutlineProvider(viewOutlineProvider);
         itemAddAnnouncement.setClipToOutline(true);
     }

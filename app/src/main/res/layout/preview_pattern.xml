@@ -10,12 +10,14 @@
 
     <ImageView
         android:id="@+id/logoPreview"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginBottom="180dp"
         android:contentDescription="@string/todo"
+        android:elevation="6dp"
+        android:translationZ="1dp"
         app:layout_constraintBottom_toTopOf="@+id/descriptionPreview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

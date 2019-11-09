@@ -35,13 +35,13 @@ public class FragmentUserAnnouncements extends Fragment implements AdapterAction
     }
 
     @Override
-    public void initializeItems(ViewGroup viewGroup) {
+    public void initializationComponentsActionBar(ViewGroup viewGroup) {
         itemSort = viewGroup.findViewById(R.id.itemSort);
         itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
     }
 
     @Override
-    public void initializeItemsListener(ViewGroup viewGroup) {
+    public void initializationListenersActionBar(ViewGroup viewGroup) {
         itemSort.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -19,6 +19,8 @@
 
     <string name="success_authorization">С возвращением</string>
     <string name="success_registration">Добро пожаловать</string>
+    <string name="unsuccess_authorization_login">Неверный email</string>
+    <string name="unsuccess_authorization_password">Неверный пароль</string>
 
     <string name="header_registration">Регистрация</string>
     <string name="header_authorization">Авторизация</string>
@@ -58,4 +60,12 @@
     <string name="hint_user_last_name">Фамилия</string>
     <string name="hint_phone">+375(__)___-__-__</string>
     <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
+    <string name="hint_product_name">Название</string>
+    <string name="hint_product_description">Описание</string>
+
+    <string name="text_user_name">Фамилия Имя</string>
+    <string name="text_add_photos">Добавите фотографии</string>
+    <string name="text_limit_add_photos">0/9</string>
+    <string name="text_note_photos">Первое изображение является главным</string>
+    <string name="text_product_category">Категория</string>
 </resources>

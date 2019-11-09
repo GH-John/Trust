@@ -1,8 +1,105 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutAddAnnouncement"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layoutAddAnnouncement"
-    android:background="@color/first"
-    tools:context=".Workspace.Fragments.FragmentAddAnnouncement"/>
+    android:background="@color/backgroundApp"
+    tools:context=".Workspace.Fragments.FragmentAddAnnouncement">
+
+    <TextView
+        android:id="@+id/textAddPhotos"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_add_photos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textLimitAddPhotos"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:text="@string/text_limit_add_photos"
+        app:layout_constraintBottom_toBottomOf="@+id/textAddPhotos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/textAddPhotos" />
+
+    <LinearLayout
+        android:id="@+id/photosLayout"
+        android:layout_width="0dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textAddPhotos">
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textNotePhotos"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:textSize="12sp"
+        android:text="@string/text_note_photos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photosLayout" />
+
+    <EditText
+        android:id="@+id/fieldProductName"
+        style="@style/DefaultStyleField"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="@string/hint_product_name"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="@+id/photosLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textNotePhotos"
+        tools:ignore="Autofill,LabelFor" />
+
+    <ImageView
+        android:id="@+id/imgProductCategory"
+        style="@style/DefaultStyleImageView"
+        android:layout_width="0dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fieldProductName" />
+
+    <TextView
+        style="@style/DefaultStyleTextRegular"
+        android:id="@+id/textProductCategory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:text="@string/text_product_category"
+        app:layout_constraintBottom_toBottomOf="@+id/imgProductCategory"
+        app:layout_constraintStart_toStartOf="@+id/imgProductCategory"
+        app:layout_constraintTop_toTopOf="@+id/imgProductCategory" />
+
+    <ImageView
+        android:id="@+id/icArrowRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="2dp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/ic_arrow_right"
+        app:layout_constraintBottom_toBottomOf="@+id/textProductCategory"
+        app:layout_constraintEnd_toEndOf="@+id/imgProductCategory"
+        app:layout_constraintTop_toTopOf="@+id/textProductCategory" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
