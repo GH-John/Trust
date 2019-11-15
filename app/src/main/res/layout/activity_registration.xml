@@ -50,20 +50,21 @@
         app:layout_constraintTop_toBottomOf="@+id/imagePinReg"
         tools:ignore="ScrollViewCount">
 
-        <LinearLayout
-            android:id="@+id/containerInScroll"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <RadioGroup
                 android:id="@+id/radioGroup"
                 style="@style/DefaultStyleRadioGroup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <RadioButton
-                    android:id="@+id/rBtnPrivatePerson"
+                    android:id="@+id/radioBtnPrivatePerson"
                     style="@style/DefaultStyleRadioBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,7 +75,7 @@
                     tools:ignore="RtlHardcoded" />
 
                 <RadioButton
-                    android:id="@+id/rBtnBusiness"
+                    android:id="@+id/radioBtnBusiness"
                     style="@style/DefaultStyleRadioBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,103 +87,125 @@
             <EditText
                 android:id="@+id/fieldNameReg"
                 style="@style/DefaultStyleField"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:hint="@string/hint_user_name"
                 android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup"
                 tools:ignore="Autofill" />
 
             <EditText
                 android:id="@+id/fieldLastNameReg"
                 style="@style/DefaultStyleField"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="8dp"
                 android:hint="@string/hint_user_last_name"
                 android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.75"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldNameReg"
                 tools:ignore="Autofill" />
 
             <EditText
                 android:id="@+id/fieldEmailReg"
                 style="@style/DefaultStyleField"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="24dp"
                 android:hint="@string/hint_email"
                 android:inputType="textEmailAddress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldLastNameReg"
                 tools:ignore="Autofill" />
 
             <EditText
                 android:id="@+id/fieldPassReg"
                 style="@style/DefaultStyleField"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="8dp"
                 android:hint="@string/hint_password"
                 android:inputType="textPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldEmailReg"
                 tools:ignore="Autofill" />
 
             <EditText
                 android:id="@+id/fieldPhoneReg"
                 style="@style/DefaultStyleField"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
                 android:layout_marginTop="24dp"
                 android:hint="@string/hint_phone"
                 android:inputType="phone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldPassReg"
                 tools:ignore="Autofill" />
 
             <EditText
                 android:id="@+id/fieldCodeReg"
                 style="@style/DefaultStyleField"
-                android:layout_width="match_parent"
-                android:layout_marginTop="24dp"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
                 android:hint="@string/hint_code"
                 android:inputType="number"
                 android:maxLength="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldPhoneReg"
                 tools:ignore="Autofill" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/btnGetCodeReg"
+                style="@style/DefaultStyleSecondaryBtn"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorWhite"
+                android:text="@string/hint_get_code"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/fieldCodeReg"
+                app:layout_constraintTop_toBottomOf="@+id/fieldCodeReg" />
+
+            <TextView
+                android:id="@+id/descriptionGetCodeReg"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp">
+                android:layout_marginEnd="32dp"
+                android:text="@string/hint_description_get_code"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/btnGetCodeReg"
+                app:layout_constraintEnd_toStartOf="@+id/btnGetCodeReg"
+                app:layout_constraintStart_toStartOf="@+id/fieldPhoneReg"
+                app:layout_constraintTop_toTopOf="@+id/btnGetCodeReg" />
 
-                <TextView
-                    android:id="@+id/descriptionGetCodeReg"
-                    style="@style/DefaultStyleTextRegular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center|left"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginRight="32dp"
-                    android:layout_weight="1"
-                    android:text="@string/hint_description_get_code"
-                    android:textSize="10sp"
-                    tools:ignore="InefficientWeight,RtlHardcoded,SmallSp" />
-
-                <Button
-                    android:id="@+id/btnGetCodeReg"
-                    style="@style/DefaultStyleSecondaryBtn"
-                    android:layout_width="120dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center|right"
-                    android:layout_marginRight="24dp"
-                    android:text="@string/hint_get_code"
-                    android:textSize="12sp"
-                    tools:ignore="RtlHardcoded" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
-                android:orientation="vertical">
-
-                <Button
-                    android:id="@+id/btnReg"
-                    style="@style/DefaultStylePrimaryBtn"
-                    android:layout_width="220dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal|center"
-                    android:text="@string/btn_registration_reg" />
-            </LinearLayout>
-        </LinearLayout>
+            <Button
+                android:id="@+id/btnReg"
+                style="@style/DefaultStylePrimaryBtn"
+                android:layout_width="220dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/btn_registration_reg"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnGetCodeReg"
+                app:layout_constraintVertical_bias="1.0" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <ProgressBar

@@ -1,4 +1,4 @@
-package com.application.trust.CustomComponents.Container;
+package com.application.trust.CustomComponents.ContainerFragments;
 
 public interface FragmentLink {
     void createLinkWithFragment(ComponentLinkManager componentLinkManager);

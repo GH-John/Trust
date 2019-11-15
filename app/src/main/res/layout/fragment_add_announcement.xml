@@ -7,99 +7,126 @@
     android:background="@color/backgroundApp"
     tools:context=".Workspace.Fragments.FragmentAddAnnouncement">
 
-    <TextView
-        android:id="@+id/textAddPhotos"
-        style="@style/DefaultStyleTextRegular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:text="@string/text_add_photos"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textLimitAddPhotos"
-        style="@style/DefaultStyleTextRegular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:text="@string/text_limit_add_photos"
-        app:layout_constraintBottom_toBottomOf="@+id/textAddPhotos"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/textAddPhotos" />
-
-    <LinearLayout
-        android:id="@+id/photosLayout"
+    <ScrollView
         android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textAddPhotos">
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/textNotePhotos"
-        style="@style/DefaultStyleTextBoldRegular"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:textSize="12sp"
-        android:text="@string/text_note_photos"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/photosLayout" />
-
-    <EditText
-        android:id="@+id/fieldProductName"
-        style="@style/DefaultStyleField"
-        android:layout_width="0dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/hint_product_name"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="@+id/photosLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textNotePhotos"
-        tools:ignore="Autofill,LabelFor" />
-
-    <ImageView
-        android:id="@+id/imgProductCategory"
-        style="@style/DefaultStyleImageView"
-        android:layout_width="0dp"
-        android:layout_marginTop="16dp"
-        android:contentDescription="@string/todo"
+        android:layout_height="0dp"
+        android:layout_weight="0"
+        android:fillViewport="true"
+        android:measureAllChildren="false"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fieldProductName" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ScrollViewCount">
 
-    <TextView
-        style="@style/DefaultStyleTextRegular"
-        android:id="@+id/textProductCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:text="@string/text_product_category"
-        app:layout_constraintBottom_toBottomOf="@+id/imgProductCategory"
-        app:layout_constraintStart_toStartOf="@+id/imgProductCategory"
-        app:layout_constraintTop_toTopOf="@+id/imgProductCategory" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/icArrowRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="2dp"
-        android:contentDescription="@string/todo"
-        android:src="@drawable/ic_arrow_right"
-        app:layout_constraintBottom_toBottomOf="@+id/textProductCategory"
-        app:layout_constraintEnd_toEndOf="@+id/imgProductCategory"
-        app:layout_constraintTop_toTopOf="@+id/textProductCategory" />
+            <TextView
+                android:id="@+id/textAddPhotos"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/text_add_photos"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/textLimitAddPhotos"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="@string/text_limit_add_photos"
+                app:layout_constraintBottom_toBottomOf="@+id/textAddPhotos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textAddPhotos" />
+
+            <HorizontalScrollView
+                android:id="@+id/scrollViewImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fillViewport="true"
+                android:measureAllChildren="false"
+                android:orientation="horizontal"
+                android:scrollbars="none"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textAddPhotos"
+                tools:ignore="ScrollViewCount">
+
+                <com.application.trust.CustomComponents.ContainerImg.ContainerSelectedImages
+                    android:id="@+id/containerImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </com.application.trust.CustomComponents.ContainerImg.ContainerSelectedImages>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/textNotePhotos"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/text_note_photos"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/scrollViewImg" />
+
+            <EditText
+                android:id="@+id/fieldProductName"
+                style="@style/DefaultStyleField"
+                android:layout_width="0dp"
+                android:layout_marginTop="24dp"
+                android:ems="10"
+                android:hint="@string/hint_product_name"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textNotePhotos"
+                tools:ignore="Autofill,LabelFor" />
+
+            <ImageView
+                android:id="@+id/imgProductCategory"
+                style="@style/DefaultStyleImageView"
+                android:layout_width="0dp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/todo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldProductName" />
+
+            <TextView
+                android:id="@+id/textProductCategory"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="@string/text_product_category"
+                app:layout_constraintBottom_toBottomOf="@+id/imgProductCategory"
+                app:layout_constraintStart_toStartOf="@+id/imgProductCategory"
+                app:layout_constraintTop_toTopOf="@+id/imgProductCategory" />
+
+            <ImageView
+                android:id="@+id/icArrowRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="2dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_arrow_right"
+                app:layout_constraintBottom_toBottomOf="@+id/textProductCategory"
+                app:layout_constraintEnd_toEndOf="@+id/imgProductCategory"
+                app:layout_constraintTop_toTopOf="@+id/textProductCategory" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

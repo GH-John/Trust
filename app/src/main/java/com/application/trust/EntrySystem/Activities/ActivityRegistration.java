@@ -95,7 +95,7 @@ public class ActivityRegistration extends AppCompatActivity {
                 R.color.shadowColor, 6f, 0f, 3f,
                 new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
 
-        SetFieldStyle.setStyle(fieldBackground, fieldNameReg,
+        SetFieldStyle.setEditTextBackground(fieldBackground, fieldNameReg,
                 fieldLastNameReg,
                 fieldEmailReg,
                 fieldPassReg,
@@ -162,11 +162,11 @@ public class ActivityRegistration extends AppCompatActivity {
         String type = "person";
 
         switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.rBtnPrivatePerson: {
+            case R.id.radioBtnPrivatePerson: {
                 type = "person";
                 break;
             }
-            case R.id.rBtnBusiness: {
+            case R.id.radioBtnBusiness: {
                 type = "business";
                 break;
             }

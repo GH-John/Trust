@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.application.trust.CustomComponents.Container.FragmentLink;
-import com.application.trust.CustomComponents.Container.ComponentLinkManager;
+import com.application.trust.CustomComponents.ContainerFragments.FragmentLink;
+import com.application.trust.CustomComponents.ContainerFragments.ComponentLinkManager;
 import com.application.trust.CustomComponents.Panels.DrawPanel;
 import com.application.trust.Patterns.Observer;
 import com.application.trust.R;

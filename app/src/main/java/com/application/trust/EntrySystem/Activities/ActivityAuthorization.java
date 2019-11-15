@@ -74,7 +74,7 @@ public class ActivityAuthorization extends AppCompatActivity {
                 R.color.shadowColor, 6f, 0f, 3f,
                 new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
 
-        SetFieldStyle.setStyle(fieldBackground, fieldEmailAuth, fieldPassAuth);
+        SetFieldStyle.setEditTextBackground(fieldBackground, fieldEmailAuth, fieldPassAuth);
 
         btnBackground = new BtnBackground(this, R.color.colorAccent,
                 R.color.shadowColor, 6f, 0f, 3f,

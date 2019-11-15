@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
-import com.application.trust.CustomComponents.Container.ComponentLinkManager;
-import com.application.trust.CustomComponents.Container.ContainerFragments;
-import com.application.trust.CustomComponents.Container.FragmentLink;
+import com.application.trust.CustomComponents.ContainerFragments.ComponentLinkManager;
+import com.application.trust.CustomComponents.ContainerFragments.ContainerFragments;
+import com.application.trust.CustomComponents.ContainerFragments.FragmentLink;
 import com.application.trust.CustomComponents.Panels.ActionBar.CustomActionBar;
 import com.application.trust.CustomComponents.Panels.BottomNavigation.CustomBottomNavigation;
 import com.application.trust.CustomComponents.Panels.SideBar.CustomSideBar;

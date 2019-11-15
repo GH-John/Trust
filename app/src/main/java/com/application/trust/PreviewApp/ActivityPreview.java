@@ -33,11 +33,10 @@ public class ActivityPreview extends AppCompatActivity {
         setContentView(R.layout.activity_preview);
 
         initializationComponents();
-        initializationStyle();
+        initializationStyles();
         initializationListeners();
 
         setAdapter();
-        setStartIndicator();
     }
 
     private void initializationComponents() {
@@ -48,7 +47,7 @@ public class ActivityPreview extends AppCompatActivity {
         dotUnselected = this.getDrawable(R.drawable.dot_unselected);
     }
 
-    private void initializationStyle() {
+    private void initializationStyles() {
         btnBackground = new BtnBackground(this, R.color.colorAccent,
                 R.color.shadowColor, 6f, 0f, 3f,
                 new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
@@ -88,9 +87,5 @@ public class ActivityPreview extends AppCompatActivity {
     private void setAdapter() {
         adapterPreview = new AdapterPreview(this, dotsLayout, dotUnselected, dotSelected);
         previewViewPager.setAdapter(adapterPreview);
-    }
-
-    private void setStartIndicator() {
-
     }
 }

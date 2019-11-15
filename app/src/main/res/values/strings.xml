@@ -64,8 +64,8 @@
     <string name="hint_product_description">Описание</string>
 
     <string name="text_user_name">Фамилия Имя</string>
-    <string name="text_add_photos">Добавите фотографии</string>
+    <string name="text_add_photos">Добавить фотографию</string>
     <string name="text_limit_add_photos">0/9</string>
-    <string name="text_note_photos">Первое изображение является главным</string>
+    <string name="text_note_photos">Первая фотография является главной</string>
     <string name="text_product_category">Категория</string>
 </resources>

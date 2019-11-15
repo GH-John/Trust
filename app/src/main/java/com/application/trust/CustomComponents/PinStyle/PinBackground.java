@@ -2,6 +2,7 @@ package com.application.trust.CustomComponents.PinStyle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
@@ -22,26 +23,31 @@ public class PinBackground extends Drawable implements DrawPanel {
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public PinBackground(Context context,
-                           int ResourcesFillColor,
-                           int ResourcesShadowColor,
-                           float shadowRadius,
-                           float shadowDX,
-                           float shadowDY,
-                           float[] radii) {
+                         int ResourcesFillColor,
+                         int ResourcesShadowColor,
+                         float shadowRadius,
+                         float shadowDX,
+                         float shadowDY,
+                         float[] radii) {
         this.context = context;
         this.radii = radii;
-        setPaint(ResourcesFillColor, ResourcesShadowColor,
+        setDefaultParametrs(ResourcesFillColor, ResourcesShadowColor,
                 shadowRadius,
                 shadowDX, shadowDY);
     }
 
+    @Override
+    public void setPaint(Paint paint) {
+        this.paint = paint;
+    }
+
     @SuppressLint("NewApi")
     @Override
-    public void setPaint(int ResourcesFillColor,
-                         int ResourcesShadowColor,
-                         float shadowRadius,
-                         float shadowDX,
-                         float shadowDY) {
+    public void setDefaultParametrs(int ResourcesFillColor,
+                                    int ResourcesShadowColor,
+                                    float shadowRadius,
+                                    float shadowDX,
+                                    float shadowDY) {
         paint.setColor(context.getColor(ResourcesFillColor));
         paint.setStyle(Paint.Style.FILL);
         paint.setShadowLayer(shadowRadius,
@@ -50,7 +56,17 @@ public class PinBackground extends Drawable implements DrawPanel {
     }
 
     @Override
-    public void setPath(float[] radii, int width, int height) {
+    public void setShader(BitmapShader shader) {
+        this.paint.setShader(shader);
+    }
+
+    @Override
+    public void setPath(Path path) {
+        this.path = path;
+    }
+
+    @Override
+    public void setRoundRect(float[] radii, int width, int height) {
         path.reset();
 
         path.addRoundRect(new RectF(0, 10, width - 10, height - 10), radii, Path.Direction.CCW);
@@ -64,8 +80,13 @@ public class PinBackground extends Drawable implements DrawPanel {
     }
 
     @Override
+    public Paint getPaint() {
+        return this.paint;
+    }
+
+    @Override
     public void draw(@NonNull Canvas canvas) {
-        setPath(radii, getBounds().width(), getBounds().height());
+        setRoundRect(radii, getBounds().width(), getBounds().height());
         canvas.drawPath(path, paint);
     }
 

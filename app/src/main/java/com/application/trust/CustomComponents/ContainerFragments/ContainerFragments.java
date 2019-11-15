@@ -1,4 +1,4 @@
-package com.application.trust.CustomComponents.Container;
+package com.application.trust.CustomComponents.ContainerFragments;
 
 import android.content.Context;
 import android.view.View;
