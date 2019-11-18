@@ -28,13 +28,13 @@
         app:srcCompat="@drawable/ab_item_burger_menu" />
 
     <TextView
-        style="@style/DefaultStyleTextRegular.Header"
         android:id="@+id/itemHeaderName"
+        style="@style/DefaultStyleTextRegular.Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:text="@string/itemList_user_announcements"
+        android:text="@string/ab_title_user_announcements"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemSort"
         app:layout_constraintStart_toEndOf="@+id/itemBurgerMenu"

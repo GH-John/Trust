@@ -1,6 +1,6 @@
 package com.application.trust.CustomComponents.ContainerImg;
 
-public interface IGalery {
+public interface AdapterGalery {
     int getRequestCode();
-    IGalery getInstance();
+    AdapterGalery getSelfInstance();
 }

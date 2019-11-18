@@ -6,24 +6,18 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.application.trust.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class ContainerSelectedImages extends LinearLayout implements IContainerFiller {
+public class ContainerSelectedImages extends LinearLayout implements AdapterContainer {
     private LinearLayout containerImg;
     private CustomBtnAddImg btnAddImg;
-    private List<CustomViewImg> selectedImgs;
 
-    private IGalery galery;
+    private AdapterGalery galery;
+    private HashMap<Uri, View> currentMapView;
     private ContainerFiller containerFiller;
-    private List<Uri> currentListUri;
-    private int CURRENT_SIZE_CONTAINER = 0;
-    private final int MAX_SIZE = 9;
 
     public ContainerSelectedImages(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -36,7 +30,7 @@ public class ContainerSelectedImages extends LinearLayout implements IContainerF
         inflate(getContext(), R.layout.container_selected_img, this);
         btnAddImg = findViewById(R.id.btnAddImg);
         containerImg = findViewById(R.id.containerImg);
-        currentListUri = new ArrayList<>();
+        currentMapView = new HashMap<>();
     }
 
     private void initializationStyles() {
@@ -46,12 +40,12 @@ public class ContainerSelectedImages extends LinearLayout implements IContainerF
         btnAddImg.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                new Galery(galery).open();
+                new ChooseImages(galery).open();
             }
         });
     }
 
-    public void setInstanceGalery(IGalery galery) {
+    public void setInstanceGalery(AdapterGalery galery) {
         this.galery = galery;
     }
 
@@ -62,59 +56,60 @@ public class ContainerSelectedImages extends LinearLayout implements IContainerF
 
     @Override
     public void inflateContainer(final ContainerFiller containerFiller) {
-
         containerImg.post(new Runnable() {
             @Override
             public void run() {
                 Uri uri;
                 Bitmap bitmap;
                 CustomViewImg customViewImg;
-                LinearLayout.LayoutParams layoutParams;
                 HashMap<Uri, Bitmap> mapBitmap = containerFiller.getMapBitmap();
+
                 int imgCount = mapBitmap.size();
-
-                selectedImgs = new ArrayList<>();
-
                 for (HashMap.Entry entry : mapBitmap.entrySet()) {
                     uri = (Uri) entry.getKey();
                     bitmap = mapBitmap.get(uri);
 
-                    if (CURRENT_SIZE_CONTAINER < MAX_SIZE && !currentListUri.contains(uri)) {
-                        currentListUri.add(uri);
+                    if (CURRENT_SIZE_CONTAINER() < MAX_SIZE_CONTAINER() && !currentMapView.containsKey(uri)) {
+                        currentMapView.put(uri, containerImg);
 
                         customViewImg = new CustomViewImg(getContext());
                         customViewImg.setImageBitmap(bitmap);
+
+                        final CustomViewImg finalCustomViewImg = customViewImg;
+                        final Uri finalUri = uri;
+
                         customViewImg.itemDeleteOnClickListener(new OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                removeImg(v);
+                                removeFromContainer(finalCustomViewImg, finalUri);
                             }
                         });
-
-                        selectedImgs.add(customViewImg);
-                        containerImg.addView(customViewImg);
-
-                        layoutParams = new LinearLayout.LayoutParams(customViewImg.getLayoutParams());
-                        layoutParams.leftMargin = 8;
-                        customViewImg.setLayoutParams(layoutParams);
-                        CURRENT_SIZE_CONTAINER = containerImg.getChildCount() - 1;
-
-                        Toast.makeText(getContext(), String.valueOf(CURRENT_SIZE_CONTAINER), Toast.LENGTH_LONG).show();
+                        addToContainer(customViewImg);
                     }
                 }
             }
         });
     }
 
-    private void removeImg(final View view) {
+    public void addToContainer(View view) {
+        containerImg.addView(view);
+        view.setLayoutParams(new LinearLayout.LayoutParams(view.getLayoutParams()));
+    }
+
+    public void removeFromContainer(final View v, final Uri key) {
         containerImg.post(new Runnable() {
             public void run() {
-                containerImg.removeView(view);
+                containerImg.removeView(v);
+                currentMapView.remove(key);
             }
         });
     }
 
-    public int getMAX_SIZE() {
-        return MAX_SIZE;
+    public int CURRENT_SIZE_CONTAINER(){
+        return containerImg.getChildCount() - 1;
+    }
+
+    public int MAX_SIZE_CONTAINER() {
+        return 9;
     }
 }

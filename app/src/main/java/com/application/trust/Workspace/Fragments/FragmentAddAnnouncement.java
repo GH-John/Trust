@@ -14,13 +14,13 @@ import androidx.fragment.app.Fragment;
 
 import com.application.trust.CustomComponents.ContainerImg.ContainerFiller;
 import com.application.trust.CustomComponents.ContainerImg.ContainerSelectedImages;
-import com.application.trust.CustomComponents.ContainerImg.IGalery;
+import com.application.trust.CustomComponents.ContainerImg.AdapterGalery;
 import com.application.trust.CustomComponents.FieldStyle.FieldBackground;
 import com.application.trust.CustomComponents.FieldStyle.SetFieldStyle;
 import com.application.trust.CustomComponents.Panels.ActionBar.AdapterActionBar;
 import com.application.trust.R;
 
-public class FragmentAddAnnouncement extends Fragment implements AdapterActionBar, IGalery {
+public class FragmentAddAnnouncement extends Fragment implements AdapterActionBar, AdapterGalery {
     private EditText fieldProductName;
     private ImageView itemBack, imgProductCategory;
     private ContainerFiller containerFiller;
@@ -100,7 +100,7 @@ public class FragmentAddAnnouncement extends Fragment implements AdapterActionBa
     }
 
     @Override
-    public IGalery getInstance() {
+    public AdapterGalery getSelfInstance() {
         return this;
     }
 }

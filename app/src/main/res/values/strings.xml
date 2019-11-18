@@ -4,9 +4,9 @@
 
     <string-array name="previewDescription">
         <item>Площадка объявлений, на которой любой пользователь сможет заработать</item>
-        <item>item 2</item>
-        <item>item 3</item>
-        <item>item 4</item>
+        <item>Никакого обмана чистая прибыль, отвичаю!!! ;)</item>
+        <item>Супер пупер приложение</item>
+        <item>Конец, а кто смотрел молодец!!!</item>
     </string-array>
 
     <string name="error_empty_field">Пустое поле</string>
@@ -24,11 +24,12 @@
 
     <string name="header_registration">Регистрация</string>
     <string name="header_authorization">Авторизация</string>
-    <string name="header_sign_google">Упрощенный вход в систему</string>
 
-    <string name="description_validation">В качестве дополнительной меры безопасности введите свой номер телефона и подтвердите его с помощью высланного на него кода</string>
-
-    <string name="new_announcements">Новое объявление</string>
+    <string name="ab_title_proposals">Заявки</string>
+    <string name="ab_title_statistics">Статистика</string>
+    <string name="ab_title_all_announcements">Все объявления</string>
+    <string name="ab_title_user_announcements">Мои объявления</string>
+    <string name="ab_title_new_announcements">Новое объявление</string>
 
     <string name="itemList_wallet">Кошелек</string>
     <string name="itemList_services">Услуги</string>
@@ -63,9 +64,9 @@
     <string name="hint_product_name">Название</string>
     <string name="hint_product_description">Описание</string>
 
-    <string name="text_user_name">Фамилия Имя</string>
-    <string name="text_add_photos">Добавить фотографию</string>
     <string name="text_limit_add_photos">0/9</string>
-    <string name="text_note_photos">Первая фотография является главной</string>
+    <string name="text_user_name">Фамилия Имя</string>
     <string name="text_product_category">Категория</string>
+    <string name="text_add_photos">Добавить фотографию</string>
+    <string name="text_note_photos">Первая фотография является главной</string>
 </resources>

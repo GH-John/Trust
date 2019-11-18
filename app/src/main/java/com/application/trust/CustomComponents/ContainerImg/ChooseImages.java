@@ -5,13 +5,13 @@ import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-public class Galery {
+public class ChooseImages {
     private Fragment fragment;
     private AppCompatActivity activity;
 
     private int SELECTED_IMG_CODE;
 
-    public Galery(IGalery galery) {
+    public ChooseImages(AdapterGalery galery) {
         if(galery instanceof Fragment) {
             this.fragment = (Fragment) galery;
             this.SELECTED_IMG_CODE = galery.getRequestCode();

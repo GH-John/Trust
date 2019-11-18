@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CustomBottomNavigation extends ConstraintLayout implements IBottomNavigation, Observable, FragmentLink {
+public class CustomBottomNavigation extends ConstraintLayout implements BottomNavigation, Observable, FragmentLink {
     private ImageView panelBottomNavigation,
             itemUserAnnouncements,
             itemAllAnnouncements,

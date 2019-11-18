@@ -15,7 +15,7 @@ import com.application.trust.CustomComponents.Panels.DrawPanel;
 import com.application.trust.Patterns.Observer;
 import com.application.trust.R;
 
-public class CustomActionBar extends ConstraintLayout implements IActionBar, FragmentLink, Observer {
+public class CustomActionBar extends ConstraintLayout implements ActionBar, FragmentLink, Observer {
     private ImageView panelActionBar;
     private ViewGroup patternContainer;
 

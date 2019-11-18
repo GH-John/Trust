@@ -7,7 +7,7 @@ import android.view.View;
 import com.application.trust.CustomComponents.Panels.DrawPanel;
 import com.application.trust.CustomComponents.Panels.SideBar.ItemList.AdapterItemList;
 
-interface ISideBar {
+interface SideBar {
     void initializationListeners();
     void styleItemSideBar(Context context);
     void stylePanelSideBar(Context context, DrawPanel drawPanel);

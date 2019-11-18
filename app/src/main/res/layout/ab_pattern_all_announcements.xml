@@ -20,13 +20,13 @@
         tools:visibility="visible" />
 
     <TextView
-        style="@style/DefaultStyleTextRegular.Header"
         android:id="@+id/itemHeaderName"
+        style="@style/DefaultStyleTextRegular.Header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:text="@string/itemList_all_announcements"
+        android:text="@string/ab_title_all_announcements"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemSearch"
         app:layout_constraintStart_toEndOf="@+id/itemBurgerMenu"

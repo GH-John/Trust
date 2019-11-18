@@ -4,6 +4,6 @@ import android.content.Context;
 
 import com.application.trust.CustomComponents.Panels.DrawPanel;
 
-interface IActionBar {
+interface ActionBar {
     void stylePanel(Context context, DrawPanel drawPanel);
 }

@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 @SuppressLint("Registered")
 public class ContainerFiller {
-    private IContainerFiller container;
+    private AdapterContainer container;
 
     private Context context;
     private HashMap<Uri, Bitmap> mapBitmap;
@@ -63,7 +63,7 @@ public class ContainerFiller {
         }
     }
 
-    public void setContainer(IContainerFiller container) {
+    public void setContainer(AdapterContainer container) {
         this.container = container;
     }
 

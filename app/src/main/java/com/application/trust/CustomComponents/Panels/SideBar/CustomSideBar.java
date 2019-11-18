@@ -25,7 +25,7 @@ import com.application.trust.CustomComponents.Panels.SideBar.ItemList.PanelItemL
 import com.application.trust.Patterns.Observer;
 import com.application.trust.R;
 
-public class CustomSideBar extends ConstraintLayout implements ISideBar, Observer {
+public class CustomSideBar extends ConstraintLayout implements SideBar, Observer {
     private ImageView panelSideBar,
             itemUserAccount,
             blackoutSideBar,
