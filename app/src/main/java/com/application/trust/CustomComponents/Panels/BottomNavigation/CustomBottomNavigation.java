@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.application.trust.CustomComponents.ContainerFragments.FragmentLink;
 import com.application.trust.CustomComponents.ContainerFragments.ComponentLinkManager;
-import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.CustomComponents.DrawPanel;
 import com.application.trust.Patterns.Observable;
 import com.application.trust.Patterns.Observer;
 import com.application.trust.Patterns.ObserverManager;
@@ -74,7 +74,7 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
         listItem.add(itemUserProposals);
     }
 
-    @SuppressLint({"NewApi", "ResourceAsColor"})
+    @SuppressLint({"ResourceAsColor"})
     @Override
     public void stylePanel(DrawPanel drawPanel) {
         this.panelBottomNavigation.setImageDrawable((Drawable) drawPanel);
@@ -106,7 +106,7 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
         }
     }
 
-    @SuppressLint({"NewApi", "ResourceAsColor"})
+    @SuppressLint({"ResourceAsColor"})
     @Override
     public void styleItems() {
         ViewOutlineProvider viewOutlineProvider = new ViewOutlineProvider() {

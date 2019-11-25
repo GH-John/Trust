@@ -1,6 +1,5 @@
 package com.application.trust.CustomComponents.Panels.BottomNavigation;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -14,7 +13,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.CustomComponents.DrawPanel;
 
 public class PanelBottomNavigation extends Drawable implements DrawPanel {
     private class Point {
@@ -54,7 +53,6 @@ public class PanelBottomNavigation extends Drawable implements DrawPanel {
     }
 
     @Override
-    @SuppressLint("NewApi")
     public void setDefaultParametrs(int ResourcesFillColor,
                                     int ResourcesShadowColor,
                                     float shadowRadius,

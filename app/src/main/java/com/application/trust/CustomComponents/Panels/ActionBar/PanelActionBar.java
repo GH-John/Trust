@@ -14,7 +14,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.CustomComponents.DrawPanel;
 
 public class PanelActionBar extends Drawable implements DrawPanel {
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutPatternCategory"
+    android:layout_width="match_parent"
+    android:layout_height="40dp">
+
+    <TextView
+        android:id="@+id/nameCategory"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_toStartOf="@+id/iconCategory"
+        android:gravity="center_vertical"
+        android:text="@string/text_some_text" />
+
+    <ImageView
+        android:id="@+id/iconCategory"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_alignTop="@+id/nameCategory"
+        android:layout_alignBottom="@+id/nameCategory"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/todo"
+        app:srcCompat="@drawable/ic_category_plus" />
+</RelativeLayout>

@@ -86,7 +86,7 @@
             android:textAlignment="textEnd"
             android:textColor="@color/colorNameUserAccount"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/itemListView"
+            app:layout_constraintBottom_toTopOf="@+id/itemRecyclerView"
             app:layout_constraintEnd_toStartOf="@+id/itemUserAccount"
             app:layout_constraintStart_toStartOf="@id/panelSideBar"
             app:layout_constraintTop_toTopOf="@+id/panelSideBar"
@@ -94,7 +94,7 @@
             tools:ignore="RtlCompat" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/itemListView"
+            android:id="@+id/itemRecyclerView"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="5dp"

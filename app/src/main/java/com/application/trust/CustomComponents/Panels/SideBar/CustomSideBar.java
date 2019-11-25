@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.CustomComponents.DrawPanel;
 import com.application.trust.CustomComponents.Panels.SideBar.ItemList.AdapterItemList;
 import com.application.trust.CustomComponents.Panels.SideBar.ItemList.InflateItemList;
 import com.application.trust.CustomComponents.Panels.SideBar.ItemList.PanelItemList;
@@ -35,7 +35,7 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
 
     private Context context;
     private int width, height;
-    private RecyclerView itemListView;
+    private RecyclerView itemRecyclerView;
     private PanelItemList panelItemList;
     private DisplayMetrics displayMetrics;
 
@@ -61,7 +61,7 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
     private void inflateSideBar(Context context, AttributeSet attrs) {
         inflate(context, R.layout.side_bar, this);
         panelSideBar = findViewById(R.id.panelSideBar);
-        itemListView = findViewById(R.id.itemListView);
+        itemRecyclerView = findViewById(R.id.itemRecyclerView);
         blackoutSideBar = findViewById(R.id.blackoutSideBar);
         itemUserAccount = findViewById(R.id.itemUserAccount);
         containerSideBar = findViewById(R.id.containerSideBar);
@@ -96,7 +96,6 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
         });
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void styleItemSideBar(Context context) {
         ViewOutlineProvider viewOutlineProvider = new ViewOutlineProvider() {
@@ -124,8 +123,8 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
 
     @Override
     public void setAdapterItemList(Context context, AdapterItemList adapter) {
-        itemListView.setAdapter(adapter);
-        itemListView.setLayoutManager(new LinearLayoutManager(context));
+        itemRecyclerView.setAdapter(adapter);
+        itemRecyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     @Override

@@ -5,6 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layoutStatistics"
-    android:background="@color/five"
-    tools:context=".Workspace.Fragments.FragmentUserStatistics">
+    android:background="@color/backgroundApp"
+    tools:context=".MainWorkspace.Fragments.FragmentUserStatistics">
 </androidx.constraintlayout.widget.ConstraintLayout>

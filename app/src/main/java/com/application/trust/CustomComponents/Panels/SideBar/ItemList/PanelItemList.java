@@ -1,6 +1,5 @@
 package com.application.trust.CustomComponents.Panels.SideBar.ItemList;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -14,7 +13,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.CustomComponents.DrawPanel;
 
 public class PanelItemList extends Drawable implements DrawPanel {
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -40,7 +39,6 @@ public class PanelItemList extends Drawable implements DrawPanel {
         this.paint = paint;
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void setDefaultParametrs(int ResourcesFillColor,
                                     int ResourcesShadowColor,

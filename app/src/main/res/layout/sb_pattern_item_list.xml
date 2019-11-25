@@ -19,7 +19,7 @@
         android:paddingStart="2dp"
         android:paddingTop="2dp"
         android:paddingEnd="2dp"
-        android:paddingBottom="2dp"/>
+        android:paddingBottom="2dp" />
 
     <ImageView
         android:id="@+id/iconItemList"
@@ -33,8 +33,8 @@
         app:srcCompat="@drawable/ic_logo" />
 
     <TextView
-        style="@style/DefaultStyleTextRegular"
         android:id="@+id/nameItemList"
+        style="@style/DefaultStyleTextRegular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/iconItemList"
@@ -47,9 +47,9 @@
         android:layout_marginBottom="0dp"
         android:layout_toEndOf="@+id/iconItemList"
         android:gravity="center"
-        android:text="Some Text"
+        android:text="@string/text_some_text"
         android:textAlignment="viewStart"
         android:textSize="14sp"
-        tools:ignore="HardcodedText,RtlCompat" />
+        tools:ignore="RtlCompat" />
 
 </RelativeLayout>

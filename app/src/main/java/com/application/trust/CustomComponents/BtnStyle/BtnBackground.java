@@ -1,6 +1,5 @@
 package com.application.trust.CustomComponents.BtnStyle;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -14,7 +13,7 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.CustomComponents.DrawPanel;
 
 public class BtnBackground extends Drawable implements DrawPanel {
     private float[] radii;
@@ -41,7 +40,6 @@ public class BtnBackground extends Drawable implements DrawPanel {
         this.paint = paint;
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void setDefaultParametrs(int ResourcesFillColor,
                                     int ResourcesShadowColor,

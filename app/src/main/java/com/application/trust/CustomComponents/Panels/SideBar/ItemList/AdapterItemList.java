@@ -1,6 +1,5 @@
 package com.application.trust.CustomComponents.Panels.SideBar.ItemList;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,15 +26,15 @@ public class AdapterItemList extends RecyclerView.Adapter<AdapterItemList.ViewHo
         this.contentItemLists = contentItemList;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    protected class ViewHolder extends RecyclerView.ViewHolder{
         ImageView iconItemList,
                   backgroundItemList;
         TextView nameItemList;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            iconItemList = itemView.findViewById(R.id.iconItemList);
             backgroundItemList = itemView.findViewById(R.id.panelItemList);
+            iconItemList = itemView.findViewById(R.id.iconItemList);
             nameItemList = itemView.findViewById(R.id.nameItemList);
         }
     }
@@ -48,7 +47,6 @@ public class AdapterItemList extends RecyclerView.Adapter<AdapterItemList.ViewHo
         return new ViewHolder(v);
     }
 
-    @SuppressLint("NewApi")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final ContentItemList contentItemList = this.contentItemLists.get(position);

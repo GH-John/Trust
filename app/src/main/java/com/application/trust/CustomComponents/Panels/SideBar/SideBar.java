@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.application.trust.CustomComponents.Panels.DrawPanel;
+import com.application.trust.CustomComponents.DrawPanel;
 import com.application.trust.CustomComponents.Panels.SideBar.ItemList.AdapterItemList;
 
 interface SideBar {

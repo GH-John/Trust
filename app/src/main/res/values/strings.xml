@@ -10,16 +10,20 @@
     </string-array>
 
     <string name="error_empty_field">Пустое поле</string>
+    <string name="error_registration">Ошибка регистрации:\n</string>
+    <string name="error_authorization">Ошибка авторизации:\n</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
-    <string name="error_unsuccess_registration">Ошибка регистрации:</string>
-    <string name="error_unsuccess_authorization">Ошибка авторизации:</string>
     <string name="error_user_exists">Пользователь с такой почтой существует</string>
+    <string name="error_adding_announcement">Ошибка добавления объявления:\n</string>
+    <string name="error_please_choose_correct_img">Не верный формат изображения</string>
     <string name="error_server_connect">Ошибка: не удалось подключится к базе данных</string>
+    <string name="error_send_photo_to_server">Не удалось отправить изображения на сервер</string>
     <string name="error_check_internet_connect">Проверьте интернет соединение и повторите попытку</string>
 
     <string name="success_authorization">С возвращением</string>
     <string name="success_registration">Добро пожаловать</string>
     <string name="unsuccess_authorization_login">Неверный email</string>
+    <string name="success_announcement_added">Объявление создано</string>
     <string name="unsuccess_authorization_password">Неверный пароль</string>
 
     <string name="header_registration">Регистрация</string>
@@ -57,15 +61,17 @@
     <string name="hint_email">Email</string>
     <string name="hint_user_name">Имя</string>
     <string name="hint_password">Пароль</string>
+    <string name="hint_product_name">Название</string>
     <string name="hint_get_code">Получить код</string>
     <string name="hint_user_last_name">Фамилия</string>
     <string name="hint_phone">+375(__)___-__-__</string>
-    <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
-    <string name="hint_product_name">Название</string>
     <string name="hint_product_description">Описание</string>
+    <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
 
+    <string name="text_category">Категория</string>
     <string name="text_limit_add_photos">0/9</string>
     <string name="text_user_name">Фамилия Имя</string>
+    <string name="text_some_text">Какой-то текст</string>
     <string name="text_product_category">Категория</string>
     <string name="text_add_photos">Добавить фотографию</string>
     <string name="text_note_photos">Первая фотография является главной</string>

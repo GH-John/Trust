@@ -4,5 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layoutFragmentUserWallet"
-    tools:context=".Workspace.Fragments.FragmentUserWallet">
+    tools:context=".MainWorkspace.Fragments.FragmentUserWallet">
 </androidx.constraintlayout.widget.ConstraintLayout>
