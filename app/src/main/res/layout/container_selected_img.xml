@@ -8,11 +8,11 @@
     android:paddingStart="24dp"
     android:paddingEnd="24dp">
 
-    <com.application.trust.CustomComponents.ContainerImg.CustomViews.CustomBtnAddImg
+    <com.application.arenda.CustomComponents.ContainerImg.CustomViews.CustomBtnAddImg
         android:id="@+id/btnAddImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-    </com.application.trust.CustomComponents.ContainerImg.CustomViews.CustomBtnAddImg>
+    </com.application.arenda.CustomComponents.ContainerImg.CustomViews.CustomBtnAddImg>
 </LinearLayout>

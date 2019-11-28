@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/itemBack"
+        android:id="@+id/itemBurgerMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -28,5 +28,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/itemHeaderName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/itemHeaderName"
-        app:srcCompat="@drawable/ab_item_back" />
+        app:srcCompat="@drawable/ab_item_burger_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

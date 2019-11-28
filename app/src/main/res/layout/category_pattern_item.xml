@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layoutPatternCategory"
     android:layout_width="match_parent"
-    android:layout_height="40dp">
+    android:layout_height="32dp">
 
     <TextView
         android:id="@+id/nameCategory"
@@ -17,7 +17,8 @@
         android:layout_marginEnd="24dp"
         android:layout_toStartOf="@+id/iconCategory"
         android:gravity="center_vertical"
-        android:text="@string/text_some_text" />
+        android:text="@string/text_some_text"
+        android:textAlignment="viewStart" />
 
     <ImageView
         android:id="@+id/iconCategory"
@@ -26,7 +27,7 @@
         android:layout_alignTop="@+id/nameCategory"
         android:layout_alignBottom="@+id/nameCategory"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="26dp"
         android:contentDescription="@string/todo"
         app:srcCompat="@drawable/ic_category_plus" />
 </RelativeLayout>

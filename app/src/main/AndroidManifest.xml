@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.application.trust">
+    package="com.application.arenda">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -15,22 +15,23 @@
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
         <activity
-            android:name=".PreviewSystem.ActivityPreview"
+            android:name="com.application.arenda.PreviewSystem.ActivityPreview"
             android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator">
 
         </activity>
         <activity
-            android:name=".EntrySystem.ActivityRegistration"
+            android:name="com.application.arenda.EntrySystem.ActivityRegistration"
             android:noHistory="true"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".EntrySystem.ActivityAuthorization"
+            android:name="com.application.arenda.EntrySystem.ActivityAuthorization"
             android:noHistory="true"
+            android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".MainWorkspace.Activities.ActivityMain"
+            android:name="com.application.arenda.MainWorkspace.Activities.ActivityMain"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator">

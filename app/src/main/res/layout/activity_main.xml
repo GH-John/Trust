@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutActivityMain"
@@ -11,7 +10,7 @@
 
     <fragment
         android:id="@+id/containerFragments"
-        android:name="com.application.trust.MainWorkspace.Fragments.FragmentAllAnnouncements"
+        android:name="com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/customActionBar" />
 
-    <com.application.trust.CustomComponents.Panels.ActionBar.CustomActionBar
+    <com.application.arenda.CustomComponents.Panels.ActionBar.CustomActionBar
         android:id="@+id/customActionBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -27,15 +26,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.application.trust.CustomComponents.Panels.BottomNavigation.CustomBottomNavigation
+    <com.application.arenda.CustomComponents.Panels.BottomNavigation.CustomBottomNavigation
         android:id="@+id/customBottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <com.application.trust.CustomComponents.Panels.SideBar.CustomSideBar
+    <com.application.arenda.CustomComponents.Panels.SideBar.CustomSideBar
         android:id="@+id/customSideBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -46,7 +45,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
-    </com.application.trust.CustomComponents.Panels.SideBar.CustomSideBar>
+    </com.application.arenda.CustomComponents.Panels.SideBar.CustomSideBar>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
