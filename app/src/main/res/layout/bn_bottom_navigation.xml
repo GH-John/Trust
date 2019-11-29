@@ -7,16 +7,28 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/panelBottomNavigation"
+        android:id="@+id/leftPanelBN"
         android:layout_width="0dp"
-        android:layout_height="60dp"
+        android:layout_height="65dp"
         android:contentDescription="@string/todo"
-        android:paddingTop="3dp"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/itemAddAnnouncement"
+        app:layout_constraintEnd_toStartOf="@+id/itemAddAnnouncement"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/itemAddAnnouncement"
         tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/rightPanelBN"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/itemAddAnnouncement"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/itemAddAnnouncement"
+        app:layout_constraintTop_toTopOf="@+id/itemAddAnnouncement" />
 
     <ImageView
         android:id="@+id/itemUserStatistics"
@@ -24,43 +36,43 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/todo"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
-        app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
+        app:layout_constraintBottom_toBottomOf="@+id/leftPanelBN"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemUserProposals"
-        app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
+        app:layout_constraintTop_toTopOf="@+id/leftPanelBN"
         app:srcCompat="@drawable/bn_item_statistics"
         tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/itemUserProposals"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:contentDescription="@string/todo"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
+        app:layout_constraintBottom_toBottomOf="@+id/leftPanelBN"
         app:layout_constraintEnd_toStartOf="@+id/itemUserStatistics"
         app:layout_constraintStart_toEndOf="@+id/itemAddAnnouncement"
-        app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
+        app:layout_constraintTop_toTopOf="@+id/leftPanelBN"
         app:srcCompat="@drawable/bn_item_proposals"
         tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/itemAllAnnouncement"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:contentDescription="@string/todo"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/panelBottomNavigation"
+        app:layout_constraintBottom_toBottomOf="@+id/leftPanelBN"
         app:layout_constraintEnd_toStartOf="@+id/itemUserAnnouncement"
-        app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
-        app:layout_constraintTop_toTopOf="@+id/panelBottomNavigation"
+        app:layout_constraintStart_toStartOf="@+id/leftPanelBN"
+        app:layout_constraintTop_toTopOf="@+id/leftPanelBN"
         app:srcCompat="@drawable/bn_item_search_announcements"
         tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/itemUserAnnouncement"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:contentDescription="@string/todo"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/itemAllAnnouncement"
@@ -72,34 +84,24 @@
 
     <ImageView
         android:id="@+id/itemAddAnnouncement"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginBottom="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
         android:contentDescription="@string/todo"
         android:elevation="2dp"
         android:translationZ="2dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/panelBottomNavigation"
-        app:layout_constraintStart_toStartOf="@+id/panelBottomNavigation"
+        app:layout_constraintEnd_toStartOf="@+id/rightPanelBN"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/leftPanelBN"
         app:srcCompat="@drawable/bn_item_add_announcement"
         tools:ignore="UnusedAttribute"
         tools:visibility="visible" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupHideBottomNavigation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="itemAddAnnouncement,panelBottomNavigation,itemUserAnnouncement,itemUserProposals,itemUserStatistics,itemAllAnnouncement"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible" />
-
     <ImageView
         android:id="@+id/itemExpand"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="0dp"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/todo"
@@ -110,6 +112,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/itemAddAnnouncement"
         app:srcCompat="@drawable/ic_btn_expand"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupHideBottomNavigation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="itemAddAnnouncement,leftPanelBN,itemUserAnnouncement,itemUserProposals,itemUserStatistics,itemAllAnnouncement"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

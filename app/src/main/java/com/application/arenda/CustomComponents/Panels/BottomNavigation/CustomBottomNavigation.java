@@ -29,12 +29,14 @@ import java.util.Map;
 import java.util.Set;
 
 public class CustomBottomNavigation extends ConstraintLayout implements BottomNavigation, Observable, AdapterLink, AdapterManager {
-    private ImageView panelBottomNavigation,
+    private ImageView
             itemUserAnnouncements,
             itemAllAnnouncements,
             itemAddAnnouncement,
             itemUserStatistics,
             itemUserProposals,
+            leftPanelBN,
+            rightPanelBN,
             itemExpand;
 
     private Group groupHide;
@@ -54,14 +56,16 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
         createListItem();
         stylePanel(new PanelBottomNavigation(context,
                 R.color.colorWhite, new float[8], R.color.shadowColor,
-                10f, 0f, 0f));
+                10f, 0f, 0f), leftPanelBN);
+
         styleItems();
     }
 
     private void initializationComponents(Context context, AttributeSet attrs) {
         inflate(context, R.layout.bn_bottom_navigation, this);
         itemUserAnnouncements = findViewById(R.id.itemUserAnnouncement);
-        panelBottomNavigation = findViewById(R.id.panelBottomNavigation);
+        leftPanelBN = findViewById(R.id.leftPanelBN);
+        rightPanelBN = findViewById(R.id.rightPanelBN);
         itemAllAnnouncements = findViewById(R.id.itemAllAnnouncement);
         itemAddAnnouncement = findViewById(R.id.itemAddAnnouncement);
         itemUserStatistics = findViewById(R.id.itemUserStatistics);
@@ -84,8 +88,10 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
 
     @SuppressLint({"ResourceAsColor"})
     @Override
-    public void stylePanel(DrawPanel drawPanel) {
-        this.panelBottomNavigation.setImageDrawable((Drawable) drawPanel);
+    public void stylePanel(DrawPanel drawPanel, View view) {
+        ((ImageView)view).setImageDrawable((Drawable) drawPanel);
+        rightPanelBN.setImageDrawable(((ImageView)view).getDrawable());
+        rightPanelBN.setRotation(180f);
     }
 
     @Override
@@ -132,7 +138,7 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
                     item.setOnClickListener(new OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            hidePanel();
+//                            hidePanel();
                             notifyObservers(fragment);
                         }
                     });
