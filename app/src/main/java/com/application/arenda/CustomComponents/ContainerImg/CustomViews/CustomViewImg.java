@@ -30,7 +30,7 @@ public class CustomViewImg extends ConstraintLayout {
     }
 
     private void initializationComponents() {
-        inflate(getContext(), R.layout.view_selected_img, this);
+        inflate(getContext(), R.layout.container_pattern_selected_img, this);
         itemImg = findViewById(R.id.itemImg);
         itemDeleteSelectedImg = findViewById(R.id.itemDeleteSelectedImg);
     }

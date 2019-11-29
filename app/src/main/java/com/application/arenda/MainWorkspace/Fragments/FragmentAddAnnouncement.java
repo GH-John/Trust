@@ -62,7 +62,7 @@ public class FragmentAddAnnouncement extends Fragment implements AdapterSideBar,
         containerFiller = new ContainerFiller(getContext());
         containerFiller.setContainer(containerSelectedImages);
 
-        dropDownList.setAdapter(new AdapterCategory(R.layout.category_pattern_item,
+        dropDownList.setAdapter(new AdapterCategory(R.layout.drop_down_list_pattern_item,
                 InflateDropDownList.getCollectionCategories(getContext(),
                         dropDownList.getProgressBar(), dropDownList)));
     }
@@ -74,7 +74,7 @@ public class FragmentAddAnnouncement extends Fragment implements AdapterSideBar,
 
         SetFieldStyle.setEditTextBackground(fieldBackground, fieldProductName);
 
-        dropDownList.setTitle(getString(R.string.text_category));
+        dropDownList.setDefaultTitle(getString(R.string.text_category));
     }
 
     private void initializationListeners() {

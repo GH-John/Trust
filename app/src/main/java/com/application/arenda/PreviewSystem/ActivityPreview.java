@@ -43,8 +43,8 @@ public class ActivityPreview extends AppCompatActivity {
         previewViewPager = findViewById(R.id.previewViewPager);
         dotsLayout = findViewById(R.id.dotsLayout);
         btnSkip = findViewById(R.id.btnSkip);
-        dotSelected = this.getDrawable(R.drawable.dot_selected);
-        dotUnselected = this.getDrawable(R.drawable.dot_unselected);
+        dotSelected = this.getDrawable(R.drawable.preview_dot_selected);
+        dotUnselected = this.getDrawable(R.drawable.preview_dot_unselected);
     }
 
     private void initializationStyles() {

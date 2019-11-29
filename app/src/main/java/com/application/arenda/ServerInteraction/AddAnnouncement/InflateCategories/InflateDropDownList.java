@@ -23,7 +23,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SuppressLint("StaticFieldLeak")
@@ -61,6 +64,12 @@ public class InflateDropDownList {
                                         object.getString("name").trim()));
 
                             }
+                            Collections.sort((List) collection, new Comparator<ItemContent>() {
+                                @Override
+                                public int compare(ItemContent o1, ItemContent o2) {
+                                    return o2.getName().length() - o1.getName().length();
+                                }
+                            });
                             progressBar.setVisibility(View.GONE);
                             observer.update(collection);
                             break;
@@ -71,6 +80,7 @@ public class InflateDropDownList {
 
                         default:
                             progressBar.setVisibility(View.GONE);
+                            observer.update(collection);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -133,7 +143,12 @@ public class InflateDropDownList {
                                 collection.add(new ItemContent(Integer.valueOf(object.getString("subCategories")),
                                         object.getString("name").trim()));
                             }
-
+                            Collections.sort((List) collection, new Comparator<ItemContent>() {
+                                @Override
+                                public int compare(ItemContent o1, ItemContent o2) {
+                                    return o2.getName().length() - o1.getName().length();
+                                }
+                            });
                             progressBar.setVisibility(View.GONE);
                             observer.update(collection);
                             break;
@@ -144,6 +159,7 @@ public class InflateDropDownList {
 
                         default:
                             progressBar.setVisibility(View.GONE);
+                            observer.update(collection);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

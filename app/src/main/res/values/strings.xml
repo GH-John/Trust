@@ -68,7 +68,7 @@
     <string name="hint_product_description">Описание</string>
     <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
 
-    <string name="text_category">Категория</string>
+    <string name="text_category">Категории</string>
     <string name="text_limit_add_photos">0/9</string>
     <string name="text_user_name">Фамилия Имя</string>
     <string name="text_some_text">Какой-то текст</string>

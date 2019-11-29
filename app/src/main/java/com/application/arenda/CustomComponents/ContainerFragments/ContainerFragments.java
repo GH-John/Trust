@@ -45,7 +45,8 @@ public class ContainerFragments implements Observer, Observable, AdapterManager 
     private void changeFragmentContainer(Fragment fragment) {
         containerFragments = ((AppCompatActivity) context).getSupportFragmentManager().findFragmentById(idContainer);
         if (!containerFragments.equals(fragment)) {
-            ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction()
+            ((AppCompatActivity) context).getSupportFragmentManager()
+                    .beginTransaction()
                     .replace(idContainer, fragment)
                     .addToBackStack(String.valueOf(fragment.getClass()))
                     .commit();

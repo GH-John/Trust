@@ -59,7 +59,7 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
     }
 
     private void initializationComponents(Context context, AttributeSet attrs) {
-        inflate(context, R.layout.bottom_navigation, this);
+        inflate(context, R.layout.bn_bottom_navigation, this);
         itemUserAnnouncements = findViewById(R.id.itemUserAnnouncement);
         panelBottomNavigation = findViewById(R.id.panelBottomNavigation);
         itemAllAnnouncements = findViewById(R.id.itemAllAnnouncement);
@@ -101,15 +101,14 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
     }
 
     private void groupVisible(final boolean b) {
-        final int[] group = groupHide.getReferencedIds();
         groupHide.post(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < group.length; i++) {
+                for (int value : groupHide.getReferencedIds()) {
                     if (!b)
-                        findViewById(group[i]).setVisibility(View.INVISIBLE);
+                        findViewById(value).setVisibility(View.INVISIBLE);
                     else
-                        findViewById(group[i]).setVisibility(View.VISIBLE);
+                        findViewById(value).setVisibility(View.VISIBLE);
                 }
             }
         });

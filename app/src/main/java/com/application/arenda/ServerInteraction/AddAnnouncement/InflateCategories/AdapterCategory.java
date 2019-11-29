@@ -27,8 +27,7 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHo
 
     public AdapterCategory(int idPatternLayout, Collection collection) {
         this.idPatternLayout = idPatternLayout;
-        this.collection = new ArrayList<>();
-        this.collection.addAll(collection);
+        this.collection = new ArrayList<>(collection);
     }
 
     @Override
@@ -67,13 +66,17 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHo
     public void onBindViewHolder(@NonNull AdapterCategory.ViewHolder holder, int position) {
         final ItemContent itemContent = ((List<ItemContent>) this.collection).get(position);
         holder.nameCategory.setText(itemContent.getName());
-        holder.iconCategory.setImageResource(R.drawable.ic_category_plus);
+        holder.iconCategory.setImageResource(R.drawable.ic_extra_categories);
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InflateDropDownList.getCollectionSubcategories(context, itemContent.getId(),
-                        dropDownList.getProgressBar(), (Observer) dropDownList);
+                dropDownList.setTitle(itemContent.getName());
+                if (!(dropDownList.CURRENT_SIZE_STACK() == dropDownList.MAX_SIZE_STACK()))
+                    InflateDropDownList.getCollectionSubcategories(context, itemContent.getId(),
+                            dropDownList.getProgressBar(), (Observer) dropDownList);
+                else
+                    dropDownList.hideList();
             }
         });
     }
@@ -91,7 +94,7 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHo
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameCategory = itemView.findViewById(R.id.nameCategory);
-            iconCategory = itemView.findViewById(R.id.iconCategory);
+            iconCategory = itemView.findViewById(R.id.extraIcon);
             relativeLayout = itemView.findViewById(R.id.layoutPatternCategory);
         }
     }

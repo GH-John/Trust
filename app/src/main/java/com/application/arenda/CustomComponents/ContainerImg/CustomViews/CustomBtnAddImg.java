@@ -19,7 +19,7 @@ public class CustomBtnAddImg extends ConstraintLayout {
     }
 
     private void initializationComponents() {
-        inflate(getContext(), R.layout.btn_add_img, this);
+        inflate(getContext(), R.layout.container_pattern_btn_add_img, this);
         backgroundBtnAdd = findViewById(R.id.backgroundBtnAdd);
     }
 

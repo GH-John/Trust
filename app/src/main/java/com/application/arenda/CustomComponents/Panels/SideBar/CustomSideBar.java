@@ -58,7 +58,7 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
     }
 
     private void initializationComponents(Context context, AttributeSet attrs) {
-        inflate(context, R.layout.side_bar, this);
+        inflate(context, R.layout.sb_side_bar, this);
         panelSideBar = findViewById(R.id.panelSideBar);
         itemRecyclerView = findViewById(R.id.itemRecyclerView);
         blackoutSideBar = findViewById(R.id.blackoutSideBar);
