@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.application.arenda.CustomComponents.BtnStyle.BtnBackground;
+import com.application.arenda.CustomComponents.ComponentBackground;
 import com.application.arenda.R;
 
 public class CustomViewImg extends ConstraintLayout {
@@ -41,9 +41,8 @@ public class CustomViewImg extends ConstraintLayout {
     public boolean setImageBitmap(Bitmap bitmap) {
         try {
             BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            BtnBackground background = new BtnBackground(getContext(), R.color.colorWhite,
-                    R.color.shadowColor, 6f, 0f, 3f,
-                    new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
+            ComponentBackground background = new ComponentBackground(getContext(), R.color.colorWhite,
+                    R.color.shadowColor, 6f, 0f, 3f, 20f);
             background.setShader(shader);
 
             itemImg.setImageDrawable(background);

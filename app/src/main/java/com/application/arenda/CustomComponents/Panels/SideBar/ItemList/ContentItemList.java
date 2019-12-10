@@ -1,14 +1,16 @@
 package com.application.arenda.CustomComponents.Panels.SideBar.ItemList;
 
+import android.graphics.drawable.Drawable;
+
 import androidx.fragment.app.Fragment;
 
 class ContentItemList {
     private int idNamePanel;
     private int idIconPanel;
-    private PanelItemList stylePanel;
+    private Drawable stylePanel;
     private Fragment fragment;
 
-    public ContentItemList(Fragment fragment, int idNamePanel, int idIconPanel, PanelItemList stylePanel) {
+    public ContentItemList(Fragment fragment, int idNamePanel, int idIconPanel, Drawable stylePanel) {
         this.fragment = fragment;
         this.idNamePanel = idNamePanel;
         this.idIconPanel = idIconPanel;
@@ -23,7 +25,7 @@ class ContentItemList {
         return idIconPanel;
     }
 
-    public PanelItemList getStylePanel() {
+    public Drawable getStylePanel() {
         return stylePanel;
     }
 

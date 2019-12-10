@@ -5,11 +5,26 @@ import android.graphics.Paint;
 import android.graphics.Path;
 
 public interface DrawPanel {
-    void setPaint(Paint paint);
-    void setDefaultParametrs(int ResourcesFillColor, int ResourcesShadowColor, float shadowRadius, float shadowDX, float shadowDY);
     void setShader(BitmapShader shader);
-    void setPath(Path path);
+
     void setRoundRect(float[] radii, int width, int height);
+
+    void setAntiAlians(boolean b);
+
+    void setFillColor(int resourceColor);
+
+    void setShadowColor(int resourceColor);
+
+    void setRoundingCorners(float upLeftCorner,
+                            float upRightCorner,
+                            float botRightCorner,
+                            float botLeftCorner);
+
     Path getPath();
+
+    void setPath(Path path);
+
     Paint getPaint();
+
+    void setPaint(Paint paint);
 }

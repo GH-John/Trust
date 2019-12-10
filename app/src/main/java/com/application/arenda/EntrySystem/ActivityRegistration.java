@@ -10,15 +10,13 @@ import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.application.arenda.CustomComponents.BtnStyle.BtnBackground;
-import com.application.arenda.CustomComponents.BtnStyle.SetBtnStyle;
-import com.application.arenda.CustomComponents.FieldStyle.FieldBackground;
-import com.application.arenda.CustomComponents.FieldStyle.SetFieldStyle;
-import com.application.arenda.CustomComponents.PinStyle.PinBackground;
-import com.application.arenda.CustomComponents.PinStyle.SetPinStyle;
-import com.application.arenda.ServerInteraction.Registration.RegistrationUser;
-import com.application.arenda.R;
+import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
+import com.application.arenda.CustomComponents.ComponentBackground;
+import com.application.arenda.CustomComponents.SetStyle.SetFieldStyle;
+import com.application.arenda.CustomComponents.SetDrawableImageViews;
 import com.application.arenda.MainWorkspace.Activities.ActivityMain;
+import com.application.arenda.R;
+import com.application.arenda.ServerInteraction.Registration.RegistrationUser;
 
 import ru.tinkoff.decoro.MaskImpl;
 import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
@@ -41,12 +39,7 @@ public class ActivityRegistration extends AppCompatActivity {
             btnGetCodeReg,
             btnReg;
 
-    private FieldBackground fieldBackground;
-    private PinBackground pinBackground;
-    private BtnBackground btnBackground;
-
     private RegistrationUser registrationUser;
-    private static String URL_REGISTRATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/RegistrationUser.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,38 +74,26 @@ public class ActivityRegistration extends AppCompatActivity {
         btnGetCodeReg = findViewById(R.id.btnGetCodeReg);
         btnReg = findViewById(R.id.btnReg);
 
-        registrationUser = new RegistrationUser(this, URL_REGISTRATION, new ActivityMain());
+        registrationUser = new RegistrationUser(this, new ActivityMain());
     }
 
-    private void initializationStyles(){
-        pinBackground = new PinBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{0f, 0f, 20f, 20f, 20f, 20f, 0f, 0f});
+    private void initializationStyles() {
+        SetDrawableImageViews.setStyle(new ComponentBackground(this, R.color.colorWhite,
+                R.color.shadowColor, 6f, 3f, 3f, 0f, 20f, 20f, 0f), imagePinReg);
 
-        SetPinStyle.setStyle(pinBackground, imagePinReg);
-
-        fieldBackground = new FieldBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
-
-        SetFieldStyle.setEditTextBackground(fieldBackground, fieldNameReg,
+        SetFieldStyle.setEditTextBackground(new ComponentBackground(this, R.color.colorWhite,
+                        R.color.shadowColor, 6f, 0f, 3f, 20f), fieldNameReg,
                 fieldLastNameReg,
                 fieldEmailReg,
                 fieldPassReg,
                 fieldPhoneReg,
                 fieldCodeReg);
 
-        btnBackground = new BtnBackground(this, R.color.colorAccent,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
+        SetBtnStyle.setStyle(new ComponentBackground(this, R.color.colorWhite,
+                R.color.shadowColor, 6f, 0f, 3f, 20f), btnGetCodeReg);
 
-        SetBtnStyle.setStyle(btnBackground, btnReg);
-
-        btnBackground = new BtnBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
-
-        SetBtnStyle.setStyle(btnBackground, btnGetCodeReg);
+        SetBtnStyle.setStyle(new ComponentBackground(this, R.color.colorAccent,
+                R.color.shadowColor, 6f, 0f, 3f, 20f), btnReg);
     }
 
     private void initializationListeners() {
@@ -144,9 +125,9 @@ public class ActivityRegistration extends AppCompatActivity {
         });
     }
 
-    public boolean fieldIsEmpty(EditText ... fields){
+    public boolean fieldIsEmpty(EditText... fields) {
         int countEmpty = 0;
-        if(fields.length > 0) {
+        if (fields.length > 0) {
             for (EditText field : fields) {
                 if (field.getText().toString().isEmpty()) {
                     field.setError(getResources().getString(R.string.error_empty_field));

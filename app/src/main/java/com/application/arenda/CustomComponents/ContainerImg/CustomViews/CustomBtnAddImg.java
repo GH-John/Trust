@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.application.arenda.CustomComponents.BtnStyle.BtnBackground;
+import com.application.arenda.CustomComponents.ComponentBackground;
 import com.application.arenda.R;
 
 public class CustomBtnAddImg extends ConstraintLayout {
@@ -24,8 +24,7 @@ public class CustomBtnAddImg extends ConstraintLayout {
     }
 
     private void initializationStyles() {
-        backgroundBtnAdd.setImageDrawable(new BtnBackground(getContext(), R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f}));
+        backgroundBtnAdd.setImageDrawable(new ComponentBackground(getContext(), R.color.colorWhite,
+                R.color.shadowColor, 6f, 0f, 3f, 20f));
     }
 }

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutPatternCategory"
     android:layout_width="match_parent"
-    android:layout_height="36dp">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp">
 
     <TextView
         android:id="@+id/nameCategory"
@@ -17,7 +18,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_toStartOf="@+id/extraIcon"
-        android:gravity="center_vertical"
+        android:gravity="top"
         android:text="@string/text_some_text"
         android:textAlignment="viewStart"
         tools:ignore="RtlCompat" />
@@ -30,6 +31,5 @@
         android:layout_alignBottom="@+id/nameCategory"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="26dp"
-        android:contentDescription="@string/todo"
-        app:srcCompat="@drawable/ic_extra_categories" />
+        android:contentDescription="@string/todo" />
 </RelativeLayout>

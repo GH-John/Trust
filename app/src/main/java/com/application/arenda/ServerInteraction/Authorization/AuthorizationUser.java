@@ -16,9 +16,10 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.application.arenda.Cookies.UserCookie;
+import com.application.arenda.Cookies.UserProfile;
 import com.application.arenda.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,16 +27,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuthorizationUser {
+    private final static String URL_AUTHORIZATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/AuthorizationUser.php";
     private final Context context;
-    private final String URL_AUTHORIZATION;
 
     private StringRequest request;
     private ProgressBar progressBar;
     private AppCompatActivity startActivity;
 
-    public AuthorizationUser(Context context, String URL_AUTHORIZATION, AppCompatActivity startActivity) {
+    public AuthorizationUser(Context context, AppCompatActivity startActivity) {
         this.context = context;
-        this.URL_AUTHORIZATION = URL_AUTHORIZATION;
         this.startActivity = startActivity;
         this.progressBar = new ProgressBar(context);
     }
@@ -48,34 +48,28 @@ public class AuthorizationUser {
             public void onResponse(String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    JSONArray jsonArray = jsonObject.getJSONArray("authorization");
 
                     String code = jsonObject.getString("code");
 
-                    switch(code){
-                        case "1":{
-                            JSONObject object;
-                            String name = "";
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                object = jsonArray.getJSONObject(i);
+                    switch (code) {
+                        case "1": {
+                            UserCookie.putProfile(context, jsonObject.getString("token"), new UserProfile());
 
-                                name = object.getString("name").trim();
-                            }
                             progressBar.setVisibility(View.GONE);
                             context.startActivity(new Intent(context, startActivity.getClass()));
                             messageOutput(context.getResources()
-                                    .getString(R.string.success_authorization) + " " + name);
+                                    .getString(R.string.success_authorization) + " " + jsonObject.getString("name"));
                             break;
                         }
 
-                        case "2":{
+                        case "2": {
                             progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources()
                                     .getString(R.string.unsuccess_authorization_password));
                             break;
                         }
 
-                        case "3":{
+                        case "3": {
                             progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources()
                                     .getString(R.string.unsuccess_authorization_login));
@@ -84,7 +78,7 @@ public class AuthorizationUser {
 
                         case "101": {
                             progressBar.setVisibility(View.GONE);
-                            messageOutput(context.getResources().getString(R.string.error_server_connect));
+                            messageOutput(context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                             break;
                         }
                     }
@@ -101,11 +95,11 @@ public class AuthorizationUser {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        if(volleyError instanceof TimeoutError){
+                        if (volleyError instanceof TimeoutError) {
                             progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources()
                                     .getString(R.string.error_check_internet_connect));
-                        }else {
+                        } else {
                             progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources()
                                     .getString(R.string.error_authorization) + volleyError.toString());
@@ -125,20 +119,20 @@ public class AuthorizationUser {
         requestQueue.add(request);
     }
 
-    public void requestCancel(){
-        if(request != null)
+    public void requestCancel() {
+        if (request != null)
             request.cancel();
     }
 
-    public void setProgressBar(ProgressBar progressBar){
-        this.progressBar = progressBar;
-    }
-
-    public ProgressBar getProgressBar(){
+    public ProgressBar getProgressBar() {
         return this.progressBar;
     }
 
-    private void messageOutput(String str){
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    private void messageOutput(String str) {
         Toast.makeText(context, str, Toast.LENGTH_LONG).show();
     }
 }

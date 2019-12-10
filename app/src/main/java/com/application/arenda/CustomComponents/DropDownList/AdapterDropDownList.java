@@ -1,6 +1,4 @@
-package com.application.arenda.ServerInteraction.AddAnnouncement.InflateCategories;
-
-import com.application.arenda.CustomComponents.DropDownList.IDropDownList;
+package com.application.arenda.CustomComponents.DropDownList;
 
 import java.util.Collection;
 

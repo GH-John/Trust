@@ -3,6 +3,7 @@ package com.application.arenda.CustomComponents.ContainerFragments;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -54,7 +55,7 @@ public class ContainerFragments implements Observer, Observable, AdapterManager 
     }
 
     @Override
-    public void update(Object object) {
+    public void update(@NonNull Object object) {
         changeFragmentContainer((Fragment) object);
         notifyObservers(object);
     }

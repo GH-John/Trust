@@ -55,8 +55,8 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
         initializationComponents(context, attrs);
         createListItem();
         stylePanel(new PanelBottomNavigation(context,
-                R.color.colorWhite, new float[8], R.color.shadowColor,
-                10f, 0f, 0f), leftPanelBN);
+                R.color.colorWhite, R.color.shadowColor,
+                10f, 0f, 0f, 0f, 0f, 0f, 0f), leftPanelBN);
 
         styleItems();
     }
@@ -89,8 +89,8 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
     @SuppressLint({"ResourceAsColor"})
     @Override
     public void stylePanel(DrawPanel drawPanel, View view) {
-        ((ImageView)view).setImageDrawable((Drawable) drawPanel);
-        rightPanelBN.setImageDrawable(((ImageView)view).getDrawable());
+        ((ImageView) view).setImageDrawable((Drawable) drawPanel);
+        rightPanelBN.setImageDrawable(((ImageView) view).getDrawable());
         rightPanelBN.setRotation(180f);
     }
 

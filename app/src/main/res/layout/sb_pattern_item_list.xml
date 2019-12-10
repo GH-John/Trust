@@ -5,7 +5,7 @@
     android:id="@+id/layoutPatternItemList"
     android:layout_width="match_parent"
     android:layout_height="46dp"
-    android:layout_marginBottom="2dp">
+    android:layout_marginBottom="6dp">
 
     <ImageView
         android:id="@+id/panelItemList"

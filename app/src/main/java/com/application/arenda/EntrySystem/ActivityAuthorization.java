@@ -10,15 +10,13 @@ import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.application.arenda.CustomComponents.BtnStyle.BtnBackground;
-import com.application.arenda.CustomComponents.BtnStyle.SetBtnStyle;
-import com.application.arenda.CustomComponents.FieldStyle.FieldBackground;
-import com.application.arenda.CustomComponents.FieldStyle.SetFieldStyle;
-import com.application.arenda.CustomComponents.PinStyle.PinBackground;
-import com.application.arenda.CustomComponents.PinStyle.SetPinStyle;
-import com.application.arenda.ServerInteraction.Authorization.AuthorizationUser;
-import com.application.arenda.R;
+import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
+import com.application.arenda.CustomComponents.ComponentBackground;
+import com.application.arenda.CustomComponents.SetStyle.SetFieldStyle;
+import com.application.arenda.CustomComponents.SetDrawableImageViews;
 import com.application.arenda.MainWorkspace.Activities.ActivityMain;
+import com.application.arenda.R;
+import com.application.arenda.ServerInteraction.Authorization.AuthorizationUser;
 
 public class ActivityAuthorization extends AppCompatActivity {
     private EditText fieldEmailAuth, fieldPassAuth;
@@ -26,12 +24,7 @@ public class ActivityAuthorization extends AppCompatActivity {
     private Button btnSignAuth, btnRegAuth;
     private ProgressBar progressBarAuth;
 
-    private FieldBackground fieldBackground;
-    private PinBackground pinBackground;
-    private BtnBackground btnBackground;
-
     private AuthorizationUser authorizationUser;
-    private static String URL_AUTHORIZATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/AuthorizationUser.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,33 +53,21 @@ public class ActivityAuthorization extends AppCompatActivity {
 
         progressBarAuth = findViewById(R.id.progressBarAuth);
 
-        authorizationUser = new AuthorizationUser(this, URL_AUTHORIZATION, new ActivityMain());
+        authorizationUser = new AuthorizationUser(this, new ActivityMain());
     }
 
     private void initializationStyles() {
-        pinBackground = new PinBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{0f, 0f, 20f, 20f, 20f, 20f, 0f, 0f});
+        SetDrawableImageViews.setStyle(new ComponentBackground(this, R.color.colorWhite,
+                R.color.shadowColor, 6f, 3f, 3f, 0f, 20f, 20f, 0f), imagePinAuth);
 
-        SetPinStyle.setStyle(pinBackground, imagePinAuth);
+        SetFieldStyle.setEditTextBackground(new ComponentBackground(this, R.color.colorWhite,
+                R.color.shadowColor, 6f, 0f, 3f, 20f), fieldEmailAuth, fieldPassAuth);
 
-        fieldBackground = new FieldBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
+        SetBtnStyle.setStyle(new ComponentBackground(this, R.color.colorWhite,
+                R.color.shadowColor, 6f, 0f, 3f, 20f), btnRegAuth);
 
-        SetFieldStyle.setEditTextBackground(fieldBackground, fieldEmailAuth, fieldPassAuth);
-
-        btnBackground = new BtnBackground(this, R.color.colorAccent,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
-
-        SetBtnStyle.setStyle(btnBackground, btnSignAuth);
-
-        btnBackground = new BtnBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
-
-        SetBtnStyle.setStyle(btnBackground, btnRegAuth);
+        SetBtnStyle.setStyle(new ComponentBackground(this, R.color.colorAccent,
+                R.color.shadowColor, 6f, 0f, 3f, 20f), btnSignAuth);
     }
 
     private void initializationListeners() {

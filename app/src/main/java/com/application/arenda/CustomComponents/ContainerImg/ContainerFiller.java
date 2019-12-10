@@ -111,12 +111,12 @@ public class ContainerFiller implements AdapterContainer {
         });
     }
 
-    public Map getMapBitmap() {
+    public Map<Uri, Bitmap> getMapBitmap() {
         return mapBitmap;
     }
 
     @Override
-    public Map getCurrentMap() {
+    public Map<Uri, View> getCurrentMap() {
         return currentMap;
     }
 

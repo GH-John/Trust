@@ -1,9 +1,11 @@
-package com.application.arenda.ServerInteraction.AddAnnouncement;
+package com.application.arenda.ServerInteraction.InsertAnnouncement;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -20,56 +22,59 @@ import com.application.arenda.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddAnnouncement extends AsyncTask<Void, Void, Void> {
+public class InsertPhoto extends AsyncTask<Void, Void, Void> {
+    private static String URL_INSERT_PHOTO = "http://192.168.43.241/AndroidConnectWithServer/php/insert/InsertPhoto.php";
+
     @SuppressLint("StaticFieldLeak")
     private Context context;
-    private Bitmap bitmap;
-    private StringRequest request;
-    private static String URL_INSERT_PHOTO = "http://192.168.43.241/AndroidConnectWithServer/php/insert/InsertAnnouncement.php";
 
-    public AddAnnouncement(Context context, Bitmap bitmap) {
+    private Map<Uri, Bitmap> mapBitmap;
+    private int idAnnouncement;
+    private StringRequest request;
+
+    public InsertPhoto(Context context, int idAnnouncement, Map<Uri, Bitmap> mapBitmap) {
         this.context = context;
-        this.bitmap = bitmap;
+        this.mapBitmap = mapBitmap;
+        this.idAnnouncement = idAnnouncement;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
-        sendToServer();
+        for (Map.Entry<Uri, Bitmap> map : mapBitmap.entrySet()) {
+            sendToServer(map.getValue());
+        }
         return null;
     }
 
-    private void sendToServer() {
+    private void sendToServer(final Bitmap bitmap) {
         request = new StringRequest(Request.Method.POST, URL_INSERT_PHOTO, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
-                    messageOutput(response);
                     JSONObject jsonObject = new JSONObject(response);
 
                     String code = jsonObject.getString("code");
 
                     switch (code) {
                         case "0": {
-                            messageOutput(context.getString(R.string.error_send_photo_to_server));
+                            messageOutput(context.getString(R.string.error_send_photo_to_server) + response);
                             break;
                         }
                         case "1":
-                            messageOutput(context.getString(R.string.success_announcement_added));
+                            Log.d(getClass().toString(), context.getString(R.string.success_photos_loaded));
                             break;
                         case "101":
-                            messageOutput(context.getResources().getString(R.string.error_check_internet_connect));
+                            messageOutput(context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                             break;
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.d(getClass().toString(), e.getMessage());
 
                     messageOutput(context.getResources()
-                            .getString(R.string.error_adding_announcement) + response);
+                            .getString(R.string.error_adding_photos) + e.getMessage());
                 }
             }
         },
@@ -81,7 +86,7 @@ public class AddAnnouncement extends AsyncTask<Void, Void, Void> {
                                     .getString(R.string.error_check_internet_connect));
                         } else {
                             messageOutput(context.getResources()
-                                    .getString(R.string.error_registration) + " " + volleyError.networkResponse.statusCode);
+                                    .getString(R.string.error_adding_photos) + volleyError.getMessage());
                         }
                     }
                 }) {
@@ -89,16 +94,7 @@ public class AddAnnouncement extends AsyncTask<Void, Void, Void> {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("idUser", "1");
-                params.put("idCategory", "1");
-                params.put("name", "some name");
-                params.put("description", "some description");
-                params.put("cost", "123.0");
-                params.put("statusControl", "some status");
-                params.put("placementDate", new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
-                params.put("statusRent", "false");
-                params.put("rating", "0");
-                params.put("profit", "0");
+                params.put("idAnnouncement", String.valueOf(idAnnouncement));
                 params.put("encodedString", ThumbnailCompression.getEncodeBase64(bitmap));
                 return params;
             }

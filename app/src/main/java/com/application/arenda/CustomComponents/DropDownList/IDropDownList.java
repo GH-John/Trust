@@ -2,18 +2,20 @@ package com.application.arenda.CustomComponents.DropDownList;
 
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.ServerInteraction.AddAnnouncement.InflateCategories.AdapterDropDownList;
+import com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList.ModelItemContent;
 
 import java.util.Collection;
 
 public interface IDropDownList {
-    void setTitle(String title);
 
-    void setDefaultTitle(String defaultTitle);
+    void setTitle(@NonNull String title);
 
-    void setAdapter(RecyclerView.Adapter adapter);
+    void setDefaultTitle(@NonNull String defaultTitle);
+
+    void setAdapter(@NonNull RecyclerView.Adapter adapter);
 
     void hideList();
 
@@ -21,17 +23,25 @@ public interface IDropDownList {
 
     View getProgressBar();
 
-    void clearRecyclerView(AdapterDropDownList adapter);
+    void clearRecyclerView(@NonNull AdapterDropDownList adapter);
 
-    void refreshCollection(Collection collection);
+    void refreshCollection(@NonNull Collection<ModelItemContent> collection);
 
-    void pushToBackStack(Collection collection);
+    void pushToBackStack(@NonNull Collection<ModelItemContent> collection);
 
-    Collection popToBackStack();
+    Collection<ModelItemContent> popToBackStack();
 
-    boolean isEmptyToBackStack();
+    boolean isEmptyBackStack();
 
-    boolean isContainsToBackStack(Collection collection);
+    boolean isContainsToBackStack(@NonNull Collection<ModelItemContent> collection);
+
+    void setOnClickLastElement(View.OnClickListener onClickListener);
+
+    void setError(@NonNull String error);
+
+    void clearError();
+
+    void visibleError(boolean visible);
 
     int CURRENT_SIZE_STACK();
 

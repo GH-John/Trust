@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutSideBar"
@@ -43,15 +42,17 @@
 
         <ImageView
             android:id="@+id/itemAddAnnouncement"
-            android:layout_width="55dp"
-            android:layout_height="55dp"
-            android:layout_marginBottom="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:contentDescription="@string/todo"
             android:elevation="6dp"
             android:translationZ="1dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@id/panelSideBar"
             app:layout_constraintEnd_toEndOf="@id/panelSideBar"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@id/panelSideBar"
             app:srcCompat="@drawable/sb_item_add_announcement"
             tools:ignore="UnusedAttribute"
@@ -74,8 +75,8 @@
             tools:visibility="visible" />
 
         <TextView
-            style="@style/DefaultStyleTextRegular.Header"
             android:id="@+id/itemUserName"
+            style="@style/DefaultStyleTextRegular.Header"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginStart="20dp"
@@ -84,28 +85,45 @@
             android:gravity="center"
             android:text="@string/text_user_name"
             android:textAlignment="textEnd"
-            android:textColor="@color/colorNameUserAccount"
+            android:textColor="@color/colorText"
             android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/itemRecyclerView"
+            app:layout_constraintBottom_toBottomOf="@+id/itemUserAccount"
             app:layout_constraintEnd_toStartOf="@+id/itemUserAccount"
             app:layout_constraintStart_toStartOf="@id/panelSideBar"
-            app:layout_constraintTop_toTopOf="@+id/panelSideBar"
-            tools:visibility="visible"
-            tools:ignore="RtlCompat" />
+            app:layout_constraintTop_toTopOf="@+id/itemUserAccount"
+            tools:ignore="RtlCompat"
+            tools:visibility="visible" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/itemRecyclerView"
-            android:layout_width="0dp"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="9dp"
-            android:visibility="visible"
+            android:fillViewport="true"
             app:layout_constraintBottom_toBottomOf="@+id/panelSideBar"
             app:layout_constraintEnd_toEndOf="@+id/panelSideBar"
             app:layout_constraintStart_toStartOf="@+id/panelSideBar"
-            app:layout_constraintTop_toBottomOf="@+id/itemUserAccount"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@+id/itemUserAccount">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/itemRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:paddingBottom="100dp"
+                    android:visibility="visible"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

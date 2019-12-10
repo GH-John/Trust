@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.application.arenda.CustomComponents.BtnStyle.BtnBackground;
-import com.application.arenda.CustomComponents.BtnStyle.SetBtnStyle;
+import com.application.arenda.CustomComponents.ComponentBackground;
+import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
 import com.application.arenda.EntrySystem.ActivityAuthorization;
 import com.application.arenda.R;
 
@@ -24,7 +24,7 @@ public class ActivityPreview extends AppCompatActivity {
 
     private Drawable dotSelected;
     private Drawable dotUnselected;
-    private BtnBackground btnBackground;
+    private ComponentBackground componentBackground;
     private ViewPager.OnPageChangeListener pageListener;
 
     @Override
@@ -48,11 +48,10 @@ public class ActivityPreview extends AppCompatActivity {
     }
 
     private void initializationStyles() {
-        btnBackground = new BtnBackground(this, R.color.colorAccent,
-                R.color.shadowColor, 6f, 0f, 3f,
-                new float[]{20f, 20f, 20f, 20f, 20f, 20f, 20f, 20f});
+        componentBackground = new ComponentBackground(this, R.color.colorAccent,
+                R.color.shadowColor, 6f, 0f, 3f, 20f);
 
-        SetBtnStyle.setStyle(btnBackground, btnSkip);
+        SetBtnStyle.setStyle(componentBackground, btnSkip);
     }
 
     private void initializationListeners() {

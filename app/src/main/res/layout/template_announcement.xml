@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutTemplateAnnouncement"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="300dp"
+    android:paddingBottom="16dp">
+
+    <ImageView
+        android:id="@+id/backgroundAnnouncement"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/colorWhite" />
+
+    <ImageView
+        android:id="@+id/imgProduct"
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/backgroundPlacementDate"
+        android:layout_width="130dp"
+        android:layout_height="25dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintStart_toStartOf="@id/imgProduct"
+        app:layout_constraintTop_toTopOf="@id/imgProduct"
+        app:srcCompat="@color/colorWhite" />
+
+    <ImageView
+        android:id="@+id/backgroundImgHeart"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintEnd_toEndOf="@id/imgProduct"
+        app:layout_constraintTop_toTopOf="@id/imgProduct"
+        app:srcCompat="@color/colorWhite" />
+
+    <ImageView
+        android:id="@+id/imgHeart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundImgHeart"
+        app:layout_constraintEnd_toEndOf="@id/backgroundImgHeart"
+        app:layout_constraintStart_toStartOf="@+id/backgroundImgHeart"
+        app:layout_constraintTop_toTopOf="@+id/backgroundImgHeart"
+        app:srcCompat="@drawable/ic_heart" />
+
+    <ImageView
+        android:id="@+id/backgroundRateAnnouncement"
+        android:layout_width="65dp"
+        android:layout_height="25dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintBottom_toBottomOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="@id/imgProduct"
+        app:srcCompat="@color/colorWhite" />
+
+    <TextView
+        android:id="@+id/textNameProduct"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/text_name_announcement"
+        app:layout_constraintEnd_toStartOf="@+id/textCostProduct"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/imgProduct" />
+
+    <TextView
+        android:id="@+id/textLocation"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:drawableStart="@drawable/ic_location"
+        android:text="@string/text_lacation_announcement"
+        app:layout_constraintEnd_toEndOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/textNameProduct" />
+
+    <TextView
+        android:id="@+id/textCostProduct"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/text_cost_announcement"
+        app:layout_constraintEnd_toEndOf="@id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/imgProduct" />
+
+    <TextView
+        android:id="@+id/textCountRent"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_count_rent"
+        android:text="@string/text_count_rent"
+        app:layout_constraintBottom_toBottomOf="@+id/textLocation"
+        app:layout_constraintEnd_toStartOf="@+id/textLocation"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/imgProduct"
+        app:layout_constraintTop_toTopOf="@+id/textLocation" />
+
+    <TextView
+        android:id="@+id/textPlacementDate"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_placement_date_announcement"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundPlacementDate"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundPlacementDate"
+        app:layout_constraintStart_toStartOf="@+id/backgroundPlacementDate"
+        app:layout_constraintTop_toTopOf="@+id/backgroundPlacementDate" />
+
+    <TextView
+        android:id="@+id/textRatingAnnouncement"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_star"
+        android:text="@string/text_rate_announcement"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundRateAnnouncement"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundRateAnnouncement"
+        app:layout_constraintStart_toStartOf="@+id/backgroundRateAnnouncement"
+        app:layout_constraintTop_toTopOf="@+id/backgroundRateAnnouncement" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

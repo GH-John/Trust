@@ -1,10 +1,10 @@
-package com.application.arenda.ServerInteraction.AddAnnouncement.InflateCategories;
+package com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList;
 
-public class ItemContent {
+public class ModelItemContent {
     private int id;
     private String name;
 
-    public ItemContent(int id, String name) {
+    public ModelItemContent(int id, String name) {
         this.id = id;
         this.name = name;
     }

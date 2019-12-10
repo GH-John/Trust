@@ -10,20 +10,29 @@
     </string-array>
 
     <string name="error_empty_field">Пустое поле</string>
+    <string name="error_select_category">выберите категорию</string>
     <string name="error_registration">Ошибка регистрации:\n</string>
     <string name="error_authorization">Ошибка авторизации:\n</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
+    <string name="error_user_not_identified">Пользователь не опознан</string>
+    <string name="error_adding_photos">Ошибка добавления изображений:\n</string>
+    <string name="error_fail_load_list">Ошибка: неудалось загрузить список</string>
     <string name="error_user_exists">Пользователь с такой почтой существует</string>
     <string name="error_adding_announcement">Ошибка добавления объявления:\n</string>
     <string name="error_please_choose_correct_img">Не верный формат изображения</string>
+    <string name="error_fail_loading_announcements">Неудалось загрузить объявления</string>
+    <string name="error_fail_load_categories">Ошибка: неудалось загрузить категории</string>
     <string name="error_server_connect">Ошибка: не удалось подключится к базе данных</string>
+    <string name="error_server_is_temporarily_unavailable">Сервер временно не доступен</string>
     <string name="error_send_photo_to_server">Не удалось отправить изображения на сервер</string>
     <string name="error_check_internet_connect">Проверьте интернет соединение и повторите попытку</string>
 
     <string name="success_authorization">С возвращением</string>
     <string name="success_registration">Добро пожаловать</string>
-    <string name="unsuccess_authorization_login">Неверный email</string>
+    <string name="success_photos_loaded">Изображения загружены</string>
     <string name="success_announcement_added">Объявление создано</string>
+
+    <string name="unsuccess_authorization_login">Неверный email</string>
     <string name="unsuccess_authorization_password">Неверный пароль</string>
 
     <string name="header_registration">Регистрация</string>
@@ -49,18 +58,23 @@
 
     <string name="btn_sign">Войти</string>
     <string name="btn_skip">Пропустить</string>
+    <string name="btn_reconnect">Повторить</string>
     <string name="btn_registration_auth">Регистрация</string>
     <string name="btn_text_sign_google">Войти через Google</string>
     <string name="btn_registration_reg">Зарегистрироваться</string>
     <string name="btn_confirm_phone_validation">Подтвердить</string>
+    <string name="btn_create_announcement">Создать объявление</string>
 
     <string name="radio_btn_business">Бизнес</string>
     <string name="radio_btn_private_person">Частное лицо</string>
+
+    <string name="check_box_with_sale">Возможно с продажей</string>
 
     <string name="hint_code">Код</string>
     <string name="hint_email">Email</string>
     <string name="hint_user_name">Имя</string>
     <string name="hint_password">Пароль</string>
+    <string name="hint_cost_product">Цена</string>
     <string name="hint_product_name">Название</string>
     <string name="hint_get_code">Получить код</string>
     <string name="hint_user_last_name">Фамилия</string>
@@ -74,5 +88,15 @@
     <string name="text_some_text">Какой-то текст</string>
     <string name="text_product_category">Категория</string>
     <string name="text_add_photos">Добавить фотографию</string>
+    <string name="text_made_for_people">сделано для людей</string>
+    <string name="text_additional_fields">Дополнительная информация:</string>
     <string name="text_note_photos">Первая фотография является главной</string>
+    <string name="text_visible_addresses">Показать адрес в объявлении:</string>
+    <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
+    <string name="text_cost_announcement">5 руб./ч.</string>
+    <string name="text_name_announcement">Название объявления</string>
+    <string name="text_lacation_announcement">Местоположение</string>
+    <string name="text_rate_announcement">5</string>
+    <string name="text_count_rent">465</string>
+    <string name="text_placement_date_announcement">Сегодня, 13:21</string>
 </resources>

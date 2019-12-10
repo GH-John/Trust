@@ -16,10 +16,12 @@ import androidx.annotation.Nullable;
 import com.application.arenda.CustomComponents.DrawPanel;
 
 public class PanelItemList extends Drawable implements DrawPanel {
-    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Path path = new Path();
-    private Context context;
+    private int fillColor, shadowColor;
     private float[] radii;
+    private Context context;
+    private float shadowRadius, shadowDX, shadowDY;
+    private Path path = new Path();
+    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public PanelItemList(Context context,
                          int ResourcesFillColor,
@@ -27,38 +29,89 @@ public class PanelItemList extends Drawable implements DrawPanel {
                          float shadowRadius,
                          float shadowDX,
                          float shadowDY,
-                         float[] radii)
-    {
+                         float upLeftCorner,
+                         float upRightCorner,
+                         float botRightCorner,
+                         float botLeftCorner) {
         this.context = context;
-        this.radii = radii;
-        setDefaultParametrs(ResourcesFillColor, ResourcesShadowColor, shadowRadius, shadowDX, shadowDY);
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+        this.shadowRadius = shadowRadius;
+        this.shadowDX = shadowDX;
+        this.shadowDY = shadowDY;
+        this.fillColor = ResourcesFillColor;
+        this.shadowColor = ResourcesShadowColor;
+
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+        setShadowColor(ResourcesShadowColor);
+    }
+
+    public PanelItemList(Context context,
+                         int ResourcesFillColor,
+                         int ResourcesShadowColor,
+                         float shadowRadius,
+                         float shadowDX,
+                         float shadowDY,
+                         float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+        setShadowColor(ResourcesShadowColor);
+    }
+
+    public PanelItemList(Context context,
+                         int ResourcesFillColor,
+                         float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+    }
+
+    public PanelItemList(Context context,
+                         int ResourcesFillColor,
+                         float upLeftCorner,
+                         float upRightCorner,
+                         float botRightCorner,
+                         float botLeftCorner) {
+        this.context = context;
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
     }
 
     @Override
-    public void setPaint(Paint paint) {
-        this.paint = paint;
-    }
-
-    @Override
-    public void setDefaultParametrs(int ResourcesFillColor,
-                                    int ResourcesShadowColor,
-                                    float shadowRadius,
-                                    float shadowDX,
-                                    float shadowDY)
-    {
-        paint.setColor(context.getColor(ResourcesFillColor));
+    public void setFillColor(int resourceColor) {
+        paint.setColor(context.getColor(resourceColor));
         paint.setStyle(Paint.Style.FILL);
-        paint.setShadowLayer(shadowRadius, shadowDX, shadowDY, context.getColor(ResourcesShadowColor));
+    }
+
+    @Override
+    public void setShadowColor(int resourceColor) {
+        paint.setShadowLayer(shadowRadius,
+                shadowDX, shadowDY,
+                context.getColor(resourceColor));
+    }
+
+    @Override
+    public void setRoundingCorners(float upLeftCorner, float upRightCorner, float botRightCorner, float botLeftCorner) {
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+    }
+
+    @Override
+    public void setAntiAlians(boolean b) {
+        paint.setAntiAlias(b);
     }
 
     @Override
     public void setShader(BitmapShader shader) {
         this.paint.setShader(shader);
-    }
-
-    @Override
-    public void setPath(Path path) {
-        this.path = path;
     }
 
     @Override
@@ -72,13 +125,23 @@ public class PanelItemList extends Drawable implements DrawPanel {
     }
 
     @Override
-    public Path getPath(){
+    public Path getPath() {
         return path;
+    }
+
+    @Override
+    public void setPath(Path path) {
+        this.path = path;
     }
 
     @Override
     public Paint getPaint() {
         return this.paint;
+    }
+
+    @Override
+    public void setPaint(Paint paint) {
+        this.paint = paint;
     }
 
     @Override

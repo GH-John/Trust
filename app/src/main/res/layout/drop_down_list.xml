@@ -25,11 +25,14 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
+        android:gravity="center_vertical"
         android:text="@string/text_some_text"
-        app:layout_constraintEnd_toStartOf="@+id/iconExpandDDL"
+        android:textAlignment="viewStart"
+        app:layout_constraintEnd_toStartOf="@id/progressBarDDL"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iconBtnBackDDL"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlCompat" />
 
     <ImageView
         android:id="@+id/iconBtnBackDDL"
@@ -58,26 +61,41 @@
     <ProgressBar
         android:id="@+id/progressBarDDL"
         style="?android:attr/progressBarStyle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginEnd="24dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/titleDDL"
-        app:layout_constraintEnd_toStartOf="@+id/titleDDL"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iconExpandDDL"
         app:layout_constraintTop_toTopOf="@+id/titleDDL" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewDDL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="16dp"
         android:nestedScrollingEnabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textErrorDDL"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleDDL">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/textErrorDDL"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="8dp"
+        android:hint="@string/text_some_text"
+        android:textColorHint="@color/colorHint"
+        android:textSize="10sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundDDL"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SmallSp"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

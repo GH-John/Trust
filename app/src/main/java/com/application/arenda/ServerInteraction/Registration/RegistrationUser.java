@@ -3,6 +3,7 @@ package com.application.arenda.ServerInteraction.Registration;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -17,6 +18,8 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.application.arenda.Cookies.UserCookie;
+import com.application.arenda.Cookies.UserProfile;
 import com.application.arenda.R;
 
 import org.json.JSONException;
@@ -26,27 +29,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegistrationUser {
-    private final Context context;
-    private final String URL_REGISTRATION;
+    private static String URL_REGISTRATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/RegistrationUser.php";
 
+    private final Context context;
     private ProgressBar progressBar;
     private StringRequest request;
     private AppCompatActivity startActivity;
 
-    public RegistrationUser(Context context, String URL_REGISTRATION, AppCompatActivity startActivity) {
+    public RegistrationUser(Context context, AppCompatActivity startActivity) {
         this.context = context;
-        this.URL_REGISTRATION = URL_REGISTRATION;
         this.startActivity = startActivity;
         this.progressBar = new ProgressBar(context);
     }
 
     @SuppressLint("ShowToast")
     public void registration(final String name,
-                                final String lastName,
-                                final String email,
-                                final String password,
-                                final String phone,
-                                final String accountType) {
+                             final String lastName,
+                             final String email,
+                             final String password,
+                             final String phone,
+                             final String accountType) {
         progressBar.setVisibility(View.VISIBLE);
         request = new StringRequest(Request.Method.POST, URL_REGISTRATION, new Response.Listener<String>() {
             @Override
@@ -64,37 +66,47 @@ public class RegistrationUser {
                             break;
                         }
                         case "1":
-                            progressBar.setVisibility(View.GONE);
+                            String token = jsonObject.getString("token").trim();
+
+                            UserCookie.putProfile(context, token, new UserProfile());
+
                             context.startActivity(new Intent(context, startActivity.getClass()));
+                            progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources()
                                     .getString(R.string.success_registration) + " "
                                     + name);
                             break;
                         case "101":
                             progressBar.setVisibility(View.GONE);
-                            messageOutput(context.getResources().getString(R.string.error_check_internet_connect));
+                            messageOutput(context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                            Log.d(String.valueOf(this.getClass()), response);
                             break;
+
+                        default: {
+                            progressBar.setVisibility(View.GONE);
+                            messageOutput(context.getResources().getString(R.string.error_check_internet_connect));
+                        }
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.d(String.valueOf(this.getClass()), e.getMessage());
 
                     progressBar.setVisibility(View.GONE);
                     messageOutput(context.getResources()
-                            .getString(R.string.error_registration)+ e.toString());
+                            .getString(R.string.error_registration) + e.toString());
                 }
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        if(volleyError instanceof TimeoutError){
+                        if (volleyError instanceof TimeoutError) {
                             progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources()
                                     .getString(R.string.error_check_internet_connect));
-                        }else {
+                        } else {
                             progressBar.setVisibility(View.GONE);
                             messageOutput(context.getResources()
-                                    .getString(R.string.error_registration)+ volleyError.toString());
+                                    .getString(R.string.error_registration) + volleyError.toString());
                         }
                     }
                 }) {
@@ -115,20 +127,20 @@ public class RegistrationUser {
         requestQueue.add(request);
     }
 
-    public void requestCancel(){
-        if(request != null)
+    public void requestCancel() {
+        if (request != null)
             request.cancel();
     }
 
-    public void setProgressBar(ProgressBar progressBar){
-        this.progressBar = progressBar;
-    }
-
-    public ProgressBar getProgressBar(){
+    public ProgressBar getProgressBar() {
         return this.progressBar;
     }
 
-    private void messageOutput(String str){
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    private void messageOutput(String str) {
         Toast.makeText(context, str, Toast.LENGTH_LONG).show();
     }
 }

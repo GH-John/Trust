@@ -1,4 +1,4 @@
-package com.application.arenda.ServerInteraction.AddAnnouncement.InflateCategories;
+package com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -30,12 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 @SuppressLint("StaticFieldLeak")
-public class InflateDropDownList {
+public class RecipientCategories {
     private static String URL_LOAD_CATEGORY = "http://192.168.43.241/AndroidConnectWithServer/php/load/LoadCategory.php";
     private static String URL_LOAD_SUBCATEGORY = "http://192.168.43.241/AndroidConnectWithServer/php/load/LoadSubcategory.php";
 
-    public static Collection getCollectionCategories(final Context context, final View progressBar, final Observer observer) {
+    public static Collection<ModelItemContent> getCollectionCategories(final Context context, final View progressBar, final Observer observer) {
+
         progressBar.setVisibility(View.VISIBLE);
+
         final Collection collection = new ArrayList<>();
         StringRequest request;
         request = new StringRequest(Request.Method.POST, URL_LOAD_CATEGORY, new Response.Listener<String>() {
@@ -51,7 +53,7 @@ public class InflateDropDownList {
                     switch (code) {
                         case "0": {
                             progressBar.setVisibility(View.GONE);
-                            Log.d("InflateDropDownList", response);
+                            Log.d("RecipientCategories", response);
                             break;
                         }
                         case "1":
@@ -60,13 +62,13 @@ public class InflateDropDownList {
                             for (int i = 0; i < categories.length(); i++) {
                                 object = categories.getJSONObject(i);
 
-                                collection.add(new ItemContent(Integer.valueOf(object.getString("idCategory")),
+                                collection.add(new ModelItemContent(Integer.valueOf(object.getString("idCategory")),
                                         object.getString("name").trim()));
 
                             }
-                            Collections.sort((List) collection, new Comparator<ItemContent>() {
+                            Collections.sort((List) collection, new Comparator<ModelItemContent>() {
                                 @Override
-                                public int compare(ItemContent o1, ItemContent o2) {
+                                public int compare(ModelItemContent o1, ModelItemContent o2) {
                                     return o2.getName().length() - o1.getName().length();
                                 }
                             });
@@ -75,7 +77,8 @@ public class InflateDropDownList {
                             break;
                         case "101":
                             progressBar.setVisibility(View.GONE);
-                            Log.d("InflateDropDownList", response);
+                            messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                            Log.d("RecipientCategories", response);
                             break;
 
                         default:
@@ -84,7 +87,7 @@ public class InflateDropDownList {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("InflateDropDownList", response);
+                    Log.d("RecipientCategories", response);
                 }
             }
         },
@@ -96,7 +99,9 @@ public class InflateDropDownList {
                             messageOutput(context, context.getResources()
                                     .getString(R.string.error_check_internet_connect));
                         } else {
-                            Log.d("InflateDropDownList", String.valueOf(volleyError.networkResponse.statusCode));
+                            Log.d("RecipientCategories", String.valueOf(volleyError.getMessage()));
+                            messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_load_categories));
                         }
                     }
                 }) {
@@ -113,9 +118,11 @@ public class InflateDropDownList {
         return collection;
     }
 
-    public static Collection getCollectionSubcategories(final Context context, final int idCategories, final View progressBar, final Observer observer) {
+    public static Collection<ModelItemContent> getCollectionSubcategories(final Context context, final int idCategories, final View progressBar, final Observer observer) {
+
         progressBar.setVisibility(View.VISIBLE);
-        final Collection collection = new ArrayList<>();
+
+        final Collection<ModelItemContent> collection = new ArrayList<>();
         StringRequest request;
 
         request = new StringRequest(Request.Method.POST, URL_LOAD_SUBCATEGORY, new Response.Listener<String>() {
@@ -124,14 +131,14 @@ public class InflateDropDownList {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
 
-                    JSONArray subCategories = jsonObject.getJSONArray("subCategories");
+                    JSONArray subCategories = jsonObject.getJSONArray("subcategories");
 
                     String code = jsonObject.getString("code");
 
                     switch (code) {
                         case "0": {
                             progressBar.setVisibility(View.GONE);
-                            Log.d("InflateDropDownList", response);
+                            Log.d("RecipientCategories", response);
                             break;
                         }
                         case "1":
@@ -140,12 +147,12 @@ public class InflateDropDownList {
                             for (int i = 0; i < subCategories.length(); i++) {
                                 object = subCategories.getJSONObject(i);
 
-                                collection.add(new ItemContent(Integer.valueOf(object.getString("subCategories")),
+                                collection.add(new ModelItemContent(Integer.valueOf(object.getString("idSubcategory")),
                                         object.getString("name").trim()));
                             }
-                            Collections.sort((List) collection, new Comparator<ItemContent>() {
+                            Collections.sort((List) collection, new Comparator<ModelItemContent>() {
                                 @Override
-                                public int compare(ItemContent o1, ItemContent o2) {
+                                public int compare(ModelItemContent o1, ModelItemContent o2) {
                                     return o2.getName().length() - o1.getName().length();
                                 }
                             });
@@ -154,7 +161,8 @@ public class InflateDropDownList {
                             break;
                         case "101":
                             progressBar.setVisibility(View.GONE);
-                            Log.d("InflateDropDownList", response);
+                            messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                            Log.d("RecipientCategories", response);
                             break;
 
                         default:
@@ -163,7 +171,7 @@ public class InflateDropDownList {
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Log.d("InflateDropDownList", response);
+                    Log.d("RecipientCategories", response);
                 }
             }
         },
@@ -175,7 +183,9 @@ public class InflateDropDownList {
                             messageOutput(context, context.getResources()
                                     .getString(R.string.error_check_internet_connect));
                         } else {
-                            Log.d("InflateDropDownList", String.valueOf(volleyError.networkResponse.statusCode));
+                            Log.d("RecipientCategories", String.valueOf(volleyError.getMessage()));
+                            messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_load_categories));
                         }
                     }
                 }) {

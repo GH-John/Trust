@@ -1,16 +1,16 @@
-package com.application.arenda.ServerInteraction.AddAnnouncement.InflateCategories;
+package com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.arenda.CustomComponents.DropDownList.AdapterDropDownList;
 import com.application.arenda.CustomComponents.DropDownList.IDropDownList;
 import com.application.arenda.Patterns.Observer;
 import com.application.arenda.R;
@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHolder> implements AdapterDropDownList {
+public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerView.ViewHolder> implements AdapterDropDownList {
     private Context context;
     private int idPatternLayout;
-    private Collection collection;
     private IDropDownList dropDownList;
+    private Collection<ModelItemContent> collection;
 
-    public AdapterCategory(int idPatternLayout, Collection collection) {
+    public AdapterRecyclerView(int idPatternLayout, Collection<ModelItemContent> collection) {
         this.idPatternLayout = idPatternLayout;
         this.collection = new ArrayList<>(collection);
     }
@@ -55,28 +55,28 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHo
 
     @NonNull
     @Override
-    public AdapterCategory.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AdapterRecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(this.idPatternLayout, parent, false);
         this.context = parent.getContext();
 
-        return new AdapterCategory.ViewHolder(v);
+        return new AdapterRecyclerView.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterCategory.ViewHolder holder, int position) {
-        final ItemContent itemContent = ((List<ItemContent>) this.collection).get(position);
-        holder.nameCategory.setText(itemContent.getName());
-        holder.iconCategory.setImageResource(R.drawable.ic_extra_categories);
+    public void onBindViewHolder(@NonNull AdapterRecyclerView.ViewHolder holder, int position) {
+        final ModelItemContent modelItemContent = ((List<ModelItemContent>) this.collection).get(position);
+        holder.nameCategory.setText(modelItemContent.getName());
 
         holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dropDownList.setTitle(itemContent.getName());
+                dropDownList.setTitle(modelItemContent.getName());
                 if (!(dropDownList.CURRENT_SIZE_STACK() == dropDownList.MAX_SIZE_STACK()))
-                    InflateDropDownList.getCollectionSubcategories(context, itemContent.getId(),
+                    RecipientCategories.getCollectionSubcategories(context, modelItemContent.getId(),
                             dropDownList.getProgressBar(), (Observer) dropDownList);
-                else
+                else {
                     dropDownList.hideList();
+                }
             }
         });
     }
@@ -88,13 +88,11 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.ViewHo
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
         TextView nameCategory;
-        ImageView iconCategory;
         RelativeLayout relativeLayout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameCategory = itemView.findViewById(R.id.nameCategory);
-            iconCategory = itemView.findViewById(R.id.extraIcon);
             relativeLayout = itemView.findViewById(R.id.layoutPatternCategory);
         }
     }

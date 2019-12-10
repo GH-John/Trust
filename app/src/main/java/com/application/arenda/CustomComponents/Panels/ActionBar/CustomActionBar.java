@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.application.arenda.CustomComponents.ContainerFragments.AdapterLink;
@@ -22,8 +23,7 @@ public class CustomActionBar extends ConstraintLayout implements ActionBar, Adap
         super(context, attrs);
         inflateActionBar(context, attrs);
         stylePanel(context, new PanelActionBar(context,
-                R.color.colorWhite, new float[]{0f, 0f, 0f, 0f, 80f, 80f, 80f, 80f},
-                R.color.shadowColor, 10f, 0f, 0f));
+                R.color.colorWhite, R.color.shadowColor, 10f, 0f, 0f, 0f, 0f, 80f, 80f));
     }
 
     private void inflateActionBar(Context context, AttributeSet attrs) {
@@ -38,7 +38,7 @@ public class CustomActionBar extends ConstraintLayout implements ActionBar, Adap
     }
 
     @Override
-    public void update(Object object) {
+    public void update(@NonNull Object object) {
         if(object instanceof AdapterActionBar) {
             patternContainer.removeAllViewsInLayout();
             inflate(getContext(), ((AdapterActionBar) object).getIdPatternResource(),

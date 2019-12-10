@@ -1,4 +1,4 @@
-package com.application.arenda.CustomComponents.BtnStyle;
+package com.application.arenda.CustomComponents.SetStyle;
 
 import android.graphics.drawable.Drawable;
 import android.widget.Button;

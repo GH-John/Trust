@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
-import android.graphics.CornerPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
@@ -16,39 +15,98 @@ import androidx.annotation.Nullable;
 import com.application.arenda.CustomComponents.DrawPanel;
 
 public class PanelBottomNavigation extends Drawable implements DrawPanel {
-    private final float BUTTON_CUTOUT_BEGINING = 160.0f;
-    private final float BUTTON_CUTOUT_ENDING = 90.0f;
-    private final float ROUNDING_ALL_CORNERS = 80.0f;
-    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Path path = new Path();
-    private CornerPathEffect cornerPathEffect;
-
-    private Context context;
+    private int fillColor, shadowColor;
     private float[] radii;
+    private Context context;
+    private float shadowRadius, shadowDX, shadowDY;
+    private Path path = new Path();
+    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    PanelBottomNavigation(Context context,
-                          int ResourcesFillColor,
-                          float[] radii,
-                          int ResourcesShadowColor,
-                          float shadowRadius,
-                          float shadowDX,
-                          float shadowDY) {
+    public PanelBottomNavigation(Context context,
+                                 int ResourcesFillColor,
+                                 int ResourcesShadowColor,
+                                 float shadowRadius,
+                                 float shadowDX,
+                                 float shadowDY,
+                                 float upLeftCorner,
+                                 float upRightCorner,
+                                 float botRightCorner,
+                                 float botLeftCorner) {
         this.context = context;
-        this.radii = radii;
-        setDefaultParametrs(ResourcesFillColor, ResourcesShadowColor, shadowRadius, shadowDX, shadowDY);
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+        this.shadowRadius = shadowRadius;
+        this.shadowDX = shadowDX;
+        this.shadowDY = shadowDY;
+        this.fillColor = ResourcesFillColor;
+        this.shadowColor = ResourcesShadowColor;
+
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+        setShadowColor(ResourcesShadowColor);
+    }
+
+    public PanelBottomNavigation(Context context,
+                                 int ResourcesFillColor,
+                                 int ResourcesShadowColor,
+                                 float shadowRadius,
+                                 float shadowDX,
+                                 float shadowDY,
+                                 float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+        setShadowColor(ResourcesShadowColor);
+    }
+
+    public PanelBottomNavigation(Context context,
+                                 int ResourcesFillColor,
+                                 float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+    }
+
+    public PanelBottomNavigation(Context context,
+                          int ResourcesFillColor,
+                          float upLeftCorner,
+                          float upRightCorner,
+                          float botRightCorner,
+                          float botLeftCorner) {
+        this.context = context;
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
     }
 
     @Override
-    public void setDefaultParametrs(int ResourcesFillColor,
-                                    int ResourcesShadowColor,
-                                    float shadowRadius,
-                                    float shadowDX,
-                                    float shadowDY) {
-        paint.setColor(context.getColor(ResourcesFillColor));
+    public void setFillColor(int resourceColor) {
+        paint.setColor(context.getColor(resourceColor));
         paint.setStyle(Paint.Style.FILL);
-        paint.setShadowLayer(shadowRadius, shadowDX, shadowDY, context.getColor(ResourcesShadowColor));
-//        cornerPathEffect = new CornerPathEffect(ROUNDING_ALL_CORNERS);
-//        paint.setPathEffect(cornerPathEffect);
+    }
+
+    @Override
+    public void setShadowColor(int resourceColor) {
+        paint.setShadowLayer(shadowRadius,
+                shadowDX, shadowDY,
+                context.getColor(resourceColor));
+    }
+
+    @Override
+    public void setRoundingCorners(float upLeftCorner, float upRightCorner, float botRightCorner, float botLeftCorner) {
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+    }
+
+    @Override
+    public void setAntiAlians(boolean b) {
+        paint.setAntiAlias(b);
     }
 
     @Override
@@ -58,25 +116,6 @@ public class PanelBottomNavigation extends Drawable implements DrawPanel {
 
     @Override
     public void setRoundRect(float[] radii, int width, int height) {
-//        Point[] arrayPoints = {
-//                new Point(0f, height),
-//                new Point(width, height),
-//                new Point(width, 0f),
-//                new Point(((width / 2f) + BUTTON_CUTOUT_BEGINING), 0f),
-//                new Point((width / 2f) + (BUTTON_CUTOUT_ENDING / 2f), ((height / 2f) - 10f)),
-//                new Point((width / 2f) - (BUTTON_CUTOUT_ENDING / 2f), ((height / 2f) - 10f)),
-//                new Point(((width / 2f) - BUTTON_CUTOUT_BEGINING), 0f),
-//                new Point(0f, 0f)
-//        };
-//
-//        path.reset();
-//
-//        path.moveTo(arrayPoints[0].x, arrayPoints[0].y);
-//
-//        for (int i = 1; i < arrayPoints.length; i++) {
-//            path.lineTo(arrayPoints[i].x, arrayPoints[i].y);
-//        }
-
         float PADDING = 25f;
         Point START_END = new Point(width / 2f, height - PADDING);
 

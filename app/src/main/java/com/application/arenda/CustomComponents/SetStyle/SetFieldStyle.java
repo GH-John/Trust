@@ -1,4 +1,4 @@
-package com.application.arenda.CustomComponents.FieldStyle;
+package com.application.arenda.CustomComponents.SetStyle;
 
 import android.graphics.drawable.Drawable;
 import android.widget.EditText;

@@ -13,6 +13,7 @@ import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.arenda.CustomComponents.DrawPanel;
 import com.application.arenda.CustomComponents.Panels.SideBar.ItemList.AdapterItemList;
 import com.application.arenda.CustomComponents.Panels.SideBar.ItemList.InflateItemList;
-import com.application.arenda.CustomComponents.Panels.SideBar.ItemList.PanelItemList;
 import com.application.arenda.Patterns.Observer;
 import com.application.arenda.R;
 
@@ -35,7 +35,7 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
     private Context context;
     private int width, height;
     private RecyclerView itemRecyclerView;
-    private PanelItemList panelItemList;
+    private PanelSideBar panelItemList;
     private DisplayMetrics displayMetrics;
 
     private int action;
@@ -49,10 +49,9 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
         super(context, attrs);
         initializationComponents(context, attrs);
         styleItemSideBar(context);
-        stylePanelItemList(getContext(), new PanelItemList(context,
+        stylePanelItemList(getContext(), new PanelSideBar(context,
                 R.color.colorWhite, R.color.shadowItemList,
-                6f, 0f, 3f,
-                new float[]{80f, 80f, 0f, 0f, 80f, 80f, 0f, 0f}));
+                6f, 0f, 3f, 80f, 0f, 80f, 0f));
         initializationListeners();
         startPosition();
     }
@@ -79,8 +78,7 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         stylePanelSideBar(getContext(), new PanelSideBar(getContext(),
                 R.color.colorWhite, R.color.shadowColor,
-                10f, 0f, 0f,
-                new float[]{0f, 0f, 80f, 80f, 80f, 80f, 0f, 0f}));
+                10f, 0f, 0f, 0f, 80f, 80f, 0f));
     }
 
     @Override
@@ -117,7 +115,7 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
 
     @Override
     public void stylePanelItemList(Context context, DrawPanel drawPanel) {
-        panelItemList = (PanelItemList) drawPanel;
+        panelItemList = (PanelSideBar) drawPanel;
     }
 
     @Override
@@ -230,7 +228,7 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Observer
     }
 
     @Override
-    public void update(Object object) {
+    public void update(@NonNull Object object) {
         hide();
         if (object instanceof AdapterSideBar) {
             ((AdapterSideBar) object).setSideBar(this);
