@@ -24,6 +24,48 @@ public class PanelBottomNavigation extends Drawable implements DrawPanel {
 
     public PanelBottomNavigation(Context context,
                                  int ResourcesFillColor,
+                                 float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+    }
+
+    public PanelBottomNavigation(Context context,
+                                 int ResourcesFillColor,
+                                 float upLeftCorner,
+                                 float upRightCorner,
+                                 float botRightCorner,
+                                 float botLeftCorner) {
+        this.context = context;
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+    }
+
+    public PanelBottomNavigation(Context context,
+                                 int ResourcesFillColor,
+                                 int ResourcesShadowColor,
+                                 float shadowRadius,
+                                 float shadowDX,
+                                 float shadowDY,
+                                 float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+        this.shadowRadius = shadowRadius;
+        this.shadowDX = shadowDX;
+        this.shadowDY = shadowDY;
+
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+        setShadowColor(ResourcesShadowColor);
+    }
+
+    public PanelBottomNavigation(Context context,
+                                 int ResourcesFillColor,
                                  int ResourcesShadowColor,
                                  float shadowRadius,
                                  float shadowDX,
@@ -44,45 +86,6 @@ public class PanelBottomNavigation extends Drawable implements DrawPanel {
         setFillColor(ResourcesFillColor);
         setAntiAlians(true);
         setShadowColor(ResourcesShadowColor);
-    }
-
-    public PanelBottomNavigation(Context context,
-                                 int ResourcesFillColor,
-                                 int ResourcesShadowColor,
-                                 float shadowRadius,
-                                 float shadowDX,
-                                 float shadowDY,
-                                 float roundingRadius) {
-        float r = roundingRadius;
-        this.context = context;
-        this.radii = new float[]{r, r, r, r, r, r, r, r};
-
-        setFillColor(ResourcesFillColor);
-        setAntiAlians(true);
-        setShadowColor(ResourcesShadowColor);
-    }
-
-    public PanelBottomNavigation(Context context,
-                                 int ResourcesFillColor,
-                                 float roundingRadius) {
-        float r = roundingRadius;
-        this.context = context;
-        this.radii = new float[]{r, r, r, r, r, r, r, r};
-        setFillColor(ResourcesFillColor);
-        setAntiAlians(true);
-    }
-
-    public PanelBottomNavigation(Context context,
-                          int ResourcesFillColor,
-                          float upLeftCorner,
-                          float upRightCorner,
-                          float botRightCorner,
-                          float botLeftCorner) {
-        this.context = context;
-        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
-                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
-        setFillColor(ResourcesFillColor);
-        setAntiAlians(true);
     }
 
     @Override

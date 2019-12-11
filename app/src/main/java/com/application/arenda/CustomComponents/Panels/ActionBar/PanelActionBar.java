@@ -25,6 +25,48 @@ public class PanelActionBar extends Drawable implements DrawPanel {
 
     public PanelActionBar(Context context,
                           int ResourcesFillColor,
+                          float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+    }
+
+    public PanelActionBar(Context context,
+                          int ResourcesFillColor,
+                          float upLeftCorner,
+                          float upRightCorner,
+                          float botRightCorner,
+                          float botLeftCorner) {
+        this.context = context;
+        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
+                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+    }
+
+    public PanelActionBar(Context context,
+                          int ResourcesFillColor,
+                          int ResourcesShadowColor,
+                          float shadowRadius,
+                          float shadowDX,
+                          float shadowDY,
+                          float roundingRadius) {
+        float r = roundingRadius;
+        this.context = context;
+        this.radii = new float[]{r, r, r, r, r, r, r, r};
+        this.shadowRadius = shadowRadius;
+        this.shadowDX = shadowDX;
+        this.shadowDY = shadowDY;
+
+        setFillColor(ResourcesFillColor);
+        setAntiAlians(true);
+        setShadowColor(ResourcesShadowColor);
+    }
+
+    public PanelActionBar(Context context,
+                          int ResourcesFillColor,
                           int ResourcesShadowColor,
                           float shadowRadius,
                           float shadowDX,
@@ -41,47 +83,10 @@ public class PanelActionBar extends Drawable implements DrawPanel {
         this.shadowDY = shadowDY;
         this.fillColor = ResourcesFillColor;
         this.shadowColor = ResourcesShadowColor;
+
         setFillColor(ResourcesFillColor);
         setAntiAlians(true);
         setShadowColor(ResourcesShadowColor);
-    }
-
-    public PanelActionBar(Context context,
-                          int ResourcesFillColor,
-                          int ResourcesShadowColor,
-                          float shadowRadius,
-                          float shadowDX,
-                          float shadowDY,
-                          float roundingRadius) {
-        float r = roundingRadius;
-        this.context = context;
-        this.radii = new float[]{r, r, r, r, r, r, r, r};
-        setFillColor(ResourcesFillColor);
-        setAntiAlians(true);
-        setShadowColor(ResourcesShadowColor);
-    }
-
-    public PanelActionBar(Context context,
-                          int ResourcesFillColor,
-                          float roundingRadius) {
-        float r = roundingRadius;
-        this.context = context;
-        this.radii = new float[]{r, r, r, r, r, r, r, r};
-        setFillColor(ResourcesFillColor);
-        setAntiAlians(true);
-    }
-
-    public PanelActionBar(Context context,
-                          int ResourcesFillColor,
-                          float upLeftCorner,
-                          float upRightCorner,
-                          float botRightCorner,
-                          float botLeftCorner) {
-        this.context = context;
-        this.radii = new float[]{upLeftCorner, upLeftCorner, upRightCorner, upRightCorner,
-                botRightCorner, botRightCorner, botLeftCorner, botLeftCorner};
-        setFillColor(ResourcesFillColor);
-        setAntiAlians(true);
     }
 
     @Override

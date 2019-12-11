@@ -129,6 +129,7 @@ public class FragmentAddAnnouncement extends Fragment implements AdapterSideBar,
             @Override
             public void onClick(View v) {
                 modelAnnouncement.setMapBitmap(containerFiller.getMapBitmap());
+                modelAnnouncement.setMainBitmap(containerFiller.getFirstBitmap());
                 modelAnnouncement.setName(fieldProductName.getText().toString());
                 modelAnnouncement.setIdSubcategory(dropDownList.getIdSelectedElement());
                 modelAnnouncement.setDescription(fieldProductDescription.getText().toString());

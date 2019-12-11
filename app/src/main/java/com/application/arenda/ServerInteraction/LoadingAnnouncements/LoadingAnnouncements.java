@@ -2,6 +2,7 @@ package com.application.arenda.ServerInteraction.LoadingAnnouncements;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,11 +35,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnouncements.ViewHolder> {
     @SuppressLint("StaticFieldLeak")
@@ -138,7 +143,7 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Glide.with(context).load(model.getPictureUrl()).apply(requestOptions).into(holder.imgProduct);
+                Glide.with(context).load(model.getMainUriBitmap()).apply(requestOptions).into(holder.imgProduct);
             }
         });
     }
@@ -173,6 +178,17 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
             backgroundImgHeart = itemView.findViewById(R.id.backgroundImgHeart);
             backgroundRateAnnouncement = itemView.findViewById(R.id.backgroundRateAnnouncement);
 
+            textNameProduct = itemView.findViewById(R.id.textNameProduct);
+            textLocation = itemView.findViewById(R.id.textLocation);
+            textCostProduct = itemView.findViewById(R.id.textCostProduct);
+            textCountRent = itemView.findViewById(R.id.textCountRent);
+            textPlacementDate = itemView.findViewById(R.id.textPlacementDate);
+            textRatingAnnouncement = itemView.findViewById(R.id.textRatingAnnouncement);
+
+            initializationStyles();
+        }
+
+        private void initializationStyles() {
             imgProduct.setImageDrawable(new ComponentBackground(context, R.color.colorWhite,
                     20f, 20f, 0f, 0f));
 
@@ -187,13 +203,6 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
 
             backgroundRateAnnouncement.setImageDrawable(new ComponentBackground(context, R.color.colorWhite,
                     0f, 20f, 0f, 0f));
-
-            textNameProduct = itemView.findViewById(R.id.textNameProduct);
-            textLocation = itemView.findViewById(R.id.textLocation);
-            textCostProduct = itemView.findViewById(R.id.textCostProduct);
-            textCountRent = itemView.findViewById(R.id.textCountRent);
-            textPlacementDate = itemView.findViewById(R.id.textPlacementDate);
-            textRatingAnnouncement = itemView.findViewById(R.id.textRatingAnnouncement);
         }
     }
 
@@ -244,6 +253,7 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
             StringRequest request;
 
             request = new StringRequest(Request.Method.POST, URL_INSERT_ANNOUNCEMENT, new Response.Listener<String>() {
+                @SuppressLint("SimpleDateFormat")
                 @Override
                 public void onResponse(String response) {
                     try {
@@ -289,16 +299,27 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
                                     model.setPhone_1(object.getString("phone_3"));
                                     model.setVisiblePhone_1(Boolean.parseBoolean(object.getString("isVisible_phone_3")));
 
-                                    model.setPlacementDate(object.getString("placementDate"));
+
+                                    model.setPlacementDate(String.valueOf(utcToLocal(new SimpleDateFormat("yyyy.MM.dd HH:mm:ss").parse(object.getString("placementDate"))).getTime()));
                                     model.setStatusRent(Boolean.parseBoolean(object.getString("statusRent")));
                                     model.setRating(Integer.parseInt(object.getString("rating")));
                                     model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                    model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
 
                                     onProgressUpdate(model);
                                 }
 
                                 cancel(true);
                                 break;
+
+                            case "2": {
+                                messageOutput(context, context.getResources()
+                                        .getString(R.string.error_fail_loading_announcements));
+                                Log.d(getClass().toString(), response);
+
+                                AsyncLoadingAnnouncements.this.cancel(true);
+                                break;
+                            }
                             case "101":
                                 messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                                 Log.d(getClass().toString(), response);
@@ -312,11 +333,10 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
                                 AsyncLoadingAnnouncements.this.cancel(true);
                             }
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    } catch (JSONException | ParseException e) {
                         Log.d(getClass().toString(), response);
                         messageOutput(context, context.getResources()
-                                .getString(R.string.error_fail_loading_announcements));
+                                .getString(R.string.error_fail_loading_announcements) + e.getMessage());
 
                         AsyncLoadingAnnouncements.this.cancel(true);
                     }
@@ -349,6 +369,14 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
 
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             requestQueue.add(request);
+        }
+
+        public Date localToUtc(Date localDate) {
+            return new Date(localDate.getTime() - TimeZone.getDefault().getOffset(localDate.getTime()));
+        }
+
+        public Date utcToLocal(Date utcDate) {
+            return new Date(utcDate.getTime() + TimeZone.getDefault().getOffset(utcDate.getTime()));
         }
 
         private void messageOutput(final Context context, String str) {

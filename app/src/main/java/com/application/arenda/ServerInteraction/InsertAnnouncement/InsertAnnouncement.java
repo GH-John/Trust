@@ -15,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.arenda.Cookies.UserCookie;
+import com.application.arenda.CustomComponents.Thumbnail.ThumbnailCompression;
 import com.application.arenda.R;
 
 import org.json.JSONException;
@@ -126,6 +127,8 @@ public class InsertAnnouncement extends AsyncTask<Void, Integer, Void> {
 
                 params.put("phone_3", modelAnnouncement.getPhone_3());
                 params.put("isVisible_phone_3", String.valueOf(modelAnnouncement.getVisiblePhone_3()));
+
+                params.put("encodedString", ThumbnailCompression.getEncodeBase64(modelAnnouncement.getMainBitmap()));
 
 //                params.put("placementDate", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault()).format(Calendar.getInstance().getTime()));
                 return params;

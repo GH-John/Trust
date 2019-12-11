@@ -21,6 +21,7 @@ public class ContainerFiller implements AdapterContainer {
     private Container container;
 
     private Context context;
+    private Bitmap firstBitmap;
     private HashMap<Uri, View> currentMap;
     private HashMap<Uri, Bitmap> mapBitmap;
 
@@ -80,9 +81,9 @@ public class ContainerFiller implements AdapterContainer {
                 View view;
 
                 int imgCount = mapBitmap.size();
-                for (HashMap.Entry entry : mapBitmap.entrySet()) {
+                for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
 
-                    uri = (Uri) entry.getKey();
+                    uri = entry.getKey();
                     bitmap = mapBitmap.get(uri);
 
                     if (!currentMap.containsKey(uri)) {
@@ -101,14 +102,22 @@ public class ContainerFiller implements AdapterContainer {
                                 }
                             });
 
-                            if(container.addToContainer(view))
+                            if (container.addToContainer(view))
                                 currentMap.put(uri, view);
-
                         }
                     }
                 }
             }
         });
+    }
+
+    public Bitmap getFirstBitmap() {
+        if (mapBitmap.size() > 0) {
+            for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     public Map<Uri, Bitmap> getMapBitmap() {

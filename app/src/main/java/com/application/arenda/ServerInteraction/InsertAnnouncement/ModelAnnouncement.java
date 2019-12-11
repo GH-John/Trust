@@ -3,6 +3,8 @@ package com.application.arenda.ServerInteraction.InsertAnnouncement;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
+import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +26,8 @@ public class ModelAnnouncement {
     private float costToEUR = 0.0f;
 
     private Bitmap bitmap;
-    private String pictureUrl;
+    private Uri mainUriBitmap;
+    private Collection<URL> urlCollection;
     private Map<Uri, Bitmap> mapBitmap = new HashMap<>();
 
     private String location = "";
@@ -36,6 +39,14 @@ public class ModelAnnouncement {
     private boolean visiblePhone_1 = false;
     private boolean visiblePhone_2 = false;
     private boolean visiblePhone_3 = false;
+
+    public Uri getMainUriBitmap() {
+        return mainUriBitmap;
+    }
+
+    public void setMainUriBitmap(Uri mainUriBitmap) {
+        this.mainUriBitmap = mainUriBitmap;
+    }
 
     public int getIdAnnouncement() {
         return idAnnouncement;
@@ -101,20 +112,20 @@ public class ModelAnnouncement {
         this.idUser = idUser;
     }
 
-    public Bitmap getBitmap() {
+    public Bitmap getMainBitmap() {
         return bitmap;
     }
 
-    public void setBitmap(Bitmap bitmap) {
+    public void setMainBitmap(Bitmap bitmap) {
         this.bitmap = bitmap;
     }
 
-    public String getPictureUrl() {
-        return pictureUrl;
+    public Collection<URL> getUrlCollection() {
+        return urlCollection;
     }
 
-    public void setPictureUrl(String pictureUrl) {
-        this.pictureUrl = pictureUrl;
+    public void setUrlCollection(Collection<URL> urlCollection) {
+        this.urlCollection = urlCollection;
     }
 
     public int getIdSubcategory() {

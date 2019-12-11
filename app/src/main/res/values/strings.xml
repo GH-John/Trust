@@ -15,16 +15,16 @@
     <string name="error_authorization">Ошибка авторизации:\n</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
     <string name="error_user_not_identified">Пользователь не опознан</string>
-    <string name="error_adding_photos">Ошибка добавления изображений:\n</string>
-    <string name="error_fail_load_list">Ошибка: неудалось загрузить список</string>
+    <string name="error_fail_load_list">Ошибка: не удалось загрузить список</string>
     <string name="error_user_exists">Пользователь с такой почтой существует</string>
-    <string name="error_adding_announcement">Ошибка добавления объявления:\n</string>
     <string name="error_please_choose_correct_img">Не верный формат изображения</string>
-    <string name="error_fail_loading_announcements">Неудалось загрузить объявления</string>
-    <string name="error_fail_load_categories">Ошибка: неудалось загрузить категории</string>
-    <string name="error_server_connect">Ошибка: не удалось подключится к базе данных</string>
+    <string name="error_adding_photos">Ошибка: не удалось добавить изображения\n</string>
+    <string name="error_adding_announcement">Ошибка: не удалось добавить объявление\n</string>
+    <string name="error_fail_load_categories">Ошибка: не удалось загрузить категории\n</string>
+    <string name="error_server_connect">Ошибка: не удалось подключится к базе данных\n</string>
     <string name="error_server_is_temporarily_unavailable">Сервер временно не доступен</string>
-    <string name="error_send_photo_to_server">Не удалось отправить изображения на сервер</string>
+    <string name="error_fail_loading_announcements">Ошибка: не удалось загрузить объявления\n</string>
+    <string name="error_send_photo_to_server">Ошибка: не удалось отправить изображения на сервер</string>
     <string name="error_check_internet_connect">Проверьте интернет соединение и повторите попытку</string>
 
     <string name="success_authorization">С возвращением</string>
@@ -82,21 +82,21 @@
     <string name="hint_product_description">Описание</string>
     <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
 
+    <string name="text_count_rent">465</string>
     <string name="text_category">Категории</string>
+    <string name="text_rate_announcement">5</string>
     <string name="text_limit_add_photos">0/9</string>
     <string name="text_user_name">Фамилия Имя</string>
     <string name="text_some_text">Какой-то текст</string>
     <string name="text_product_category">Категория</string>
+    <string name="text_cost_announcement">5 руб./ч.</string>
     <string name="text_add_photos">Добавить фотографию</string>
     <string name="text_made_for_people">сделано для людей</string>
+    <string name="text_lacation_announcement">Местоположение</string>
+    <string name="text_name_announcement">Название объявления</string>
+    <string name="text_placement_date_announcement">Сегодня, 13:21</string>
     <string name="text_additional_fields">Дополнительная информация:</string>
     <string name="text_note_photos">Первая фотография является главной</string>
     <string name="text_visible_addresses">Показать адрес в объявлении:</string>
     <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
-    <string name="text_cost_announcement">5 руб./ч.</string>
-    <string name="text_name_announcement">Название объявления</string>
-    <string name="text_lacation_announcement">Местоположение</string>
-    <string name="text_rate_announcement">5</string>
-    <string name="text_count_rent">465</string>
-    <string name="text_placement_date_announcement">Сегодня, 13:21</string>
 </resources>

@@ -63,9 +63,12 @@ public class InsertPhoto extends AsyncTask<Void, Void, Void> {
                             messageOutput(context.getString(R.string.error_send_photo_to_server) + response);
                             break;
                         }
-                        case "1":
+
+                        case "1": {
                             Log.d(getClass().toString(), context.getString(R.string.success_photos_loaded));
                             break;
+                        }
+                        
                         case "101":
                             messageOutput(context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                             break;
@@ -85,8 +88,7 @@ public class InsertPhoto extends AsyncTask<Void, Void, Void> {
                             messageOutput(context.getResources()
                                     .getString(R.string.error_check_internet_connect));
                         } else {
-                            messageOutput(context.getResources()
-                                    .getString(R.string.error_adding_photos) + volleyError.getMessage());
+                            messageOutput(context.getString(R.string.error_send_photo_to_server) + volleyError.getMessage());
                         }
                     }
                 }) {
