@@ -94,6 +94,13 @@ public class ComponentBackground extends Drawable implements DrawPanel {
     }
 
     @Override
+    public void setShadowParams(float shadowRadius, float shadowDX, float shadowDY){
+        this.shadowRadius = shadowRadius;
+        this.shadowDX = shadowDX;
+        this.shadowDY = shadowDY;
+    }
+
+    @Override
     public void setShadowColor(int resourceColor) {
         paint.setShadowLayer(shadowRadius,
                 shadowDX, shadowDY,
@@ -118,9 +125,17 @@ public class ComponentBackground extends Drawable implements DrawPanel {
 
     @Override
     public void setRoundRect(float[] radii, int width, int height) {
-        path.reset();
-        path.addRoundRect(new RectF(10f, 10f, width - 10f, height - 10f), radii, Path.Direction.CCW);
-        path.close();
+        if(shadowRadius > 0) {
+            path.reset();
+            path.addRoundRect(new RectF((shadowRadius * 1.72f) + shadowDX, (shadowRadius * 1.72f) + shadowDY,
+                    width - (shadowRadius * 1.72f) + shadowDX, height - (shadowRadius * 1.72f) + shadowDY),
+                    radii, Path.Direction.CCW);
+            path.close();
+        }else {
+            path.reset();
+            path.addRoundRect(new RectF(0f, 0f, width, height), radii, Path.Direction.CCW);
+            path.close();
+        }
     }
 
     @Override

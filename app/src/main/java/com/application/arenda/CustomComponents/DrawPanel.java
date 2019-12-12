@@ -13,6 +13,8 @@ public interface DrawPanel {
 
     void setFillColor(int resourceColor);
 
+    void setShadowParams(float shadowRadius, float shadowDX, float shadowDY);
+
     void setShadowColor(int resourceColor);
 
     void setRoundingCorners(float upLeftCorner,

@@ -95,6 +95,13 @@ public class PanelBottomNavigation extends Drawable implements DrawPanel {
     }
 
     @Override
+    public void setShadowParams(float shadowRadius, float shadowDX, float shadowDY) {
+        this.shadowRadius = shadowRadius;
+        this.shadowDX = shadowDX;
+        this.shadowDY = shadowDY;
+    }
+
+    @Override
     public void setShadowColor(int resourceColor) {
         paint.setShadowLayer(shadowRadius,
                 shadowDX, shadowDY,

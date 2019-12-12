@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutTemplateAnnouncement"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="300dp"
     android:paddingBottom="16dp">
 
     <ImageView
@@ -23,6 +21,9 @@
         android:id="@+id/imgProduct"
         android:layout_width="0dp"
         android:layout_height="200dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="4dp"
         android:contentDescription="@string/todo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -31,8 +32,8 @@
 
     <ImageView
         android:id="@+id/backgroundPlacementDate"
-        android:layout_width="130dp"
-        android:layout_height="25dp"
+        android:layout_width="150dp"
+        android:layout_height="28dp"
         android:contentDescription="@string/todo"
         app:layout_constraintStart_toStartOf="@id/imgProduct"
         app:layout_constraintTop_toTopOf="@id/imgProduct"
@@ -40,8 +41,8 @@
 
     <ImageView
         android:id="@+id/backgroundImgHeart"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:contentDescription="@string/todo"
         app:layout_constraintEnd_toEndOf="@id/imgProduct"
         app:layout_constraintTop_toTopOf="@id/imgProduct"
@@ -56,12 +57,12 @@
         app:layout_constraintEnd_toEndOf="@id/backgroundImgHeart"
         app:layout_constraintStart_toStartOf="@+id/backgroundImgHeart"
         app:layout_constraintTop_toTopOf="@+id/backgroundImgHeart"
-        app:srcCompat="@drawable/ic_heart" />
+        app:srcCompat="@drawable/ic_heart_not_selected" />
 
     <ImageView
         android:id="@+id/backgroundRateAnnouncement"
-        android:layout_width="65dp"
-        android:layout_height="25dp"
+        android:layout_width="75dp"
+        android:layout_height="28dp"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="@+id/imgProduct"
         app:layout_constraintStart_toStartOf="@id/imgProduct"
@@ -76,9 +77,10 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:text="@string/text_name_announcement"
+        android:textSize="16sp"
         app:layout_constraintEnd_toStartOf="@+id/textCostProduct"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/imgProduct"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgProduct" />
 
     <TextView
@@ -86,9 +88,12 @@
         style="@style/DefaultStyleTextRegular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
         android:drawableStart="@drawable/ic_location"
+        android:drawablePadding="8dp"
         android:text="@string/text_lacation_announcement"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundAnnouncement"
         app:layout_constraintEnd_toEndOf="@+id/imgProduct"
         app:layout_constraintStart_toStartOf="@+id/imgProduct"
         app:layout_constraintTop_toBottomOf="@+id/textNameProduct" />
@@ -101,7 +106,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/text_cost_announcement"
-        app:layout_constraintEnd_toEndOf="@id/imgProduct"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgProduct" />
 
     <TextView
@@ -111,11 +117,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:drawableStart="@drawable/ic_count_rent"
+        android:drawablePadding="8dp"
         android:text="@string/text_count_rent"
         app:layout_constraintBottom_toBottomOf="@+id/textLocation"
         app:layout_constraintEnd_toStartOf="@+id/textLocation"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/imgProduct"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/textLocation" />
 
     <TextView
@@ -135,6 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_star"
+        android:drawablePadding="8dp"
         android:text="@string/text_rate_announcement"
         app:layout_constraintBottom_toBottomOf="@+id/backgroundRateAnnouncement"
         app:layout_constraintEnd_toEndOf="@+id/backgroundRateAnnouncement"

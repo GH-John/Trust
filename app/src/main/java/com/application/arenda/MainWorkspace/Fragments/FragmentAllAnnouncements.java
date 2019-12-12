@@ -42,7 +42,7 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         recyclerView = view.findViewById(R.id.recyclerViewOutputAnnouncements);
 
-        new LoadingAnnouncements(getContext(), R.layout.template_announcement, recyclerView, swipeRefreshLayout);
+        new LoadingAnnouncements(getContext(), R.layout.template_2_announcement, recyclerView, swipeRefreshLayout);
     }
 
     @Override
