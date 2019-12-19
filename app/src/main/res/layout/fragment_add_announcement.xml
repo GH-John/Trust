@@ -282,7 +282,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="fieldDescription,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,radioGroupAddresses,textVisibleAddresses,fieldCostProduct"
+                app:constraint_referenced_ids="fieldDescription,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,radioGroupAddresses,textVisibleAddresses,fieldCostProduct,textHourlyCost"
                 tools:layout_editor_absoluteX="24dp"
                 tools:layout_editor_absoluteY="245dp"
                 tools:visibility="visible" />

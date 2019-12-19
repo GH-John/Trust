@@ -2,8 +2,6 @@ package com.application.arenda.UI.ContainerImg.CustomViews;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
@@ -11,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.R;
 
 public class CustomViewImg extends ConstraintLayout {
@@ -40,12 +37,7 @@ public class CustomViewImg extends ConstraintLayout {
 
     public boolean setImageBitmap(Bitmap bitmap) {
         try {
-            BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            ComponentBackground background = new ComponentBackground(getContext(), R.color.colorWhite,
-                    R.color.shadowColor, 6f, 0f, 3f, 20f);
-            background.setShader(shader);
-
-            itemImg.setImageDrawable(background);
+            itemImg.setImageBitmap(bitmap);
             return true;
         } catch (IllegalArgumentException ignored) {
             Toast.makeText(getContext(), R.string.error_please_choose_correct_img, Toast.LENGTH_LONG).show();
