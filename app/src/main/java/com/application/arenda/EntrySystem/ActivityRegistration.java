@@ -10,11 +10,12 @@ import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
-import com.application.arenda.CustomComponents.ComponentBackground;
-import com.application.arenda.CustomComponents.SetStyle.SetFieldStyle;
-import com.application.arenda.CustomComponents.SetDrawableImageViews;
+import com.application.arenda.UI.ComponentBackground;
+import com.application.arenda.UI.SetDrawableImageViews;
+import com.application.arenda.UI.SetStyle.SetBtnStyle;
+import com.application.arenda.UI.SetStyle.SetFieldStyle;
 import com.application.arenda.MainWorkspace.Activities.ActivityMain;
+import com.application.arenda.Patterns.Utils;
 import com.application.arenda.R;
 import com.application.arenda.ServerInteraction.Registration.RegistrationUser;
 
@@ -106,12 +107,19 @@ public class ActivityRegistration extends AppCompatActivity {
         btnReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!fieldIsEmpty(fieldNameReg,
-                        fieldLastNameReg,
-                        fieldEmailReg,
-                        fieldPhoneReg,
-                        fieldPassReg,
-                        fieldCodeReg)) {
+                if (Utils.textIsAlphabet(getApplicationContext(),
+                        fieldNameReg,
+                        fieldLastNameReg) &&
+
+                        Utils.isEmail(getApplicationContext(), fieldEmailReg)&&
+
+                        !Utils.fieldIsEmpty(getApplicationContext(),
+                                fieldNameReg,
+                                fieldLastNameReg,
+                                fieldEmailReg,
+                                fieldPhoneReg,
+                                fieldPassReg,
+                                fieldCodeReg)) {
                     registrationUser.setProgressBar(progressBarReg);
 
                     registrationUser.registration(fieldNameReg.getText().toString().trim(),
@@ -123,20 +131,6 @@ public class ActivityRegistration extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public boolean fieldIsEmpty(EditText... fields) {
-        int countEmpty = 0;
-        if (fields.length > 0) {
-            for (EditText field : fields) {
-                if (field.getText().toString().isEmpty()) {
-                    field.setError(getResources().getString(R.string.error_empty_field));
-                    countEmpty++;
-                }
-            }
-            return countEmpty == fields.length || countEmpty > 0;
-        }
-        return true;
     }
 
     private String getAccountType() {

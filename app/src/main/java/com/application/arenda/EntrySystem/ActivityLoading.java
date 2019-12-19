@@ -8,9 +8,9 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.application.arenda.Cookies.UserCookie;
-import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
-import com.application.arenda.CustomComponents.ComponentBackground;
+import com.application.arenda.ServerInteraction.Cookies.UserCookie;
+import com.application.arenda.UI.SetStyle.SetBtnStyle;
+import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.MainWorkspace.Activities.ActivityMain;
 import com.application.arenda.Patterns.Observer;
 import com.application.arenda.PreviewSystem.ActivityPreview;

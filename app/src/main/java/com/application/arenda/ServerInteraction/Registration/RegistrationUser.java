@@ -18,9 +18,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.application.arenda.Cookies.UserCookie;
-import com.application.arenda.Cookies.UserProfile;
 import com.application.arenda.R;
+import com.application.arenda.ServerInteraction.Cookies.UserCookie;
+import com.application.arenda.ServerInteraction.Cookies.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,8 +105,10 @@ public class RegistrationUser {
                                     .getString(R.string.error_check_internet_connect));
                         } else {
                             progressBar.setVisibility(View.GONE);
+//                            messageOutput(context.getResources()
+//                                    .getString(R.string.error_registration) + volleyError.toString());
                             messageOutput(context.getResources()
-                                    .getString(R.string.error_registration) + volleyError.toString());
+                                    .getString(R.string.error_check_internet_connect));
                         }
                     }
                 }) {

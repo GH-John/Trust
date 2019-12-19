@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/itemSort"
+        android:id="@+id/itemFiltr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
@@ -36,7 +36,7 @@
         android:layout_marginEnd="24dp"
         android:text="@string/ab_title_user_announcements"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/itemSort"
+        app:layout_constraintEnd_toStartOf="@+id/itemFiltr"
         app:layout_constraintStart_toEndOf="@+id/itemBurgerMenu"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

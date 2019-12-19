@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/patternLayout"
@@ -27,11 +26,13 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:text="@string/ab_title_all_announcements"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemSearch"
         app:layout_constraintStart_toEndOf="@+id/itemBurgerMenu"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/itemSearch"
@@ -39,19 +40,73 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/todo"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/itemSort"
+        app:layout_constraintEnd_toStartOf="@+id/itemFiltr"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ab_item_search" />
+        app:srcCompat="@drawable/ab_item_search"
+        tools:visibility="visible" />
 
     <ImageView
-        android:id="@+id/itemSort"
+        android:id="@+id/itemFiltr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:contentDescription="@string/todo"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ab_item_sort" />
+        app:srcCompat="@drawable/ab_item_sort"
+        tools:visibility="visible" />
+
+    <EditText
+        android:id="@+id/itemFieldSearch"
+        style="@style/DefaultStyleField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/hint_field_search"
+        android:imeOptions="actionSearch"
+        android:inputType="textPersonName"
+        android:tag="itemFieldSearch"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/itemClearFieldSearch"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@id/itemBurgerMenu"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="Autofill,LabelFor"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/itemClearFieldSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/todo"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_close"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:visibility="gone"
+        app:constraint_referenced_ids="itemClearFieldSearch,itemFieldSearch"
+        tools:visibility="gone" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupDefault"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="itemHeaderName,itemFiltr,itemSearch"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,8 +10,8 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.application.arenda.CustomComponents.ComponentBackground;
-import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
+import com.application.arenda.UI.ComponentBackground;
+import com.application.arenda.UI.SetStyle.SetBtnStyle;
 import com.application.arenda.EntrySystem.ActivityAuthorization;
 import com.application.arenda.R;
 

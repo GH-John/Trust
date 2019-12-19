@@ -14,6 +14,7 @@
     <string name="error_registration">Ошибка регистрации:\n</string>
     <string name="error_authorization">Ошибка авторизации:\n</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
+    <string name="error_incorrect_email">Неправильный формат почты</string>
     <string name="error_user_not_identified">Пользователь не опознан</string>
     <string name="error_fail_load_list">Ошибка: не удалось загрузить список</string>
     <string name="error_user_exists">Пользователь с такой почтой существует</string>
@@ -74,7 +75,8 @@
     <string name="hint_email">Email</string>
     <string name="hint_user_name">Имя</string>
     <string name="hint_password">Пароль</string>
-    <string name="hint_cost_product">Цена</string>
+    <string name="hint_cost_product">0.00</string>
+    <string name="hint_field_search">Поиск</string>
     <string name="hint_product_name">Название</string>
     <string name="hint_get_code">Получить код</string>
     <string name="hint_user_last_name">Фамилия</string>
@@ -91,6 +93,7 @@
     <string name="text_product_category">Категория</string>
     <string name="text_cost_announcement">5 руб./ч.</string>
     <string name="text_add_photos">Добавить фотографию</string>
+    <string name="text_hourly_cost">Почасовая стоимость</string>
     <string name="text_made_for_people">сделано для людей</string>
     <string name="text_lacation_announcement">Местоположение</string>
     <string name="text_name_announcement">Название объявления</string>

@@ -6,11 +6,11 @@
     android:layout_gravity="center_vertical"
     android:orientation="horizontal">
 
-    <com.application.arenda.CustomComponents.ContainerImg.CustomViews.CustomBtnAddImg
+    <com.application.arenda.UI.ContainerImg.CustomViews.CustomBtnAddImg
         android:id="@+id/btnAddImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
-    </com.application.arenda.CustomComponents.ContainerImg.CustomViews.CustomBtnAddImg>
+    </com.application.arenda.UI.ContainerImg.CustomViews.CustomBtnAddImg>
 </LinearLayout>

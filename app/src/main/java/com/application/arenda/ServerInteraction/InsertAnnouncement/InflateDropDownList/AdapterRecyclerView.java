@@ -3,6 +3,7 @@ package com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropD
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -10,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.CustomComponents.DropDownList.AdapterDropDownList;
-import com.application.arenda.CustomComponents.DropDownList.IDropDownList;
+import com.application.arenda.UI.DropDownList.AdapterDropDownList;
+import com.application.arenda.UI.DropDownList.IDropDownList;
 import com.application.arenda.Patterns.Observer;
 import com.application.arenda.R;
 
@@ -23,11 +24,13 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
     private Context context;
     private int idPatternLayout;
     private IDropDownList dropDownList;
-    private Collection<ModelItemContent> collection;
+    private List<ModelItemContent> collection;
 
     public AdapterRecyclerView(int idPatternLayout, Collection<ModelItemContent> collection) {
         this.idPatternLayout = idPatternLayout;
         this.collection = new ArrayList<>(collection);
+
+        setHasStableIds(true);
     }
 
     @Override
@@ -64,10 +67,10 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull AdapterRecyclerView.ViewHolder holder, int position) {
-        final ModelItemContent modelItemContent = ((List<ModelItemContent>) this.collection).get(position);
+        final ModelItemContent modelItemContent = this.collection.get(position);
         holder.nameCategory.setText(modelItemContent.getName());
 
-        holder.relativeLayout.setOnClickListener(new View.OnClickListener() {
+        holder.relativeLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 dropDownList.setTitle(modelItemContent.getName());
@@ -82,8 +85,13 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
     }
 
     @Override
+    public long getItemId(int position) {
+        return collection.get(position).hashCode();
+    }
+
+    @Override
     public int getItemCount() {
-        return collection.size();
+        return collection != null ? collection.size() : 0;
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {

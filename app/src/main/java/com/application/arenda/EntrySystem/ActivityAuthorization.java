@@ -10,11 +10,12 @@ import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
-import com.application.arenda.CustomComponents.ComponentBackground;
-import com.application.arenda.CustomComponents.SetStyle.SetFieldStyle;
-import com.application.arenda.CustomComponents.SetDrawableImageViews;
+import com.application.arenda.UI.ComponentBackground;
+import com.application.arenda.UI.SetDrawableImageViews;
+import com.application.arenda.UI.SetStyle.SetBtnStyle;
+import com.application.arenda.UI.SetStyle.SetFieldStyle;
 import com.application.arenda.MainWorkspace.Activities.ActivityMain;
+import com.application.arenda.Patterns.Utils;
 import com.application.arenda.R;
 import com.application.arenda.ServerInteraction.Authorization.AuthorizationUser;
 
@@ -81,7 +82,7 @@ public class ActivityAuthorization extends AppCompatActivity {
         btnSignAuth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!fieldIsEmpty(fieldEmailAuth, fieldPassAuth) && !fieldIsIncorrectChars(fieldEmailAuth, fieldPassAuth)) {
+                if (!Utils.fieldIsEmpty(getApplicationContext(), fieldEmailAuth, fieldPassAuth)) {
                     authorizationUser.setProgressBar(progressBarAuth);
 
                     authorizationUser.authorization(
@@ -90,36 +91,5 @@ public class ActivityAuthorization extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    public boolean fieldIsEmpty(EditText... fields) {
-        int countEmpty = 0;
-        if (fields.length > 0) {
-            for (EditText field : fields) {
-                if (field.getText().toString().isEmpty()) {
-                    field.setError(getResources().getString(R.string.error_empty_field));
-                    countEmpty++;
-                }
-            }
-            return countEmpty == fields.length || countEmpty > 0;
-        }
-        return true;
-    }
-
-    public boolean fieldIsIncorrectChars(EditText... fields) {
-        int countIncorrectFields = 0;
-        char[] incorrectChars = {' '};
-        if (fields.length > 0) {
-            for (char incoChars : incorrectChars) {
-                for (EditText field : fields) {
-                    if (field.getText().toString().matches(" ")) {
-                        field.setError(getResources().getString(R.string.error_incorrect_chars));
-                        countIncorrectFields++;
-                    }
-                }
-            }
-            return countIncorrectFields == fields.length || countIncorrectFields > 0;
-        }
-        return true;
     }
 }

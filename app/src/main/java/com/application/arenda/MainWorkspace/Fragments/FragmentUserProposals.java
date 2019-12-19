@@ -10,9 +10,9 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
-import com.application.arenda.CustomComponents.Panels.ActionBar.AdapterActionBar;
-import com.application.arenda.CustomComponents.Panels.SideBar.AdapterSideBar;
-import com.application.arenda.CustomComponents.Panels.SideBar.SideBar;
+import com.application.arenda.UI.Panels.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Panels.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Panels.SideBar.SideBar;
 import com.application.arenda.R;
 
 public class FragmentUserProposals extends Fragment implements AdapterActionBar, AdapterSideBar {

@@ -18,22 +18,23 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 
-import com.application.arenda.CustomComponents.ComponentBackground;
-import com.application.arenda.CustomComponents.ContainerImg.ContainerFiller;
-import com.application.arenda.CustomComponents.ContainerImg.ContainerSelectedImages;
-import com.application.arenda.CustomComponents.ContainerImg.Galery.AdapterGalery;
-import com.application.arenda.CustomComponents.DropDownList.DropDownList;
-import com.application.arenda.CustomComponents.Panels.ActionBar.AdapterActionBar;
-import com.application.arenda.CustomComponents.Panels.SideBar.AdapterSideBar;
-import com.application.arenda.CustomComponents.Panels.SideBar.SideBar;
-import com.application.arenda.CustomComponents.SetStyle.SetBtnStyle;
-import com.application.arenda.CustomComponents.SetStyle.SetFieldStyle;
 import com.application.arenda.Patterns.DecimalDigitsInputFilter;
+import com.application.arenda.Patterns.Utils;
 import com.application.arenda.R;
 import com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList.AdapterRecyclerView;
 import com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList.RecipientCategories;
 import com.application.arenda.ServerInteraction.InsertAnnouncement.InsertAnnouncement;
 import com.application.arenda.ServerInteraction.InsertAnnouncement.ModelAnnouncement;
+import com.application.arenda.UI.ComponentBackground;
+import com.application.arenda.UI.ContainerImg.ContainerFiller;
+import com.application.arenda.UI.ContainerImg.ContainerSelectedImages;
+import com.application.arenda.UI.ContainerImg.Galery.AdapterGalery;
+import com.application.arenda.UI.DropDownList.DropDownList;
+import com.application.arenda.UI.Panels.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Panels.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Panels.SideBar.SideBar;
+import com.application.arenda.UI.SetStyle.SetBtnStyle;
+import com.application.arenda.UI.SetStyle.SetFieldStyle;
 
 public class FragmentAddAnnouncement extends Fragment implements AdapterSideBar, AdapterActionBar, AdapterGalery {
     private final int SELECTED_IMG_CODE = 1001;
@@ -128,33 +129,30 @@ public class FragmentAddAnnouncement extends Fragment implements AdapterSideBar,
         btnCreateAnnouncement.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                modelAnnouncement.setMapBitmap(containerFiller.getMapBitmap());
-                modelAnnouncement.setMainBitmap(containerFiller.getFirstBitmap());
-                modelAnnouncement.setName(fieldProductName.getText().toString());
-                modelAnnouncement.setIdSubcategory(dropDownList.getIdSelectedElement());
-                modelAnnouncement.setDescription(fieldProductDescription.getText().toString());
+                if (!Utils.fieldIsEmpty(getContext(), fieldProductName, fieldProductDescription, fieldCostProduct)) {
+                    modelAnnouncement.setMapBitmap(containerFiller.getMapBitmap());
+                    modelAnnouncement.setMainBitmap(containerFiller.getFirstBitmap());
+                    modelAnnouncement.setName(fieldProductName.getText().toString());
+                    modelAnnouncement.setIdSubcategory(dropDownList.getIdSelectedElement());
+                    modelAnnouncement.setDescription(fieldProductDescription.getText().toString());
 
-                modelAnnouncement.setCostToBYN(Float.parseFloat(fieldCostProduct.getText().toString()));
-                modelAnnouncement.setCostToUSD(0f);
-                modelAnnouncement.setCostToEUR(0f);
+                    modelAnnouncement.setCostToBYN(Float.parseFloat(fieldCostProduct.getText().toString()));
+                    modelAnnouncement.setCostToUSD(0f);
+                    modelAnnouncement.setCostToEUR(0f);
 
-                modelAnnouncement.setLocation("адрес");
+                    modelAnnouncement.setLocation("адрес");
 
-                modelAnnouncement.setPhone_1("+375(29)659-50-73");
-                modelAnnouncement.setVisiblePhone_1(true);
+                    modelAnnouncement.setPhone_1("+375(29)659-50-73");
+                    modelAnnouncement.setVisiblePhone_1(true);
 
-                modelAnnouncement.setPhone_2("+375(29)681-37-83");
-                modelAnnouncement.setVisiblePhone_2(false);
+                    modelAnnouncement.setPhone_2("+375(29)681-37-83");
+                    modelAnnouncement.setVisiblePhone_2(false);
 
-                modelAnnouncement.setPhone_3("+375(44)702-04-50");
-                modelAnnouncement.setVisiblePhone_3(false);
+                    modelAnnouncement.setPhone_3("+375(44)702-04-50");
+                    modelAnnouncement.setVisiblePhone_3(false);
 
-//                ServiceInsertAnnouncement serviceInsertAnnouncement = new ServiceInsertAnnouncement(getContext(), modelAnnouncement);
-//
-//                Intent service = new Intent(getContext(), serviceInsertAnnouncement.getClass());
-//                getActivity().startService(service);
-
-                new InsertAnnouncement(getContext(), modelAnnouncement).execute();
+                    new InsertAnnouncement(getContext(), modelAnnouncement).execute();
+                }
             }
         });
     }

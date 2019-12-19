@@ -63,12 +63,12 @@
                 app:layout_constraintTop_toBottomOf="@id/textAddPhotos"
                 tools:ignore="RtlSymmetry,ScrollViewCount">
 
-                <com.application.arenda.CustomComponents.ContainerImg.ContainerSelectedImages
+                <com.application.arenda.UI.ContainerImg.ContainerSelectedImages
                     android:id="@+id/containerImg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                </com.application.arenda.CustomComponents.ContainerImg.ContainerSelectedImages>
+                </com.application.arenda.UI.ContainerImg.ContainerSelectedImages>
             </HorizontalScrollView>
 
             <TextView
@@ -96,7 +96,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textNotePhotos"
                 tools:ignore="Autofill,LabelFor" />
 
-            <com.application.arenda.CustomComponents.DropDownList.DropDownList
+            <com.application.arenda.UI.DropDownList.DropDownList
                 android:id="@+id/dropDownList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fieldProductName">
 
-            </com.application.arenda.CustomComponents.DropDownList.DropDownList>
+            </com.application.arenda.UI.DropDownList.DropDownList>
 
             <EditText
                 android:id="@+id/fieldDescription"
@@ -124,6 +124,17 @@
                 app:layout_constraintTop_toBottomOf="@+id/dropDownList"
                 tools:ignore="Autofill,LabelFor" />
 
+            <TextView
+                android:id="@+id/textHourlyCost"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/text_hourly_cost"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldDescription" />
+
             <EditText
                 android:id="@+id/fieldCostProduct"
                 style="@style/DefaultStyleField"
@@ -135,7 +146,7 @@
                 android:inputType="numberDecimal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fieldDescription"
+                app:layout_constraintTop_toBottomOf="@+id/textHourlyCost"
                 tools:ignore="Autofill" />
 
             <TextView

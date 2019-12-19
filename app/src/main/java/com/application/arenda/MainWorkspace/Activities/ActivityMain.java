@@ -7,12 +7,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
-import com.application.arenda.CustomComponents.ContainerFragments.ComponentLinkManager;
-import com.application.arenda.CustomComponents.ContainerFragments.ContainerFragments;
-import com.application.arenda.CustomComponents.ContainerFragments.AdapterLink;
-import com.application.arenda.CustomComponents.Panels.ActionBar.CustomActionBar;
-import com.application.arenda.CustomComponents.Panels.BottomNavigation.CustomBottomNavigation;
-import com.application.arenda.CustomComponents.Panels.SideBar.CustomSideBar;
+import com.application.arenda.UI.ContainerFragments.ComponentLinkManager;
+import com.application.arenda.UI.ContainerFragments.ContainerFragments;
+import com.application.arenda.UI.ContainerFragments.AdapterLink;
+import com.application.arenda.UI.Panels.ActionBar.CustomActionBar;
+import com.application.arenda.UI.Panels.BottomNavigation.CustomBottomNavigation;
+import com.application.arenda.UI.Panels.SideBar.CustomSideBar;
 import com.application.arenda.MainWorkspace.Fragments.FragmentAddAnnouncement;
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
 import com.application.arenda.MainWorkspace.Fragments.FragmentUserAnnouncements;

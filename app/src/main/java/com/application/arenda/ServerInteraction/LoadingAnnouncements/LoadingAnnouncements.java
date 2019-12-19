@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,12 +44,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnouncements.ViewHolder> {
+public class LoadingAnnouncements extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @SuppressLint("StaticFieldLeak")
     private final SwipeRefreshLayout refreshLayout;
 
@@ -59,38 +57,44 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
 
     private final Context context;
 
+    private OnLoadMoreListener onLoadMoreListener;
     private OnItemClickListener onItemClickListener;
 
+    private boolean isLoading = false;
     private LinearLayoutManager layoutManager;
-    private AsyncLoadingAnnouncements asyncTask;
-    private Collection<ModelAnnouncement> collection;
-    private int idPatternLayout, lastVisibleItem, lastLoadedAnnouncement;
+    private List<ModelAnnouncement> collection;
+    private int idLayoutItem,
+            lastLoadedAnnouncement = 0,
+            idLayoutProgress,
+            ITEM_VIEW = 0,
+            ITEM_LOADING = 1,
+            lastVisibleItem,
+            totalItemCount,
+            visibleThreashold = 10;
 
-    public LoadingAnnouncements(final Context context, final int idPatternLayout,
+    @SuppressLint("StaticFieldLeak")
+    private String URL_INSERT_ANNOUNCEMENT = "http://192.168.43.241/AndroidConnectWithServer/php/load/LoadingAnnouncements.php";
+
+    public LoadingAnnouncements(final Context context, final int idLayoutItem, final int idLayoutProgress,
                                 final RecyclerView recyclerView, final SwipeRefreshLayout refreshLayout) {
         this.context = context;
         this.recyclerView = recyclerView;
         this.refreshLayout = refreshLayout;
-        this.idPatternLayout = idPatternLayout;
+        this.idLayoutItem = idLayoutItem;
+        this.idLayoutProgress = idLayoutProgress;
 
         initializationComponents();
         initializationListeners();
     }
 
-    @Override
-    public long getItemId(int position) {
-        return ((List<ModelAnnouncement>) collection).get(position).hashCode();
-    }
-
     private void initializationComponents() {
         collection = new ArrayList<>();
-        asyncTask = new AsyncLoadingAnnouncements(context);
 
         refreshLayout.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorBlue,
                 R.color.colorRed);
 
-        asyncTask.execute(0);
+        loadingAnnouncements(context, 0, "");
 
         setHasStableIds(true);
 
@@ -99,7 +103,7 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
         recyclerView.setAdapter(LoadingAnnouncements.this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setItemViewCacheSize(50);
+        recyclerView.setItemViewCacheSize(30);
         recyclerView.setHasFixedSize(true);
     }
 
@@ -107,10 +111,29 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                asyncTask.cancel(true);
-                if (asyncTask.isCancelled()) {
-                    asyncTask = new AsyncLoadingAnnouncements(context);
-                    asyncTask.execute(0);
+                refreshLayout.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        collection.clear();
+                        loadingAnnouncements(context, 0, "");
+                    }
+                });
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                lastVisibleItem = manager.findLastVisibleItemPosition();
+                totalItemCount = manager.getItemCount();
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + visibleThreashold)) {
+
+                    isLoading = true;
                 }
             }
         });
@@ -122,72 +145,248 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
         this.notifyDataSetChanged();
     }
 
+    public void setOnLoadMore(OnLoadMoreListener onLoadMoreListener) {
+        this.onLoadMoreListener = onLoadMoreListener;
+    }
+
+    public void setIsLoading(boolean loading) {
+        this.isLoading = loading;
+    }
+
+    public void onStop() {
+        isLoading = false;
+        refreshLayout.setRefreshing(false);
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(this.idPatternLayout, parent, false);
-        return new LoadingAnnouncements.ViewHolder(v, onItemClickListener);
+    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = null;
+        if (viewType == ITEM_VIEW) {
+            view = LayoutInflater.from(parent.getContext()).inflate(this.idLayoutItem, parent, false);
+        } else if (viewType == ITEM_LOADING) {
+            view = LayoutInflater.from(parent.getContext()).inflate(this.idLayoutProgress, parent, false);
+        }
+
+        return new ItemViewHolder(view, onItemClickListener);
     }
 
     @SuppressLint({"SetTextI18n", "CheckResult"})
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        final ModelAnnouncement model = ((List<ModelAnnouncement>) this.collection).get(position);
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
+        final int getViewType = holder.getItemViewType();
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.color.colorNotFoundPicture);
-        requestOptions.placeholder(R.color.colorNotFoundPicture);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
-        requestOptions.centerCrop();
-        requestOptions.timeout(3000);
+        if (getViewType == ITEM_VIEW) {
+            final ItemViewHolder viewHolder = (ItemViewHolder) holder;
 
-        Glide.with(context)
-                .load(model.getMainUriBitmap())
-                .apply(requestOptions)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
-                        holder.imgProgress.setVisibility(View.GONE);
-                        return false;
-                    }
+            final ModelAnnouncement model = this.collection.get(position);
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        holder.imgProgress.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(holder.imgProduct);
+            RequestOptions requestOptions = new RequestOptions();
+            requestOptions.placeholder(R.color.colorNotFoundPicture);
+            requestOptions.placeholder(R.color.colorNotFoundPicture);
+            requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+            requestOptions.centerCrop();
+            requestOptions.timeout(3000);
 
-        holder.textPlacementDate.setText(model.getPlacementDate());
-        holder.textRatingAnnouncement.setText(String.valueOf(model.getRating()));
+            Glide.with(context)
+                    .load(model.getMainUriBitmap())
+                    .apply(requestOptions)
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model,
+                                                    Target<Drawable> target, boolean isFirstResource) {
+                            viewHolder.imgProgress.setVisibility(View.GONE);
+                            return false;
+                        }
 
-        holder.textNameProduct.setText(model.getName());
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model,
+                                                       Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            viewHolder.imgProgress.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(viewHolder.imgProduct);
 
-        //в зависимости от предпочтения пользователя будет браться стоимость
-        holder.textCostProduct.setText(model.getCostToBYN() + " руб./ч.");
+            viewHolder.textPlacementDate.setText(model.getPlacementDate());
+            viewHolder.textRatingAnnouncement.setText(String.valueOf(model.getRating()));
 
-        holder.textCountRent.setText(String.valueOf(model.getCountRent()));
-        holder.textLocation.setText(model.getLocation());
+            viewHolder.textNameProduct.setText(model.getName());
+
+            //в зависимости от предпочтения пользователя будет браться стоимость
+            viewHolder.textCostProduct.setText(model.getCostToBYN() + " руб./ч.");
+
+            viewHolder.textCountRent.setText(String.valueOf(model.getCountRent()));
+            viewHolder.textLocation.setText(model.getLocation());
+        } else if (getViewType == ITEM_LOADING) {
+            final ProgressViewHolder progressViewHolder = (ProgressViewHolder) holder;
+
+            progressViewHolder.progressBar.setIndeterminate(true);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return collection.get(position) != null ? ITEM_VIEW : ITEM_LOADING;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return collection.get(position).hashCode();
     }
 
     @Override
     public int getItemCount() {
-        return collection.size();
+        return collection != null ? collection.size() : 0;
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void search(String search) {
+        collection.clear();
+        loadingAnnouncements(context, 0, search);
+    }
+
+    private void loadingAnnouncements(final Context context, final int id, final String search) {
+        StringRequest request;
+
+        request = new StringRequest(Request.Method.POST, URL_INSERT_ANNOUNCEMENT, new Response.Listener<String>() {
+            @SuppressLint("SimpleDateFormat")
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    JSONArray announcements = jsonObject.getJSONArray("announcements");
+
+                    String code = jsonObject.getString("code");
+
+                    switch (code) {
+                        case "0": {
+                            Log.d(getClass().toString(), response);
+
+                            onStop();
+                            break;
+                        }
+                        case "1":
+                            JSONObject object;
+
+                            for (int i = 0; i < announcements.length(); i++) {
+                                object = announcements.getJSONObject(i);
+
+                                ModelAnnouncement model = new ModelAnnouncement();
+
+                                lastLoadedAnnouncement = Integer.parseInt(object.getString("idAnnouncement"));
+                                model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
+
+                                model.setIdUser(Integer.valueOf(object.getString("idUser")));
+
+                                model.setName(object.getString("name"));
+                                model.setDescription(object.getString("description"));
+
+                                model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
+                                model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
+                                model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
+
+                                model.setLocation(object.getString("address"));
+
+                                model.setPhone_1(object.getString("phone_1"));
+                                model.setVisiblePhone_1(Boolean.parseBoolean(object.getString("isVisible_phone_1")));
+                                model.setPhone_2(object.getString("phone_2"));
+                                model.setVisiblePhone_2(Boolean.parseBoolean(object.getString("isVisible_phone_2")));
+                                model.setPhone_3(object.getString("phone_3"));
+                                model.setVisiblePhone_3(Boolean.parseBoolean(object.getString("isVisible_phone_3")));
+
+                                model.setPlacementDate(object.getString("placementDate"));
+                                model.setStatusRent(Boolean.parseBoolean(object.getString("statusRent")));
+                                model.setRating(Integer.parseInt(object.getString("rating")));
+                                model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
+
+                                addToCollection(model);
+                            }
+
+                            onStop();
+                            break;
+
+                        case "2": {
+                            Log.d(getClass().toString(), response);
+                            messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_loading_announcements) + response);
+
+                            onStop();
+                            break;
+                        }
+                        case "101":
+                            Log.d(getClass().toString(), response);
+                            messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+
+                            onStop();
+                            break;
+
+                        default: {
+                            messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+
+                            onStop();
+                        }
+                    }
+                } catch (JSONException e) {
+                    Log.d(getClass().toString(), response);
+                    messageOutput(context, context.getResources()
+                            .getString(R.string.error_fail_loading_announcements) + e.getMessage());
+
+                    onStop();
+                }
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        if (volleyError instanceof TimeoutError) {
+                            messageOutput(context, context.getResources()
+                                    .getString(R.string.error_check_internet_connect));
+                        } else {
+                            Log.d(getClass().toString(), String.valueOf(volleyError.getMessage()));
+                            messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_loading_announcements));
+                        }
+
+                        onStop();
+                    }
+                }) {
+            @SuppressLint("SimpleDateFormat")
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("idAnnouncement", String.valueOf(id));
+
+                if (search.length() > 0)
+                    params.put("search", search);
+
+                return params;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(request);
+    }
+
+    private void messageOutput(final Context context, String str) {
+        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+    }
+
     interface OnItemClickListener {
         void ItemClick(View view, int position);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    interface OnLoadMoreListener {
+        void onLoadMore();
+    }
+
+    public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imgProduct, imgHeart;
 
         private TextView textNameProduct,
@@ -201,7 +400,7 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
 
         private OnItemClickListener onItemClickListener;
 
-        public ViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
+        public ItemViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
 
             this.onItemClickListener = onItemClickListener;
@@ -232,182 +431,18 @@ public class LoadingAnnouncements extends RecyclerView.Adapter<LoadingAnnounceme
 
         @Override
         public void onClick(View v) {
-            this.onItemClickListener.ItemClick(v, getAdapterPosition());
+//            this.onItemClickListener.ItemClick(v, getAdapterPosition());
         }
     }
 
-    @SuppressLint("StaticFieldLeak")
-    private class AsyncLoadingAnnouncements extends AsyncTask<Integer, ModelAnnouncement, Void> {
-        private final Context context;
-        private String URL_INSERT_ANNOUNCEMENT = "http://192.168.43.241/AndroidConnectWithServer/php/load/LoadingAnnouncements.php";
+    public class ProgressViewHolder extends RecyclerView.ViewHolder {
 
-        public AsyncLoadingAnnouncements(final Context context) {
-            this.context = context;
-        }
+        private ProgressBar progressBar;
 
-        @Override
-        protected Void doInBackground(Integer... params) {
-            if (params != null) {
-                for (int id : params) {
-                    loadingAnnouncements(context, id);
-                }
-            }
-            return null;
-        }
+        public ProgressViewHolder(@NonNull View itemView) {
+            super(itemView);
 
-        @Override
-        protected void onProgressUpdate(ModelAnnouncement... models) {
-            super.onProgressUpdate(models);
-            if (models != null) {
-                for (ModelAnnouncement model : models) {
-                    LoadingAnnouncements.this.addToCollection(model);
-                }
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            this.cancel(true);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            this.cancel(true);
-        }
-
-        private void loadingAnnouncements(final Context context, final int id) {
-            StringRequest request;
-
-            request = new StringRequest(Request.Method.POST, URL_INSERT_ANNOUNCEMENT, new Response.Listener<String>() {
-                @SuppressLint("SimpleDateFormat")
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-
-                        JSONArray announcements = jsonObject.getJSONArray("announcements");
-
-                        String code = jsonObject.getString("code");
-
-                        switch (code) {
-                            case "0": {
-                                Log.d(getClass().toString(), response);
-
-                                refreshLayout.setRefreshing(false);
-                                onCancelled();
-                                break;
-                            }
-                            case "1":
-                                JSONObject object;
-
-                                for (int i = 0; i < announcements.length(); i++) {
-                                    object = announcements.getJSONObject(i);
-
-                                    ModelAnnouncement model = new ModelAnnouncement();
-
-                                    lastLoadedAnnouncement = Integer.valueOf(object.getString("idAnnouncement"));
-                                    model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
-
-                                    model.setIdUser(Integer.valueOf(object.getString("idUser")));
-
-                                    model.setName(object.getString("name"));
-                                    model.setDescription(object.getString("description"));
-
-                                    model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
-                                    model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
-                                    model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
-
-                                    model.setLocation(object.getString("address"));
-
-                                    model.setPhone_1(object.getString("phone_1"));
-                                    model.setVisiblePhone_1(Boolean.parseBoolean(object.getString("isVisible_phone_1")));
-                                    model.setPhone_2(object.getString("phone_2"));
-                                    model.setVisiblePhone_2(Boolean.parseBoolean(object.getString("isVisible_phone_2")));
-                                    model.setPhone_3(object.getString("phone_3"));
-                                    model.setVisiblePhone_3(Boolean.parseBoolean(object.getString("isVisible_phone_3")));
-
-                                    model.setPlacementDate(object.getString("placementDate"));
-                                    model.setStatusRent(Boolean.parseBoolean(object.getString("statusRent")));
-                                    model.setRating(Integer.parseInt(object.getString("rating")));
-                                    model.setCountRent(Integer.parseInt(object.getString("countRent")));
-                                    model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
-
-                                    onProgressUpdate(model);
-                                }
-
-                                refreshLayout.setRefreshing(false);
-
-                                onCancelled();
-                                break;
-
-                            case "2": {
-                                Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources()
-                                        .getString(R.string.error_fail_loading_announcements) + response);
-
-                                refreshLayout.setRefreshing(false);
-                                onCancelled();
-                                break;
-                            }
-                            case "101":
-                                Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-
-                                refreshLayout.setRefreshing(false);
-                                onCancelled();
-                                break;
-
-                            default: {
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-
-                                refreshLayout.setRefreshing(false);
-                                onCancelled();
-                            }
-                        }
-                    } catch (JSONException e) {
-                        Log.d(getClass().toString(), response);
-                        messageOutput(context, context.getResources()
-                                .getString(R.string.error_fail_loading_announcements) + e.getMessage());
-
-                        refreshLayout.setRefreshing(false);
-                        onCancelled();
-                    }
-                }
-            },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError volleyError) {
-                            if (volleyError instanceof TimeoutError) {
-                                messageOutput(context, context.getResources()
-                                        .getString(R.string.error_check_internet_connect));
-                            } else {
-                                Log.d(getClass().toString(), String.valueOf(volleyError.getMessage()));
-                                messageOutput(context, context.getResources()
-                                        .getString(R.string.error_fail_loading_announcements));
-                            }
-
-                            refreshLayout.setRefreshing(false);
-                            onCancelled();
-                        }
-                    }) {
-                @SuppressLint("SimpleDateFormat")
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("idAnnouncement", String.valueOf(id));
-
-                    return params;
-                }
-            };
-
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-            requestQueue.add(request);
-        }
-
-        private void messageOutput(final Context context, String str) {
-            Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+            progressBar = itemView.findViewById(R.id.progressBarLoadMore);
         }
     }
 }
