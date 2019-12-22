@@ -1,0 +1,305 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutAddAnnouncement"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundApp"
+    tools:context=".MainWorkspace.Fragments.FragmentInsertAnnouncement">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="100dp">
+
+            <TextView
+                android:id="@+id/textAddPhotos"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/text_add_photos"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textLimitAddPhotos"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="@string/text_limit_add_photos"
+                app:layout_constraintBottom_toBottomOf="@+id/textAddPhotos"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textAddPhotos" />
+
+            <HorizontalScrollView
+                android:id="@+id/scrollViewImg"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fillViewport="true"
+                android:measureAllChildren="false"
+                android:orientation="horizontal"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textAddPhotos"
+                tools:ignore="RtlSymmetry,ScrollViewCount">
+
+                <com.application.arenda.UI.ContainerImg.ContainerSelectedImages
+                    android:id="@+id/containerImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                </com.application.arenda.UI.ContainerImg.ContainerSelectedImages>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/textNotePhotos"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/text_note_photos"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/scrollViewImg" />
+
+            <EditText
+                android:id="@+id/fieldProductName"
+                style="@style/DefaultStyleField"
+                android:layout_width="0dp"
+                android:layout_marginTop="24dp"
+                android:ems="10"
+                android:hint="@string/hint_product_name"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textNotePhotos"
+                tools:ignore="Autofill,LabelFor" />
+
+            <com.application.arenda.UI.DropDownList.DropDownList
+                android:id="@+id/dropDownList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldProductName">
+
+            </com.application.arenda.UI.DropDownList.DropDownList>
+
+            <EditText
+                android:id="@+id/fieldDescription"
+                style="@style/DefaultStyleField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/hint_product_description"
+                android:inputType="textMultiLine"
+                android:maxLength="4000"
+                android:minHeight="50dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/dropDownList"
+                tools:ignore="Autofill,LabelFor" />
+
+            <TextView
+                android:id="@+id/textHourlyCost"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/text_hourly_cost"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldDescription" />
+
+            <EditText
+                android:id="@+id/fieldCostProduct"
+                style="@style/DefaultStyleField"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="@string/hint_cost_product"
+                android:inputType="numberDecimal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textHourlyCost"
+                tools:ignore="Autofill" />
+
+            <TextView
+                android:id="@+id/textAffordableInfo"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/text_additional_fields"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldCostProduct" />
+
+            <CheckBox
+                android:id="@+id/checkBoxWithSale"
+                style="@style/DefaultStyleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/check_box_with_sale"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textAffordableInfo" />
+
+            <TextView
+                android:id="@+id/textVisibleAddresses"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/text_visible_addresses"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkBoxWithSale" />
+
+            <RadioGroup
+                android:id="@+id/radioGroupAddresses"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textVisibleAddresses">
+
+                <RadioButton
+                    android:id="@+id/radioAddress_1"
+                    style="@style/DefaultStyleRadioBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/text_some_text" />
+
+                <RadioButton
+                    android:id="@+id/radioAddress_2"
+                    style="@style/DefaultStyleRadioBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="false"
+                    android:text="@string/text_some_text" />
+
+                <RadioButton
+                    android:id="@+id/radioAddress_3"
+                    style="@style/DefaultStyleRadioBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/text_some_text" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/textVisiblePhones"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/text_visible_phones"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroupAddresses" />
+
+            <CheckBox
+                android:id="@+id/checkPhone_1"
+                style="@style/DefaultStyleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/hint_phone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textVisiblePhones" />
+
+            <CheckBox
+                android:id="@+id/checkPhone_2"
+                style="@style/DefaultStyleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/hint_phone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkPhone_1" />
+
+            <CheckBox
+                android:id="@+id/checkPhone_3"
+                style="@style/DefaultStyleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/hint_phone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkPhone_2" />
+
+            <Button
+                android:id="@+id/btnCreateAnnouncement"
+                style="@style/DefaultStylePrimaryBtn"
+                android:layout_width="220dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/btn_create_announcement"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkPhone_3"
+                tools:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/progressBarInsert"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/btnCreateAnnouncement"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="visible" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupPhones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="checkPhone_1,checkPhone_2,checkPhone_3" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupAdditionalFields"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="fieldDescription,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,radioGroupAddresses,textVisibleAddresses,fieldCostProduct,textHourlyCost"
+                tools:layout_editor_absoluteX="24dp"
+                tools:layout_editor_absoluteY="245dp"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

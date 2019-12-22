@@ -1,4 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutDDL"
@@ -9,76 +9,68 @@
 
     <ImageView
         android:id="@+id/backgroundDDL"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/titleDDL"
-        style="@style/DefaultStyleTextBoldRegular"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:gravity="center_vertical"
-        android:text="@string/text_some_text"
-        android:textAlignment="viewStart"
-        app:layout_constraintEnd_toStartOf="@id/progressBarDDL"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iconBtnBackDDL"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlCompat" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/todo" />
 
     <ImageView
         android:id="@+id/iconBtnBackDDL"
         android:layout_width="9dp"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/titleDDL"
+        android:layout_alignBottom="@+id/titleDDL"
+        android:layout_alignParentStart="true"
         android:layout_marginStart="24dp"
         android:contentDescription="@string/todo"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/titleDDL"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/titleDDL"
-        app:srcCompat="@drawable/ic_arrow_left"
+        tools:srcCompat="@drawable/ic_arrow_left"
         tools:visibility="visible" />
 
-    <ImageView
-        android:id="@+id/iconExpandDDL"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
+    <TextView
+        android:id="@+id/titleDDL"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/iconBtnBackDDL"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toBottomOf="@+id/titleDDL"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/titleDDL"
-        app:srcCompat="@drawable/ic_arrow_right" />
+        android:layout_toStartOf="@id/progressBarDDL"
+        android:gravity="center_vertical"
+        android:text="@string/text_some_text"
+        android:textAlignment="viewStart"
+        tools:ignore="RtlCompat" />
 
     <ProgressBar
         android:id="@+id/progressBarDDL"
         style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_alignTop="@+id/iconExpandDDL"
+        android:layout_alignEnd="@id/iconExpandDDL"
+        android:layout_alignBottom="@+id/iconExpandDDL"
         android:layout_marginEnd="24dp"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/titleDDL"
-        app:layout_constraintEnd_toStartOf="@+id/iconExpandDDL"
-        app:layout_constraintTop_toTopOf="@+id/titleDDL" />
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/iconExpandDDL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/titleDDL"
+        android:layout_alignBottom="@+id/titleDDL"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="24dp"
+        android:contentDescription="@string/todo"
+        app:srcCompat="@drawable/ic_arrow_right" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewDDL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/titleDDL"
         android:layout_marginBottom="16dp"
-        android:nestedScrollingEnabled="false"
-        app:layout_constraintBottom_toTopOf="@+id/textErrorDDL"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleDDL">
+        android:nestedScrollingEnabled="false">
 
     </androidx.recyclerview.widget.RecyclerView>
 
@@ -87,15 +79,15 @@
         style="@style/DefaultStyleTextRegular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/recyclerViewDDL"
+        android:layout_alignParentEnd="true"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
         android:hint="@string/text_some_text"
         android:textColorHint="@color/colorHint"
         android:textSize="10sp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/backgroundDDL"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
         tools:ignore="SmallSp"
         tools:visibility="visible" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>

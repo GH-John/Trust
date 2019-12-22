@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundApp"
-    tools:context="com.application.arenda.EntrySystem.ActivityRegistration">
+    tools:context="com.application.arenda.MainWorkspace.Activities.ActivityRegistration">
 
     <ImageView
         android:id="@+id/imagePinReg"

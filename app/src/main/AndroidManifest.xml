@@ -14,13 +14,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <service
-            android:name=".ServerInteraction.InsertAnnouncement.ServiceInsertAnnouncement"
-            android:icon="@drawable/ic_logo"
-            tools:ignore="ExportedService,InnerclassSeparator" />
 
         <activity
-            android:name=".EntrySystem.ActivityLoading"
+            android:name=".MainWorkspace.Activities.ActivityLoading"
             android:noHistory="true"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
@@ -29,16 +25,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".PreviewSystem.ActivityPreview"
+            android:name=".MainWorkspace.Activities.ActivityPreview"
             android:screenOrientation="portrait"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".EntrySystem.ActivityRegistration"
+            android:name=".MainWorkspace.Activities.ActivityRegistration"
             android:noHistory="true"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator" />
         <activity
-            android:name=".EntrySystem.ActivityAuthorization"
+            android:name=".MainWorkspace.Activities.ActivityAuthorization"
             android:noHistory="true"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator" />

@@ -1,8 +1,10 @@
 package com.application.arenda.Patterns;
 
 import android.content.Context;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -11,9 +13,23 @@ import com.application.arenda.R;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import butterknife.Action;
+
 public class Utils {
+    public static final Action<View> V_GONE = (view, index) -> {
+        view.setVisibility(View.GONE);
+    };
+
+    public static final Action<View> V_VISIBLE = (view, index) -> {
+        view.setVisibility(View.VISIBLE);
+    };
+
     private static Pattern pattern;
     private static Matcher matcher;
+
+    public static void messageOutput(Context context, String str) {
+        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+    }
 
     public static void showKeyboard(@NonNull Context context) {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -13,7 +13,7 @@ import com.application.arenda.UI.ContainerFragments.AdapterLink;
 import com.application.arenda.UI.Panels.ActionBar.CustomActionBar;
 import com.application.arenda.UI.Panels.BottomNavigation.CustomBottomNavigation;
 import com.application.arenda.UI.Panels.SideBar.CustomSideBar;
-import com.application.arenda.MainWorkspace.Fragments.FragmentAddAnnouncement;
+import com.application.arenda.MainWorkspace.Fragments.FragmentInsertAnnouncement;
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
 import com.application.arenda.MainWorkspace.Fragments.FragmentUserAnnouncements;
 import com.application.arenda.MainWorkspace.Fragments.FragmentUserProposals;
@@ -35,7 +35,7 @@ public class ActivityMain extends AppCompatActivity {
     private CustomBottomNavigation customBottomNavigation;
     private FragmentUserProposals fragmentUserProposals;
     private FragmentUserStatistics fragmentUserStatistics;
-    private FragmentAddAnnouncement fragmentAddAnnouncement;
+    private FragmentInsertAnnouncement fragmentInsertAnnouncement;
     private FragmentAllAnnouncements fragmentAllAnnouncements;
     private FragmentUserAnnouncements fragmentUserAnnouncements;
     private ObserverManager<Observable, Observer> observerManager;
@@ -63,7 +63,7 @@ public class ActivityMain extends AppCompatActivity {
     private void initializationFragments() {
         fragmentUserProposals = new FragmentUserProposals();
         fragmentUserStatistics = new FragmentUserStatistics();
-        fragmentAddAnnouncement = new FragmentAddAnnouncement();
+        fragmentInsertAnnouncement = new FragmentInsertAnnouncement();
         fragmentAllAnnouncements = new FragmentAllAnnouncements();
         fragmentUserAnnouncements = new FragmentUserAnnouncements();
     }
@@ -78,14 +78,14 @@ public class ActivityMain extends AppCompatActivity {
         componentLinkManager.addLinks(customBottomNavigation,
                 fragmentUserAnnouncements,
                 fragmentAllAnnouncements,
-                fragmentAddAnnouncement,
+                fragmentInsertAnnouncement,
                 fragmentUserStatistics,
                 fragmentUserProposals);
 
         componentLinkManager.addLinks(customActionBar,
                 fragmentUserAnnouncements,
                 fragmentAllAnnouncements,
-                fragmentAddAnnouncement,
+                fragmentInsertAnnouncement,
                 fragmentUserStatistics,
                 fragmentUserProposals);
     }

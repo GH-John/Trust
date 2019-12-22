@@ -14,6 +14,7 @@
     <string name="error_registration">Ошибка регистрации:\n</string>
     <string name="error_authorization">Ошибка авторизации:\n</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
+    <string name="error_please_select_category">Выберите категорию</string>
     <string name="error_incorrect_email">Неправильный формат почты</string>
     <string name="error_user_not_identified">Пользователь не опознан</string>
     <string name="error_fail_load_list">Ошибка: не удалось загрузить список</string>

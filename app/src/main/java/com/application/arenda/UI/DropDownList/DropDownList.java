@@ -6,90 +6,74 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.UI.ComponentBackground;
-import com.application.arenda.Patterns.Observer;
+import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.ModelItemContent;
 import com.application.arenda.R;
-import com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList.ModelItemContent;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Stack;
 
-public class DropDownList extends ConstraintLayout implements IDropDownList, Observer {
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class DropDownList extends RelativeLayout implements IDropDownList {
     public boolean isHiden = true, isExpand = false;
-    private boolean isSetAdapter = false;
 
-    private ProgressBar progressBar;
-    private RecyclerView recyclerView;
-    private TextView title, textError;
+    @Nullable
+    @BindView(R.id.progressBarDDL)
+    ProgressBar progressBar;
+
+    @Nullable
+    @BindView(R.id.recyclerViewDDL)
+    RecyclerView recyclerView;
+
+    @Nullable
+    @BindView(R.id.titleDDL)
+    TextView title;
+
+    @Nullable
+    @BindView(R.id.textErrorDDL)
+    TextView textError;
+
+    @Nullable
+    @BindView(R.id.backgroundDDL)
+    ImageView background;
+
+    @Nullable
+    @BindView(R.id.iconExpandDDL)
+    ImageView iconExpand;
+
+    @Nullable
+    @BindView(R.id.iconBtnBackDDL)
+    ImageView iconBtnBack;
+
     private RecyclerView.Adapter adapter;
-    private ImageView background, iconExpand, iconBtnBack;
-
-    private String defaultTitle = "Title";
+    private boolean isSetAdapter = false;
     private OnClickListener onClickListener;
-    private Stack<Collection<ModelItemContent>> stackCollections;
+    private Stack<Collection<ModelItemContent>> stackCollections = new Stack();
+    private String defaultTitle = "";
+    private String defaultError = "";
 
     public DropDownList(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initializationComponents();
-        initializationStyles();
-        initializationListeners();
-    }
-
-    private void initializationComponents() {
         inflate(getContext(), R.layout.drop_down_list, this);
-        stackCollections = new Stack();
+        ButterKnife.bind(this);
 
-        defaultTitle = getResources().getString(R.string.text_some_text);
-
-        title = findViewById(R.id.titleDDL);
-        textError = findViewById(R.id.textErrorDDL);
-        background = findViewById(R.id.backgroundDDL);
-        iconExpand = findViewById(R.id.iconExpandDDL);
-        progressBar = findViewById(R.id.progressBarDDL);
-        iconBtnBack = findViewById(R.id.iconBtnBackDDL);
-        recyclerView = findViewById(R.id.recyclerViewDDL);
+        initializationStyles();
     }
 
     private void initializationStyles() {
-        background.setImageDrawable(new ComponentBackground(getContext(), R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f));
-
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setItemViewCacheSize(30);
-    }
-
-    private void initializationListeners() {
-        OnClickListener onClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isEmptyBackStack() && CURRENT_SIZE_STACK() > 1) {
-                    if (isHiden) {
-                        expandList();
-                    } else {
-                        popToBackStack();
-                        title.setText(defaultTitle);
-                        refreshCollection(stackCollections.lastElement());
-                    }
-                } else {
-                    if (isHiden)
-                        expandList();
-                    else
-                        hideList();
-                }
-            }
-        };
-
-        title.setOnClickListener(onClickListener);
-        iconBtnBack.setOnClickListener(onClickListener);
     }
 
     public void setIconExpand(Drawable iconExpand) {
@@ -110,9 +94,25 @@ public class DropDownList extends ConstraintLayout implements IDropDownList, Obs
     }
 
     @Override
+    public String getDefaultTitle() {
+        return this.defaultTitle;
+    }
+
+    @Override
     public void setDefaultTitle(@NonNull String defaultTitle) {
         this.defaultTitle = defaultTitle;
-        this.title.setText(defaultTitle);
+        this.title.setText(this.defaultTitle);
+    }
+
+    @Override
+    public String getDefaultError() {
+        return this.defaultError;
+    }
+
+    @Override
+    public void setDefaultError(@NonNull String defaultError) {
+        this.defaultError = defaultError;
+        this.textError.setText(this.defaultError);
     }
 
     @Override
@@ -158,15 +158,18 @@ public class DropDownList extends ConstraintLayout implements IDropDownList, Obs
                         return false;
                     }
                 });
-            } else if (isEmptyBackStack()) {
-                refreshCollection(stackCollections.lastElement());
+            } else if (!isEmptyBackStack()) {
+                rewriteCollection(stackCollections.lastElement());
             }
         }
     }
 
     @Override
-    public View getProgressBar() {
-        return progressBar;
+    public void progressBarActive(boolean b) {
+        if (b) {
+            progressBar.setVisibility(VISIBLE);
+        } else
+            progressBar.setVisibility(GONE);
     }
 
     @Override
@@ -175,33 +178,43 @@ public class DropDownList extends ConstraintLayout implements IDropDownList, Obs
     }
 
     @Override
-    public void refreshCollection(@NonNull Collection<ModelItemContent> collection) {
+    public void rewriteCollection(@NonNull Collection<ModelItemContent> collection) {
         if (adapter instanceof AdapterDropDownList) {
             visibilityBtnBack(CURRENT_SIZE_STACK() > 1);
-            ((AdapterDropDownList) adapter).refreshCollection(collection);
+            ((AdapterDropDownList) adapter).rewriteCollection(collection);
         }
     }
 
     @Override
-    public void pushToBackStack(@NonNull Collection<ModelItemContent> collection) {
-        if (CURRENT_SIZE_STACK() < MAX_SIZE_STACK() && !isContainsToBackStack(collection)) {
+    public void pushToStack(@NonNull Collection<ModelItemContent> collection) {
+        if (CURRENT_SIZE_STACK() < MAX_SIZE_STACK() && !isContainsToStack(collection)) {
             this.stackCollections.push(new ArrayList<>(collection));
         }
     }
 
     @Override
-    public Collection<ModelItemContent> popToBackStack() {
+    public Collection<ModelItemContent> popToStack() {
         return this.stackCollections.pop();
     }
 
     @Override
     public boolean isEmptyBackStack() {
-        return !this.stackCollections.isEmpty();
+        return this.stackCollections.isEmpty();
     }
 
     @Override
-    public boolean isContainsToBackStack(@NonNull Collection<ModelItemContent> collection) {
+    public boolean isContainsToStack(@NonNull Collection<ModelItemContent> collection) {
         return this.stackCollections.contains(collection);
+    }
+
+    @Override
+    public Collection<ModelItemContent> getFirstElementToStack() {
+        return this.stackCollections.firstElement();
+    }
+
+    @Override
+    public Collection<ModelItemContent> getLastElementToStack() {
+        return this.stackCollections.lastElement();
     }
 
     public int getIdSelectedElement() {
@@ -214,8 +227,14 @@ public class DropDownList extends ConstraintLayout implements IDropDownList, Obs
     }
 
     @Override
-    public void setOnClickLastElement(OnClickListener onClickListener) {
+    public void setOnClickLastElement(@NonNull OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
+    }
+
+    @Override
+    public void setOnClickBack(@NonNull OnClickListener onClickBack) {
+        title.setOnClickListener(onClickBack);
+        iconBtnBack.setOnClickListener(onClickBack);
     }
 
     @Override
@@ -253,21 +272,6 @@ public class DropDownList extends ConstraintLayout implements IDropDownList, Obs
             iconBtnBack.setVisibility(VISIBLE);
         } else {
             iconBtnBack.setVisibility(GONE);
-        }
-    }
-
-    @Override
-    public void update(@NonNull Object object) {
-        if (object instanceof Collection) {
-            visibleError(true);
-            if (((Collection<ModelItemContent>) object).size() > 0) {
-                pushToBackStack((Collection) object);
-                refreshCollection((Collection) object);
-            } else {
-                setError(String.valueOf(R.string.error_check_internet_connect));
-                visibleError(true);
-                hideList();
-            }
         }
     }
 }

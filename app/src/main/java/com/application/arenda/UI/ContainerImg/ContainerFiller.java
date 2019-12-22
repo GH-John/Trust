@@ -42,7 +42,7 @@ public class ContainerFiller implements AdapterContainer {
                 imageUri = data.getData();
 
                 if (!mapBitmap.containsKey(imageUri)) {
-                    bitmap = ThumbnailCompression.getThumbnail(context, imageUri);
+                    bitmap = ThumbnailCompression.getThumbnail(context, 1000, imageUri);
                     mapBitmap.put(imageUri, bitmap);
                 }
 
@@ -54,7 +54,7 @@ public class ContainerFiller implements AdapterContainer {
                     imageUri = clipData.getItemAt(i).getUri();
 
                     if (!mapBitmap.containsKey(imageUri)) {
-                        bitmap = ThumbnailCompression.getThumbnail(context, imageUri);
+                        bitmap = ThumbnailCompression.getThumbnail(context, 1000, imageUri);
                         mapBitmap.put(imageUri, bitmap);
                     }
                 }
@@ -73,38 +73,32 @@ public class ContainerFiller implements AdapterContainer {
     public void inflateContainer() {
         final ViewGroup viewGroup = container.getContainer();
 
-        viewGroup.post(new Runnable() {
-            @Override
-            public void run() {
-                Uri uri;
-                Bitmap bitmap;
-                View view;
+        viewGroup.post(() -> {
+            Uri uri;
+            Bitmap bitmap;
+            View view;
 
-                int imgCount = mapBitmap.size();
-                for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
+            int imgCount = mapBitmap.size();
+            for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
 
-                    uri = entry.getKey();
-                    bitmap = mapBitmap.get(uri);
+                uri = entry.getKey();
+                bitmap = mapBitmap.get(uri);
 
-                    if (!currentMap.containsKey(uri)) {
-                        view = container.getInstanceFiller();
+                if (!currentMap.containsKey(uri)) {
+                    view = container.getInstanceFiller();
 
-                        if (((CustomViewImg) view).setImageBitmap(bitmap)) {
+                    if (((CustomViewImg) view).setImageBitmap(bitmap)) {
 
-                            final View finalCustomViewImg = view;
-                            final Uri finalUri = uri;
+                        final View finalCustomViewImg = view;
+                        final Uri finalUri = uri;
 
-                            ((CustomViewImg) view).itemDeleteOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    container.removeFromContainer(finalCustomViewImg);
-                                    removeFromCurrentMap(finalUri);
-                                }
-                            });
+                        ((CustomViewImg) view).itemDeleteOnClickListener(v -> {
+                            container.removeFromContainer(finalCustomViewImg);
+                            removeFromCurrentMap(finalUri);
+                        });
 
-                            if (container.addToContainer(view))
-                                currentMap.put(uri, view);
-                        }
+                        if (container.addToContainer(view))
+                            currentMap.put(uri, view);
                     }
                 }
             }

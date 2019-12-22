@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/layoutPreview"
     android:background="@color/backgroundApp"
-    tools:context="com.application.arenda.PreviewSystem.ActivityPreview">
+    tools:context="com.application.arenda.MainWorkspace.Activities.ActivityPreview">
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/previewViewPager"

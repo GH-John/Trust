@@ -13,9 +13,8 @@ import java.io.InputStream;
 
 public class ThumbnailCompression {
     @SuppressLint("StaticFieldLeak")
-    public static float COMPRESS = 180f;
 
-    public static Bitmap getThumbnail(Context context, Uri uri) throws IOException {
+    public static Bitmap getThumbnail(Context context, float compress, Uri uri) throws IOException {
         InputStream input = context.getContentResolver().openInputStream(uri);
         BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
         onlyBoundsOptions.inJustDecodeBounds = true;
@@ -31,7 +30,7 @@ public class ThumbnailCompression {
         int originalSize = (onlyBoundsOptions.outHeight > onlyBoundsOptions.outWidth) ?
                 onlyBoundsOptions.outHeight : onlyBoundsOptions.outWidth;
 
-        double ratio = (originalSize > COMPRESS) ? (originalSize / COMPRESS) : 1.0;
+        double ratio = (originalSize > compress) ? (originalSize / compress) : 1.0;
 
         BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
         bitmapOptions.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
@@ -44,7 +43,7 @@ public class ThumbnailCompression {
         return bitmap;
     }
 
-    public static String getEncodeBase64(Bitmap bitmap){
+    public static String getEncodeBase64(Bitmap bitmap) {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
         return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);

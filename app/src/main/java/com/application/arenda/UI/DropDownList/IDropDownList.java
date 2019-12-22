@@ -5,7 +5,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.ServerInteraction.InsertAnnouncement.InflateDropDownList.ModelItemContent;
+import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.ModelItemContent;
 
 import java.util.Collection;
 
@@ -13,7 +13,15 @@ public interface IDropDownList {
 
     void setTitle(@NonNull String title);
 
+    String getDefaultTitle();
+
     void setDefaultTitle(@NonNull String defaultTitle);
+
+    String getDefaultError();
+
+    void setDefaultError(@NonNull String defaultError);
+
+    void setError(@NonNull String error);
 
     void setAdapter(@NonNull RecyclerView.Adapter adapter);
 
@@ -21,23 +29,27 @@ public interface IDropDownList {
 
     void expandList();
 
-    View getProgressBar();
+    void progressBarActive(boolean b);
 
     void clearRecyclerView(@NonNull AdapterDropDownList adapter);
 
-    void refreshCollection(@NonNull Collection<ModelItemContent> collection);
+    void rewriteCollection(@NonNull Collection<ModelItemContent> collection);
 
-    void pushToBackStack(@NonNull Collection<ModelItemContent> collection);
+    void pushToStack(@NonNull Collection<ModelItemContent> collection);
 
-    Collection<ModelItemContent> popToBackStack();
+    Collection<ModelItemContent> popToStack();
+
+    Collection<ModelItemContent> getFirstElementToStack();
+
+    Collection<ModelItemContent> getLastElementToStack();
 
     boolean isEmptyBackStack();
 
-    boolean isContainsToBackStack(@NonNull Collection<ModelItemContent> collection);
+    boolean isContainsToStack(@NonNull Collection<ModelItemContent> collection);
 
-    void setOnClickLastElement(View.OnClickListener onClickListener);
+    void setOnClickLastElement(@NonNull View.OnClickListener onClickListener);
 
-    void setError(@NonNull String error);
+    void setOnClickBack(@NonNull View.OnClickListener onClickBack);
 
     void clearError();
 

@@ -7,7 +7,7 @@ public interface AdapterDropDownList {
 
     void clearRecyclerView();
 
-    void refreshCollection(Collection collection);
+    void rewriteCollection(Collection collection);
 
-    Collection getCollection();
+    Collection getModels();
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundApp"
-    tools:context="com.application.arenda.EntrySystem.ActivityLoading">
+    tools:context="com.application.arenda.MainWorkspace.Activities.ActivityLoading">
 
     <ImageView
         android:id="@+id/loadingLogo"
