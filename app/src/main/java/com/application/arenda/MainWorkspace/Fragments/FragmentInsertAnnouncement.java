@@ -21,21 +21,20 @@ import androidx.fragment.app.Fragment;
 
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.AdapterRecyclerView;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.LoadingCategories;
-import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.ModelItemContent;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.InsertAnnouncement;
 import com.application.arenda.Entities.Announcements.Models.ModelInsertAnnouncement;
-import com.application.arenda.Entities.Cookies.ServerUtils;
-import com.application.arenda.Patterns.DecimalDigitsInputFilter;
-import com.application.arenda.Patterns.Utils;
+import com.application.arenda.Entities.Utils.DecimalDigitsInputFilter;
+import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
+import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.ContainerImg.ContainerFiller;
 import com.application.arenda.UI.ContainerImg.ContainerSelectedImages;
 import com.application.arenda.UI.ContainerImg.Galery.AdapterGalery;
 import com.application.arenda.UI.DropDownList.DropDownList;
-import com.application.arenda.UI.Panels.ActionBar.AdapterActionBar;
-import com.application.arenda.UI.Panels.SideBar.AdapterSideBar;
-import com.application.arenda.UI.Panels.SideBar.SideBar;
 import com.application.arenda.UI.SetStyle.SetBtnStyle;
 import com.application.arenda.UI.SetStyle.SetFieldStyle;
 
@@ -49,62 +48,58 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class FragmentInsertAnnouncement extends Fragment implements AdapterSideBar, AdapterActionBar, AdapterGalery {
+public final class FragmentInsertAnnouncement extends Fragment implements AdapterSideBar, AdapterActionBar, AdapterGalery {
+    @SuppressLint("StaticFieldLeak")
+    private static FragmentInsertAnnouncement fragmentInsertAnnouncement;
     private final int SELECTED_IMG_CODE = 1001;
+
     @Nullable
     @BindView(R.id.groupPhones)
     Group groupPhones;
-
     @Nullable
     @BindView(R.id.itemBurgerMenu)
     ImageView itemBurgerMenu;
-
     @Nullable
     @BindView(R.id.dropDownList)
     DropDownList dropDownList;
-
     @Nullable
     @BindView(R.id.groupAdditionalFields)
     Group groupAdditionalFields;
-
     @Nullable
     @BindView(R.id.textLimitAddPhotos)
     TextView textLimitAddPhotos;
-
     @Nullable
     @BindView(R.id.btnCreateAnnouncement)
     Button btnCreateAnnouncement;
-
     @Nullable
     @BindView(R.id.containerImg)
     ContainerSelectedImages containerSelectedImages;
-
     @Nullable
     @BindView(R.id.fieldProductName)
     EditText fieldProductName;
-
     @Nullable
     @BindView(R.id.fieldDescription)
     EditText fieldProductDescription;
-
     @Nullable
     @BindView(R.id.fieldCostProduct)
     EditText fieldCostProduct;
-
     @Nullable
     @BindView(R.id.progressBarInsert)
     ProgressBar progressBarInsert;
 
     private ContainerFiller containerFiller;
-    private ComponentBackground componentBackground;
-
     private SideBar sideBar;
     private Unbinder unbinder;
     private LoadingCategories categories = new LoadingCategories();
-
     private InsertAnnouncement insertAnnouncement = new InsertAnnouncement();
     private ModelInsertAnnouncement announcement = new ModelInsertAnnouncement();
 
+    public static FragmentInsertAnnouncement getInstance() {
+        if (fragmentInsertAnnouncement == null)
+            fragmentInsertAnnouncement = new FragmentInsertAnnouncement();
+
+        return fragmentInsertAnnouncement;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,13 +125,13 @@ public class FragmentInsertAnnouncement extends Fragment implements AdapterSideB
         categories.loadingCategories(getContext())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelItemContent>>() {
+                .subscribe(new Observer<List<DropDownList.ModelItemContent>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(List<ModelItemContent> modelItemContents) {
+                    public void onNext(List<DropDownList.ModelItemContent> modelItemContents) {
                         dropDownList.setAdapter(new AdapterRecyclerView(R.layout.drop_down_list_pattern_item,
                                 modelItemContents));
                         dropDownList.pushToStack(modelItemContents);
@@ -156,13 +151,11 @@ public class FragmentInsertAnnouncement extends Fragment implements AdapterSideB
     }
 
     private void initializationStyles() {
-        componentBackground = new ComponentBackground(getContext(), R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f);
-
         SetBtnStyle.setStyle(new ComponentBackground(getContext(), R.color.colorAccent,
                 R.color.shadowColor, 6f, 0f, 3f, 20f), btnCreateAnnouncement);
 
-        SetFieldStyle.setEditTextBackground(componentBackground, fieldProductName, fieldCostProduct);
+        SetFieldStyle.setEditTextBackground(new ComponentBackground(getContext(), R.color.colorWhite,
+                R.color.shadowColor, 6f, 0f, 3f, 20f), fieldProductName, fieldCostProduct);
         SetFieldStyle.setEditTextBackground(new ComponentBackground(getContext(), R.color.colorWhite,
                 R.color.shadowColor, 6f, 0f, 3f, 20f), fieldProductDescription);
 
@@ -215,7 +208,7 @@ public class FragmentInsertAnnouncement extends Fragment implements AdapterSideB
                 announcement.setCostToUSD(0f);
                 announcement.setCostToEUR(0f);
 
-                announcement.setLocation("адрес");
+                announcement.setAddress("адрес");
 
                 announcement.setPhone_1("+375(29)659-50-73");
                 announcement.setVisiblePhone_1(true);
@@ -232,7 +225,7 @@ public class FragmentInsertAnnouncement extends Fragment implements AdapterSideB
     }
 
     public void insertAnnouncement(@NonNull ModelInsertAnnouncement announcement) {
-        if(announcement != null){
+        if (announcement != null) {
             progressBarInsert.setVisibility(View.VISIBLE);
             insertAnnouncement.insertAnnouncement(getContext(), ServerUtils.URL_INSERT_ANNOUNCEMENT, announcement)
                     .subscribeOn(Schedulers.io())
@@ -280,7 +273,7 @@ public class FragmentInsertAnnouncement extends Fragment implements AdapterSideB
 
     @Override
     public int getIdPatternResource() {
-        return R.layout.ab_pattern_add_announcement;
+        return R.layout.ab_pattern_insert_announcement;
     }
 
     @Override

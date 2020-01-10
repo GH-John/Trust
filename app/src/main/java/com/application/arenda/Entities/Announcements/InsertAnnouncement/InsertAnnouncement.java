@@ -16,9 +16,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.arenda.Entities.Announcements.Models.ModelInsertAnnouncement;
-import com.application.arenda.Entities.Cookies.ServerUtils;
-import com.application.arenda.Entities.Cookies.UserCookie;
-import com.application.arenda.Patterns.Utils;
+import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.UserCookie;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Thumbnail.ThumbnailCompression;
 
@@ -139,7 +139,7 @@ public class InsertAnnouncement implements IInsertAnnouncement {
                     params.put("costToUSD", String.valueOf(announcement.getCostToUSD()));
                     params.put("costToEUR", String.valueOf(announcement.getCostToEUR()));
 
-                    params.put("address", announcement.getLocation());
+                    params.put("address", announcement.getAddress());
 
                     params.put("phone_1", announcement.getPhone_1());
                     params.put("isVisible_phone_1", String.valueOf(announcement.isVisiblePhone_1()));

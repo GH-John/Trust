@@ -11,8 +11,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.application.arenda.Entities.Cookies.ServerUtils;
+import com.application.arenda.Entities.Utils.ServerUtils;
 import com.application.arenda.R;
+import com.application.arenda.UI.DropDownList.DropDownList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,9 +35,9 @@ public class LoadingCategories implements ILoadingCategories {
     }
 
     @Override
-    public Observable<List<ModelItemContent>> loadingCategories(final Context context) {
+    public Observable<List<DropDownList.ModelItemContent>> loadingCategories(final Context context) {
         return Observable.create(observableEmitter -> {
-            List<ModelItemContent> models = new ArrayList<>();
+            List<DropDownList.ModelItemContent> models = new ArrayList<>();
             StringRequest request;
             request = new StringRequest(Request.Method.POST, ServerUtils.URL_LOAD_CATEGORY, response -> {
                 try {
@@ -57,11 +58,11 @@ public class LoadingCategories implements ILoadingCategories {
                             for (int i = 0; i < categories.length(); i++) {
                                 object = categories.getJSONObject(i);
 
-                                models.add(new ModelItemContent(Integer.valueOf(object.getString("idCategory")),
+                                models.add(new DropDownList.ModelItemContent(Integer.valueOf(object.getString("idCategory")),
                                         object.getString("name").trim()));
 
                             }
-                            Collections.sort(models, (Comparator<ModelItemContent>) (o1, o2) -> o2.getName().length() - o1.getName().length());
+                            Collections.sort(models, (Comparator<DropDownList.ModelItemContent>) (o1, o2) -> o2.getName().length() - o1.getName().length());
 
                             observableEmitter.onNext(models);
                             break;
@@ -102,9 +103,9 @@ public class LoadingCategories implements ILoadingCategories {
     }
 
     @Override
-    public Observable<List<ModelItemContent>> loadingSubcategories(final Context context, final int idCategories) {
+    public Observable<List<DropDownList.ModelItemContent>> loadingSubcategories(final Context context, final int idCategories) {
         return Observable.create(observableEmitter -> {
-            List<ModelItemContent> models = new ArrayList<>();
+            List<DropDownList.ModelItemContent> models = new ArrayList<>();
             StringRequest request;
 
             request = new StringRequest(Request.Method.POST, ServerUtils.URL_LOAD_SUBCATEGORY, response -> {
@@ -126,10 +127,10 @@ public class LoadingCategories implements ILoadingCategories {
                             for (int i = 0; i < subCategories.length(); i++) {
                                 object = subCategories.getJSONObject(i);
 
-                                models.add(new ModelItemContent(Integer.valueOf(object.getString("idSubcategory")),
+                                models.add(new DropDownList.ModelItemContent(Integer.valueOf(object.getString("idSubcategory")),
                                         object.getString("name").trim()));
                             }
-                            Collections.sort(models, (Comparator<ModelItemContent>) (o1, o2) -> o2.getName().length() - o1.getName().length());
+                            Collections.sort(models, (Comparator<DropDownList.ModelItemContent>) (o1, o2) -> o2.getName().length() - o1.getName().length());
 
                             observableEmitter.onNext(models);
                             break;

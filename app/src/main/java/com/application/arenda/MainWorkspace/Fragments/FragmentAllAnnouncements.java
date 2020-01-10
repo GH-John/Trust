@@ -20,15 +20,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AdapterRecyclerView;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsRV;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
-import com.application.arenda.Entities.Announcements.Models.ViewModelAllAnnouncement;
-import com.application.arenda.Entities.Cookies.ServerUtils;
-import com.application.arenda.Patterns.Utils;
+import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
-import com.application.arenda.UI.Panels.ActionBar.AdapterActionBar;
-import com.application.arenda.UI.Panels.SideBar.AdapterSideBar;
-import com.application.arenda.UI.Panels.SideBar.SideBar;
+import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
+import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Components.SideBar.SideBar;
 
 import java.util.List;
 
@@ -40,9 +41,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, AdapterSideBar {
+public final class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, AdapterSideBar {
+    @SuppressLint("StaticFieldLeak")
+    private static FragmentAllAnnouncements fragmentAllAnnouncements;
+
     @Nullable
-    @BindView(R.id.recyclerViewOutputAnnouncements)
+    @BindView(R.id.recyclerViewOutputAllAnnouncements)
     RecyclerView recyclerView;
 
     @Nullable
@@ -60,9 +64,16 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
     private EditText itemFieldSearch;
     private TextView itemHeaderName;
     private Group groupSearch, groupDefault;
-    private AdapterRecyclerView adapterRecyclerView;
+    private AllAnnouncementsRV allAnnouncementsRV;
 
     private LoadingAnnouncements load = new LoadingAnnouncements();
+
+    public static FragmentAllAnnouncements getInstance() {
+        if (fragmentAllAnnouncements == null)
+            fragmentAllAnnouncements = new FragmentAllAnnouncements();
+
+        return fragmentAllAnnouncements;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,21 +109,23 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
 
     public void loadLayout() {
         swipeRefreshLayout.setRefreshing(true);
-        load.loadAllAnnouncemets(getContext(), ServerUtils.URL_LOADING_ANNOUNCEMENT)
+        load.loadAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ViewModelAllAnnouncement>>() {
+                .subscribe(new Observer<List<ModelAllAnnouncement>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(List<ViewModelAllAnnouncement> viewModelAllAnnouncements) {
-                        adapterRecyclerView = new AdapterRecyclerView(getContext(),
-                                R.layout.template_2_announcement, viewModelAllAnnouncements);
+                    public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
+                        allAnnouncementsRV = new AllAnnouncementsRV(getContext(),
+                                R.layout.template_1_announcement, modelAllAnnouncements);
 
-                        recyclerView.setAdapter(adapterRecyclerView);
+                        allAnnouncementsRV.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
+
+                        recyclerView.setAdapter(allAnnouncementsRV);
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
@@ -129,19 +142,21 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
     }
 
     public void refreshLayout() {
-        load.loadAllAnnouncemets(getContext(), ServerUtils.URL_LOADING_ANNOUNCEMENT)
+        load.loadAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ViewModelAllAnnouncement>>() {
+                .subscribe(new Observer<List<ModelAllAnnouncement>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(List<ViewModelAllAnnouncement> viewModelAllAnnouncements) {
-                        adapterRecyclerView.rewriteCollection(viewModelAllAnnouncements);
+                    public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
+                        allAnnouncementsRV.rewriteCollection(modelAllAnnouncements);
 
-                        recyclerView.setAdapter(adapterRecyclerView);
+                        allAnnouncementsRV.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
+
+                        recyclerView.setAdapter(allAnnouncementsRV);
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
@@ -157,22 +172,31 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
                 });
     }
 
-    public void searchAnnouncements(String s){
+    private void onItemClick(int idAnnouncement) {
+        FragmentViewAnnouncement announcement = new FragmentViewAnnouncement();
+        Bundle bundle = new Bundle();
+        bundle.putInt("idAnnouncement", idAnnouncement);
+        announcement.setArguments(bundle);
+
+        ContainerFragments.getInstance().replaceFragmentInContainer(announcement);
+    }
+
+    public void searchAnnouncements(String s) {
         swipeRefreshLayout.setRefreshing(true);
 
-        load.searchToAllAnnouncemets(getContext(), ServerUtils.URL_LOADING_ANNOUNCEMENT, 0, s)
+        load.searchToAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT, 0, s)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ViewModelAllAnnouncement>>() {
+                .subscribe(new Observer<List<ModelAllAnnouncement>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(List<ViewModelAllAnnouncement> viewModelAllAnnouncements) {
-                        adapterRecyclerView.rewriteCollection(viewModelAllAnnouncements);
+                    public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
+                        allAnnouncementsRV.rewriteCollection(modelAllAnnouncements);
 
-                        recyclerView.setAdapter(adapterRecyclerView);
+                        recyclerView.setAdapter(allAnnouncementsRV);
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
@@ -208,7 +232,7 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
 
     @Override
     public void initializationListenersActionBar(final ViewGroup viewGroup) {
-        itemFiltr.setOnClickListener(v -> Toast.makeText(getContext(), "allSort", Toast.LENGTH_LONG).show());
+        itemFiltr.setOnClickListener(v -> Toast.makeText(getContext(), "filter", Toast.LENGTH_LONG).show());
 
         itemSearch.setOnClickListener(v -> {
             groupDefault.setVisibility(View.GONE);
@@ -245,8 +269,7 @@ public class FragmentAllAnnouncements extends Fragment implements AdapterActionB
                 if (!search.isEmpty()) {
                     itemHeaderName.setText(search);
                     searchAnnouncements(search);
-                }
-                else {
+                } else {
                     itemHeaderName.setText(getResources().getString(R.string.ab_title_all_announcements));
                     refreshLayout();
                 }

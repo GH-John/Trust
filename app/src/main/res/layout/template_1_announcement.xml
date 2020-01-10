@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:background="@color/colorWhite"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="2dp"
+    tools:ignore="PrivateResource">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="@color/colorNotFoundPicture"
+            android:contentDescription="@string/todo"
+            android:scaleType="centerCrop"
+            android:transitionName="imgProduct" />
+
+        <FrameLayout
+            android:id="@+id/frameIndent"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_alignBottom="@id/imgProduct">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignStart="@id/imgProduct"
+            android:layout_alignTop="@id/imgProduct"
+            android:background="@drawable/item_date">
+
+            <TextView
+                android:id="@+id/textPlacementDate"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/text_placement_date_announcement" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/imgProduct"
+            android:layout_alignEnd="@id/imgProduct"
+            android:background="@drawable/item_heart">
+
+            <ImageView
+                android:id="@+id/imgHeart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_heart_not_selected" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignStart="@id/imgProduct"
+            android:layout_alignBottom="@id/frameIndent"
+            android:background="@drawable/item_rate"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/textRatingAnnouncement"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:drawableStart="@drawable/ic_star"
+                android:drawablePadding="12dp"
+                android:text="@string/text_rate_announcement" />
+        </FrameLayout>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/frameIndent"
+            android:background="@color/colorWhite"
+            app:cardCornerRadius="10dp"
+            tools:ignore="PrivateResource">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/textNameProduct"
+                    style="@style/DefaultStyleTextRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="24dp"
+                    android:layout_toStartOf="@id/textCostProduct"
+                    android:maxLines="3"
+                    android:text="@string/text_name_announcement"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/textCostProduct"
+                    style="@style/DefaultStyleTextBoldRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/text_cost_announcement"
+                    android:textSize="16sp" />
+
+                <FrameLayout
+                    android:id="@+id/frameLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/textNameProduct"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_toEndOf="@id/textCountRent">
+
+                    <TextView
+                        android:id="@+id/textAddress"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:drawableStart="@drawable/ic_location"
+                        android:drawablePadding="12dp"
+                        android:gravity="center|right"
+                        android:maxLines="2"
+                        android:text="@string/text_lacation_announcement"
+                        tools:ignore="RtlHardcoded" />
+                </FrameLayout>
+
+
+                <TextView
+                    android:id="@+id/textCountRent"
+                    style="@style/DefaultStyleTextRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/frameLocation"
+                    android:layout_alignBottom="@id/frameLocation"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="8dp"
+                    android:drawableStart="@drawable/ic_count_rent"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:text="@string/text_count_rent" />
+
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@id/imgProduct"
+            android:layout_alignTop="@id/imgProduct"
+            android:layout_alignEnd="@id/imgProduct"
+            android:layout_alignBottom="@id/imgProduct">
+
+            <ProgressBar
+                android:id="@+id/imgProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|center_vertical" />
+        </FrameLayout>
+
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

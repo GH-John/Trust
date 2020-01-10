@@ -9,7 +9,7 @@
 
     <color name="colorBlue">#299AE2</color>
 
-    <color name="itemAnnouncementColor">#CCFFFFFF</color>
+    <color name="colorItemsAnnouncement">#CCFFFFFF</color>
 
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>

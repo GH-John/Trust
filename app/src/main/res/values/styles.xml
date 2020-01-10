@@ -89,4 +89,5 @@
         <item name="android:buttonTint">@color/colorAccent</item>
         <item name="android:fontFamily">@font/gotham_office_regular</item>
     </style>
+
 </resources>

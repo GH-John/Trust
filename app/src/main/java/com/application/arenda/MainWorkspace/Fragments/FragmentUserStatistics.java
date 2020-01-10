@@ -11,14 +11,23 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.application.arenda.UI.Panels.ActionBar.AdapterActionBar;
-import com.application.arenda.UI.Panels.SideBar.AdapterSideBar;
-import com.application.arenda.UI.Panels.SideBar.SideBar;
 import com.application.arenda.R;
+import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Components.SideBar.SideBar;
 
-public class FragmentUserStatistics extends Fragment implements AdapterActionBar, AdapterSideBar {
+public final class FragmentUserStatistics extends Fragment implements AdapterActionBar, AdapterSideBar {
+    @SuppressLint("StaticFieldLeak")
+    private static FragmentUserStatistics fragmentUserStatistics;
+
     private ImageView itemBurgerMenu, itemRefresh;
     private SideBar sideBar;
+
+    public static FragmentUserStatistics getInstance() {
+        if (fragmentUserStatistics == null)
+            fragmentUserStatistics = new FragmentUserStatistics();
+        return fragmentUserStatistics;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

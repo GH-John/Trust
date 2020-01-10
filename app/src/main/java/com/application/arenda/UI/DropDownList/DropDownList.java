@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.ModelItemContent;
 import com.application.arenda.R;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ import java.util.Stack;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DropDownList extends RelativeLayout implements IDropDownList {
+public class DropDownList extends FrameLayout implements IDropDownList {
     public boolean isHiden = true, isExpand = false;
 
     @Nullable
@@ -72,6 +71,7 @@ public class DropDownList extends RelativeLayout implements IDropDownList {
     }
 
     private void initializationStyles() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setItemViewCacheSize(30);
     }
@@ -82,10 +82,6 @@ public class DropDownList extends RelativeLayout implements IDropDownList {
 
     public void setIconBtnBack(Drawable iconBtnBack) {
         this.iconBtnBack.setImageDrawable(iconBtnBack);
-    }
-
-    public void setBackground(@NonNull Drawable background) {
-        this.background.setImageDrawable(background);
     }
 
     @Override
@@ -272,6 +268,24 @@ public class DropDownList extends RelativeLayout implements IDropDownList {
             iconBtnBack.setVisibility(VISIBLE);
         } else {
             iconBtnBack.setVisibility(GONE);
+        }
+    }
+
+    public static class ModelItemContent {
+        private int id;
+        private String name;
+
+        public ModelItemContent(int id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
         }
     }
 }

@@ -2,11 +2,13 @@ package com.application.arenda.Entities.Announcements.InsertAnnouncement.Inflate
 
 import android.content.Context;
 
+import com.application.arenda.UI.DropDownList.DropDownList;
+
 import java.util.List;
 
 import io.reactivex.Observable;
 
 public interface ILoadingCategories {
-    Observable <List<ModelItemContent>> loadingCategories(final Context context);
-    Observable <List<ModelItemContent>> loadingSubcategories(final Context context, final int idCategories);
+    Observable <List<DropDownList.ModelItemContent>> loadingCategories(final Context context);
+    Observable <List<DropDownList.ModelItemContent>> loadingSubcategories(final Context context, final int idCategories);
 }

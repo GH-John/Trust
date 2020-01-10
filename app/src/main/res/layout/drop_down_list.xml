@@ -5,13 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="50dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="8dp">
 
     <ImageView
         android:id="@+id/backgroundDDL"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/todo" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/todo"
+        android:visibility="visible"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/iconBtnBackDDL"
@@ -23,7 +29,7 @@
         android:layout_marginStart="24dp"
         android:contentDescription="@string/todo"
         android:visibility="gone"
-        tools:srcCompat="@drawable/ic_arrow_left"
+        app:srcCompat="@drawable/ic_arrow_left"
         tools:visibility="visible" />
 
     <TextView
@@ -31,12 +37,12 @@
         style="@style/DefaultStyleTextBoldRegular"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/iconBtnBackDDL"
         android:layout_alignParentTop="true"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="40dp"
         android:layout_toStartOf="@id/progressBarDDL"
+        android:layout_toEndOf="@id/iconBtnBackDDL"
         android:gravity="center_vertical"
         android:text="@string/text_some_text"
         android:textAlignment="viewStart"
@@ -51,12 +57,13 @@
         android:layout_alignEnd="@id/iconExpandDDL"
         android:layout_alignBottom="@+id/iconExpandDDL"
         android:layout_marginEnd="24dp"
-        android:visibility="visible" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/iconExpandDDL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="9dp"
+        android:layout_height="9dp"
         android:layout_alignTop="@+id/titleDDL"
         android:layout_alignBottom="@+id/titleDDL"
         android:layout_alignParentEnd="true"
@@ -69,8 +76,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/titleDDL"
-        android:layout_marginBottom="16dp"
-        android:nestedScrollingEnabled="false">
+        android:layout_marginBottom="8dp"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false"
+        android:paddingTop="16dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 

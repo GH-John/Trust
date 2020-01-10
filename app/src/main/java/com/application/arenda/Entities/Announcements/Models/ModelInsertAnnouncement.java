@@ -21,7 +21,7 @@ public class ModelInsertAnnouncement {
     private Uri mainUriBitmap;
     private Map<Uri, Bitmap> mapBitmap = new HashMap<>();
 
-    private String location = "";
+    private String address = "";
 
     private String phone_1 = "";
     private String phone_2 = "";
@@ -111,12 +111,12 @@ public class ModelInsertAnnouncement {
         this.mapBitmap = mapBitmap;
     }
 
-    public String getLocation() {
-        return location;
+    public String getAddress() {
+        return address;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPhone_1() {

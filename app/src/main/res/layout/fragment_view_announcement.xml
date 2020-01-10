@@ -1,0 +1,240 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundApp"
+    tools:context="com.application.arenda.MainWorkspace.Fragments.FragmentViewAnnouncement">
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        tools:ignore="UselessParent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="60dp"
+            android:paddingBottom="60dp"
+            tools:visibility="visible">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/imgViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginTop="16dp"
+                android:clipToPadding="false"
+                android:foregroundGravity="center"
+                android:overScrollMode="never"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" >
+
+            </androidx.viewpager.widget.ViewPager>
+
+            <ImageButton
+                android:id="@+id/btnInsertToFavorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/btn_heart"
+                android:contentDescription="@string/todo"
+                android:elevation="2dp"
+                android:padding="16dp"
+                android:src="@drawable/ic_heart_not_selected"
+                android:translationZ="3dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textPlacementDate"
+                app:layout_constraintEnd_toEndOf="@+id/imgViewPager" />
+
+            <TextView
+                android:id="@+id/textPublished"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/text_published"
+                android:textColor="@color/colorHint"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imgViewPager" />
+
+            <TextView
+                android:id="@+id/textPlacementDate"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@string/text_some_text"
+                android:textColor="@color/colorHint"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textPublished"
+                app:layout_constraintStart_toEndOf="@+id/textPublished"
+                app:layout_constraintTop_toTopOf="@+id/textPublished" />
+
+            <TextView
+                android:id="@+id/textNameProduct"
+                style="@style/DefaultStyleTextRegular.Header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/text_some_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textPublished" />
+
+            <TextView
+                android:id="@+id/textCostProduct"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="@string/text_cost_announcement"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textAddress" />
+
+            <TextView
+                android:id="@+id/textAddress"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:drawableLeft="@drawable/ic_location"
+                android:drawablePadding="12dp"
+                android:text="@string/text_address"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textNameProduct"
+                tools:ignore="RtlHardcoded" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:layout_marginTop="32dp"
+                app:cardElevation="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textAddress">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="14dp"
+                    android:paddingBottom="14dp">
+
+                    <TextView
+                        android:id="@+id/textRate"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/text_rate" />
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textRate"
+                        android:layout_alignStart="@+id/textRate"
+                        android:layout_alignEnd="@+id/textRate"
+                        android:layout_marginTop="12dp">
+
+                        <TextView
+                            android:id="@+id/textRating"
+                            style="@style/DefaultStyleTextRegular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:drawableLeft="@drawable/ic_star"
+                            android:drawablePadding="12dp"
+                            android:text="@string/text_rate_announcement"
+                            tools:ignore="RtlHardcoded" />
+
+                    </FrameLayout>
+
+                    <TextView
+                        android:id="@+id/textRent"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="24dp"
+                        android:text="@string/text_rent"
+                        tools:ignore="RelativeOverlap" />
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/textRent"
+                        android:layout_alignStart="@+id/textRent"
+                        android:layout_alignEnd="@+id/textRent"
+                        android:layout_marginTop="12dp">
+
+
+                        <TextView
+                            android:id="@+id/textCountRent"
+                            style="@style/DefaultStyleTextRegular"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:drawableLeft="@drawable/ic_count_rent"
+                            android:drawablePadding="12dp"
+                            android:gravity="center"
+                            android:text="@string/text_rate_announcement"
+                            tools:ignore="RtlHardcoded" />
+                    </FrameLayout>
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/textDescription"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/textDescription"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+            <TextView
+                android:id="@+id/textDescriptionProduct"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="@string/text_some_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textDescription" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBarVA"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="70dp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</FrameLayout>

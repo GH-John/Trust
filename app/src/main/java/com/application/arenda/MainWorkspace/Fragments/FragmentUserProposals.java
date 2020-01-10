@@ -10,14 +10,24 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
-import com.application.arenda.UI.Panels.ActionBar.AdapterActionBar;
-import com.application.arenda.UI.Panels.SideBar.AdapterSideBar;
-import com.application.arenda.UI.Panels.SideBar.SideBar;
 import com.application.arenda.R;
+import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Components.SideBar.SideBar;
 
-public class FragmentUserProposals extends Fragment implements AdapterActionBar, AdapterSideBar {
+public final class FragmentUserProposals extends Fragment implements AdapterActionBar, AdapterSideBar {
+    @SuppressLint("StaticFieldLeak")
+    private static FragmentUserProposals fragmentUserProposals;
+
     private ImageView itemBurgerMenu;
     private SideBar sideBar;
+
+    public static FragmentUserProposals getInstance() {
+        if (fragmentUserProposals == null)
+            fragmentUserProposals = new FragmentUserProposals();
+
+        return fragmentUserProposals;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,12 +54,7 @@ public class FragmentUserProposals extends Fragment implements AdapterActionBar,
 
     @Override
     public void initializationListenersActionBar(ViewGroup viewGroup) {
-        itemBurgerMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sideBar.expand();
-            }
-        });
+        itemBurgerMenu.setOnClickListener(v -> sideBar.expand());
     }
 
     @Override

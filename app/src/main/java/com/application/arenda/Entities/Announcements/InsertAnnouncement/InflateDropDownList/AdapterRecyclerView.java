@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.R;
 import com.application.arenda.UI.DropDownList.AdapterDropDownList;
+import com.application.arenda.UI.DropDownList.DropDownList;
 import com.application.arenda.UI.DropDownList.IDropDownList;
 
 import java.util.ArrayList;
@@ -31,9 +32,9 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
     private int idPatternLayout;
     private IDropDownList dropDownList;
     private LoadingCategories categories = new LoadingCategories();
-    private List<ModelItemContent> models;
+    private List<DropDownList.ModelItemContent> models;
 
-    public AdapterRecyclerView(int idPatternLayout, List<ModelItemContent> models) {
+    public AdapterRecyclerView(int idPatternLayout, List<DropDownList.ModelItemContent> models) {
         this.idPatternLayout = idPatternLayout;
         this.models = new ArrayList<>(models);
 
@@ -74,7 +75,7 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull AdapterRecyclerView.ViewHolder holder, int position) {
-        final ModelItemContent model = this.models.get(position);
+        final DropDownList.ModelItemContent model = this.models.get(position);
         holder.nameCategory.setText(model.getName());
 
         holder.layout.setOnClickListener(v -> {
@@ -85,13 +86,13 @@ public class AdapterRecyclerView extends RecyclerView.Adapter<AdapterRecyclerVie
                 categories.loadingSubcategories(context, model.getId())
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<List<ModelItemContent>>() {
+                        .subscribe(new Observer<List<DropDownList.ModelItemContent>>() {
                             @Override
                             public void onSubscribe(Disposable d) {
                             }
 
                             @Override
-                            public void onNext(List<ModelItemContent> modelItemContents) {
+                            public void onNext(List<DropDownList.ModelItemContent> modelItemContents) {
                                 dropDownList.rewriteCollection(modelItemContents);
 
                                 dropDownList.visibleError(true);

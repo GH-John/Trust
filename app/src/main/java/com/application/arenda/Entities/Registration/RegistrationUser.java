@@ -15,12 +15,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.UserCookie;
+import com.application.arenda.Entities.Utils.UserProfile;
 import com.application.arenda.R;
-import com.application.arenda.Entities.Cookies.UserCookie;
-import com.application.arenda.Entities.Cookies.UserProfile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RegistrationUser {
-    private static String URL_REGISTRATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/RegistrationUser.php";
-
     private final Context context;
     private ProgressBar progressBar;
     private StringRequest request;
@@ -50,7 +48,7 @@ public class RegistrationUser {
                              final String phone,
                              final String accountType) {
         progressBar.setVisibility(View.VISIBLE);
-        request = new StringRequest(Request.Method.POST, URL_REGISTRATION, new Response.Listener<String>() {
+        request = new StringRequest(Request.Method.POST, ServerUtils.URL_REGISTRATION, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -96,20 +94,17 @@ public class RegistrationUser {
                 }
             }
         },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        if (volleyError instanceof TimeoutError) {
-                            progressBar.setVisibility(View.GONE);
-                            messageOutput(context.getResources()
-                                    .getString(R.string.error_check_internet_connect));
-                        } else {
-                            progressBar.setVisibility(View.GONE);
+                volleyError -> {
+                    if (volleyError instanceof TimeoutError) {
+                        progressBar.setVisibility(View.GONE);
+                        messageOutput(context.getResources()
+                                .getString(R.string.error_check_internet_connect));
+                    } else {
+                        progressBar.setVisibility(View.GONE);
 //                            messageOutput(context.getResources()
 //                                    .getString(R.string.error_registration) + volleyError.toString());
-                            messageOutput(context.getResources()
-                                    .getString(R.string.error_check_internet_connect));
-                        }
+                        messageOutput(context.getResources()
+                                .getString(R.string.error_check_internet_connect));
                     }
                 }) {
             @Override

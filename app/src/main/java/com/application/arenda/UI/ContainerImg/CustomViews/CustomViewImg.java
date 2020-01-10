@@ -17,22 +17,17 @@ public class CustomViewImg extends ConstraintLayout {
     public CustomViewImg(Context context) {
         super(context);
         initializationComponents();
-        initializationStyles();
     }
 
     public CustomViewImg(Context context, AttributeSet attrs) {
         super(context, attrs);
         initializationComponents();
-        initializationStyles();
     }
 
     private void initializationComponents() {
         inflate(getContext(), R.layout.container_pattern_selected_img, this);
         itemImg = findViewById(R.id.itemImg);
         itemDeleteSelectedImg = findViewById(R.id.itemDeleteSelectedImg);
-    }
-
-    private void initializationStyles() {
     }
 
     public boolean setImageBitmap(Bitmap bitmap) {

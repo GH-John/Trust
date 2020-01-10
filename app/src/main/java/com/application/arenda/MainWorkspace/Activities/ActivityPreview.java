@@ -1,28 +1,37 @@
 package com.application.arenda.MainWorkspace.Activities;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.application.arenda.Entities.SystemPreview.AdapterSystemPreview;
+import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.SetStyle.SetBtnStyle;
-import com.application.arenda.R;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ActivityPreview extends AppCompatActivity {
 
-    private Button btnSkip;
-    private LinearLayout dotsLayout;
-    private ViewPager previewViewPager;
-    private AdapterSystemPreview adapterSystemPreview;
+    @Nullable
+    @BindView(R.id.btnSkip)
+    Button btnSkip;
 
-    private Drawable dotSelected;
-    private Drawable dotUnselected;
+    @Nullable
+    @BindView(R.id.dotsLayout)
+    LinearLayout dotsLayout;
+
+    @Nullable
+    @BindView(R.id.previewViewPager)
+    ViewPager previewViewPager;
+
+    private AdapterSystemPreview adapterSystemPreview;
     private ComponentBackground componentBackground;
     private ViewPager.OnPageChangeListener pageListener;
 
@@ -30,20 +39,10 @@ public class ActivityPreview extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
+        ButterKnife.bind(this);
 
-        initializationComponents();
         initializationStyles();
         initializationListeners();
-
-        setAdapter();
-    }
-
-    private void initializationComponents() {
-        previewViewPager = findViewById(R.id.previewViewPager);
-        dotsLayout = findViewById(R.id.dotsLayout);
-        btnSkip = findViewById(R.id.btnSkip);
-        dotSelected = this.getDrawable(R.drawable.preview_dot_selected);
-        dotUnselected = this.getDrawable(R.drawable.preview_dot_unselected);
     }
 
     private void initializationStyles() {
@@ -65,7 +64,8 @@ public class ActivityPreview extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                adapterSystemPreview.changeIndicator(position, dotUnselected, dotSelected);
+                adapterSystemPreview.changeIndicator(position,
+                        getDrawable(R.drawable.preview_dot_unselected), getDrawable(R.drawable.preview_dot_selected));
             }
 
             @Override
@@ -75,10 +75,9 @@ public class ActivityPreview extends AppCompatActivity {
         };
 
         previewViewPager.addOnPageChangeListener(pageListener);
-    }
 
-    private void setAdapter() {
-        adapterSystemPreview = new AdapterSystemPreview(this, dotsLayout, dotUnselected, dotSelected);
+        adapterSystemPreview = new AdapterSystemPreview(this, dotsLayout,
+                getDrawable(R.drawable.preview_dot_unselected), getDrawable(R.drawable.preview_dot_selected));
         previewViewPager.setAdapter(adapterSystemPreview);
     }
 }

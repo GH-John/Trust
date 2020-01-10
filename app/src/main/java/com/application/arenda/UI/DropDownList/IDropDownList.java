@@ -5,8 +5,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.ModelItemContent;
-
 import java.util.Collection;
 
 public interface IDropDownList {
@@ -33,19 +31,19 @@ public interface IDropDownList {
 
     void clearRecyclerView(@NonNull AdapterDropDownList adapter);
 
-    void rewriteCollection(@NonNull Collection<ModelItemContent> collection);
+    void rewriteCollection(@NonNull Collection<DropDownList.ModelItemContent> collection);
 
-    void pushToStack(@NonNull Collection<ModelItemContent> collection);
+    void pushToStack(@NonNull Collection<DropDownList.ModelItemContent> collection);
 
-    Collection<ModelItemContent> popToStack();
+    Collection<DropDownList.ModelItemContent> popToStack();
 
-    Collection<ModelItemContent> getFirstElementToStack();
+    Collection<DropDownList.ModelItemContent> getFirstElementToStack();
 
-    Collection<ModelItemContent> getLastElementToStack();
+    Collection<DropDownList.ModelItemContent> getLastElementToStack();
 
     boolean isEmptyBackStack();
 
-    boolean isContainsToStack(@NonNull Collection<ModelItemContent> collection);
+    boolean isContainsToStack(@NonNull Collection<DropDownList.ModelItemContent> collection);
 
     void setOnClickLastElement(@NonNull View.OnClickListener onClickListener);
 

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -14,7 +13,11 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.application.arenda.Entities.Announcements.Models.ViewModelAllAnnouncement;
+import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.Announcements.Models.ModelUserAnnouncement;
+import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncement;
+import com.application.arenda.Entities.Utils.UserCookie;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
 import org.json.JSONArray;
@@ -31,12 +34,11 @@ import io.reactivex.Observable;
 public class LoadingAnnouncements implements ILoadingAnnouncements {
 
     @Override
-    public Observable<List<ViewModelAllAnnouncement>> loadAllAnnouncemets(final Context context, final String url) {
+    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(final Context context, final String url) {
         return Observable.create(observableEmitter -> {
-            StringRequest request;
-            List<ViewModelAllAnnouncement> models = new ArrayList<>();
+            List<ModelAllAnnouncement> models = new ArrayList<>();
 
-            request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @SuppressLint("SimpleDateFormat")
                 @Override
                 public void onResponse(String response) {
@@ -54,7 +56,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                 for (int i = 0; i < announcements.length(); i++) {
                                     object = announcements.getJSONObject(i);
 
-                                    ViewModelAllAnnouncement model = new ViewModelAllAnnouncement();
+                                    ModelAllAnnouncement model = new ModelAllAnnouncement();
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
@@ -66,12 +68,17 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                     model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
                                     model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
 
-                                    model.setLocation(object.getString("address"));
+                                    model.setAddress(object.getString("address"));
 
-                                    model.setPlacementDate(object.getString("placementDate"));
-                                    model.setRating(Integer.parseInt(object.getString("rating")));
+                                    model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
+                                    model.setRate(Float.parseFloat(object.getString("rating")));
                                     model.setCountRent(Integer.parseInt(object.getString("countRent")));
                                     model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
+
+                                    if(object.getString("isFavorite").equals("1"))
+                                        model.setFavorite(true);
+                                    else
+                                        model.setFavorite(false);
 
                                     models.add(model);
                                 }
@@ -82,32 +89,37 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                             case "2": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_fail_loading_announcements) + response);
 
+                                observableEmitter.onComplete();
                                 break;
                             }
 
                             case "3": {
                                 Log.d(getClass().toString(), response);
 
+                                observableEmitter.onComplete();
                                 break;
                             }
 
                             case "101": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
 
+                                observableEmitter.onComplete();
                                 break;
                             }
                             default: {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+
+                                observableEmitter.onComplete();
                             }
                         }
                     } catch (JSONException e) {
                         Log.d(getClass().toString(), response);
-                        messageOutput(context, context.getResources()
+                        Utils.messageOutput(context, context.getResources()
                                 .getString(R.string.error_fail_loading_announcements) + e.getMessage());
 
                         observableEmitter.onError(e);
@@ -120,19 +132,22 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
                             if (volleyError instanceof TimeoutError) {
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_check_internet_connect));
                             } else {
                                 Log.d(getClass().toString(), String.valueOf(volleyError.getMessage()));
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_fail_loading_announcements));
                             }
+
+                            observableEmitter.onError(volleyError);
                         }
                     }) {
                 @SuppressLint("SimpleDateFormat")
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     HashMap<String, String> params = new HashMap<>();
+                    params.put("token", UserCookie.getToken(context));
                     params.put("idAnnouncement", String.valueOf(0));
 
                     return params;
@@ -145,10 +160,10 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
     }
 
     @Override
-    public Observable<List<ViewModelAllAnnouncement>> searchToAllAnnouncemets(Context context, String url, int lastID, String search) {
+    public Observable<List<ModelAllAnnouncement>> searchToAllAnnouncements(Context context, String url, int lastID, String search) {
         return Observable.create(observableEmitter -> {
             StringRequest request;
-            List<ViewModelAllAnnouncement> models = new ArrayList<>();
+            List<ModelAllAnnouncement> models = new ArrayList<>();
 
             request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @SuppressLint("SimpleDateFormat")
@@ -168,7 +183,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                 for (int i = 0; i < announcements.length(); i++) {
                                     object = announcements.getJSONObject(i);
 
-                                    ViewModelAllAnnouncement model = new ViewModelAllAnnouncement();
+                                    ModelAllAnnouncement model = new ModelAllAnnouncement();
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
@@ -180,12 +195,17 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                     model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
                                     model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
 
-                                    model.setLocation(object.getString("address"));
+                                    model.setAddress(object.getString("address"));
 
-                                    model.setPlacementDate(object.getString("placementDate"));
-                                    model.setRating(Integer.parseInt(object.getString("rating")));
+                                    model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
+                                    model.setRate(Float.parseFloat(object.getString("rating")));
                                     model.setCountRent(Integer.parseInt(object.getString("countRent")));
                                     model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
+
+                                    if(object.getString("isFavorite").equals("1"))
+                                        model.setFavorite(true);
+                                    else
+                                        model.setFavorite(false);
 
                                     models.add(model);
                                 }
@@ -196,7 +216,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                             case "2": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_fail_loading_announcements) + response);
 
                                 break;
@@ -210,18 +230,18 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                             case "101": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
 
                                 break;
                             }
                             default: {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                             }
                         }
                     } catch (JSONException e) {
                         Log.d(getClass().toString(), response);
-                        messageOutput(context, context.getResources()
+                        Utils.messageOutput(context, context.getResources()
                                 .getString(R.string.error_fail_loading_announcements) + e.getMessage());
 
                         observableEmitter.onError(e);
@@ -234,11 +254,11 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
                             if (volleyError instanceof TimeoutError) {
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_check_internet_connect));
                             } else {
                                 Log.d(getClass().toString(), String.valueOf(volleyError.getMessage()));
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_fail_loading_announcements));
                             }
                         }
@@ -247,6 +267,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     HashMap<String, String> params = new HashMap<>();
+                    params.put("token", UserCookie.getToken(context));
                     params.put("idAnnouncement", String.valueOf(lastID));
 
                     if (search.length() > 0 && search != null)
@@ -262,21 +283,20 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
     }
 
     @Override
-    public Observable<List<ViewModelAllAnnouncement>> loadUserAnnouncemets(final Context context, final String url) {
+    public Observable<List<ModelUserAnnouncement>> loadUserAnnouncements(final Context context, final String url) {
         return Observable.create(observableEmitter -> {
-            StringRequest request;
-            List<ViewModelAllAnnouncement> models = new ArrayList<>();
+            List<ModelUserAnnouncement> models = new ArrayList<>();
 
-            request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @SuppressLint("SimpleDateFormat")
                 @Override
                 public void onResponse(String response) {
                     try {
                         JSONObject jsonObject = new JSONObject(response);
 
-                        JSONArray announcements = jsonObject.getJSONArray("announcements");
-
                         String code = jsonObject.getString("code");
+
+                        JSONArray announcements = jsonObject.getJSONArray("announcements");
 
                         switch (code) {
                             case "1": {
@@ -285,7 +305,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                 for (int i = 0; i < announcements.length(); i++) {
                                     object = announcements.getJSONObject(i);
 
-                                    ViewModelAllAnnouncement model = new ViewModelAllAnnouncement();
+                                    ModelUserAnnouncement model = new ModelUserAnnouncement();
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
@@ -293,15 +313,18 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                     model.setName(object.getString("name"));
 
+                                    model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                    model.setCountViewers(Integer.parseInt(object.getString("countViewers")));
+                                    model.setCountFavorites(Integer.parseInt(object.getString("countFavorites")));
+
                                     model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
                                     model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
                                     model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
 
-                                    model.setLocation(object.getString("address"));
+                                    model.setAddress(object.getString("address"));
 
-                                    model.setPlacementDate(object.getString("placementDate"));
-                                    model.setRating(Integer.parseInt(object.getString("rating")));
-                                    model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                    model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
+                                    model.setRate(Float.parseFloat(object.getString("rating")));
                                     model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
 
                                     models.add(model);
@@ -313,7 +336,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                             case "2": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_fail_loading_announcements) + response);
 
                                 break;
@@ -327,19 +350,19 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                             case "101": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
 
                                 break;
                             }
                             default: {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                             }
                         }
                     } catch (JSONException e) {
                         Log.d(getClass().toString(), response);
-                        messageOutput(context, context.getResources()
-                                .getString(R.string.error_fail_loading_announcements) + e.getMessage());
+                        Utils.messageOutput(context, context.getResources()
+                                .getString(R.string.error_fail_loading_announcements) + response);
 
                         observableEmitter.onError(e);
                     } finally {
@@ -351,12 +374,12 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
                             if (volleyError instanceof TimeoutError) {
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_check_internet_connect));
                             } else {
                                 Log.d(getClass().toString(), String.valueOf(volleyError.getMessage()));
-                                messageOutput(context, context.getResources()
-                                        .getString(R.string.error_fail_loading_announcements));
+                                Utils.messageOutput(context, context.getResources()
+                                        .getString(R.string.error_fail_loading_announcements) + volleyError.getMessage());
                             }
                         }
                     }) {
@@ -364,7 +387,8 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     HashMap<String, String> params = new HashMap<>();
-                    params.put("idAnnouncement", String.valueOf(0));
+                    params.put("token", UserCookie.getToken(context));
+                    params.put("idAnnouncement", "0");
 
                     return params;
                 }
@@ -376,10 +400,10 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
     }
 
     @Override
-    public Observable<List<ViewModelAllAnnouncement>> searchToUserAnnouncemets(Context context, String url, int lastID, String search) {
+    public Observable<List<ModelUserAnnouncement>> searchToUserAnnouncements(Context context, String url, int lastID, String search) {
         return Observable.create(observableEmitter -> {
             StringRequest request;
-            List<ViewModelAllAnnouncement> models = new ArrayList<>();
+            List<ModelUserAnnouncement> models = new ArrayList<>();
 
             request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @SuppressLint("SimpleDateFormat")
@@ -399,7 +423,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                 for (int i = 0; i < announcements.length(); i++) {
                                     object = announcements.getJSONObject(i);
 
-                                    ViewModelAllAnnouncement model = new ViewModelAllAnnouncement();
+                                    ModelUserAnnouncement model = new ModelUserAnnouncement();
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
@@ -407,15 +431,18 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                     model.setName(object.getString("name"));
 
+                                    model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                    model.setCountViewers(Integer.parseInt(object.getString("countViewers")));
+                                    model.setCountFavorites(Integer.parseInt(object.getString("countFavorites")));
+
                                     model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
                                     model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
                                     model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
 
-                                    model.setLocation(object.getString("address"));
+                                    model.setAddress(object.getString("address"));
 
-                                    model.setPlacementDate(object.getString("placementDate"));
-                                    model.setRating(Integer.parseInt(object.getString("rating")));
-                                    model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                    model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
+                                    model.setRate(Float.parseFloat(object.getString("rating")));
                                     model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
 
                                     models.add(model);
@@ -427,7 +454,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                             case "2": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_fail_loading_announcements) + response);
 
                                 break;
@@ -441,18 +468,18 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                             case "101": {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
 
                                 break;
                             }
                             default: {
                                 Log.d(getClass().toString(), response);
-                                messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                                Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                             }
                         }
                     } catch (JSONException e) {
                         Log.d(getClass().toString(), response);
-                        messageOutput(context, context.getResources()
+                        Utils.messageOutput(context, context.getResources()
                                 .getString(R.string.error_fail_loading_announcements) + e.getMessage());
 
                         observableEmitter.onError(e);
@@ -465,11 +492,11 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
                             if (volleyError instanceof TimeoutError) {
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_check_internet_connect));
                             } else {
                                 Log.d(getClass().toString(), String.valueOf(volleyError.getMessage()));
-                                messageOutput(context, context.getResources()
+                                Utils.messageOutput(context, context.getResources()
                                         .getString(R.string.error_fail_loading_announcements));
                             }
                         }
@@ -478,6 +505,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     HashMap<String, String> params = new HashMap<>();
+                    params.put("token", UserCookie.getToken(context));
                     params.put("idAnnouncement", String.valueOf(lastID));
 
                     if (search.length() > 0 && search != null)
@@ -492,9 +520,10 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
         });
     }
 
+    @Override
+    public Observable<List<ModelViewAnnouncement>> loadViewAnnouncement(Context context, String url) {
+        return Observable.create(observableEmitter -> {
 
-
-    private void messageOutput(final Context context, String str) {
-        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+        });
     }
 }

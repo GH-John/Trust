@@ -10,7 +10,7 @@ import android.widget.RadioGroup;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.application.arenda.Entities.Registration.RegistrationUser;
-import com.application.arenda.Patterns.Utils;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.SetDrawableImageViews;

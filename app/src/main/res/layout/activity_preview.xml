@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutPreview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layoutPreview"
     android:background="@color/backgroundApp"
     tools:context="com.application.arenda.MainWorkspace.Activities.ActivityPreview">
 
@@ -28,7 +28,9 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/btnSkip"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+        app:layout_constraintStart_toStartOf="parent">
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnSkip"

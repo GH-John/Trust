@@ -12,8 +12,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.application.arenda.Patterns.Observer;
+import com.application.arenda.Entities.Utils.ServerUtils;
 import com.application.arenda.R;
+import com.application.arenda.UI.Components.ComponentManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,8 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuthorizationUseToken {
-    private static String URL_AUTHORIZATION = "http://192.168.43.241/AndroidConnectWithServer/php/authentification/AuthorizationUseToken.php";
-
     private final Context context;
     private StringRequest request;
 
@@ -32,8 +31,8 @@ public class AuthorizationUseToken {
     }
 
     @SuppressLint("ShowToast")
-    public void authorization(final String token, final Observer observer) {
-        request = new StringRequest(StringRequest.Method.POST, URL_AUTHORIZATION, new Response.Listener<String>() {
+    public void authorization(final String token, final ComponentManager.Observer observer) {
+        request = new StringRequest(StringRequest.Method.POST, ServerUtils.URL_AUTHORIZATION_USE_TOKEN, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {

@@ -22,9 +22,11 @@
     <string name="error_please_choose_correct_img">Не верный формат изображения</string>
     <string name="error_adding_photos">Ошибка: не удалось добавить изображения\n</string>
     <string name="error_adding_announcement">Ошибка: не удалось добавить объявление\n</string>
+    <string name="error_insert_to_favorite">Ошибка: не удалось добавить в избранное/n</string>
     <string name="error_fail_load_categories">Ошибка: не удалось загрузить категории\n</string>
     <string name="error_server_connect">Ошибка: не удалось подключится к базе данных\n</string>
     <string name="error_server_is_temporarily_unavailable">Сервер временно не доступен</string>
+    <string name="error_fail_loading_announcement">Ошибка: не удалось загрузить объявление\n</string>
     <string name="error_fail_loading_announcements">Ошибка: не удалось загрузить объявления\n</string>
     <string name="error_send_photo_to_server">Ошибка: не удалось отправить изображения на сервер</string>
     <string name="error_check_internet_connect">Проверьте интернет соединение и повторите попытку</string>
@@ -85,11 +87,18 @@
     <string name="hint_product_description">Описание</string>
     <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
 
+    <string name="text_rate">Рейтинг</string>
+    <string name="text_address">Адрес</string>
+    <string name="text_today">Сегодня</string>
     <string name="text_count_rent">465</string>
+    <string name="text_yesterday">Вчера</string>
     <string name="text_category">Категории</string>
+    <string name="textDescription">Описание</string>
     <string name="text_rate_announcement">5</string>
     <string name="text_limit_add_photos">0/9</string>
     <string name="text_user_name">Фамилия Имя</string>
+    <string name="text_rent">Колличество аренд</string>
+    <string name="text_published">Опубликовано: </string>
     <string name="text_some_text">Какой-то текст</string>
     <string name="text_product_category">Категория</string>
     <string name="text_cost_announcement">5 руб./ч.</string>
@@ -103,4 +112,26 @@
     <string name="text_note_photos">Первая фотография является главной</string>
     <string name="text_visible_addresses">Показать адрес в объявлении:</string>
     <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
+
+    <string name="monday">Пн</string>
+    <string name="tuesday">Вт</string>
+    <string name="wednesday">Ср</string>
+    <string name="thursday">Чт</string>
+    <string name="friday">Пт</string>
+    <string name="saturday">Сб</string>
+    <string name="sunday">Вс</string>
+
+    <string name="january">Янв</string>
+    <string name="february">Фев</string>
+    <string name="march">Мар</string>
+    <string name="april">Апр</string>
+    <string name="may">Мая</string>
+    <string name="june">Июня</string>
+    <string name="july">Июля</string>
+    <string name="august">Авг</string>
+    <string name="september">Сен</string>
+    <string name="october">Окт</string>
+    <string name="november">Ноя</string>
+    <string name="december">Дек</string>
+
 </resources>

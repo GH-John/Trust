@@ -40,7 +40,7 @@ public class AdapterSystemPreview extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-        return view == (ConstraintLayout) object;
+        return view == object;
     }
 
     private int gerImage() {
@@ -51,7 +51,7 @@ public class AdapterSystemPreview extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
-        View view = layoutInflater.inflate(R.layout.preview_pattern, container, false);
+        View view = layoutInflater.inflate(R.layout.vp_preview_pattern, container, false);
 
         ImageView logo = view.findViewById(R.id.logoPreview);
 
