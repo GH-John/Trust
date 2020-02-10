@@ -13,7 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.application.arenda.Entities.Utils.UserCookie;
+import com.application.arenda.Entities.User.UserCookie;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
@@ -27,7 +27,7 @@ import io.reactivex.Observable;
 
 public class InsertToFavorite implements IInsertToFavorite {
     @Override
-    public Observable<Boolean> insertToFavorite(@NonNull Context context, @NonNull String url, int idAnnouncement) {
+    public Observable<Boolean> insertToFavorite(@NonNull Context context, @NonNull String url, long idAnnouncement) {
         return Observable.create(observableEmitter -> {
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override

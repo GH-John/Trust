@@ -14,9 +14,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.application.arenda.Entities.Utils.ServerUtils;
-import com.application.arenda.Entities.Utils.UserCookie;
-import com.application.arenda.Entities.Utils.UserProfile;
+import com.application.arenda.Entities.Utils.Network.ServerUtils;
+import com.application.arenda.Entities.User.UserCookie;
+import com.application.arenda.Entities.User.UserProfile;
 import com.application.arenda.R;
 
 import org.json.JSONException;

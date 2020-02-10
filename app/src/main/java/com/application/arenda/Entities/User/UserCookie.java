@@ -1,7 +1,9 @@
-package com.application.arenda.Entities.Utils;
+package com.application.arenda.Entities.User;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.application.arenda.Entities.Utils.ObjectStreamHelper;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,23 +57,21 @@ public class UserCookie {
     }
 
     private static void writeToken(final Context context, final String token) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                FileOutputStream fileOutputStream = null;
 
+        new Thread(() -> {
+            FileOutputStream fileOutputStream = null;
+
+            try {
+                fileOutputStream = context.openFileOutput(getUseProfileDir, Context.MODE_PRIVATE);
+                fileOutputStream.write(token.getBytes());
+            } catch (IOException ex) {
+                Log.d("UserCookie", ex.getMessage());
+            } finally {
                 try {
-                    fileOutputStream = context.openFileOutput(getUseProfileDir, Context.MODE_PRIVATE);
-                    fileOutputStream.write(token.getBytes());
+                    if (fileOutputStream != null)
+                        fileOutputStream.close();
                 } catch (IOException ex) {
                     Log.d("UserCookie", ex.getMessage());
-                } finally {
-                    try {
-                        if (fileOutputStream != null)
-                            fileOutputStream.close();
-                    } catch (IOException ex) {
-                        Log.d("UserCookie", ex.getMessage());
-                    }
                 }
             }
         }).start();

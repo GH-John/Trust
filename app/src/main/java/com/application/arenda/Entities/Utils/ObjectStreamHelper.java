@@ -26,14 +26,11 @@ public class ObjectStreamHelper {
     }
 
     public synchronized static void ObjectOutputStream(@NotNull final Map map, @NotNull final FileOutputStream fileOutputStream) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try (ObjectOutputStream output = new ObjectOutputStream(fileOutputStream)) {
-                    output.writeObject(map);
-                } catch (IOException e) {
-                    Log.d("ObjectOutputStream", e.getMessage());
-                }
+        new Thread(() -> {
+            try (ObjectOutputStream output = new ObjectOutputStream(fileOutputStream)) {
+                output.writeObject(map);
+            } catch (IOException e) {
+                Log.d("ObjectOutputStream", e.getMessage());
             }
         }).start();
     }

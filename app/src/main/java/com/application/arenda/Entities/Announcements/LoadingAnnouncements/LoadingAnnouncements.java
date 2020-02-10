@@ -15,8 +15,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
 import com.application.arenda.Entities.Announcements.Models.ModelUserAnnouncement;
-import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncement;
-import com.application.arenda.Entities.Utils.UserCookie;
+import com.application.arenda.Entities.User.UserCookie;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
@@ -34,7 +33,7 @@ import io.reactivex.Observable;
 public class LoadingAnnouncements implements ILoadingAnnouncements {
 
     @Override
-    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(final Context context, final String url) {
+    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(final Context context, long lastID, final String url) {
         return Observable.create(observableEmitter -> {
             List<ModelAllAnnouncement> models = new ArrayList<>();
 
@@ -43,18 +42,16 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        JSONObject jsonObject = new JSONObject(response);
+                        final JSONObject jsonObject = new JSONObject(response);
 
-                        JSONArray announcements = jsonObject.getJSONArray("announcements");
+                        final JSONArray announcements = jsonObject.getJSONArray("announcements");
 
-                        String code = jsonObject.getString("code");
+                        final String code = jsonObject.getString("code");
 
                         switch (code) {
                             case "1": {
-                                JSONObject object;
-
                                 for (int i = 0; i < announcements.length(); i++) {
-                                    object = announcements.getJSONObject(i);
+                                    final JSONObject object = announcements.getJSONObject(i);
 
                                     ModelAllAnnouncement model = new ModelAllAnnouncement();
 
@@ -75,7 +72,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                     model.setCountRent(Integer.parseInt(object.getString("countRent")));
                                     model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
 
-                                    if(object.getString("isFavorite").equals("1"))
+                                    if (object.getString("isFavorite").equals("1"))
                                         model.setFavorite(true);
                                     else
                                         model.setFavorite(false);
@@ -148,7 +145,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("token", UserCookie.getToken(context));
-                    params.put("idAnnouncement", String.valueOf(0));
+                    params.put("idAnnouncement", String.valueOf(lastID));
 
                     return params;
                 }
@@ -160,7 +157,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
     }
 
     @Override
-    public Observable<List<ModelAllAnnouncement>> searchToAllAnnouncements(Context context, String url, int lastID, String search) {
+    public Observable<List<ModelAllAnnouncement>> searchToAllAnnouncements(Context context, String url, long lastID, String search) {
         return Observable.create(observableEmitter -> {
             StringRequest request;
             List<ModelAllAnnouncement> models = new ArrayList<>();
@@ -202,7 +199,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                     model.setCountRent(Integer.parseInt(object.getString("countRent")));
                                     model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
 
-                                    if(object.getString("isFavorite").equals("1"))
+                                    if (object.getString("isFavorite").equals("1"))
                                         model.setFavorite(true);
                                     else
                                         model.setFavorite(false);
@@ -400,7 +397,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
     }
 
     @Override
-    public Observable<List<ModelUserAnnouncement>> searchToUserAnnouncements(Context context, String url, int lastID, String search) {
+    public Observable<List<ModelUserAnnouncement>> searchToUserAnnouncements(Context context, String url, long lastID, String search) {
         return Observable.create(observableEmitter -> {
             StringRequest request;
             List<ModelUserAnnouncement> models = new ArrayList<>();
@@ -517,13 +514,6 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             requestQueue.add(request);
-        });
-    }
-
-    @Override
-    public Observable<List<ModelViewAnnouncement>> loadViewAnnouncement(Context context, String url) {
-        return Observable.create(observableEmitter -> {
-
         });
     }
 }

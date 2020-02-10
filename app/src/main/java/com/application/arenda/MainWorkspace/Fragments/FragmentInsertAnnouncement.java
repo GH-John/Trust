@@ -24,7 +24,7 @@ import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateD
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.InsertAnnouncement;
 import com.application.arenda.Entities.Announcements.Models.ModelInsertAnnouncement;
 import com.application.arenda.Entities.Utils.DecimalDigitsInputFilter;
-import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;

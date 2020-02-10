@@ -21,12 +21,8 @@ import java.util.regex.Pattern;
 import butterknife.Action;
 
 public class Utils {
-    public static final Action<View> V_GONE = (view, index) -> {
-        view.setVisibility(View.GONE);
-    };
-    public static final Action<View> V_VISIBLE = (view, index) -> {
-        view.setVisibility(View.VISIBLE);
-    };
+    public static final Action<View> V_GONE = (view, index) -> view.setVisibility(View.GONE);
+    public static final Action<View> V_VISIBLE = (view, index) -> view.setVisibility(View.VISIBLE);
 
     private static Pattern pattern;
     private static Matcher matcher;
@@ -36,6 +32,8 @@ public class Utils {
         LocalDate today = LocalDate.now();
 
         LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        LocalDateTime test = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 0)
             return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));

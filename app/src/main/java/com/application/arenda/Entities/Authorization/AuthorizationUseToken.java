@@ -12,7 +12,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ComponentManager;
 

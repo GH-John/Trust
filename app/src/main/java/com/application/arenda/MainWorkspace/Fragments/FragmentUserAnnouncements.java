@@ -24,7 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.UserAnnouncements.UserAnnouncementsRV;
 import com.application.arenda.Entities.Announcements.Models.ModelUserAnnouncement;
-import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;

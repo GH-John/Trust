@@ -12,8 +12,8 @@ public class ModelUserAnnouncement {
     private int countFavorites = 0;
     private String placementDate;
 
-    private int idUser = 0;
-    private int idAnnouncement = 0;
+    private long idUser = 0;
+    private long idAnnouncement = 0;
 
     private float costToBYN = 0.0f;
     private float costToUSD = 0.0f;
@@ -72,19 +72,19 @@ public class ModelUserAnnouncement {
         this.placementDate = placementDate;
     }
 
-    public int getIdUser() {
+    public long getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int idUser) {
+    public void setIdUser(long idUser) {
         this.idUser = idUser;
     }
 
-    public int getIdAnnouncement() {
+    public long getIdAnnouncement() {
         return idAnnouncement;
     }
 
-    public void setIdAnnouncement(int idAnnouncement) {
+    public void setIdAnnouncement(long idAnnouncement) {
         this.idAnnouncement = idAnnouncement;
     }
 

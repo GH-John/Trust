@@ -23,7 +23,7 @@ import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncemen
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.IDataViewPager;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
-import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
@@ -102,7 +102,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private LoadingViewAnnouncement announcement = new LoadingViewAnnouncement();
     private InsertToFavorite favorite = new InsertToFavorite();
 
-    private int idAnnouncement;
+    private long idAnnouncement;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -113,7 +113,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         Bundle bundle = getArguments();
 
         if (bundle != null)
-            idAnnouncement = bundle.getInt("idAnnouncement");
+            idAnnouncement = bundle.getLong("idAnnouncement");
 
         loadData();
 
@@ -168,7 +168,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                 });
     }
 
-    public void onClickFavorite(int idAnnouncement) {
+    public void onClickFavorite(long idAnnouncement) {
         favorite.insertToFavorite(getContext(), ServerUtils.URL_INSERT_TO_FAVORITE,
                 idAnnouncement)
                 .subscribeOn(Schedulers.io())

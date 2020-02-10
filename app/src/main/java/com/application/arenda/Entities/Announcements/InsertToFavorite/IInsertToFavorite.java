@@ -7,5 +7,5 @@ import androidx.annotation.NonNull;
 import io.reactivex.Observable;
 
 public interface IInsertToFavorite {
-    Observable<Boolean> insertToFavorite(@NonNull Context context, @NonNull String url, int idAnnouncement);
+    Observable<Boolean> insertToFavorite(@NonNull Context context, @NonNull String url, long idAnnouncement);
 }

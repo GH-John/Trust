@@ -20,10 +20,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsRV;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsAdapter;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
 import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
-import com.application.arenda.Entities.Utils.ServerUtils;
+import com.application.arenda.Entities.RecyclerView.RVLayoutManager;
+import com.application.arenda.Entities.RecyclerView.RVOnFlingListener;
+import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
+import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
@@ -52,21 +55,26 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     @Nullable
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-
+    int currentVisibleItems = 0;
+    int totalItems = 0;
+    int firstVisibleItem = 0;
     private Unbinder unbinder;
-
     private SideBar sideBar;
     private ImageView itemBurgerMenu,
             itemSearch,
             itemFiltr,
             itemClearFieldSearch;
-
     private EditText itemFieldSearch;
     private TextView itemHeaderName;
     private Group groupSearch, groupDefault;
-    private AllAnnouncementsRV allAnnouncementsRV;
 
-    private LoadingAnnouncements load = new LoadingAnnouncements();
+    private AllAnnouncementsAdapter allAnnouncementsAdapter;
+    private RVOnScrollListener rvOnScrollListener;
+    private RVLayoutManager rvLayoutManager;
+
+    private LoadingAnnouncements loadData = new LoadingAnnouncements();
+
+    private String searchQuery;
 
     public static FragmentAllAnnouncements getInstance() {
         if (fragmentAllAnnouncements == null)
@@ -89,12 +97,23 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     private void initializationComponents(View view) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        rvLayoutManager = new RVLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rvLayoutManager.setRecyclerView(recyclerView);
+
+        rvOnScrollListener = new RVOnScrollListener(rvLayoutManager);
+
+        recyclerView.setLayoutManager(rvLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setItemViewCacheSize(30);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setHasFixedSize(true);
 
-        loadLayout();
+        allAnnouncementsAdapter = new AllAnnouncementsAdapter(getContext());
+
+        recyclerView.setAdapter(allAnnouncementsAdapter);
+
+        loadListAnnouncement(0);
     }
 
     private void initializationStyles() {
@@ -105,11 +124,29 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
     private void initializationListeners() {
         swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
+
+        recyclerView.setOnFlingListener(new RVOnFlingListener(recyclerView));
+
+        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
+
+        setLoadMoreForAllAnnouncement();
+
+        recyclerView.addOnScrollListener(rvOnScrollListener);
+
+        allAnnouncementsAdapter.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
     }
 
-    public void loadLayout() {
-        swipeRefreshLayout.setRefreshing(true);
-        load.loadAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
+    private void setLoadMoreForAllAnnouncement() {
+        rvOnScrollListener.setOnLoadMoreData(this::loadListAnnouncement);
+    }
+
+    private void setLoadMoreForSearchAnnouncement() {
+        rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID));
+    }
+
+    public void loadListAnnouncement(long lastID) {
+        allAnnouncementsAdapter.setLoading(true);
+        loadData.loadAllAnnouncements(getContext(), lastID, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<ModelAllAnnouncement>>() {
@@ -119,30 +156,27 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                     }
 
                     @Override
-                    public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
-                        allAnnouncementsRV = new AllAnnouncementsRV(getContext(),
-                                R.layout.template_1_announcement, modelAllAnnouncements);
+                    public void onNext(List<ModelAllAnnouncement> collection) {
 
-                        allAnnouncementsRV.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
-
-                        recyclerView.setAdapter(allAnnouncementsRV);
-                        swipeRefreshLayout.setRefreshing(false);
+                        allAnnouncementsAdapter.addToCollection(collection);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         swipeRefreshLayout.setRefreshing(false);
+                        allAnnouncementsAdapter.setLoading(false);
                     }
 
                     @Override
                     public void onComplete() {
                         swipeRefreshLayout.setRefreshing(false);
+                        allAnnouncementsAdapter.setLoading(false);
                     }
                 });
     }
 
     public void refreshLayout() {
-        load.loadAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
+        loadData.loadAllAnnouncements(getContext(), 0, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<ModelAllAnnouncement>>() {
@@ -151,12 +185,9 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                     }
 
                     @Override
-                    public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
-                        allAnnouncementsRV.rewriteCollection(modelAllAnnouncements);
+                    public void onNext(List<ModelAllAnnouncement> collection) {
+                        allAnnouncementsAdapter.rewriteCollection(collection);
 
-                        allAnnouncementsRV.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
-
-                        recyclerView.setAdapter(allAnnouncementsRV);
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
@@ -172,31 +203,32 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 });
     }
 
-    private void onItemClick(int idAnnouncement) {
+    private void onItemClick(long idAnnouncement) {
         FragmentViewAnnouncement announcement = new FragmentViewAnnouncement();
         Bundle bundle = new Bundle();
-        bundle.putInt("idAnnouncement", idAnnouncement);
+        bundle.putLong("idAnnouncement", idAnnouncement);
         announcement.setArguments(bundle);
 
         ContainerFragments.getInstance().replaceFragmentInContainer(announcement);
     }
 
-    public void searchAnnouncements(String s) {
+    public void searchAnnouncements(String query, long lastId) {
         swipeRefreshLayout.setRefreshing(true);
 
-        load.searchToAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT, 0, s)
+        loadData.searchToAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT, lastId, query)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<ModelAllAnnouncement>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
+
                     }
 
                     @Override
                     public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
-                        allAnnouncementsRV.rewriteCollection(modelAllAnnouncements);
+                        allAnnouncementsAdapter.rewriteCollection(modelAllAnnouncements);
 
-                        recyclerView.setAdapter(allAnnouncementsRV);
+                        recyclerView.setAdapter(allAnnouncementsAdapter);
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
@@ -250,6 +282,8 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 groupDefault.setVisibility(View.VISIBLE);
                 itemHeaderName.setText(getResources().getString(R.string.ab_title_all_announcements));
 
+                setLoadMoreForAllAnnouncement();
+
                 refreshLayout();
                 Utils.closeKeyboard(getContext());
             }
@@ -261,14 +295,16 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 groupSearch.setVisibility(View.GONE);
                 groupDefault.setVisibility(View.VISIBLE);
 
-                String search = itemFieldSearch.getText().toString();
+                searchQuery = itemFieldSearch.getText().toString();
 
                 Utils.closeKeyboard(getContext());
                 itemFieldSearch.clearFocus();
 
-                if (!search.isEmpty()) {
-                    itemHeaderName.setText(search);
-                    searchAnnouncements(search);
+                if (!searchQuery.isEmpty()) {
+                    itemHeaderName.setText(searchQuery);
+                    searchAnnouncements(searchQuery, 0);
+
+                    setLoadMoreForSearchAnnouncement();
                 } else {
                     itemHeaderName.setText(getResources().getString(R.string.ab_title_all_announcements));
                     refreshLayout();

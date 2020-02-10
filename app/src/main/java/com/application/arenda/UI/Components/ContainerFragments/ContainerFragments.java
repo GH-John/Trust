@@ -13,6 +13,7 @@ import com.application.arenda.UI.Components.ComponentManager;
 public final class ContainerFragments implements ComponentManager.Observer, ComponentManager.Observable {
     @SuppressLint("StaticFieldLeak")
     private static ContainerFragments containerFragments;
+    private boolean isLoad = false;
 
     private Context context;
     private Fragment fragment;
@@ -39,12 +40,15 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
 
     public void replaceFragmentInContainer(Fragment fragment) {
         this.fragment = getCurrentFragment(context);
-        if (!this.fragment.equals(fragment)) {
+        if (!this.fragment.equals(fragment) && !isLoad) {
+            isLoad = true;
             ((AppCompatActivity) context).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(idContainer, fragment)
                     .addToBackStack(String.valueOf(fragment.getClass()))
                     .commit();
+
+            isLoad = false;
 
             notifyObservers(fragment);
         }

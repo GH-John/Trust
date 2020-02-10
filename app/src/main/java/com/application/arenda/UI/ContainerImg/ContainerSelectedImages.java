@@ -8,11 +8,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.application.arenda.R;
 import com.application.arenda.UI.ContainerImg.CustomViews.CustomBtnAddImg;
 import com.application.arenda.UI.ContainerImg.CustomViews.CustomViewImg;
 import com.application.arenda.UI.ContainerImg.Galery.AdapterGalery;
 import com.application.arenda.UI.ContainerImg.Galery.ChooseImages;
-import com.application.arenda.R;
 
 public class ContainerSelectedImages extends LinearLayout implements Container {
     private LinearLayout containerImg;
@@ -39,12 +39,7 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
     }
 
     private void initializationListeners() {
-        btnAddImg.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new ChooseImages(adapterGalery).open();
-            }
-        });
+        btnAddImg.setOnClickListener(v -> new ChooseImages(adapterGalery).open());
     }
 
     public void setAdapterGalery(AdapterGalery galery) {
@@ -97,11 +92,9 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
 
     @Override
     public void removeFromContainer(final View v) {
-        this.containerImg.post(new Runnable() {
-            public void run() {
-                containerImg.removeView(v);
-                decrementToCounter();
-            }
+        this.containerImg.post(() -> {
+            containerImg.removeView(v);
+            decrementToCounter();
         });
     }
 

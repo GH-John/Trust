@@ -7,5 +7,5 @@ import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncemen
 import io.reactivex.Observable;
 
 public interface ILoadingViewAnnouncement {
-    Observable<ModelViewAnnouncement> loadAnnouncement(final Context context, final String url, final int idAnnouncement);
+    Observable<ModelViewAnnouncement> loadAnnouncement(final Context context, final String url, final long idAnnouncement);
 }

@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
-    android:background="@color/colorWhite"
     app:cardCornerRadius="10dp"
     app:cardElevation="2dp"
     tools:ignore="PrivateResource">
@@ -19,7 +18,6 @@
             android:id="@+id/imgProduct"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@color/colorNotFoundPicture"
             android:contentDescription="@string/todo"
             android:scaleType="centerCrop"
             android:transitionName="imgProduct" />
@@ -165,21 +163,6 @@
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
-
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@id/imgProduct"
-            android:layout_alignTop="@id/imgProduct"
-            android:layout_alignEnd="@id/imgProduct"
-            android:layout_alignBottom="@id/imgProduct">
-
-            <ProgressBar
-                android:id="@+id/imgProgress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|center_vertical" />
-        </FrameLayout>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

@@ -14,7 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncement;
-import com.application.arenda.Entities.Utils.UserCookie;
+import com.application.arenda.Entities.User.UserCookie;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
@@ -31,7 +31,7 @@ import io.reactivex.Observable;
 
 public class LoadingViewAnnouncement implements ILoadingViewAnnouncement {
     @Override
-    public Observable<ModelViewAnnouncement> loadAnnouncement(Context context, String url, int idAnnouncement) {
+    public Observable<ModelViewAnnouncement> loadAnnouncement(Context context, String url, long idAnnouncement) {
         return Observable.create(observableEmitter -> {
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @SuppressLint("SimpleDateFormat")

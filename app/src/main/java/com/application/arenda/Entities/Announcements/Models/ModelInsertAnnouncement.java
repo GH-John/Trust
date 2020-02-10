@@ -11,7 +11,7 @@ public class ModelInsertAnnouncement {
     private String description = "";
 
     private int idSubcategory = 0;
-    private int idAnnouncement = 0;
+    private long idAnnouncement = 0;
 
     private float costToBYN = 0.0f;
     private float costToUSD = 0.0f;
@@ -55,11 +55,11 @@ public class ModelInsertAnnouncement {
         this.idSubcategory = idSubcategory;
     }
 
-    public int getIdAnnouncement() {
+    public long getIdAnnouncement() {
         return idAnnouncement;
     }
 
-    public void setIdAnnouncement(int idAnnouncement) {
+    public void setIdAnnouncement(long idAnnouncement) {
         this.idAnnouncement = idAnnouncement;
     }
 

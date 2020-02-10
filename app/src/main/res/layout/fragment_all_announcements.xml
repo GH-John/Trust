@@ -17,9 +17,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewOutputAllAnnouncements"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
             android:overScrollMode="never"
             android:paddingStart="16dp"
             android:paddingTop="60dp"
