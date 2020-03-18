@@ -12,6 +12,7 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
     private int currentVisibleItems = 0;
     private int totalItems = 0;
     private int firstVisibleItem = 0;
+    private int countIgnoreItem = 2;
 
     private int lastVisibleItem;
 
@@ -30,14 +31,15 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         currentVisibleItems = layoutManager.getChildCount();
-        totalItems = layoutManager.getItemCount();
-        firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+        totalItems = layoutManager.getItemCount() - countIgnoreItem;
 
+        firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
         lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-//        if (!rvAdapter.isLoading() && (currentVisibleItems + firstVisibleItem <= totalItems)) {
-        if (!rvAdapter.isLoading() && lastVisibleItem == 1) {
-            System.out.println("LOADING_DATA");
+        if (!rvAdapter.isLoading() && (currentVisibleItems + firstVisibleItem) >= totalItems && firstVisibleItem >= 0) {
+            System.out.println("Status: " + currentVisibleItems + " + " + firstVisibleItem + " >= "  + totalItems + " && " + firstVisibleItem + ">= 0");
+            System.out.println("LastItemID: " + rvAdapter.getLastItem().getIdAnnouncement());
+
             loadMoreData.loadMore(rvAdapter.getLastItem().getIdAnnouncement());
         }
     }

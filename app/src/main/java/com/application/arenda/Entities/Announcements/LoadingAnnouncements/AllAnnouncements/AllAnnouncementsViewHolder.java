@@ -63,12 +63,8 @@ public class AllAnnouncementsViewHolder extends RecyclerView.ViewHolder {
 
     public static AllAnnouncementsViewHolder create(ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.vh_network_state, parent, false);
+        View view = layoutInflater.inflate(R.layout.vh_announcement, parent, false);
         return new AllAnnouncementsViewHolder(view);
-    }
-
-    public static int getLayouId() {
-        return R.layout.vh_announcement;
     }
 
     @SuppressLint({"SetTextI18n"})

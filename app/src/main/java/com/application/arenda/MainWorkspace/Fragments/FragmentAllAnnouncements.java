@@ -7,17 +7,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -25,20 +24,18 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsAdapter;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsViewHolder;
-import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsViewModel;
-import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.RVAdapter;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
 import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.RecyclerView.RVOnFlingListener;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
-import com.application.arenda.Entities.Utils.Network.NetworkState;
 import com.application.arenda.Entities.Utils.Network.ServerUtils;
-import com.application.arenda.Entities.Utils.Network.Status;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
 import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
+import com.application.arenda.UI.DisplayUtils;
 
 import java.util.List;
 
@@ -58,27 +55,14 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     @BindView(R.id.recyclerViewOutputAllAnnouncements)
     RecyclerView recyclerView;
 
-
-    @Nullable
-    @BindView(R.id.errorMessage)
-    TextView errorMessage;
-
-    @Nullable
-    @BindView(R.id.btnRetryLoading)
-    Button btnRetryLoading;
-
-    @Nullable
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
-
-
-
     @Nullable
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-    int currentVisibleItems = 0;
-    int totalItems = 0;
-    int firstVisibleItem = 0;
+
+    @Nullable
+    @BindView(R.id.layoutAllAnnouncements)
+    FrameLayout layoutAllAnnouncements;
+
     private Unbinder unbinder;
     private SideBar sideBar;
     private ImageView itemBurgerMenu,
@@ -99,9 +83,6 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
     private String searchQuery;
 
-    private RVAdapter rvAdapter;
-    private AllAnnouncementsViewModel viewModel;
-
     public static FragmentAllAnnouncements getInstance() {
         if (fragmentAllAnnouncements == null)
             fragmentAllAnnouncements = new FragmentAllAnnouncements();
@@ -121,34 +102,30 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         initStyles();
         initListeners();
 
-        initSwipeToRefresh();
+        loadListAnnouncement(0);
         return view;
     }
 
     private void initAdapters(View view) {
-//        recyclerView.setLayoutManager(rvLayoutManager);
-//
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        recyclerView.setItemViewCacheSize(20);
-//        recyclerView.setDrawingCacheEnabled(true);
-//        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-//        recyclerView.setHasFixedSize(true);
-//
-//        rvOnScrollListener = new RVOnScrollListener(rvLayoutManager);
-//        recyclerView.setOnFlingListener(new RVOnFlingListener(recyclerView));
-//        recyclerView.addOnScrollListener(rvOnScrollListener);
-//
-//        allAnnouncementsAdapter = new AllAnnouncementsAdapter(getContext());
-//        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
-//        recyclerView.setAdapter(allAnnouncementsAdapter);
-
-        rvAdapter = new RVAdapter(getContext());
-
         recyclerView.setLayoutManager(rvLayoutManager);
 
-        rvAdapter.setItemViewClick((viewHolder, model) -> onItemClick(model.getIdAnnouncement()));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.setHasFixedSize(true);
 
-        rvAdapter.setItemHeartClick((viewHolder, model) -> insertToFavorite
+        rvOnScrollListener = new RVOnScrollListener(rvLayoutManager);
+        recyclerView.setOnFlingListener(new RVOnFlingListener(recyclerView));
+        recyclerView.addOnScrollListener(rvOnScrollListener);
+
+        allAnnouncementsAdapter = new AllAnnouncementsAdapter(getContext());
+        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
+        recyclerView.setAdapter(allAnnouncementsAdapter);
+
+        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> onItemClick(model.getIdAnnouncement()));
+
+        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) -> insertToFavorite
                 .insertToFavorite(getContext(), ServerUtils.URL_INSERT_TO_FAVORITE,
                         model.getIdAnnouncement())
                 .subscribeOn(Schedulers.io())
@@ -172,44 +149,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                     public void onComplete() {
                     }
                 }));
-        recyclerView.setAdapter(rvAdapter);
-
-        viewModel = new ViewModelProvider(this).get(AllAnnouncementsViewModel.class);
-
-        viewModel.getCollection().observe(getActivity(), rvAdapter::submitList);
-        viewModel.getNetworkState().observe(getActivity(), rvAdapter::setNetworkState);
-    }
-
-    private void initSwipeToRefresh() {
-        viewModel.getRefreshState().observe(getViewLifecycleOwner(), networkState -> {
-            if (networkState != null) {
-                if (rvAdapter.getCurrentList() != null) {
-                    if (rvAdapter.getCurrentList().size() > 0) {
-                        swipeRefreshLayout.setRefreshing(
-                                networkState.getStatus() == NetworkState.LOADING.getStatus());
-                    } else {
-//                        setInitialLoadingState(networkState);
-                    }
-                } else {
-//                    setInitialLoadingState(networkState);
-                }
-            }
-        });
-        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refresh());
-    }
-
-    private void setInitialLoadingState(NetworkState networkState) {
-        //error message
-        errorMessage.setVisibility(networkState.getMessage() != null ? View.VISIBLE : View.GONE);
-        if (networkState.getMessage() != null) {
-            errorMessage.setText(networkState.getMessage());
-        }
-
-        //loading and retry
-        btnRetryLoading.setVisibility(networkState.getStatus() == Status.FAILED ? View.VISIBLE : View.GONE);
-        progressBar.setVisibility(networkState.getStatus() == Status.RUNNING ? View.VISIBLE : View.GONE);
-
-        swipeRefreshLayout.setEnabled(networkState.getStatus() == Status.SUCCESS);
+        recyclerView.setAdapter(allAnnouncementsAdapter);
     }
 
     private void initStyles() {
@@ -219,11 +159,13 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     private void initListeners() {
-//        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
+        swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120));
 
-//        setLoadMoreForAllAnnouncement();
+        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
 
-//        allAnnouncementsAdapter.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
+        setLoadMoreForAllAnnouncement();
+
+        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> onItemClick(model.getIdAnnouncement()));
     }
 
     private void setLoadMoreForAllAnnouncement() {
@@ -235,61 +177,74 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     public void loadListAnnouncement(long lastID) {
-        allAnnouncementsAdapter.setLoading(true);
-        loadData.loadAllAnnouncements(getContext(), lastID, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ModelAllAnnouncement>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        if (!allAnnouncementsAdapter.isLoading()) {
+            allAnnouncementsAdapter.setLoading(true);
 
-                    }
+            loadData.loadAllAnnouncements(getContext(), lastID, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onNext(ModelAllAnnouncement model) {
-                        allAnnouncementsAdapter.addToCollection(model);
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        swipeRefreshLayout.setRefreshing(false);
-                        allAnnouncementsAdapter.setLoading(false);
-                    }
+                        @Override
+                        public void onNext(List<ModelAllAnnouncement> collection) {
+                            allAnnouncementsAdapter.addToCollection(collection);
 
-                    @Override
-                    public void onComplete() {
-                        swipeRefreshLayout.setRefreshing(false);
-                        allAnnouncementsAdapter.setLoading(false);
-                    }
-                });
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
+                    });
+        }
     }
 
     public void refreshLayout() {
-        loadData.loadAllAnnouncements(getContext(), 0, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ModelAllAnnouncement>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+        if (!allAnnouncementsAdapter.isLoading()) {
+            allAnnouncementsAdapter.setLoading(true);
 
-                    @Override
-                    public void onNext(ModelAllAnnouncement model) {
-                        allAnnouncementsAdapter.addToCollection(model);
+            loadData.loadAllAnnouncements(getContext(), 0, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
 
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onNext(List<ModelAllAnnouncement> collection) {
+                            allAnnouncementsAdapter.rewriteCollection(collection);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                            allAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onError(Throwable e) {
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
+                    });
+        }
     }
 
     private void onItemClick(long idAnnouncement) {
@@ -302,35 +257,40 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     public void searchAnnouncements(String query, long lastId) {
-        swipeRefreshLayout.setRefreshing(true);
+        if (!allAnnouncementsAdapter.isLoading()) {
+            allAnnouncementsAdapter.setLoading(true);
+            swipeRefreshLayout.setRefreshing(true);
 
-        loadData.searchToAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT, lastId, query)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelAllAnnouncement>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+            loadData.searchToAllAnnouncements(getContext(), ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT, lastId, query)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
-                        allAnnouncementsAdapter.rewriteCollection(modelAllAnnouncements);
+                        @Override
+                        public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
+                            allAnnouncementsAdapter.rewriteCollection(modelAllAnnouncements);
 
-                        recyclerView.setAdapter(allAnnouncementsAdapter);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+                            swipeRefreshLayout.setRefreshing(false);
+                            allAnnouncementsAdapter.setLoading(false);
+                        }
+                    });
+        }
     }
 
     @Override

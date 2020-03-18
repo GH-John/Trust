@@ -21,7 +21,9 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
     private final Context context;
     private boolean isLoading = false;
 
-    private AllAnnouncementsViewHolder.OnItemClick onItemClick;
+    private AllAnnouncementsViewHolder.OnItemClick itemViewClick;
+    private AllAnnouncementsViewHolder.OnItemClick itemHeartClick;
+
     private LayoutInflater layoutInflater;
     private List<ModelAllAnnouncement> collection = new ArrayList<>();
 
@@ -47,25 +49,25 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void addToCollection(List<ModelAllAnnouncement> collection) {
-        setLoading(false);
-
         if (collection != null && collection.size() > 0) {
-            final int start = getItemCount() + 1;
+            final int start = getItemCount();
 
             this.collection.addAll(collection);
 
             notifyItemRangeInserted(start, getItemCount());
         }
+
+        setLoading(false);
     }
 
     @Override
     public void addToCollection(ModelAllAnnouncement model) {
-        setLoading(false);
-
         if (model != null) {
             this.collection.add(model);
             notifyItemInserted(getItemCount() - 1);
         }
+
+        setLoading(false);
     }
 
     @Override
@@ -98,22 +100,24 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
         return this.collection.get(getItemCount() - 1);
     }
 
-    public void onItemClick(AllAnnouncementsViewHolder.OnItemClick onItemClick) {
-        this.onItemClick = onItemClick;
+    public void setItemViewClick(AllAnnouncementsViewHolder.OnItemClick itemClick) {
+        this.itemViewClick = itemClick;
+    }
+
+    public void setItemHeartClick(AllAnnouncementsViewHolder.OnItemClick itemHeartClick) {
+        this.itemHeartClick = itemHeartClick;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == ITEM_LOADING) {
-
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_progress_bar, parent, false);
-            return new ProgressViewHolder(view);
-
-        } else {
+        if (viewType == TypesAnnouncements.ALL_USERS.ordinal()) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_announcement, parent, false);
             return new AllAnnouncementsViewHolder(view);
         }
+
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_progress_bar, parent, false);
+        return new ProgressViewHolder(view);
     }
 
     @Override
@@ -122,16 +126,18 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         if (getViewType == ITEM_LOADING) {
             ((ProgressViewHolder) holder).onBind();
-        } else {
+        } else if (getViewType == TypesAnnouncements.ALL_USERS.ordinal()) {
             ((AllAnnouncementsViewHolder) holder).onBind(context, this.collection.get(position), position);
-            ((AllAnnouncementsViewHolder) holder).setOnItemViewClick(onItemClick);
+
+            ((AllAnnouncementsViewHolder) holder).setOnItemViewClick(itemViewClick);
+            ((AllAnnouncementsViewHolder) holder).setOnItemHeartClick(itemHeartClick);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
+        System.out.println("IsLoading: " + isLoading());
         return (position == getItemCount() - 1 && isLoading()) ? ITEM_LOADING : TypesAnnouncements.ALL_USERS.ordinal();
-//        return TypesAnnouncements.ALL_USERS.ordinal();
     }
 
     @Override
@@ -141,6 +147,6 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return collection != null ? collection.size() : 0;
+        return collection.size();
     }
 }
