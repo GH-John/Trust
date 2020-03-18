@@ -33,9 +33,8 @@ import io.reactivex.Observable;
 public class LoadingAnnouncements implements ILoadingAnnouncements {
 
     @Override
-    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(final Context context, long lastID, final String url) {
+    public Observable<ModelAllAnnouncement> loadAllAnnouncements(final Context context, long lastID, final String url) {
         return Observable.create(observableEmitter -> {
-            List<ModelAllAnnouncement> models = new ArrayList<>();
 
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @SuppressLint("SimpleDateFormat")
@@ -57,7 +56,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
-                                    model.setIdUser(Integer.valueOf(object.getString("idUser")));
+                                    model.setIdUser(Integer.parseInt(object.getString("idUser")));
 
                                     model.setName(object.getString("name"));
 
@@ -77,10 +76,10 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                                     else
                                         model.setFavorite(false);
 
-                                    models.add(model);
+
+                                    observableEmitter.onNext(model);
                                 }
 
-                                observableEmitter.onNext(models);
                                 break;
                             }
 
@@ -184,7 +183,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
-                                    model.setIdUser(Integer.valueOf(object.getString("idUser")));
+                                    model.setIdUser(Integer.parseInt(object.getString("idUser")));
 
                                     model.setName(object.getString("name"));
 
@@ -306,7 +305,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
-                                    model.setIdUser(Integer.valueOf(object.getString("idUser")));
+                                    model.setIdUser(Integer.parseInt(object.getString("idUser")));
 
                                     model.setName(object.getString("name"));
 
@@ -424,7 +423,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                     model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
 
-                                    model.setIdUser(Integer.valueOf(object.getString("idUser")));
+                                    model.setIdUser(Integer.parseInt(object.getString("idUser")));
 
                                     model.setName(object.getString("name"));
 

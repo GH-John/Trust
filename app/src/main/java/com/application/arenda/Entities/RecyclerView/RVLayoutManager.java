@@ -23,18 +23,6 @@ public class RVLayoutManager extends LinearLayoutManager {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-//    @Override
-//    public int scrollVerticallyBy(int dy, RecyclerView.Recycler recycler, RecyclerView.State state) {
-//        int prevDelta = dy;
-//        if (recyclerView.getScrollState() == SCROLL_STATE_DRAGGING)
-//            dy = (int)(dy > 0 ? Math.max(dy * MANUAL_SCROLL_SLOW_RATIO, 1) : Math.min(dy * MANUAL_SCROLL_SLOW_RATIO, -1));
-//
-//        if (recyclerView.getScrollState() == SCROLL_STATE_DRAGGING)
-//            dy = prevDelta;
-//
-//        return dy;
-//    }
-
     public void setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
     }

@@ -2,7 +2,9 @@ package com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAn
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,19 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
 import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
-import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
-import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class AllAnnouncementsViewHolder extends RecyclerView.ViewHolder {
     @Nullable
@@ -60,18 +55,20 @@ public class AllAnnouncementsViewHolder extends RecyclerView.ViewHolder {
     private Context context;
     private ModelAllAnnouncement model;
 
-    private InsertToFavorite insertToFavorite = new InsertToFavorite();
-
     public AllAnnouncementsViewHolder(@NonNull View itemView) {
         super(itemView);
 
         ButterKnife.bind(this, itemView);
+    }
 
-        imgHeart.setOnClickListener(v -> onHeartClick());
+    public static AllAnnouncementsViewHolder create(ViewGroup parent) {
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View view = layoutInflater.inflate(R.layout.vh_network_state, parent, false);
+        return new AllAnnouncementsViewHolder(view);
     }
 
     public static int getLayouId() {
-        return R.layout.template_1_announcement;
+        return R.layout.vh_announcement;
     }
 
     @SuppressLint({"SetTextI18n"})
@@ -92,47 +89,33 @@ public class AllAnnouncementsViewHolder extends RecyclerView.ViewHolder {
         textCountRent.setText(String.valueOf(model.getCountRent()));
         textLocation.setText(model.getAddress());
 
-        setHeart(model.isFavorite());
+        setActiveHeart(model.isFavorite());
     }
 
-    public void onItemViewClick(OnItemClick itemClick) {
-        if (model != null) {
-            itemView.setOnClickListener(v -> itemClick.onClick(model));
+    public void setOnItemViewClick(OnItemClick itemClick) {
+        if (model != null && itemClick != null) {
+            itemView.setOnClickListener(v -> itemClick.onClick(this, model));
         } else {
             throw new NullPointerException("Model not initialized");
         }
     }
 
-    private void onHeartClick() {
-        insertToFavorite.insertToFavorite(context, ServerUtils.URL_INSERT_TO_FAVORITE,
-                model.getIdAnnouncement())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(Boolean isFavorite) {
-                        setHeart(isFavorite);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                });
+    public void setOnItemHeartClick(OnItemClick itemClick) {
+        if (model != null && itemClick != null) {
+            imgHeart.setOnClickListener(v -> itemClick.onClick(this, model));
+        } else {
+            throw new NullPointerException("Model not initialized");
+        }
     }
 
-    private void setHeart(boolean b) {
+    public void setActiveHeart(boolean b) {
         if (b)
             imgHeart.setImageDrawable(context.getDrawable(R.drawable.ic_heart_selected));
         else
             imgHeart.setImageDrawable(context.getDrawable(R.drawable.ic_heart_not_selected));
+    }
+
+    public interface OnItemClick {
+        void onClick(RecyclerView.ViewHolder viewHolder, ModelAllAnnouncement model);
     }
 }

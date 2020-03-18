@@ -11,7 +11,7 @@ import io.reactivex.Observable;
 
 public interface ILoadingAnnouncements {
 
-    Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(final Context context, long lastID, final String url);
+    Observable<ModelAllAnnouncement> loadAllAnnouncements(final Context context, long lastID, final String url);
 
     Observable<List<ModelAllAnnouncement>> searchToAllAnnouncements(final Context context, final String url, final long lastID, final String search);
 

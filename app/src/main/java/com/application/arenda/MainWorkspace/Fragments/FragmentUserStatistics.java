@@ -43,13 +43,13 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
     }
 
     @Override
-    public void initializationComponentsActionBar(ViewGroup viewGroup) {
+    public void initComponentsActionBar(ViewGroup viewGroup) {
         itemRefresh = viewGroup.findViewById(R.id.itemRefresh);
         itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
     }
 
     @Override
-    public void initializationListenersActionBar(ViewGroup viewGroup) {
+    public void initListenersActionBar(ViewGroup viewGroup) {
         itemRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.Entities.Announcements.Models.ModelUserAnnouncement;
+import com.application.arenda.Entities.RecyclerView.ProgressViewHolder;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.bumptech.glide.Glide;
@@ -121,9 +122,9 @@ public class UserAnnouncementsRV extends RecyclerView.Adapter<RecyclerView.ViewH
             viewHolder.textCountRent.setText(String.valueOf(model.getCountRent()));
             viewHolder.textLocation.setText(model.getAddress());
         } else if (getViewType == ITEM_LOADING) {
-            final UserAnnouncementsRV.ProgressViewHolder progressViewHolder = (UserAnnouncementsRV.ProgressViewHolder) holder;
+            final ProgressViewHolder progressViewHolder = (ProgressViewHolder) holder;
 
-            progressViewHolder.progressBar.setIndeterminate(true);
+            progressViewHolder.onBind();
         }
     }
 
@@ -193,18 +194,6 @@ public class UserAnnouncementsRV extends RecyclerView.Adapter<RecyclerView.ViewH
         @Override
         public void onClick(View v) {
             Utils.messageOutput(context, "open look announcement to the future");
-        }
-    }
-
-    public class ProgressViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.progressBarLoadImg)
-        ProgressBar progressBar;
-
-        public ProgressViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            ButterKnife.bind(this, itemView);
         }
     }
 }

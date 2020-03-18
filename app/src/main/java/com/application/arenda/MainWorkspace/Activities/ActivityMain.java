@@ -37,10 +37,10 @@ public class ActivityMain extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        initializationManagers();
+        initializationManager();
     }
 
-    private void initializationManagers() {
+    private void initializationManager() {
         ComponentManager.addLink(containerFragments, customActionBar, customSideBar);
         ComponentManager.addLink(customBottomNavigation, containerFragments);
 

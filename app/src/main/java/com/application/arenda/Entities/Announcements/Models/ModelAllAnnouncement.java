@@ -2,24 +2,43 @@ package com.application.arenda.Entities.Announcements.Models;
 
 import android.net.Uri;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ModelAllAnnouncement {
+    @SerializedName("name")
     private String name = "";
 
+    @SerializedName("rating")
     private float rate = 0;
+
+    @SerializedName("countRent")
     private int countRent = 0;
+
+    @SerializedName("placementDate")
     private String placementDate;
 
+    @SerializedName("idUser")
     private long idUser = 0;
+
+    @SerializedName("idAnnouncement")
     private long idAnnouncement = 0;
 
+    @SerializedName("isFavorite")
     private boolean isFavorite = false;
 
+    @SerializedName("costToBYN")
     private float costToBYN = 0.0f;
+
+    @SerializedName("costToUSD")
     private float costToUSD = 0.0f;
+
+    @SerializedName("costToEUR")
     private float costToEUR = 0.0f;
 
+    @SerializedName("photoPath")
     private Uri mainUriBitmap;
 
+    @SerializedName("address")
     private String address = "";
 
     public Uri getMainUriBitmap() {

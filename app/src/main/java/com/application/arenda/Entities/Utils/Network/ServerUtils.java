@@ -1,10 +1,6 @@
 package com.application.arenda.Entities.Utils.Network;
 
 public class ServerUtils {
-    public static String BASE_URL = "http://192.168.43.241";
-    public static String LOADING_ALL_ANNOUNCEMENT = "/AndroidConnectWithServer/php/load/LoadingAnnouncements.php";
-
-
     public static String URL_LOADING_ALL_ANNOUNCEMENT = "http://192.168.43.241/AndroidConnectWithServer/php/load/LoadingAnnouncements.php";
     public static String URL_LOADING_USER_ANNOUNCEMENT = "http://192.168.43.241/AndroidConnectWithServer/php/load/LoadingUserAnnouncements.php";
     public static String URL_LOADING_VIEW_ANNOUNCEMENT = "http://192.168.43.241/AndroidConnectWithServer/php/load/LoadingViewAnnouncement.php";

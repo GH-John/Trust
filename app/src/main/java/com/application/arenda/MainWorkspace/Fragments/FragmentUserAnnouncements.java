@@ -120,7 +120,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
                     @Override
                     public void onNext(List<ModelUserAnnouncement> modelUserAnnouncements) {
                         userAnnouncementsRV = new UserAnnouncementsRV(getContext(),
-                                R.layout.template_user_announcement, modelUserAnnouncements);
+                                R.layout.vh_user_announcement, modelUserAnnouncements);
 
                         recyclerView.setAdapter(userAnnouncementsRV);
                         swipeRefreshLayout.setRefreshing(false);
@@ -204,7 +204,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     }
 
     @Override
-    public void initializationComponentsActionBar(ViewGroup viewGroup) {
+    public void initComponentsActionBar(ViewGroup viewGroup) {
         itemFiltr = viewGroup.findViewById(R.id.itemFiltr);
         itemSearch = viewGroup.findViewById(R.id.itemSearch);
         itemHeaderName = viewGroup.findViewById(R.id.itemHeaderName);
@@ -217,7 +217,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     }
 
     @Override
-    public void initializationListenersActionBar(final ViewGroup viewGroup) {
+    public void initListenersActionBar(final ViewGroup viewGroup) {
         itemFiltr.setOnClickListener(v -> Toast.makeText(getContext(), "filter", Toast.LENGTH_LONG).show());
 
         itemSearch.setOnClickListener(v -> {

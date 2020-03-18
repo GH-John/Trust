@@ -35,8 +35,8 @@ import com.application.arenda.UI.ContainerImg.ContainerFiller;
 import com.application.arenda.UI.ContainerImg.ContainerSelectedImages;
 import com.application.arenda.UI.ContainerImg.Galery.AdapterGalery;
 import com.application.arenda.UI.DropDownList.DropDownList;
-import com.application.arenda.UI.SetStyle.SetBtnStyle;
-import com.application.arenda.UI.SetStyle.SetFieldStyle;
+import com.application.arenda.UI.Style.SetBtnStyle;
+import com.application.arenda.UI.Style.SetFieldStyle;
 
 import java.util.List;
 
@@ -277,12 +277,12 @@ public final class FragmentInsertAnnouncement extends Fragment implements Adapte
     }
 
     @Override
-    public void initializationComponentsActionBar(ViewGroup viewGroup) {
+    public void initComponentsActionBar(ViewGroup viewGroup) {
         itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
     }
 
     @Override
-    public void initializationListenersActionBar(ViewGroup viewGroup) {
+    public void initListenersActionBar(ViewGroup viewGroup) {
         itemBurgerMenu.setOnClickListener(v -> sideBar.expand());
     }
 

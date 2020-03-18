@@ -22,8 +22,8 @@ public class CustomActionBar extends CardView implements ComponentManager.Observ
             this.removeAllViewsInLayout();
             inflate(getContext(), ((AdapterActionBar) object).getIdPatternResource(),
                     this);
-            ((AdapterActionBar) object).initializationComponentsActionBar(this);
-            ((AdapterActionBar) object).initializationListenersActionBar(this);
+            ((AdapterActionBar) object).initComponentsActionBar(this);
+            ((AdapterActionBar) object).initListenersActionBar(this);
         }
     }
 }

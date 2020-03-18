@@ -1,6 +1,5 @@
 package com.application.arenda.MainWorkspace.Fragments;
 
-
 import android.annotation.SuppressLint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -241,7 +240,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     @Override
-    public void initializationComponentsActionBar(ViewGroup viewGroup) {
+    public void initComponentsActionBar(ViewGroup viewGroup) {
         itemBtnBack = viewGroup.findViewById(R.id.itemBtnBack);
         itemPhone = viewGroup.findViewById(R.id.itemPhone);
         itemMessage = viewGroup.findViewById(R.id.itemMessage);
@@ -249,7 +248,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     @Override
-    public void initializationListenersActionBar(ViewGroup viewGroup) {
+    public void initListenersActionBar(ViewGroup viewGroup) {
         itemBtnBack.setOnClickListener(v -> getActivity().onBackPressed());
         itemPhone.setOnClickListener(v -> Utils.messageOutput(getContext(), "phone"));
         itemMessage.setOnClickListener(v -> Utils.messageOutput(getContext(), "message"));

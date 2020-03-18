@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
 import com.application.arenda.Entities.Announcements.TypesAnnouncements;
-import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.RecyclerView.ProgressViewHolder;
 import com.application.arenda.Entities.RecyclerView.RVAdapter;
 import com.application.arenda.R;
@@ -22,7 +21,7 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
     private final Context context;
     private boolean isLoading = false;
 
-    private OnItemClick onItemClick;
+    private AllAnnouncementsViewHolder.OnItemClick onItemClick;
     private LayoutInflater layoutInflater;
     private List<ModelAllAnnouncement> collection = new ArrayList<>();
 
@@ -50,19 +49,23 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
     public void addToCollection(List<ModelAllAnnouncement> collection) {
         setLoading(false);
 
-        final int start = getItemCount() + 1;
+        if (collection != null && collection.size() > 0) {
+            final int start = getItemCount() + 1;
 
-        this.collection.addAll(collection);
+            this.collection.addAll(collection);
 
-        notifyItemRangeInserted(start, getItemCount());
+            notifyItemRangeInserted(start, getItemCount());
+        }
     }
 
     @Override
     public void addToCollection(ModelAllAnnouncement model) {
         setLoading(false);
 
-        this.collection.add(model);
-        notifyItemInserted(getItemCount() - 1);
+        if (model != null) {
+            this.collection.add(model);
+            notifyItemInserted(getItemCount() - 1);
+        }
     }
 
     @Override
@@ -75,10 +78,13 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void rewriteCollection(List<ModelAllAnnouncement> collection) {
-        this.collection.clear();
-        this.collection.addAll(collection);
+        if (collection != null && collection.size() > 0) {
+            this.collection.clear();
+            this.collection.addAll(collection);
 
-        notifyDataSetChanged();
+            notifyDataSetChanged();
+        }
+
         setLoading(false);
     }
 
@@ -92,7 +98,7 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
         return this.collection.get(getItemCount() - 1);
     }
 
-    public void onItemClick(OnItemClick onItemClick) {
+    public void onItemClick(AllAnnouncementsViewHolder.OnItemClick onItemClick) {
         this.onItemClick = onItemClick;
     }
 
@@ -101,11 +107,11 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_LOADING) {
 
-            View view = layoutInflater.inflate(R.layout.template_progress_bar, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_progress_bar, parent, false);
             return new ProgressViewHolder(view);
 
         } else {
-            View view = layoutInflater.inflate(R.layout.template_1_announcement, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.vh_announcement, parent, false);
             return new AllAnnouncementsViewHolder(view);
         }
     }
@@ -118,14 +124,14 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
             ((ProgressViewHolder) holder).onBind();
         } else {
             ((AllAnnouncementsViewHolder) holder).onBind(context, this.collection.get(position), position);
-            ((AllAnnouncementsViewHolder) holder).onItemViewClick(onItemClick);
+            ((AllAnnouncementsViewHolder) holder).setOnItemViewClick(onItemClick);
         }
     }
 
     @Override
     public int getItemViewType(int position) {
-//        return (position == getItemCount() - 1 && isLoading()) ? ITEM_LOADING : TypesAnnouncements.ALL_USERS.ordinal();
-        return TypesAnnouncements.ALL_USERS.ordinal();
+        return (position == getItemCount() - 1 && isLoading()) ? ITEM_LOADING : TypesAnnouncements.ALL_USERS.ordinal();
+//        return TypesAnnouncements.ALL_USERS.ordinal();
     }
 
     @Override
@@ -137,5 +143,4 @@ public class AllAnnouncementsAdapter extends RecyclerView.Adapter<RecyclerView.V
     public int getItemCount() {
         return collection != null ? collection.size() : 0;
     }
-
 }

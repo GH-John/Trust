@@ -48,12 +48,12 @@ public final class FragmentUserProposals extends Fragment implements AdapterActi
     }
 
     @Override
-    public void initializationComponentsActionBar(ViewGroup viewGroup) {
+    public void initComponentsActionBar(ViewGroup viewGroup) {
         itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
     }
 
     @Override
-    public void initializationListenersActionBar(ViewGroup viewGroup) {
+    public void initListenersActionBar(ViewGroup viewGroup) {
         itemBurgerMenu.setOnClickListener(v -> sideBar.expand());
     }
 

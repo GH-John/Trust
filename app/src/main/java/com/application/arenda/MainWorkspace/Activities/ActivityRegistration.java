@@ -14,8 +14,8 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.SetDrawableImageViews;
-import com.application.arenda.UI.SetStyle.SetBtnStyle;
-import com.application.arenda.UI.SetStyle.SetFieldStyle;
+import com.application.arenda.UI.Style.SetBtnStyle;
+import com.application.arenda.UI.Style.SetFieldStyle;
 
 import ru.tinkoff.decoro.MaskImpl;
 import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;

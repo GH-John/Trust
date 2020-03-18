@@ -7,26 +7,32 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsAdapter;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsViewHolder;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsViewModel;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.RVAdapter;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
 import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
-import com.application.arenda.Entities.RecyclerView.RVLayoutManager;
-import com.application.arenda.Entities.RecyclerView.RVOnFlingListener;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
+import com.application.arenda.Entities.Utils.Network.NetworkState;
 import com.application.arenda.Entities.Utils.Network.ServerUtils;
+import com.application.arenda.Entities.Utils.Network.Status;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
@@ -52,6 +58,21 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     @BindView(R.id.recyclerViewOutputAllAnnouncements)
     RecyclerView recyclerView;
 
+
+    @Nullable
+    @BindView(R.id.errorMessage)
+    TextView errorMessage;
+
+    @Nullable
+    @BindView(R.id.btnRetryLoading)
+    Button btnRetryLoading;
+
+    @Nullable
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
+
+
     @Nullable
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
@@ -68,13 +89,18 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     private TextView itemHeaderName;
     private Group groupSearch, groupDefault;
 
-    private AllAnnouncementsAdapter allAnnouncementsAdapter;
+    private LinearLayoutManager rvLayoutManager;
     private RVOnScrollListener rvOnScrollListener;
-    private RVLayoutManager rvLayoutManager;
+    private AllAnnouncementsAdapter allAnnouncementsAdapter;
 
     private LoadingAnnouncements loadData = new LoadingAnnouncements();
 
+    private InsertToFavorite insertToFavorite = new InsertToFavorite();
+
     private String searchQuery;
+
+    private RVAdapter rvAdapter;
+    private AllAnnouncementsViewModel viewModel;
 
     public static FragmentAllAnnouncements getInstance() {
         if (fragmentAllAnnouncements == null)
@@ -89,51 +115,115 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         View view = inflater.inflate(R.layout.fragment_all_announcements, container, false);
 
         unbinder = ButterKnife.bind(this, view);
+        rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-        initializationComponents(view);
-        initializationStyles();
-        initializationListeners();
+        initAdapters(view);
+        initStyles();
+        initListeners();
+
+        initSwipeToRefresh();
         return view;
     }
 
-    private void initializationComponents(View view) {
-        rvLayoutManager = new RVLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        rvLayoutManager.setRecyclerView(recyclerView);
+    private void initAdapters(View view) {
+//        recyclerView.setLayoutManager(rvLayoutManager);
+//
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setItemViewCacheSize(20);
+//        recyclerView.setDrawingCacheEnabled(true);
+//        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+//        recyclerView.setHasFixedSize(true);
+//
+//        rvOnScrollListener = new RVOnScrollListener(rvLayoutManager);
+//        recyclerView.setOnFlingListener(new RVOnFlingListener(recyclerView));
+//        recyclerView.addOnScrollListener(rvOnScrollListener);
+//
+//        allAnnouncementsAdapter = new AllAnnouncementsAdapter(getContext());
+//        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
+//        recyclerView.setAdapter(allAnnouncementsAdapter);
 
-        rvOnScrollListener = new RVOnScrollListener(rvLayoutManager);
+        rvAdapter = new RVAdapter(getContext());
 
         recyclerView.setLayoutManager(rvLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setItemViewCacheSize(20);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
-        recyclerView.setHasFixedSize(true);
 
-        allAnnouncementsAdapter = new AllAnnouncementsAdapter(getContext());
+        rvAdapter.setItemViewClick((viewHolder, model) -> onItemClick(model.getIdAnnouncement()));
 
-        recyclerView.setAdapter(allAnnouncementsAdapter);
+        rvAdapter.setItemHeartClick((viewHolder, model) -> insertToFavorite
+                .insertToFavorite(getContext(), ServerUtils.URL_INSERT_TO_FAVORITE,
+                        model.getIdAnnouncement())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-        loadListAnnouncement(0);
+                    }
+
+                    @Override
+                    public void onNext(Boolean isFavorite) {
+                        ((AllAnnouncementsViewHolder) viewHolder).setActiveHeart(isFavorite);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                }));
+        recyclerView.setAdapter(rvAdapter);
+
+        viewModel = new ViewModelProvider(this).get(AllAnnouncementsViewModel.class);
+
+        viewModel.getCollection().observe(getActivity(), rvAdapter::submitList);
+        viewModel.getNetworkState().observe(getActivity(), rvAdapter::setNetworkState);
     }
 
-    private void initializationStyles() {
+    private void initSwipeToRefresh() {
+        viewModel.getRefreshState().observe(getViewLifecycleOwner(), networkState -> {
+            if (networkState != null) {
+                if (rvAdapter.getCurrentList() != null) {
+                    if (rvAdapter.getCurrentList().size() > 0) {
+                        swipeRefreshLayout.setRefreshing(
+                                networkState.getStatus() == NetworkState.LOADING.getStatus());
+                    } else {
+//                        setInitialLoadingState(networkState);
+                    }
+                } else {
+//                    setInitialLoadingState(networkState);
+                }
+            }
+        });
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refresh());
+    }
+
+    private void setInitialLoadingState(NetworkState networkState) {
+        //error message
+        errorMessage.setVisibility(networkState.getMessage() != null ? View.VISIBLE : View.GONE);
+        if (networkState.getMessage() != null) {
+            errorMessage.setText(networkState.getMessage());
+        }
+
+        //loading and retry
+        btnRetryLoading.setVisibility(networkState.getStatus() == Status.FAILED ? View.VISIBLE : View.GONE);
+        progressBar.setVisibility(networkState.getStatus() == Status.RUNNING ? View.VISIBLE : View.GONE);
+
+        swipeRefreshLayout.setEnabled(networkState.getStatus() == Status.SUCCESS);
+    }
+
+    private void initStyles() {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorBlue,
                 R.color.colorRed);
     }
 
-    private void initializationListeners() {
-        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
+    private void initListeners() {
+//        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
 
-        recyclerView.setOnFlingListener(new RVOnFlingListener(recyclerView));
+//        setLoadMoreForAllAnnouncement();
 
-        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
-
-        setLoadMoreForAllAnnouncement();
-
-        recyclerView.addOnScrollListener(rvOnScrollListener);
-
-        allAnnouncementsAdapter.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
+//        allAnnouncementsAdapter.onItemClick(model -> onItemClick(model.getIdAnnouncement()));
     }
 
     private void setLoadMoreForAllAnnouncement() {
@@ -149,16 +239,15 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         loadData.loadAllAnnouncements(getContext(), lastID, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                .subscribe(new Observer<ModelAllAnnouncement>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(List<ModelAllAnnouncement> collection) {
-
-                        allAnnouncementsAdapter.addToCollection(collection);
+                    public void onNext(ModelAllAnnouncement model) {
+                        allAnnouncementsAdapter.addToCollection(model);
                     }
 
                     @Override
@@ -179,14 +268,14 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         loadData.loadAllAnnouncements(getContext(), 0, ServerUtils.URL_LOADING_ALL_ANNOUNCEMENT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                .subscribe(new Observer<ModelAllAnnouncement>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                     }
 
                     @Override
-                    public void onNext(List<ModelAllAnnouncement> collection) {
-                        allAnnouncementsAdapter.rewriteCollection(collection);
+                    public void onNext(ModelAllAnnouncement model) {
+                        allAnnouncementsAdapter.addToCollection(model);
 
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -250,7 +339,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     @Override
-    public void initializationComponentsActionBar(ViewGroup viewGroup) {
+    public void initComponentsActionBar(ViewGroup viewGroup) {
         itemFiltr = viewGroup.findViewById(R.id.itemFiltr);
         itemSearch = viewGroup.findViewById(R.id.itemSearch);
         itemHeaderName = viewGroup.findViewById(R.id.itemHeaderName);
@@ -263,7 +352,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     @Override
-    public void initializationListenersActionBar(final ViewGroup viewGroup) {
+    public void initListenersActionBar(final ViewGroup viewGroup) {
         itemFiltr.setOnClickListener(v -> Toast.makeText(getContext(), "filter", Toast.LENGTH_LONG).show());
 
         itemSearch.setOnClickListener(v -> {

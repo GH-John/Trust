@@ -1,6 +1,8 @@
 package com.application.arenda.Entities.Utils.RestApi;
 
-import com.application.arenda.Entities.Utils.Network.ServerUtils;
+import android.content.Context;
+
+import com.application.arenda.BuildConfig;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -9,19 +11,31 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestApiFactory {
-    public static RestApi create() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+    private static RestApi restApi;
+    private static OkHttpClient.Builder okHttpBuilder;
+    private static HttpLoggingInterceptor httpLoggingInterceptor;
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);
+    public static RestApi getRestApi(Context context) {
+        if (restApi == null)
+            restApi = new Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .client(getOkHttpClientBuild(context))
+                    .build()
+                    .create(RestApi.class);
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(ServerUtils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(httpClient.build())
-                .build();
+        return restApi;
+    }
 
-        return retrofit.create(RestApi.class);
+    public static OkHttpClient getOkHttpClientBuild(Context context) {
+        if (okHttpBuilder == null || httpLoggingInterceptor == null) {
+            okHttpBuilder = new OkHttpClient().newBuilder();
+            httpLoggingInterceptor = new HttpLoggingInterceptor();
+
+            httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+            okHttpBuilder.addInterceptor(httpLoggingInterceptor);
+        }
+
+        return okHttpBuilder.build();
     }
 }

@@ -1,4 +1,4 @@
-package com.application.arenda.UI.SetStyle;
+package com.application.arenda.UI.Style;
 
 import android.graphics.drawable.Drawable;
 import android.widget.Button;

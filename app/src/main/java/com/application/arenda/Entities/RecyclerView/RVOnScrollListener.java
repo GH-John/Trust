@@ -36,7 +36,8 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
         lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
 //        if (!rvAdapter.isLoading() && (currentVisibleItems + firstVisibleItem <= totalItems)) {
-        if (!rvAdapter.isLoading() && (currentVisibleItems - lastVisibleItem == 1)) {
+        if (!rvAdapter.isLoading() && lastVisibleItem == 1) {
+            System.out.println("LOADING_DATA");
             loadMoreData.loadMore(rvAdapter.getLastItem().getIdAnnouncement());
         }
     }

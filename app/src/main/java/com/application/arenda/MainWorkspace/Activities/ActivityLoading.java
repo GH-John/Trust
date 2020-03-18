@@ -8,28 +8,29 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.application.arenda.Entities.User.UserCookie;
-import com.application.arenda.UI.Components.ComponentManager;
-import com.application.arenda.UI.SetStyle.SetBtnStyle;
-import com.application.arenda.UI.ComponentBackground;
-import com.application.arenda.R;
 import com.application.arenda.Entities.Authorization.AuthorizationUseToken;
+import com.application.arenda.Entities.User.UserCookie;
+import com.application.arenda.R;
+import com.application.arenda.UI.ComponentBackground;
+import com.application.arenda.UI.Components.ComponentManager;
+import com.application.arenda.UI.Style.SetBtnStyle;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ActivityLoading extends AppCompatActivity implements ComponentManager.Observer {
-    private Button btnReconnect;
+    @BindView(R.id.btnReconnect)
+    Button btnReconnect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        initializationComponents();
+        ButterKnife.bind(this);
+
         initializationListeners();
         initializationStyles();
-    }
-
-    private void initializationComponents() {
-        btnReconnect = findViewById(R.id.btnReconnect);
     }
 
     private void initializationListeners() {

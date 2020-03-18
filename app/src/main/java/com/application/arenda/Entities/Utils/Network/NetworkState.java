@@ -1,20 +1,23 @@
 package com.application.arenda.Entities.Utils.Network;
 
 public class NetworkState {
-    public static final NetworkState LOADED;
-    public static final NetworkState LOADING;
+    public static NetworkState LOADED = new NetworkState(Status.SUCCESS);
+    public static NetworkState LOADING = new NetworkState(Status.RUNNING);
 
-    static {
-        LOADED = new NetworkState(Status.SUCCESS, "Success");
-        LOADING = new NetworkState(Status.RUNNING, "Running");
-    }
+    private Status status;
+    private String message;
 
-    private final Status status;
-    private final String message;
-
-    public NetworkState(Status status, String message) {
+    private NetworkState(Status status, String message) {
         this.status = status;
         this.message = message;
+    }
+
+    private NetworkState(Status status) {
+        this.status = status;
+    }
+
+    public static NetworkState error(String message) {
+        return new NetworkState(Status.FAILED, message == null ? "unknown error" : message);
     }
 
     public Status getStatus() {
@@ -23,11 +26,5 @@ public class NetworkState {
 
     public String getMessage() {
         return message;
-    }
-
-    public enum Status {
-        RUNNING,
-        SUCCESS,
-        FAILED
     }
 }
