@@ -85,12 +85,11 @@
                 android:text="@string/text_rate_announcement" />
         </FrameLayout>
 
-        <androidx.cardview.widget.CardView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/frameIndent"
-            android:background="@color/colorWhite"
-            app:cardCornerRadius="10dp"
+            android:background="@drawable/item_description_announcement_background"
             tools:ignore="PrivateResource">
 
             <RelativeLayout
@@ -107,9 +106,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
                     android:layout_marginEnd="24dp"
                     android:layout_toStartOf="@id/textCostProduct"
-                    android:maxLines="3"
+                    android:maxLines="2"
                     android:text="@string/text_name_announcement"
                     android:textSize="16sp" />
 
@@ -118,6 +118,7 @@
                     style="@style/DefaultStyleTextBoldRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:text="@string/text_cost_announcement"
                     android:textSize="16sp" />
@@ -137,7 +138,7 @@
                         style="@style/DefaultStyleTextRegular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
+                        android:layout_gravity="center|right"
                         android:drawableStart="@drawable/ic_location"
                         android:drawablePadding="12dp"
                         android:gravity="center|right"
@@ -158,11 +159,11 @@
                     android:layout_marginStart="8dp"
                     android:drawableStart="@drawable/ic_count_rent"
                     android:drawablePadding="12dp"
-                    android:gravity="center_vertical|center_horizontal"
+                    android:gravity="center"
                     android:text="@string/text_count_rent" />
 
             </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+        </FrameLayout>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

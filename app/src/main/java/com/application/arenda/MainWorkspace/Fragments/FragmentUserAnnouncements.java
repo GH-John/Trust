@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
@@ -22,14 +21,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
-import com.application.arenda.Entities.Announcements.LoadingAnnouncements.UserAnnouncements.UserAnnouncementsRV;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.UserAnnouncements.UserAnnouncementsAdapter;
 import com.application.arenda.Entities.Announcements.Models.ModelUserAnnouncement;
+import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
 import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
+import com.application.arenda.UI.DisplayUtils;
 
 import java.util.List;
 
@@ -65,8 +66,12 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     private TextView itemHeaderName;
     private Group groupSearch, groupDefault;
 
-    private UserAnnouncementsRV userAnnouncementsRV;
-    private LoadingAnnouncements load = new LoadingAnnouncements();
+    private String searchQuery;
+
+    private LoadingAnnouncements loadData;
+    private LinearLayoutManager rvLayoutManager;
+    private RVOnScrollListener rvOnScrollListener;
+    private UserAnnouncementsAdapter userAnnouncementsAdapter;
 
     public static FragmentUserAnnouncements getInstance() {
         if (fragmentUserAnnouncements == null)
@@ -81,121 +86,161 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
         View view = inflater.inflate(R.layout.fragment_user_announcements, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        initializationComponents(view);
-        initializationStyles();
-        initializationListeners();
+        init();
         return view;
     }
 
-    private void initializationComponents(View view) {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setItemViewCacheSize(30);
-        recyclerView.setHasFixedSize(true);
+    private void init() {
+        loadData = new LoadingAnnouncements(getContext());
+        rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
-        loadLayout();
+        initAdapters();
+        initStyles();
+        initListeners();
+
+        loadListAnnouncement(0);
     }
 
-    private void initializationStyles() {
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent,
+    private void initAdapters() {
+        recyclerView.setLayoutManager(rvLayoutManager);
+
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setItemViewCacheSize(50);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        recyclerView.setHasFixedSize(true);
+
+        rvOnScrollListener = new RVOnScrollListener(rvLayoutManager);
+//        recyclerView.setOnFlingListener(new RVOnFlingListener(recyclerView));
+
+        recyclerView.addOnScrollListener(rvOnScrollListener);
+
+        userAnnouncementsAdapter = new UserAnnouncementsAdapter();
+        rvOnScrollListener.setRVAdapter(userAnnouncementsAdapter);
+        recyclerView.setAdapter(userAnnouncementsAdapter);
+
+        userAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> Utils.messageOutput(getContext(), "click"));
+
+        recyclerView.setAdapter(userAnnouncementsAdapter);
+    }
+
+    private void initStyles() {
+        swipeRefreshLayout.setColorSchemeResources(
                 R.color.colorBlue,
+                R.color.colorAccent,
                 R.color.colorRed);
     }
 
-    private void initializationListeners() {
+    private void initListeners() {
+        swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120));
+
         swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
+
+        setLoadMoreForUserAnnouncements();
     }
 
-    public void loadLayout() {
-        swipeRefreshLayout.setRefreshing(true);
-        load.loadUserAnnouncements(getContext(), ServerUtils.URL_LOADING_USER_ANNOUNCEMENT)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelUserAnnouncement>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+    public void loadListAnnouncement(long lastID) {
+        if (!userAnnouncementsAdapter.isLoading()) {
+            userAnnouncementsAdapter.setLoading(true);
 
-                    }
+            loadData.loadUserAnnouncements(lastID, 10, ServerUtils.URL_LOADING_USER_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelUserAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onNext(List<ModelUserAnnouncement> modelUserAnnouncements) {
-                        userAnnouncementsRV = new UserAnnouncementsRV(getContext(),
-                                R.layout.vh_user_announcement, modelUserAnnouncements);
+                        }
 
-                        recyclerView.setAdapter(userAnnouncementsRV);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onNext(List<ModelUserAnnouncement> collection) {
+                            userAnnouncementsAdapter.addToCollection(collection);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+                            userAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
     }
 
     public void refreshLayout() {
-        load.loadUserAnnouncements(getContext(), ServerUtils.URL_LOADING_USER_ANNOUNCEMENT)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelUserAnnouncement>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+        if (!userAnnouncementsAdapter.isLoading()) {
+            userAnnouncementsAdapter.setLoading(true);
 
-                    @Override
-                    public void onNext(List<ModelUserAnnouncement> modelUserAnnouncements) {
-                        userAnnouncementsRV.rewriteCollection(modelUserAnnouncements);
+            loadData.loadUserAnnouncements(0, 10, ServerUtils.URL_LOADING_USER_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelUserAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
 
-                        recyclerView.setAdapter(userAnnouncementsRV);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onNext(List<ModelUserAnnouncement> collection) {
+                            userAnnouncementsAdapter.rewriteCollection(collection);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+                            userAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
     }
 
-    public void searchAnnouncements(String s) {
-        swipeRefreshLayout.setRefreshing(true);
+    public void searchAnnouncements(String query, long lastID) {
+        if (!userAnnouncementsAdapter.isLoading()) {
+            userAnnouncementsAdapter.setLoading(true);
+            swipeRefreshLayout.setRefreshing(true);
 
-        load.searchToUserAnnouncements(getContext(), ServerUtils.URL_LOADING_USER_ANNOUNCEMENT, 0, s)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelUserAnnouncement>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+            loadData.searchToUserAnnouncements(lastID, 10, query, ServerUtils.URL_LOADING_USER_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelUserAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onNext(List<ModelUserAnnouncement> modelUserAnnouncements) {
-                        userAnnouncementsRV.rewriteCollection(modelUserAnnouncements);
+                        }
 
-                        recyclerView.setAdapter(userAnnouncementsRV);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onNext(List<ModelUserAnnouncement> modelUserAnnouncements) {
+                            userAnnouncementsAdapter.rewriteCollection(modelUserAnnouncements);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+                            userAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
+    }
+
+    private void setLoadMoreForUserAnnouncements() {
+        rvOnScrollListener.setOnLoadMoreData(this::loadListAnnouncement);
+    }
+
+    private void setLoadMoreForSearchAnnouncement() {
+        rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID));
     }
 
     @Override
@@ -218,7 +263,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
 
     @Override
     public void initListenersActionBar(final ViewGroup viewGroup) {
-        itemFiltr.setOnClickListener(v -> Toast.makeText(getContext(), "filter", Toast.LENGTH_LONG).show());
+        itemFiltr.setOnClickListener(v -> Utils.messageOutput(getContext(), "filtr"));
 
         itemSearch.setOnClickListener(v -> {
             groupDefault.setVisibility(View.GONE);
@@ -236,6 +281,8 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
                 groupDefault.setVisibility(View.VISIBLE);
                 itemHeaderName.setText(getResources().getString(R.string.ab_title_user_announcements));
 
+                setLoadMoreForUserAnnouncements();
+
                 refreshLayout();
                 Utils.closeKeyboard(getContext());
             }
@@ -247,14 +294,16 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
                 groupSearch.setVisibility(View.GONE);
                 groupDefault.setVisibility(View.VISIBLE);
 
-                String search = itemFieldSearch.getText().toString();
+                searchQuery = itemFieldSearch.getText().toString();
 
                 Utils.closeKeyboard(getContext());
                 itemFieldSearch.clearFocus();
 
-                if (!search.isEmpty()) {
-                    itemHeaderName.setText(search);
-                    searchAnnouncements(search);
+                if (!searchQuery.isEmpty()) {
+                    itemHeaderName.setText(searchQuery);
+                    searchAnnouncements(searchQuery, 0);
+
+                    setLoadMoreForSearchAnnouncement();
                 } else {
                     itemHeaderName.setText(getResources().getString(R.string.ab_title_user_announcements));
                     refreshLayout();

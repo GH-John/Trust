@@ -2,14 +2,11 @@ package com.application.arenda.UI.Components.SideBar;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -18,21 +15,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.R;
-import com.application.arenda.UI.DrawPanel;
 import com.application.arenda.UI.Components.ComponentManager;
 import com.application.arenda.UI.Components.SideBar.ItemList.AdapterItemList;
 import com.application.arenda.UI.Components.SideBar.ItemList.InflateItemList;
+import com.application.arenda.UI.DisplayUtils;
+import com.application.arenda.UI.DrawPanel;
+
+import butterknife.ButterKnife;
 
 public class CustomSideBar extends ConstraintLayout implements SideBar, ComponentManager.Observer {
     private ImageView panelSideBar,
             itemUserAccount,
             blackoutSideBar;
+
+    private RecyclerView itemRecyclerView;
     private ConstraintLayout containerSideBar;
     private ConstraintLayout.LayoutParams containerParams;
 
-    private Context context;
-    private int width, height;
-    private RecyclerView itemRecyclerView;
     private PanelSideBar panelItemList;
     private DisplayMetrics displayMetrics;
 
@@ -45,55 +44,52 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Componen
 
     public CustomSideBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initializationComponents(context, attrs);
-        styleItemSideBar(context);
+
+        inflate(context, R.layout.sb_side_bar, this);
+
+        ButterKnife.bind(this);
+
+        initComponents();
+
         stylePanelItemList(getContext(), new PanelSideBar(context,
                 R.color.colorWhite, R.color.shadowItemList,
                 6f, 0f, 3f, 20f, 20f, 20f, 20f));
-        initializationListeners();
-        startPosition();
+
+        initListeners();
     }
 
-    private void initializationComponents(Context context, AttributeSet attrs) {
-        inflate(context, R.layout.sb_side_bar, this);
+    private void initComponents() {
+        displayMetrics = getResources().getDisplayMetrics();
+
         panelSideBar = findViewById(R.id.panelSideBar);
         itemRecyclerView = findViewById(R.id.itemRecyclerView);
         blackoutSideBar = findViewById(R.id.blackoutSideBar);
         itemUserAccount = findViewById(R.id.itemUserAccount);
         containerSideBar = findViewById(R.id.containerSideBar);
 
-        width = panelSideBar.getWidth();
-        height = panelSideBar.getHeight();
-
-        displayMetrics = context.getResources().getDisplayMetrics();
         containerParams = (ConstraintLayout.LayoutParams) containerSideBar.getLayoutParams();
+
+        startPosition();
     }
 
     @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
         stylePanelSideBar(getContext(), new PanelSideBar(getContext(),
                 R.color.colorWhite, R.color.shadowColor,
                 10f, 0f, 0f, 0f, 35f, 35f, 0f));
     }
 
     @Override
-    public void initializationListeners() {
-        setAdapterItemList(context, new AdapterItemList(R.layout.sb_pattern_item_list,
+    public void initListeners() {
+        setAdapterItemList(getContext(), new AdapterItemList(R.layout.sb_pattern_item_list,
                 InflateItemList.getItemListData(panelItemList)));
     }
 
     @Override
     public void styleItemSideBar(Context context) {
-        ViewOutlineProvider viewOutlineProvider = new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View view, Outline outline) {
-                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), 100);
-            }
-        };
-        itemUserAccount.setOutlineProvider(viewOutlineProvider);
-        itemUserAccount.setClipToOutline(true);
     }
 
     @Override
@@ -108,31 +104,38 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Componen
 
     @Override
     public void setAdapterItemList(Context context, AdapterItemList adapter) {
+        itemRecyclerView.setLayoutManager(new LinearLayoutManager(context, RecyclerView.VERTICAL, false));
         itemRecyclerView.setAdapter(adapter);
-        itemRecyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     @Override
     public void hide() {
-        containerParams.rightMargin = MAX_MARGIN;
-        containerSideBar.setLayoutParams(containerParams);
+        if (containerParams != null) {
+            containerParams.rightMargin = MAX_MARGIN;
+            containerSideBar.setLayoutParams(containerParams);
 //        setAlphaBlackout(0.0f);
+        }
     }
 
     @Override
     public void expand() {
-        containerParams.rightMargin = MIN_MARGIN;
-        containerSideBar.setLayoutParams(containerParams);
+        if (containerParams != null) {
+            containerParams.rightMargin = MIN_MARGIN;
+            containerSideBar.setLayoutParams(containerParams);
 //        setAlphaBlackout(1.0f);
+        }
     }
 
     @Override
     public void startPosition() {
-        int widthDisplayPx = convertDpToPixels(getDpWidthDisplay());
-        MIN_MARGIN = widthDisplayPx - containerParams.width;
-        MAX_MARGIN = widthDisplayPx;
-        distances = (MAX_MARGIN - MIN_MARGIN) * 10 / 100;
-        hide();
+        if (containerParams != null) {
+            int widthDisplayPx = DisplayUtils.dpToPx((int) getDpWidthDisplay());
+            MIN_MARGIN = widthDisplayPx - containerParams.width;
+            MAX_MARGIN = widthDisplayPx;
+            distances = (MAX_MARGIN - MIN_MARGIN) * 10 / 100;
+
+            hide();
+        }
     }
 
     private float getDpWidthDisplay() {
@@ -141,11 +144,6 @@ public class CustomSideBar extends ConstraintLayout implements SideBar, Componen
 
     private float getDpHeightDisplay() {
         return displayMetrics.heightPixels / displayMetrics.density;
-    }
-
-    public int convertDpToPixels(float dp) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                getResources().getDisplayMetrics());
     }
 
     @Override

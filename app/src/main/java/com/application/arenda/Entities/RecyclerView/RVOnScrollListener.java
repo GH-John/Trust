@@ -4,20 +4,27 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import timber.log.Timber;
+
 public class RVOnScrollListener extends RecyclerView.OnScrollListener {
-    private LoadMoreData loadMoreData;
-    private LinearLayoutManager layoutManager;
     private RVAdapter rvAdapter;
+    private LoadMoreData loadMoreData;
+    private ScrollCallBack scrollCallBack;
+    private LinearLayoutManager layoutManager;
 
-    private int currentVisibleItems = 0;
+
     private int totalItems = 0;
-    private int firstVisibleItem = 0;
     private int countIgnoreItem = 2;
-
-    private int lastVisibleItem;
+    private int lastVisibleItem = 0;
+    private int firstVisibleItem = 0;
+    private int currentVisibleItems = 0;
 
     public RVOnScrollListener(LinearLayoutManager linearLayoutManager) {
         this.layoutManager = linearLayoutManager;
+    }
+
+    public void setScrollCallBack(ScrollCallBack scrollCallBack) {
+        this.scrollCallBack = scrollCallBack;
     }
 
     public void setOnLoadMoreData(LoadMoreData loadMoreData) {
@@ -31,16 +38,37 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         currentVisibleItems = layoutManager.getChildCount();
-        totalItems = layoutManager.getItemCount() - countIgnoreItem;
+        totalItems = layoutManager.getItemCount();
 
         firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
         lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
-        if (!rvAdapter.isLoading() && (currentVisibleItems + firstVisibleItem) >= totalItems && firstVisibleItem >= 0) {
-            System.out.println("Status: " + currentVisibleItems + " + " + firstVisibleItem + " >= "  + totalItems + " && " + firstVisibleItem + ">= 0");
-            System.out.println("LastItemID: " + rvAdapter.getLastItem().getIdAnnouncement());
+        Timber.tag("isLoading").d(String.valueOf(rvAdapter.isLoading()));
 
-            loadMoreData.loadMore(rvAdapter.getLastItem().getIdAnnouncement());
+        Timber.tag("LAST_VISIBLE_ITEM").d(String.valueOf(lastVisibleItem));
+
+        if (scrollCallBack != null && firstVisibleItem == 0)
+            scrollCallBack.onScrolledToStart();
+
+        if (scrollCallBack != null)
+            scrollCallBack.onScrolled(currentVisibleItems, firstVisibleItem, totalItems);
+
+        if (!rvAdapter.isLoading() && (currentVisibleItems + firstVisibleItem) >= totalItems - countIgnoreItem && firstVisibleItem >= 0) {
+            System.out.println("Status: " + currentVisibleItems + " + " + firstVisibleItem + " >= " + (totalItems - countIgnoreItem) + " && " + firstVisibleItem + ">= 0");
+            System.out.println("LastItemID: " + rvAdapter.getLastItem().getID());
+
+            loadMoreData.loadMore(rvAdapter.getLastItem().getID());
         }
+
+        if (scrollCallBack != null && lastVisibleItem == totalItems)
+            scrollCallBack.onScrolledToEnd();
+    }
+
+    public interface ScrollCallBack {
+        void onScrolledToStart();
+
+        void onScrolled(int currentVisibleItems, int firstVisibleItem, int totalItems);
+
+        void onScrolledToEnd();
     }
 }

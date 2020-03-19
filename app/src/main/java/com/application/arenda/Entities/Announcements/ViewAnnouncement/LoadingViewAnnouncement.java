@@ -54,7 +54,7 @@ public class LoadingViewAnnouncement implements ILoadingViewAnnouncement {
                                 for (int i = 0; i < announcement.length(); i++) {
                                     object = announcement.getJSONObject(i);
 
-                                    model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
+                                    model.setID(Integer.parseInt(object.getString("idAnnouncement")));
 
                                     model.setIdUser(Integer.valueOf(object.getString("idUser")));
 
@@ -71,7 +71,7 @@ public class LoadingViewAnnouncement implements ILoadingViewAnnouncement {
                                     model.setRate(Float.parseFloat(object.getString("rating")));
                                     model.setCountRent(Integer.parseInt(object.getString("countRent")));
 
-                                    if(object.getString("isFavorite").equals("1"))
+                                    if (object.getString("isFavorite").equals("1"))
                                         model.setFavorite(true);
                                     else
                                         model.setFavorite(false);

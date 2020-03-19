@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ModelAllAnnouncement {
+public class ModelAllAnnouncement implements IModel {
     @SerializedName("name")
     private String name = "";
 
@@ -47,14 +47,6 @@ public class ModelAllAnnouncement {
 
     public void setMainUriBitmap(Uri mainUriBitmap) {
         this.mainUriBitmap = mainUriBitmap;
-    }
-
-    public long getIdAnnouncement() {
-        return idAnnouncement;
-    }
-
-    public void setIdAnnouncement(long idAnnouncement) {
-        this.idAnnouncement = idAnnouncement;
     }
 
     public boolean isFavorite() {
@@ -135,5 +127,15 @@ public class ModelAllAnnouncement {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public void setID(long id) {
+        idAnnouncement = id;
+    }
+
+    @Override
+    public long getID() {
+        return idAnnouncement;
     }
 }

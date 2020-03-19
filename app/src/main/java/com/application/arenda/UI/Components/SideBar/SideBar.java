@@ -8,7 +8,7 @@ import com.application.arenda.UI.DrawPanel;
 import com.application.arenda.UI.Components.SideBar.ItemList.AdapterItemList;
 
 public interface SideBar {
-    void initializationListeners();
+    void initListeners();
     void styleItemSideBar(Context context);
     void stylePanelSideBar(Context context, DrawPanel drawPanel);
     void stylePanelItemList(Context context, DrawPanel drawPanel);

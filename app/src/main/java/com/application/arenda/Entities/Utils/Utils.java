@@ -167,7 +167,7 @@ public class Utils {
     }
 
     public static void messageOutput(Context context, String str) {
-        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
     }
 
     public static boolean isEmail(@NonNull Context context, @NonNull EditText... fields) {

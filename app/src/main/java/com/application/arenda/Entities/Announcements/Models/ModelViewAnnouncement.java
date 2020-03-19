@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import java.util.List;
 
-public class ModelViewAnnouncement {
+public class ModelViewAnnouncement implements IModel {
     private long idUser = 0;
     private long idAnnouncement = 0;
 
@@ -41,14 +41,6 @@ public class ModelViewAnnouncement {
 
     public void setIdUser(long idUser) {
         this.idUser = idUser;
-    }
-
-    public long getIdAnnouncement() {
-        return idAnnouncement;
-    }
-
-    public void setIdAnnouncement(long idAnnouncement) {
-        this.idAnnouncement = idAnnouncement;
     }
 
     public boolean isFavorite() {
@@ -201,5 +193,15 @@ public class ModelViewAnnouncement {
 
     public void setPlacementDate(String placementDate) {
         this.placementDate = placementDate;
+    }
+
+    @Override
+    public long getID() {
+        return idAnnouncement;
+    }
+
+    @Override
+    public void setID(long id) {
+        idAnnouncement = id;
     }
 }

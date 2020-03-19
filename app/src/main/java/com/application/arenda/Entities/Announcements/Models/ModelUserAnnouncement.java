@@ -3,7 +3,7 @@ package com.application.arenda.Entities.Announcements.Models;
 import android.graphics.Bitmap;
 import android.net.Uri;
 
-public class ModelUserAnnouncement {
+public class ModelUserAnnouncement implements IModel {
     private String name = "";
 
     private float rate = 0;
@@ -80,14 +80,6 @@ public class ModelUserAnnouncement {
         this.idUser = idUser;
     }
 
-    public long getIdAnnouncement() {
-        return idAnnouncement;
-    }
-
-    public void setIdAnnouncement(long idAnnouncement) {
-        this.idAnnouncement = idAnnouncement;
-    }
-
     public float getCostToBYN() {
         return costToBYN;
     }
@@ -134,5 +126,15 @@ public class ModelUserAnnouncement {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public void setID(long id) {
+        idAnnouncement = id;
+    }
+
+    @Override
+    public long getID() {
+        return idAnnouncement;
     }
 }

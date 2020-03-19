@@ -13,11 +13,9 @@ import com.application.arenda.UI.Components.ComponentManager;
 public final class ContainerFragments implements ComponentManager.Observer, ComponentManager.Observable {
     @SuppressLint("StaticFieldLeak")
     private static ContainerFragments containerFragments;
-    private boolean isLoad = false;
-
-    private Context context;
-    private Fragment fragment;
     private final int idContainer = R.id.containerFragments;
+    private boolean isLoad = false;
+    private Fragment fragment;
 
     private ContainerFragments() {
     }
@@ -30,8 +28,8 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
     }
 
     public void start(Context context) {
-        this.context = context;
-        notifyObservers(getCurrentFragment(context));
+        fragment = getCurrentFragment(context);
+        notifyObservers(fragment);
     }
 
     public Fragment getCurrentFragment(Context context) {
@@ -39,10 +37,10 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
     }
 
     public void replaceFragmentInContainer(Fragment fragment) {
-        this.fragment = getCurrentFragment(context);
+        this.fragment = getCurrentFragment(this.fragment.getContext());
         if (!this.fragment.equals(fragment) && !isLoad) {
             isLoad = true;
-            ((AppCompatActivity) context).getSupportFragmentManager()
+            ((AppCompatActivity) this.fragment.getContext()).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(idContainer, fragment)
                     .addToBackStack(String.valueOf(fragment.getClass()))

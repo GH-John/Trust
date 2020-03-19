@@ -146,7 +146,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
                         textDescriptionProduct.setText(model.getDescription());
 
-                        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(model.getIdAnnouncement()));
+                        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(model.getID()));
 
                         selectHeart(model.isFavorite());
 

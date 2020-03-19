@@ -6,7 +6,7 @@ import android.net.Uri;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModelInsertAnnouncement {
+public class ModelInsertAnnouncement implements IModel {
     private String name = "";
     private String description = "";
 
@@ -53,14 +53,6 @@ public class ModelInsertAnnouncement {
 
     public void setIdSubcategory(int idSubcategory) {
         this.idSubcategory = idSubcategory;
-    }
-
-    public long getIdAnnouncement() {
-        return idAnnouncement;
-    }
-
-    public void setIdAnnouncement(long idAnnouncement) {
-        this.idAnnouncement = idAnnouncement;
     }
 
     public float getCostToBYN() {
@@ -165,5 +157,15 @@ public class ModelInsertAnnouncement {
 
     public void setVisiblePhone_3(boolean visiblePhone_3) {
         this.visiblePhone_3 = visiblePhone_3;
+    }
+
+    @Override
+    public long getID() {
+        return idAnnouncement;
+    }
+
+    @Override
+    public void setID(long id) {
+        idAnnouncement = id;
     }
 }

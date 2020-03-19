@@ -5,8 +5,10 @@ import android.content.Context;
 import android.net.Uri;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -28,14 +30,31 @@ import java.util.Map;
 import io.reactivex.Observable;
 import timber.log.Timber;
 
-public class LoadingAnnouncements implements ILoadingAnnouncements {
+public class LoadingAnnouncements {
 
-    @Override
-    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(final Context context, long lastID, final String url) {
+    private Context context;
+    private RequestQueue requestQueue;
+
+    private StringRequest requestLoadingAllAnnouncements;
+    private StringRequest requestSearchToAllAnnouncements;
+    private StringRequest requestLoadUserAnnouncements;
+    private StringRequest requestSearchToUserAnnouncements;
+
+    private short tagRequestLoadAllAnnouncements = 1585;
+    private short tagRequestSearchToAllAnnouncements = 1912;
+    private short tagRequestLoadUserAnnouncements = 1738;
+    private short tagRequesSearchToUsertAnnouncements = 1382;
+
+    public LoadingAnnouncements(Context context) {
+        this.context = context;
+        requestQueue = Volley.newRequestQueue(context);
+    }
+
+    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(long lastID, int limitItemInPage, final String url) {
         return Observable.create(observableEmitter -> {
             List<ModelAllAnnouncement> models = new ArrayList<>();
 
-            StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+            requestLoadingAllAnnouncements = new StringRequest(Request.Method.POST, url, response -> {
                 try {
                     final JSONObject jsonObject = new JSONObject(response);
 
@@ -50,7 +69,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                 ModelAllAnnouncement model = new ModelAllAnnouncement();
 
-                                model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
+                                model.setID(Integer.parseInt(object.getString("idAnnouncement")));
 
                                 model.setIdUser(Integer.parseInt(object.getString("idUser")));
 
@@ -76,55 +95,275 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                             }
 
                             observableEmitter.onNext(models);
+
                             break;
                         }
 
                         case "2": {
-                            Timber.tag("LoadingAnnouncements").d(response);
                             Utils.messageOutput(context, context.getResources()
                                     .getString(R.string.error_fail_loading_announcements) + response);
-
-                            observableEmitter.onComplete();
                             break;
                         }
 
-                        case "3": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-
-                            observableEmitter.onComplete();
+                        case "3":
                             break;
-                        }
 
                         case "101": {
-                            Timber.tag("LoadingAnnouncements").d(response);
                             Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-
-                            observableEmitter.onComplete();
                             break;
                         }
                         default: {
-                            Timber.tag("LoadingAnnouncements").d(response);
                             Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-
-                            observableEmitter.onComplete();
                         }
                     }
                 } catch (JSONException e) {
-                    Timber.tag("LoadingAnnouncements").d(response);
+                    Timber.d(e);
                     Utils.messageOutput(context, context.getResources()
                             .getString(R.string.error_fail_loading_announcements) + e.getMessage());
 
                     observableEmitter.onError(e);
                 } finally {
+                    Timber.d(response);
+
+                    observableEmitter.onComplete();
+
+                    requestQueue.cancelAll(tagRequestLoadAllAnnouncements);
+                }
+            },
+                    volleyError -> {
+                        if (volleyError instanceof TimeoutError ||
+                                volleyError instanceof NetworkError ||
+                                volleyError instanceof ServerError) {
+                            Utils.messageOutput(context, context.getResources()
+                                    .getString(R.string.error_check_internet_connect));
+                        } else {
+                            Timber.d(String.valueOf(volleyError.getMessage()));
+                            Utils.messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_loading_announcements));
+                        }
+
+                        observableEmitter.onError(volleyError);
+
+                        requestQueue.cancelAll(tagRequestLoadAllAnnouncements);
+                    }) {
+                @SuppressLint("SimpleDateFormat")
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("token", UserCookie.getToken(context));
+                    params.put("idAnnouncement", String.valueOf(lastID));
+                    params.put("limitItemInPage", String.valueOf(limitItemInPage));
+
+                    return params;
+                }
+            };
+
+            requestQueue.add(requestLoadingAllAnnouncements);
+        });
+    }
+
+    public Observable<List<ModelAllAnnouncement>> searchToAllAnnouncements(long lastID, int limitItemInPage, String search, String url) {
+        return Observable.create(observableEmitter -> {
+            List<ModelAllAnnouncement> models = new ArrayList<>();
+
+            requestSearchToAllAnnouncements = new StringRequest(Request.Method.POST, url, response -> {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    JSONArray announcements = jsonObject.getJSONArray("announcements");
+
+                    String code = jsonObject.getString("code");
+
+                    switch (code) {
+                        case "1": {
+                            JSONObject object;
+
+                            for (int i = 0; i < announcements.length(); i++) {
+                                object = announcements.getJSONObject(i);
+
+                                ModelAllAnnouncement model = new ModelAllAnnouncement();
+
+                                model.setID(Integer.parseInt(object.getString("idAnnouncement")));
+
+                                model.setIdUser(Integer.parseInt(object.getString("idUser")));
+
+                                model.setName(object.getString("name"));
+
+                                model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
+                                model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
+                                model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
+
+                                model.setAddress(object.getString("address"));
+
+                                model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
+                                model.setRate(Float.parseFloat(object.getString("rating")));
+                                model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
+
+                                if (object.getString("isFavorite").equals("1"))
+                                    model.setFavorite(true);
+                                else
+                                    model.setFavorite(false);
+
+                                models.add(model);
+                            }
+
+                            observableEmitter.onNext(models);
+
+                            break;
+                        }
+
+                        case "2": {
+                            Utils.messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_loading_announcements) + response);
+
+                            break;
+                        }
+
+                        case "3":
+                            break;
+
+                        case "101": {
+                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+
+                            break;
+                        }
+                        default: {
+                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                        }
+                    }
+                } catch (JSONException e) {
+                    Timber.d(e);
+                    Utils.messageOutput(context, context.getResources()
+                            .getString(R.string.error_fail_loading_announcements) + e.getMessage());
+
+                    observableEmitter.onError(e);
+                } finally {
+                    Timber.d(response);
+
                     observableEmitter.onComplete();
                 }
             },
                     volleyError -> {
-                        if (volleyError instanceof TimeoutError) {
+                        if (volleyError instanceof TimeoutError ||
+                                volleyError instanceof NetworkError ||
+                                volleyError instanceof ServerError) {
                             Utils.messageOutput(context, context.getResources()
                                     .getString(R.string.error_check_internet_connect));
                         } else {
-                            Timber.tag("LoadingError").d(String.valueOf(volleyError.getMessage()));
+                            Timber.d(String.valueOf(volleyError.getMessage()));
+                            Utils.messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_loading_announcements));
+                        }
+
+                        observableEmitter.onError(volleyError);
+                    }) {
+                @SuppressLint("SimpleDateFormat")
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("token", UserCookie.getToken(context));
+                    params.put("idAnnouncement", String.valueOf(lastID));
+
+                    if (search.length() > 0 && search != null)
+                        params.put("search", search);
+
+                    return params;
+                }
+            };
+
+            requestQueue.add(requestSearchToAllAnnouncements);
+        });
+    }
+
+    public Observable<List<ModelUserAnnouncement>> loadUserAnnouncements(long lastID, int limitItemInPage, final String url) {
+        return Observable.create(observableEmitter -> {
+            List<ModelUserAnnouncement> models = new ArrayList<>();
+
+            requestLoadUserAnnouncements = new StringRequest(Request.Method.POST, url, response -> {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+
+                    String code = jsonObject.getString("code");
+
+                    JSONArray announcements = jsonObject.getJSONArray("announcements");
+
+                    switch (code) {
+                        case "1": {
+                            JSONObject object;
+
+                            for (int i = 0; i < announcements.length(); i++) {
+                                object = announcements.getJSONObject(i);
+
+                                ModelUserAnnouncement model = new ModelUserAnnouncement();
+
+                                model.setID(Integer.parseInt(object.getString("idAnnouncement")));
+
+                                model.setIdUser(Integer.parseInt(object.getString("idUser")));
+
+                                model.setName(object.getString("name"));
+
+                                model.setCountRent(Integer.parseInt(object.getString("countRent")));
+                                model.setCountViewers(Integer.parseInt(object.getString("countViewers")));
+                                model.setCountFavorites(Integer.parseInt(object.getString("countFavorites")));
+
+                                model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
+                                model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
+                                model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
+
+                                model.setAddress(object.getString("address"));
+
+                                model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
+                                model.setRate(Float.parseFloat(object.getString("rating")));
+                                model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
+
+                                models.add(model);
+                            }
+
+                            observableEmitter.onNext(models);
+
+                            break;
+                        }
+
+                        case "2": {
+                            Utils.messageOutput(context, context.getResources()
+                                    .getString(R.string.error_fail_loading_announcements) + response);
+
+                            break;
+                        }
+
+                        case "3":
+                            break;
+
+                        case "101": {
+                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+
+                            break;
+                        }
+                        default: {
+                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
+                        }
+                    }
+                } catch (JSONException e) {
+                    Timber.d(e);
+                    Utils.messageOutput(context, context.getResources()
+                            .getString(R.string.error_fail_loading_announcements) + response);
+
+                    observableEmitter.onError(e);
+                } finally {
+                    Timber.d(response);
+
+                    observableEmitter.onComplete();
+                }
+            },
+                    volleyError -> {
+                        if (volleyError instanceof TimeoutError ||
+                                volleyError instanceof NetworkError ||
+                                volleyError instanceof ServerError) {
+                            Utils.messageOutput(context, context.getResources()
+                                    .getString(R.string.error_check_internet_connect));
+                        } else {
+                            Timber.d(String.valueOf(volleyError.getMessage()));
                             Utils.messageOutput(context, context.getResources()
                                     .getString(R.string.error_fail_loading_announcements));
                         }
@@ -142,139 +381,21 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                 }
             };
 
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-            requestQueue.add(request);
+            requestQueue.add(requestLoadUserAnnouncements);
         });
     }
 
-    @Override
-    public Observable<List<ModelAllAnnouncement>> searchToAllAnnouncements(Context context, String url, long lastID, String search) {
-        return Observable.create(observableEmitter -> {
-            StringRequest request;
-            List<ModelAllAnnouncement> models = new ArrayList<>();
-
-            request = new StringRequest(Request.Method.POST, url, response -> {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-
-                    JSONArray announcements = jsonObject.getJSONArray("announcements");
-
-                    String code = jsonObject.getString("code");
-
-                    switch (code) {
-                        case "1": {
-                            JSONObject object;
-
-                            for (int i = 0; i < announcements.length(); i++) {
-                                object = announcements.getJSONObject(i);
-
-                                ModelAllAnnouncement model = new ModelAllAnnouncement();
-
-                                model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
-
-                                model.setIdUser(Integer.parseInt(object.getString("idUser")));
-
-                                model.setName(object.getString("name"));
-
-                                model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
-                                model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
-                                model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
-
-                                model.setAddress(object.getString("address"));
-
-                                model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
-                                model.setRate(Float.parseFloat(object.getString("rating")));
-                                model.setCountRent(Integer.parseInt(object.getString("countRent")));
-                                model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
-
-                                if (object.getString("isFavorite").equals("1"))
-                                    model.setFavorite(true);
-                                else
-                                    model.setFavorite(false);
-
-                                models.add(model);
-                            }
-
-                            observableEmitter.onNext(models);
-                            break;
-                        }
-
-                        case "2": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-                            Utils.messageOutput(context, context.getResources()
-                                    .getString(R.string.error_fail_loading_announcements) + response);
-
-                            break;
-                        }
-
-                        case "3": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-
-                            break;
-                        }
-
-                        case "101": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-
-                            break;
-                        }
-                        default: {
-                            Timber.tag("LoadingAnnouncements").d(response);
-                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-                        }
-                    }
-                } catch (JSONException e) {
-                    Timber.tag("LoadingAnnouncements").d(response);
-                    Utils.messageOutput(context, context.getResources()
-                            .getString(R.string.error_fail_loading_announcements) + e.getMessage());
-
-                    observableEmitter.onError(e);
-                } finally {
-                    observableEmitter.onComplete();
-                }
-            },
-                    volleyError -> {
-                        if (volleyError instanceof TimeoutError) {
-                            Utils.messageOutput(context, context.getResources()
-                                    .getString(R.string.error_check_internet_connect));
-                        } else {
-                            Timber.tag("LoadingError").d(String.valueOf(volleyError.getMessage()));
-                            Utils.messageOutput(context, context.getResources()
-                                    .getString(R.string.error_fail_loading_announcements));
-                        }
-                    }) {
-                @SuppressLint("SimpleDateFormat")
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("token", UserCookie.getToken(context));
-                    params.put("idAnnouncement", String.valueOf(lastID));
-
-                    if (search.length() > 0 && search != null)
-                        params.put("search", search);
-
-                    return params;
-                }
-            };
-
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-            requestQueue.add(request);
-        });
-    }
-
-    @Override
-    public Observable<List<ModelUserAnnouncement>> loadUserAnnouncements(final Context context, final String url) {
+    public Observable<List<ModelUserAnnouncement>> searchToUserAnnouncements(long lastID, int limitItemInPage, String search, String url) {
         return Observable.create(observableEmitter -> {
             List<ModelUserAnnouncement> models = new ArrayList<>();
 
-            StringRequest request = new StringRequest(Request.Method.POST, url, response -> {
+            requestSearchToUserAnnouncements = new StringRequest(Request.Method.POST, url, response -> {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
 
-                    String code = jsonObject.getString("code");
-
                     JSONArray announcements = jsonObject.getJSONArray("announcements");
+
+                    String code = jsonObject.getString("code");
 
                     switch (code) {
                         case "1": {
@@ -285,7 +406,7 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
 
                                 ModelUserAnnouncement model = new ModelUserAnnouncement();
 
-                                model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
+                                model.setID(Integer.parseInt(object.getString("idAnnouncement")));
 
                                 model.setIdUser(Integer.parseInt(object.getString("idUser")));
 
@@ -313,160 +434,50 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                         }
 
                         case "2": {
-                            Timber.tag("LoadingAnnouncements").d(response);
                             Utils.messageOutput(context, context.getResources()
                                     .getString(R.string.error_fail_loading_announcements) + response);
 
                             break;
                         }
 
-                        case "3": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-
+                        case "3":
                             break;
-                        }
 
                         case "101": {
-                            Timber.tag("LoadingAnnouncements").d(response);
                             Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
 
                             break;
                         }
                         default: {
-                            Timber.tag("LoadingAnnouncements").d(response);
+
                             Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
                         }
                     }
                 } catch (JSONException e) {
-                    Timber.tag("LoadingAnnouncements").d(response);
-                    Utils.messageOutput(context, context.getResources()
-                            .getString(R.string.error_fail_loading_announcements) + response);
-
-                    observableEmitter.onError(e);
-                } finally {
-                    observableEmitter.onComplete();
-                }
-            },
-                    volleyError -> {
-                        if (volleyError instanceof TimeoutError) {
-                            Utils.messageOutput(context, context.getResources()
-                                    .getString(R.string.error_check_internet_connect));
-                        } else {
-                            Timber.tag("LoadingError").d(String.valueOf(volleyError.getMessage()));
-                            Utils.messageOutput(context, context.getResources()
-                                    .getString(R.string.error_fail_loading_announcements) + volleyError.getMessage());
-                        }
-                    }) {
-                @SuppressLint("SimpleDateFormat")
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("token", UserCookie.getToken(context));
-                    params.put("idAnnouncement", "0");
-
-                    return params;
-                }
-            };
-
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-            requestQueue.add(request);
-        });
-    }
-
-    @Override
-    public Observable<List<ModelUserAnnouncement>> searchToUserAnnouncements(Context context, String url, long lastID, String search) {
-        return Observable.create(observableEmitter -> {
-            StringRequest request;
-            List<ModelUserAnnouncement> models = new ArrayList<>();
-
-            request = new StringRequest(Request.Method.POST, url, response -> {
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-
-                    JSONArray announcements = jsonObject.getJSONArray("announcements");
-
-                    String code = jsonObject.getString("code");
-
-                    switch (code) {
-                        case "1": {
-                            JSONObject object;
-
-                            for (int i = 0; i < announcements.length(); i++) {
-                                object = announcements.getJSONObject(i);
-
-                                ModelUserAnnouncement model = new ModelUserAnnouncement();
-
-                                model.setIdAnnouncement(Integer.parseInt(object.getString("idAnnouncement")));
-
-                                model.setIdUser(Integer.parseInt(object.getString("idUser")));
-
-                                model.setName(object.getString("name"));
-
-                                model.setCountRent(Integer.parseInt(object.getString("countRent")));
-                                model.setCountViewers(Integer.parseInt(object.getString("countViewers")));
-                                model.setCountFavorites(Integer.parseInt(object.getString("countFavorites")));
-
-                                model.setCostToBYN(Float.parseFloat(object.getString("costToBYN")));
-                                model.setCostToUSD(Float.parseFloat(object.getString("costToUSD")));
-                                model.setCostToEUR(Float.parseFloat(object.getString("costToEUR")));
-
-                                model.setAddress(object.getString("address"));
-
-                                model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
-                                model.setRate(Float.parseFloat(object.getString("rating")));
-                                model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
-
-                                models.add(model);
-                            }
-
-                            observableEmitter.onNext(models);
-                            break;
-                        }
-
-                        case "2": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-                            Utils.messageOutput(context, context.getResources()
-                                    .getString(R.string.error_fail_loading_announcements) + response);
-
-                            break;
-                        }
-
-                        case "3": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-
-                            break;
-                        }
-
-                        case "101": {
-                            Timber.tag("LoadingAnnouncements").d(response);
-                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-
-                            break;
-                        }
-                        default: {
-                            Timber.tag("LoadingAnnouncements").d(response);
-                            Utils.messageOutput(context, context.getResources().getString(R.string.error_server_is_temporarily_unavailable));
-                        }
-                    }
-                } catch (JSONException e) {
-                    Timber.tag("LoadingAnnouncements").d(response);
+                    Timber.d(e);
                     Utils.messageOutput(context, context.getResources()
                             .getString(R.string.error_fail_loading_announcements) + e.getMessage());
 
                     observableEmitter.onError(e);
                 } finally {
+                    Timber.d(response);
+
                     observableEmitter.onComplete();
                 }
             },
                     volleyError -> {
-                        if (volleyError instanceof TimeoutError) {
+                        if (volleyError instanceof TimeoutError ||
+                                volleyError instanceof NetworkError ||
+                                volleyError instanceof ServerError) {
                             Utils.messageOutput(context, context.getResources()
                                     .getString(R.string.error_check_internet_connect));
                         } else {
-                            Timber.tag("LoadingError").d(String.valueOf(volleyError.getMessage()));
+                            Timber.d(String.valueOf(volleyError.getMessage()));
                             Utils.messageOutput(context, context.getResources()
                                     .getString(R.string.error_fail_loading_announcements));
                         }
+
+                        observableEmitter.onError(volleyError);
                     }) {
                 @SuppressLint("SimpleDateFormat")
                 @Override
@@ -482,8 +493,14 @@ public class LoadingAnnouncements implements ILoadingAnnouncements {
                 }
             };
 
-            RequestQueue requestQueue = Volley.newRequestQueue(context);
-            requestQueue.add(request);
+            requestQueue.add(requestSearchToUserAnnouncements);
         });
+    }
+
+    public void cancelAllRequest() {
+        requestQueue.cancelAll(tagRequestLoadAllAnnouncements);
+        requestQueue.cancelAll(tagRequesSearchToUsertAnnouncements);
+        requestQueue.cancelAll(tagRequestLoadUserAnnouncements);
+        requestQueue.cancelAll(tagRequestSearchToAllAnnouncements);
     }
 }

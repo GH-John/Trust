@@ -15,7 +15,7 @@
         android:scrollbars="none">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewOutputAllAnnouncements"
+            android:id="@+id/rvOutputAllAnnouncements"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"

@@ -1,7 +1,6 @@
 package com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,16 +9,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.arenda.Entities.Announcements.Models.IModel;
 import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
+import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AllAnnouncementsViewHolder extends RecyclerView.ViewHolder {
+public class AllAnnouncementsVH extends BaseViewHolder {
     @Nullable
     @BindView(R.id.imgProduct)
     ImageView imgProduct;
@@ -52,27 +53,37 @@ public class AllAnnouncementsViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.textRatingAnnouncement)
     TextView textRatingAnnouncement;
 
-    private Context context;
     private ModelAllAnnouncement model;
+    private int position;
 
-    public AllAnnouncementsViewHolder(@NonNull View itemView) {
+    public AllAnnouncementsVH(@NonNull View itemView) {
         super(itemView);
 
         ButterKnife.bind(this, itemView);
     }
 
-    public static AllAnnouncementsViewHolder create(ViewGroup parent) {
+    @Override
+    public int getResourceLayoutId() {
+        return R.layout.vh_announcement;
+    }
+
+    public static AllAnnouncementsVH create(ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.vh_announcement, parent, false);
-        return new AllAnnouncementsViewHolder(view);
+        return new AllAnnouncementsVH(view);
+    }
+
+    @Override
+    public void onBind(IModel model, int position) {
+        this.model = (ModelAllAnnouncement) model;
+        this.position = position;
+
+        bind();
     }
 
     @SuppressLint({"SetTextI18n"})
-    public void onBind(Context context, ModelAllAnnouncement model, int position) {
-        this.context = context;
-        this.model = model;
-
-        GlideUtils.loadImage(context, model.getMainUriBitmap(), imgProduct);
+    private void bind() {
+        GlideUtils.loadImage(itemView.getContext(), model.getMainUriBitmap(), imgProduct);
 
         textPlacementDate.setText(model.getPlacementDate());
         textRatingAnnouncement.setText(String.valueOf(model.getRate()));
@@ -106,12 +117,8 @@ public class AllAnnouncementsViewHolder extends RecyclerView.ViewHolder {
 
     public void setActiveHeart(boolean b) {
         if (b)
-            imgHeart.setImageDrawable(context.getDrawable(R.drawable.ic_heart_selected));
+            imgHeart.setImageDrawable(itemView.getContext().getDrawable(R.drawable.ic_heart_selected));
         else
-            imgHeart.setImageDrawable(context.getDrawable(R.drawable.ic_heart_not_selected));
-    }
-
-    public interface OnItemClick {
-        void onClick(RecyclerView.ViewHolder viewHolder, ModelAllAnnouncement model);
+            imgHeart.setImageDrawable(itemView.getContext().getDrawable(R.drawable.ic_heart_not_selected));
     }
 }
