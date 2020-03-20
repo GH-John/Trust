@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
@@ -50,24 +51,9 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
 
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
-        itemRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "refresh", Toast.LENGTH_LONG).show();
-            }
-        });
+        itemRefresh.setOnClickListener(v -> Toast.makeText(getContext(), "refresh", Toast.LENGTH_LONG).show());
 
-        itemBurgerMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                itemBurgerMenu.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        sideBar.expand();
-                    }
-                });
-            }
-        });
+        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
     }
 
     @Override
@@ -78,7 +64,6 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        this.sideBar.swipeListener(v, event);
         return true;
     }
 }

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/item_all_announcements"
+            android:icon="@drawable/sb_item_search_announcements"
+            android:title="@string/itemList_all_announcements" />
+
+        <item
+            android:id="@+id/item_user_announcements"
+            android:icon="@drawable/sb_item_user_announcements"
+            android:title="@string/itemList_user_announcements" />
+
+        <item
+            android:id="@+id/item_proposals"
+            android:icon="@drawable/sb_item_proposals"
+            android:title="@string/itemList_proposals" />
+
+        <item
+            android:id="@+id/item_statistics"
+            android:icon="@drawable/sb_item_statistics"
+            android:title="@string/itemList_statistics" />
+
+        <item
+            android:id="@+id/item_favorites"
+            android:icon="@drawable/sb_item_favorites"
+            android:title="@string/itemList_favorites" />
+
+        <item
+            android:id="@+id/item_wallet"
+            android:icon="@drawable/sb_item_wallet"
+            android:title="@string/itemList_wallet" />
+
+        <item
+            android:id="@+id/item_services"
+            android:icon="@drawable/sb_item_services"
+            android:title="@string/itemList_services" />
+
+        <item
+            android:id="@+id/item_regulations"
+            android:icon="@drawable/sb_item_regulations"
+            android:title="@string/itemList_regulations" />
+
+        <item
+            android:id="@+id/item_customer_service"
+            android:icon="@drawable/sb_item_customer_service"
+            android:title="@string/itemList_customer_service" />
+
+        <item
+            android:id="@+id/item_prohibited"
+            android:icon="@drawable/sb_item_prohibited"
+            android:title="@string/itemList_prohibited" />
+    </group>
+</menu>

@@ -283,7 +283,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements Adapte
 
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
-        itemBurgerMenu.setOnClickListener(v -> sideBar.expand());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
     }
 
     @Override
@@ -304,7 +304,6 @@ public final class FragmentInsertAnnouncement extends Fragment implements Adapte
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        this.sideBar.swipeListener(v, event);
         return true;
     }
 

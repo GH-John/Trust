@@ -8,7 +8,7 @@
 
     </declare-styleable>
 
-    <declare-styleable name="CustomSideBar">
+    <declare-styleable name="ContainerDrawerLayout">
 
     </declare-styleable>
 </resources>

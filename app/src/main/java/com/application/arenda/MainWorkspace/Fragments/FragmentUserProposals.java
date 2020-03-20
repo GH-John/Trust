@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
@@ -54,7 +55,7 @@ public final class FragmentUserProposals extends Fragment implements AdapterActi
 
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
-        itemBurgerMenu.setOnClickListener(v -> sideBar.expand());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
     }
 
     @Override
@@ -65,7 +66,6 @@ public final class FragmentUserProposals extends Fragment implements AdapterActi
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        this.sideBar.swipeListener(v, event);
         return true;
     }
 }

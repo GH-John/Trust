@@ -10,16 +10,12 @@ import com.application.arenda.UI.Components.ActionBar.CustomActionBar;
 import com.application.arenda.UI.Components.BottomNavigation.CustomBottomNavigation;
 import com.application.arenda.UI.Components.ComponentManager;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
-import com.application.arenda.UI.Components.SideBar.CustomSideBar;
+import com.application.arenda.UI.Components.SideBar.ContainerDrawerLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ActivityMain extends AppCompatActivity {
-    @Nullable
-    @BindView(R.id.customSideBar)
-    CustomSideBar customSideBar;
-
     @Nullable
     @BindView(R.id.customActionBar)
     CustomActionBar customActionBar;
@@ -28,7 +24,8 @@ public class ActivityMain extends AppCompatActivity {
     @BindView(R.id.customBottomNavigation)
     CustomBottomNavigation customBottomNavigation;
 
-    private ContainerFragments containerFragments = ContainerFragments.getInstance();
+    private ContainerFragments containerFragments;
+    private ContainerDrawerLayout containerDrawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +34,18 @@ public class ActivityMain extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        init();
+
         initializationManager();
     }
 
+    private void init() {
+        containerFragments = ContainerFragments.getInstance();
+        containerDrawerLayout = ContainerDrawerLayout.getInstance(this);
+    }
+
     private void initializationManager() {
-        ComponentManager.addLink(containerFragments, customActionBar, customSideBar);
+        ComponentManager.addLink(containerFragments, customActionBar, containerDrawerLayout);
 
         containerFragments.start(this);
     }

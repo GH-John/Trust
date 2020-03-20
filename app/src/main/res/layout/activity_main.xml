@@ -8,49 +8,64 @@
     android:background="@color/backgroundApp"
     tools:context=".MainWorkspace.Activities.ActivityMain">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/containerFragments"
-        android:name="com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.application.arenda.UI.Components.ActionBar.CustomActionBar
-        android:id="@+id/customActionBar"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_margin="8dp"
-        app:cardBackgroundColor="@color/colorWhite"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="3dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.application.arenda.UI.Components.BottomNavigation.CustomBottomNavigation
-        android:id="@+id/customBottomNavigation"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <com.application.arenda.UI.Components.SideBar.CustomSideBar
-        android:id="@+id/customSideBar"
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/containerDrawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        android:translationZ="3dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:openDrawer="end"
         tools:visibility="visible">
 
-    </com.application.arenda.UI.Components.SideBar.CustomSideBar>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/containerFragments"
+                android:name="com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
+            <com.application.arenda.UI.Components.ActionBar.CustomActionBar
+                android:id="@+id/customActionBar"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@color/colorWhite"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.application.arenda.UI.Components.BottomNavigation.CustomBottomNavigation
+                android:id="@+id/customBottomNavigation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/sbNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/sb_navigation_background"
+            android:choiceMode="none"
+            android:clickable="true"
+            android:focusable="true"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:headerLayout="@layout/sb_navigation_header"
+            app:menu="@menu/sb_navigation_menu" />
+    </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

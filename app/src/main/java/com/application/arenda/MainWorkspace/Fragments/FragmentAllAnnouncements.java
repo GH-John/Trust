@@ -353,7 +353,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             return false;
         });
 
-        itemBurgerMenu.setOnClickListener(v -> sideBar.expand());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
     }
 
     @Override

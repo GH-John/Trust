@@ -4,13 +4,15 @@ import android.graphics.drawable.Drawable;
 
 import androidx.fragment.app.Fragment;
 
-class ContentItemList {
+import com.application.arenda.Entities.Announcements.Models.IModel;
+
+class ModelItemList implements IModel {
     private int idNamePanel;
     private int idIconPanel;
     private Drawable stylePanel;
     private Fragment fragment;
 
-    public ContentItemList(Fragment fragment, int idNamePanel, int idIconPanel, Drawable stylePanel) {
+    public ModelItemList(Fragment fragment, int idNamePanel, int idIconPanel, Drawable stylePanel) {
         this.fragment = fragment;
         this.idNamePanel = idNamePanel;
         this.idIconPanel = idIconPanel;
@@ -31,5 +33,15 @@ class ContentItemList {
 
     public int getIdNamePanel() {
         return idNamePanel;
+    }
+
+    @Override
+    public void setID(long id) {
+
+    }
+
+    @Override
+    public long getID() {
+        return 0;
     }
 }

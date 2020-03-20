@@ -314,7 +314,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
             return false;
         });
 
-        itemBurgerMenu.setOnClickListener(v -> sideBar.expand());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
     }
 
     @Override
@@ -325,7 +325,6 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        this.sideBar.swipeListener(v, event);
         return true;
     }
 
