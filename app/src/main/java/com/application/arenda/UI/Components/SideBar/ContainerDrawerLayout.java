@@ -2,8 +2,8 @@ package com.application.arenda.UI.Components.SideBar;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Handler;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -23,12 +23,10 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public final class ContainerDrawerLayout implements SideBar,
-        NavigationView.OnNavigationItemSelectedListener,
-        DrawerLayout.DrawerListener, ComponentManager.Observer {
+        NavigationView.OnNavigationItemSelectedListener, ComponentManager.Observer {
 
     @SuppressLint("StaticFieldLeak")
     private static ContainerDrawerLayout containerDrawerLayout;
-
     //    @Nullable
 //    @BindView(R.id.containerDrawerLayout)
     DrawerLayout drawerLayout;
@@ -38,6 +36,7 @@ public final class ContainerDrawerLayout implements SideBar,
     //    @Nullable
 //    @BindView(R.id.itemUserAccount)
     ImageView itemUserAccount;
+    private Handler handler = new Handler();
 
     private ContainerDrawerLayout(Activity activity) {
         ButterKnife.bind(activity);
@@ -61,37 +60,29 @@ public final class ContainerDrawerLayout implements SideBar,
     }
 
     private void initListeners() {
-        drawerLayout.addDrawerListener(this);
-
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void setCheckedItem(ItemSideBar item) {
+        if (item instanceof FragmentAllAnnouncements) {
+            navigationView.getMenu().getItem(0).setChecked(true);
+        } else if (item instanceof FragmentUserAnnouncements) {
+            navigationView.getMenu().getItem(1).setChecked(true);
+        } else if (item instanceof FragmentUserProposals) {
+            navigationView.getMenu().getItem(2).setChecked(true);
+        } else if (item instanceof FragmentUserStatistics) {
+            navigationView.getMenu().getItem(3).setChecked(true);
+        }
     }
 
     @Override
     public void update(@NonNull Object object) {
         close();
-        if (object instanceof AdapterSideBar) {
-            ((AdapterSideBar) object).setSideBar(this);
+        if (object instanceof ItemSideBar) {
+            ((ItemSideBar) object).setSideBar(this);
+
+            setCheckedItem((ItemSideBar) object);
         }
-    }
-
-    @Override
-    public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-
-    }
-
-    @Override
-    public void onDrawerOpened(@NonNull View drawerView) {
-
-    }
-
-    @Override
-    public void onDrawerClosed(@NonNull View drawerView) {
-
-    }
-
-    @Override
-    public void onDrawerStateChanged(int newState) {
-
     }
 
     @Override
@@ -132,7 +123,7 @@ public final class ContainerDrawerLayout implements SideBar,
     public void open() {
         try {
             if (drawerLayout != null)
-                drawerLayout.openDrawer(GravityCompat.START);
+                handler.post(() -> drawerLayout.openDrawer(GravityCompat.START));
         } catch (Throwable e) {
             Timber.d(e);
         }
@@ -142,7 +133,7 @@ public final class ContainerDrawerLayout implements SideBar,
     public void close() {
         try {
             if (drawerLayout != null)
-                drawerLayout.closeDrawer(GravityCompat.START);
+                handler.post(() -> drawerLayout.closeDrawer(GravityCompat.START));
         } catch (Throwable e) {
             Timber.d(e);
         }

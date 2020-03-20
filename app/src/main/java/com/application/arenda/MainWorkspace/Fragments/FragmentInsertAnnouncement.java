@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -29,7 +28,7 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
-import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Components.SideBar.ItemSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.ContainerImg.ContainerFiller;
 import com.application.arenda.UI.ContainerImg.ContainerSelectedImages;
@@ -48,7 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public final class FragmentInsertAnnouncement extends Fragment implements AdapterSideBar, AdapterActionBar, AdapterGalery {
+public final class FragmentInsertAnnouncement extends Fragment implements ItemSideBar, AdapterActionBar, AdapterGalery {
     @SuppressLint("StaticFieldLeak")
     private static FragmentInsertAnnouncement fragmentInsertAnnouncement;
     private final int SELECTED_IMG_CODE = 1001;
@@ -105,7 +104,6 @@ public final class FragmentInsertAnnouncement extends Fragment implements Adapte
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_insert_announcement, container, false);
-        view.setOnTouchListener(this);
 
         unbinder = ButterKnife.bind(this, view);
 
@@ -299,12 +297,6 @@ public final class FragmentInsertAnnouncement extends Fragment implements Adapte
     @Override
     public void setSideBar(SideBar sideBar) {
         this.sideBar = sideBar;
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return true;
     }
 
     @Override

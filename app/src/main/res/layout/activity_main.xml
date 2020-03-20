@@ -65,7 +65,12 @@
             android:focusable="true"
             android:overScrollMode="never"
             android:scrollbars="none"
+            app:itemShapeAppearanceOverlay="@color/sb_nav_item_selector"
             app:headerLayout="@layout/sb_navigation_header"
+            app:itemBackground="@color/sb_nav_item_selector"
+            app:itemIconTint="@color/sb_nav_icon_selector"
+            app:itemTextAppearance="@style/DefaultStyleTextRegular"
+            app:itemTextColor="@color/sb_nav_text_selector"
             app:menu="@menu/sb_navigation_menu" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

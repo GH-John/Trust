@@ -3,7 +3,6 @@ package com.application.arenda.MainWorkspace.Fragments;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -30,7 +29,7 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
-import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Components.SideBar.ItemSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.DisplayUtils;
 
@@ -44,7 +43,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public final class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, AdapterSideBar {
+public final class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, ItemSideBar {
     @SuppressLint("StaticFieldLeak")
     private static FragmentAllAnnouncements fragmentAllAnnouncements;
 
@@ -364,12 +363,6 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     @Override
     public void setSideBar(SideBar sideBar) {
         this.sideBar = sideBar;
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
     }
 
     @Override

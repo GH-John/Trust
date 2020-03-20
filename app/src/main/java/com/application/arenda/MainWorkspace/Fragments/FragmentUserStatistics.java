@@ -3,7 +3,6 @@ package com.application.arenda.MainWorkspace.Fragments;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -11,13 +10,12 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
-import com.application.arenda.UI.Components.SideBar.AdapterSideBar;
+import com.application.arenda.UI.Components.SideBar.ItemSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
 
-public final class FragmentUserStatistics extends Fragment implements AdapterActionBar, AdapterSideBar {
+public final class FragmentUserStatistics extends Fragment implements AdapterActionBar, ItemSideBar {
     @SuppressLint("StaticFieldLeak")
     private static FragmentUserStatistics fragmentUserStatistics;
 
@@ -34,7 +32,6 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_user_statistics, container, false);
-        view.setOnTouchListener(this);
         return view;
     }
 
@@ -59,11 +56,5 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
     @Override
     public void setSideBar(SideBar sideBar) {
         this.sideBar = sideBar;
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return true;
     }
 }
