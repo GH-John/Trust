@@ -82,6 +82,10 @@ public final class ContainerDrawerLayout implements SideBar,
             ((ItemSideBar) object).setSideBar(this);
 
             setCheckedItem((ItemSideBar) object);
+
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        } else {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
     }
 

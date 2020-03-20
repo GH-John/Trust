@@ -19,11 +19,14 @@ public class CustomActionBar extends CardView implements ComponentManager.Observ
     @Override
     public void update(@NonNull Object object) {
         if (object instanceof AdapterActionBar) {
+            setVisibility(VISIBLE);
             this.removeAllViewsInLayout();
             inflate(getContext(), ((AdapterActionBar) object).getIdPatternResource(),
                     this);
             ((AdapterActionBar) object).initComponentsActionBar(this);
             ((AdapterActionBar) object).initListenersActionBar(this);
+        } else {
+            setVisibility(INVISIBLE);
         }
     }
 }
