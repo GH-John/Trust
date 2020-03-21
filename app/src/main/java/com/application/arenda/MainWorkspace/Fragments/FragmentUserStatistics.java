@@ -50,7 +50,7 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
     public void initListenersActionBar(ViewGroup viewGroup) {
         itemRefresh.setOnClickListener(v -> Toast.makeText(getContext(), "refresh", Toast.LENGTH_LONG).show());
 
-        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
     }
 
     @Override

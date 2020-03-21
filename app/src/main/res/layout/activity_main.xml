@@ -9,70 +9,56 @@
     tools:context=".MainWorkspace.Activities.ActivityMain">
 
     <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/containerDrawerLayout"
+        android:id="@+id/sbDrawerMenu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:openDrawer="end"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.slidingpanelayout.widget.SlidingPaneLayout
-            android:id="@+id/slidingPaneLayout"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/contentLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/sliding_container"
+                android:id="@+id/containerFragments"
                 android:name="com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <com.application.arenda.UI.Components.ActionBar.CustomActionBar
+                android:id="@+id/customActionBar"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_margin="8dp"
+                app:cardBackgroundColor="@color/colorWhite"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/containerFragments"
-                    android:name="com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.application.arenda.UI.Components.ActionBar.CustomActionBar
-                    android:id="@+id/customActionBar"
-                    android:layout_width="0dp"
-                    android:layout_height="50dp"
-                    android:layout_margin="8dp"
-                    app:cardBackgroundColor="@color/colorWhite"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="3dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.application.arenda.UI.Components.BottomNavigation.CustomBottomNavigation
-                    android:id="@+id/customBottomNavigation"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.slidingpanelayout.widget.SlidingPaneLayout>
+            <com.application.arenda.UI.Components.BottomNavigation.CustomBottomNavigation
+                android:id="@+id/customBottomNavigation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.navigation.NavigationView
-            android:id="@+id/sbNavigationView"
+            android:id="@+id/sbLeftMenu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@drawable/sb_navigation_background"
+            android:background="@drawable/sb_left_navigation_background"
             android:choiceMode="none"
             android:clickable="true"
             android:focusable="true"
@@ -86,5 +72,22 @@
             app:itemTextAppearance="@style/DefaultStyleTextRegular"
             app:itemTextColor="@color/sb_nav_text_selector"
             app:menu="@menu/sb_navigation_menu" />
+
+        <FrameLayout
+            android:id="@+id/sbRightMenuLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="@drawable/sb_right_navigation_background">
+
+            <fragment
+                android:id="@+id/sbRightMenuContainer"
+                android:name="com.application.arenda.MainWorkspace.Fragments.FragmentFilterAllAnnouncements"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:ignore="FragmentTagUsage" />
+        </FrameLayout>
+
     </androidx.drawerlayout.widget.DrawerLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

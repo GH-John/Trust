@@ -52,7 +52,7 @@ public final class FragmentUserProposals extends Fragment implements AdapterActi
 
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
-        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
     }
 
     @Override

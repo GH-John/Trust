@@ -301,7 +301,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
     @Override
     public void initListenersActionBar(final ViewGroup viewGroup) {
-        itemFiltr.setOnClickListener(v -> Utils.messageOutput(getContext(), "filtr"));
+        itemFiltr.setOnClickListener(v -> sideBar.openRightMenu());
 
         itemSearch.setOnClickListener(v -> {
             groupDefault.setVisibility(View.GONE);
@@ -352,7 +352,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             return false;
         });
 
-        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
     }
 
     @Override

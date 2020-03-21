@@ -4,10 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Handler;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
@@ -27,11 +27,14 @@ public final class ContainerDrawerLayout implements SideBar,
     @SuppressLint("StaticFieldLeak")
     private static ContainerDrawerLayout containerDrawerLayout;
 
-    DrawerLayout drawerLayout;
+    private DrawerLayout drawerLayout;
 
-    NavigationView navigationView;
+    private NavigationView leftMenu;
 
-    ImageView itemUserAccount;
+    private FrameLayout rightMenu;
+
+    private ImageView itemUserAccount;
+
     private Handler handler = new Handler();
 
     private ContainerDrawerLayout(Activity activity) {
@@ -48,30 +51,32 @@ public final class ContainerDrawerLayout implements SideBar,
     }
 
     private void initComponents(Activity activity) {
-        drawerLayout = activity.findViewById(R.id.containerDrawerLayout);
-        navigationView = activity.findViewById(R.id.sbNavigationView);
+        leftMenu = activity.findViewById(R.id.sbLeftMenu);
+        drawerLayout = activity.findViewById(R.id.sbDrawerMenu);
+        rightMenu = activity.findViewById(R.id.sbRightMenuLayout);
+
         itemUserAccount = activity.findViewById(R.id.itemUserAccount);
     }
 
     private void initListeners() {
-        navigationView.setNavigationItemSelectedListener(this);
+        leftMenu.setNavigationItemSelectedListener(this);
     }
 
     private void setCheckedItem(ItemSideBar item) {
         if (item instanceof FragmentAllAnnouncements) {
-            navigationView.getMenu().getItem(0).setChecked(true);
+            leftMenu.getMenu().getItem(0).setChecked(true);
         } else if (item instanceof FragmentUserAnnouncements) {
-            navigationView.getMenu().getItem(1).setChecked(true);
+            leftMenu.getMenu().getItem(1).setChecked(true);
         } else if (item instanceof FragmentUserProposals) {
-            navigationView.getMenu().getItem(2).setChecked(true);
+            leftMenu.getMenu().getItem(2).setChecked(true);
         } else if (item instanceof FragmentUserStatistics) {
-            navigationView.getMenu().getItem(3).setChecked(true);
+            leftMenu.getMenu().getItem(3).setChecked(true);
         }
     }
 
     @Override
     public void update(@NonNull Object object) {
-        close();
+        closeLeftMenu();
         if (object instanceof ItemSideBar) {
             ((ItemSideBar) object).setSideBar(this);
 
@@ -118,20 +123,40 @@ public final class ContainerDrawerLayout implements SideBar,
     }
 
     @Override
-    public void open() {
+    public void openRightMenu() {
         try {
-            if (drawerLayout != null)
-                handler.post(() -> drawerLayout.openDrawer(GravityCompat.START));
+            if (drawerLayout != null && !drawerLayout.isDrawerOpen(leftMenu))
+                handler.post(() -> drawerLayout.openDrawer(rightMenu));
         } catch (Throwable e) {
             Timber.d(e);
         }
     }
 
     @Override
-    public void close() {
+    public void closeRightMenu() {
         try {
-            if (drawerLayout != null)
-                handler.post(() -> drawerLayout.closeDrawer(GravityCompat.START));
+            if (drawerLayout != null && !drawerLayout.isDrawerOpen(leftMenu))
+                handler.post(() -> drawerLayout.closeDrawer(rightMenu));
+        } catch (Throwable e) {
+            Timber.d(e);
+        }
+    }
+
+    @Override
+    public void openLeftMenu() {
+        try {
+            if (drawerLayout != null && !drawerLayout.isDrawerOpen(rightMenu))
+                handler.post(() -> drawerLayout.openDrawer(leftMenu));
+        } catch (Throwable e) {
+            Timber.d(e);
+        }
+    }
+
+    @Override
+    public void closeLeftMenu() {
+        try {
+            if (drawerLayout != null && !drawerLayout.isDrawerOpen(rightMenu))
+                handler.post(() -> drawerLayout.closeDrawer(leftMenu));
         } catch (Throwable e) {
             Timber.d(e);
         }

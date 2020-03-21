@@ -313,7 +313,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
             return false;
         });
 
-        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
     }
 
     @Override

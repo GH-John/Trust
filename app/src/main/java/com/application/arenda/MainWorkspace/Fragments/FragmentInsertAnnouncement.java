@@ -281,7 +281,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
-        itemBurgerMenu.setOnClickListener(v -> sideBar.open());
+        itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
     }
 
     @Override
