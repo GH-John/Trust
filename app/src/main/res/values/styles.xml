@@ -12,6 +12,15 @@
         <item name="windowActionBar">false</item>
     </style>
 
+    <style name="DefaultNavigationTheme">
+        <item name="android:colorControlHighlight">@color/backgroundItem</item>
+    </style>
+
+    <style name="DefaultNavigationShapeOverlay">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerRadius">10dp</item>
+    </style>
+
     <style name="DefaultStyleTextRegular">
         <item name="android:textColor">@color/colorText</item>
         <item name="android:fontFamily">@font/gotham_office_regular</item>

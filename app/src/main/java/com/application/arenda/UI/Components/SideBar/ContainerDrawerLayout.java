@@ -19,7 +19,6 @@ import com.application.arenda.UI.Components.ComponentManager;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
 import com.google.android.material.navigation.NavigationView;
 
-import butterknife.ButterKnife;
 import timber.log.Timber;
 
 public final class ContainerDrawerLayout implements SideBar,
@@ -27,20 +26,15 @@ public final class ContainerDrawerLayout implements SideBar,
 
     @SuppressLint("StaticFieldLeak")
     private static ContainerDrawerLayout containerDrawerLayout;
-    //    @Nullable
-//    @BindView(R.id.containerDrawerLayout)
+
     DrawerLayout drawerLayout;
-    //    @Nullable
-//    @BindView(R.id.sbNavigationView)
+
     NavigationView navigationView;
-    //    @Nullable
-//    @BindView(R.id.itemUserAccount)
+
     ImageView itemUserAccount;
     private Handler handler = new Handler();
 
     private ContainerDrawerLayout(Activity activity) {
-        ButterKnife.bind(activity);
-
         initComponents(activity);
 
         initListeners();

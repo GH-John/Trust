@@ -15,7 +15,7 @@
     <color name="colorBlack">#000000</color>
     <color name="colorRed">#E62C2C</color>
     <color name="shadowColor">#32585858</color>
-    <color name="backgroundItem">#32D8D8D8</color>
+    <color name="backgroundItem">#26299AE2</color>
 
     <color name="colorText">#3A3A3A</color>
     <color name="colorHint">#9B9B9B</color>
