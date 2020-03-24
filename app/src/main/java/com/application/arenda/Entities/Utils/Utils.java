@@ -1,6 +1,7 @@
 package com.application.arenda.Entities.Utils;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -24,8 +25,14 @@ public class Utils {
     public static final Action<View> V_GONE = (view, index) -> view.setVisibility(View.GONE);
     public static final Action<View> V_VISIBLE = (view, index) -> view.setVisibility(View.VISIBLE);
 
+    private static Handler handler = new Handler();
+
     private static Pattern pattern;
     private static Matcher matcher;
+
+    public static Handler getHandler() {
+        return handler;
+    }
 
     public static String getFormatingDate(Context context, String date) {
         AndroidThreeTen.init(context);

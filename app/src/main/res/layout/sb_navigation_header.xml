@@ -5,27 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="200dp">
 
-    <ImageView
-        android:id="@+id/itemUserAccount"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_marginEnd="24dp"
+    <ImageButton
+        android:id="@+id/itemLogout"
+        android:layout_width="@dimen/sizeBtnActionBar"
+        android:layout_height="@dimen/sizeBtnActionBar"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/btn_background"
         android:contentDescription="@string/todo"
-        android:elevation="6dp"
-        android:translationZ="2dp"
-        android:visibility="visible"
+        android:src="@drawable/sb_item_logout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/itemUserAccount"
+        android:layout_width="@dimen/sizeBtnActionBar"
+        android:layout_height="@dimen/sizeBtnActionBar"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/btn_background"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/sb_item_user_account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/sb_item_user_account"
-        tools:ignore="UnusedAttribute"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/itemUserName"
         style="@style/DefaultStyleTextRegular.Header"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="40dp"
         android:contentDescription="@string/todo"

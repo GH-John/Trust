@@ -5,8 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.ImageButton;
 
 import androidx.fragment.app.Fragment;
 
@@ -19,7 +18,7 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
     @SuppressLint("StaticFieldLeak")
     private static FragmentUserStatistics fragmentUserStatistics;
 
-    private ImageView itemBurgerMenu, itemRefresh;
+    private ImageButton itemBurgerMenu;
     private SideBar sideBar;
 
     public static FragmentUserStatistics getInstance() {
@@ -42,14 +41,11 @@ public final class FragmentUserStatistics extends Fragment implements AdapterAct
 
     @Override
     public void initComponentsActionBar(ViewGroup viewGroup) {
-        itemRefresh = viewGroup.findViewById(R.id.itemRefresh);
         itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
     }
 
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
-        itemRefresh.setOnClickListener(v -> Toast.makeText(getContext(), "refresh", Toast.LENGTH_LONG).show());
-
         itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
     }
 

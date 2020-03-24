@@ -7,28 +7,31 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
 import com.application.arenda.MainWorkspace.Fragments.FragmentInsertAnnouncement;
 import com.application.arenda.MainWorkspace.Fragments.FragmentUserAnnouncements;
-import com.application.arenda.MainWorkspace.Fragments.FragmentUserProposals;
 import com.application.arenda.MainWorkspace.Fragments.FragmentUserStatistics;
+import com.application.arenda.MainWorkspace.Fragments.Proposals.FragmentUserProposals;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ComponentManager;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
 import com.application.arenda.UI.DrawPanel;
 
-public class CustomBottomNavigation extends ConstraintLayout implements BottomNavigation, ComponentManager.Observable {
-    private ImageView
+public class CustomBottomNavigation extends ConstraintLayout implements BottomNavigation, ComponentManager.Observer {
+    private ImageButton
             itemUserAnnouncements,
             itemAllAnnouncements,
             itemInsertAnnouncement,
             itemUserStatistics,
-            itemUserProposals,
+            itemUserProposals;
+
+    private ImageView
             leftPanelBN,
             rightPanelBN;
 
@@ -96,7 +99,54 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
     }
 
     @Override
-    public void notifyObservers(Object object) {
-        ComponentManager.notifyObservers(this, (Fragment) object);
+    public void update(@NonNull Object object) {
+        if (object instanceof FragmentAllAnnouncements) {
+
+            changeImageInBtn(itemAllAnnouncements);
+            setVisibility(VISIBLE);
+
+        } else if (object instanceof FragmentUserAnnouncements) {
+
+            changeImageInBtn(itemUserAnnouncements);
+            setVisibility(VISIBLE);
+
+        } else if (object instanceof FragmentInsertAnnouncement) {
+
+            changeImageInBtn(itemInsertAnnouncement);
+            setVisibility(VISIBLE);
+
+        } else if (object instanceof FragmentUserProposals) {
+
+            changeImageInBtn(itemUserProposals);
+            setVisibility(VISIBLE);
+
+        } else if (object instanceof FragmentUserStatistics) {
+
+            changeImageInBtn(itemUserStatistics);
+            setVisibility(VISIBLE);
+
+        } else {
+            setVisibility(INVISIBLE);
+        }
+    }
+
+    private void changeImageInBtn(ImageButton button) {
+        itemAllAnnouncements.setImageResource(R.drawable.bn_item_search_announcements_unselected);
+        itemUserAnnouncements.setImageResource(R.drawable.bn_item_user_announcements_unselected);
+        itemInsertAnnouncement.setImageResource(R.drawable.ic_plus_white);
+        itemUserProposals.setImageResource(R.drawable.bn_item_proposals_unselected);
+        itemUserStatistics.setImageResource(R.drawable.bn_item_statistics_unselected);
+
+        if (itemUserAnnouncements.equals(button)) {
+            itemUserAnnouncements.setImageResource(R.drawable.bn_item_user_announcements_selected);
+        } else if (itemInsertAnnouncement.equals(button)) {
+            itemInsertAnnouncement.setImageResource(R.drawable.ic_plus_white_bold);
+        } else if (itemUserProposals.equals(button)) {
+            itemUserProposals.setImageResource(R.drawable.bn_item_proposals_selected);
+        } else if (itemUserStatistics.equals(button)) {
+            itemUserStatistics.setImageResource(R.drawable.bn_item_statistics_selected);
+        } else {
+            itemAllAnnouncements.setImageResource(R.drawable.bn_item_search_announcements_selected);
+        }
     }
 }

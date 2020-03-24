@@ -18,8 +18,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="60dp"
-            android:paddingBottom="80dp">
+            android:paddingTop="@dimen/paddingTopFromActionBar"
+            android:paddingBottom="@dimen/paddingBottomFromBottomNav">
 
             <TextView
                 android:id="@+id/textAddPhotos"

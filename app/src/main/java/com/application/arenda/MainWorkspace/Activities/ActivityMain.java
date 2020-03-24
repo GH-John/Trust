@@ -45,7 +45,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private void initializationManager() {
-        ComponentManager.addLink(containerFragments, customActionBar, containerDrawerLayout);
+        ComponentManager.addLink(containerFragments, customBottomNavigation, customActionBar, containerDrawerLayout);
 
         containerFragments.start(this);
     }

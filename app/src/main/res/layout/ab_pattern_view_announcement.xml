@@ -5,44 +5,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemBtnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/sizeBtnActionBar"
+        android:layout_height="@dimen/sizeBtnActionBar"
         android:layout_marginStart="16dp"
+        android:background="@drawable/btn_background"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ab_item_back" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemMore"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/sizeBtnActionBar"
+        android:layout_height="@dimen/sizeBtnActionBar"
         android:layout_marginEnd="16dp"
+        android:background="@drawable/btn_background"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ab_item_more" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemMessage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_width="@dimen/sizeBtnActionBar"
+        android:layout_height="@dimen/sizeBtnActionBar"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/btn_background"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemMore"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ab_item_message" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/itemPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_width="@dimen/sizeBtnActionBar"
+        android:layout_height="@dimen/sizeBtnActionBar"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/btn_background"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/itemMessage"

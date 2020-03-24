@@ -161,4 +161,8 @@
     <string name="material_calendar_positive_button">Ок</string>
     <string name="material_calendar_negative_button">Отмена</string>
 
+
+    <string name="title_pager_incoming_proposals">Входящие</string>
+    <string name="title_pager_outgoing_proposals">Исходящие</string>
+
 </resources>

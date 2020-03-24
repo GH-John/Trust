@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ComponentManager;
 
+import timber.log.Timber;
+
 public final class ContainerFragments implements ComponentManager.Observer, ComponentManager.Observable {
     @SuppressLint("StaticFieldLeak")
     private static ContainerFragments containerFragments;
@@ -28,8 +30,12 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
     }
 
     public void start(Context context) {
-        fragment = getCurrentFragment(context);
-        notifyObservers(fragment);
+        try {
+            fragment = getCurrentFragment(context);
+            notifyObservers(fragment);
+        } catch (NullPointerException | IllegalArgumentException e) {
+            Timber.d(e);
+        }
     }
 
     public Fragment getCurrentFragment(Context context) {

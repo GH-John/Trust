@@ -2,18 +2,24 @@ package com.application.arenda.UI.Components.SideBar;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.Handler;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
+import com.application.arenda.MainWorkspace.Fragments.FragmentCustomerService;
+import com.application.arenda.MainWorkspace.Fragments.FragmentProhibited;
+import com.application.arenda.MainWorkspace.Fragments.FragmentRegulations;
+import com.application.arenda.MainWorkspace.Fragments.FragmentServices;
 import com.application.arenda.MainWorkspace.Fragments.FragmentUserAnnouncements;
-import com.application.arenda.MainWorkspace.Fragments.FragmentUserProposals;
+import com.application.arenda.MainWorkspace.Fragments.FragmentUserFavorites;
 import com.application.arenda.MainWorkspace.Fragments.FragmentUserStatistics;
+import com.application.arenda.MainWorkspace.Fragments.FragmentUserWallet;
+import com.application.arenda.MainWorkspace.Fragments.Proposals.FragmentUserProposals;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ComponentManager;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
@@ -33,9 +39,7 @@ public final class ContainerDrawerLayout implements SideBar,
 
     private FrameLayout rightMenu;
 
-    private ImageView itemUserAccount;
-
-    private Handler handler = new Handler();
+    private ImageButton itemUserAccount, itemLogout;
 
     private ContainerDrawerLayout(Activity activity) {
         initComponents(activity);
@@ -55,6 +59,7 @@ public final class ContainerDrawerLayout implements SideBar,
         drawerLayout = activity.findViewById(R.id.sbDrawerMenu);
         rightMenu = activity.findViewById(R.id.sbRightMenuLayout);
 
+        itemLogout = activity.findViewById(R.id.itemLogout);
         itemUserAccount = activity.findViewById(R.id.itemUserAccount);
     }
 
@@ -106,17 +111,23 @@ public final class ContainerDrawerLayout implements SideBar,
                 ContainerFragments.getInstance().replaceFragmentInContainer(FragmentUserStatistics.getInstance());
                 return true;
             case R.id.item_favorites:
-                break;
+                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentUserFavorites());
+                return true;
             case R.id.item_wallet:
-                break;
+                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentUserWallet());
+                return true;
             case R.id.item_services:
-                break;
+                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentServices());
+                return true;
             case R.id.item_regulations:
-                break;
+                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentRegulations());
+                return true;
             case R.id.item_customer_service:
-                break;
+                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentCustomerService());
+                return true;
             case R.id.item_prohibited:
-                break;
+                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentProhibited());
+                return true;
         }
 
         return false;
@@ -126,7 +137,7 @@ public final class ContainerDrawerLayout implements SideBar,
     public void openRightMenu() {
         try {
             if (drawerLayout != null && !drawerLayout.isDrawerOpen(leftMenu))
-                handler.post(() -> drawerLayout.openDrawer(rightMenu));
+                Utils.getHandler().post(() -> drawerLayout.openDrawer(rightMenu));
         } catch (Throwable e) {
             Timber.d(e);
         }
@@ -136,7 +147,7 @@ public final class ContainerDrawerLayout implements SideBar,
     public void closeRightMenu() {
         try {
             if (drawerLayout != null && !drawerLayout.isDrawerOpen(leftMenu))
-                handler.post(() -> drawerLayout.closeDrawer(rightMenu));
+                Utils.getHandler().post(() -> drawerLayout.closeDrawer(rightMenu));
         } catch (Throwable e) {
             Timber.d(e);
         }
@@ -146,7 +157,7 @@ public final class ContainerDrawerLayout implements SideBar,
     public void openLeftMenu() {
         try {
             if (drawerLayout != null && !drawerLayout.isDrawerOpen(rightMenu))
-                handler.post(() -> drawerLayout.openDrawer(leftMenu));
+                Utils.getHandler().post(() -> drawerLayout.openDrawer(leftMenu));
         } catch (Throwable e) {
             Timber.d(e);
         }
@@ -156,7 +167,7 @@ public final class ContainerDrawerLayout implements SideBar,
     public void closeLeftMenu() {
         try {
             if (drawerLayout != null && !drawerLayout.isDrawerOpen(rightMenu))
-                handler.post(() -> drawerLayout.closeDrawer(leftMenu));
+                Utils.getHandler().post(() -> drawerLayout.closeDrawer(leftMenu));
         } catch (Throwable e) {
             Timber.d(e);
         }
