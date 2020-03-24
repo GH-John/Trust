@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutDialogCallPhoneNumber"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingBottom="6dp">
+
+    <TextView
+        android:id="@+id/dialogPhoneNumberTitle"
+        style="@style/DefaultStyleTextBoldRegular.Header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="16dp"
+        android:text="@string/dialog_phone_number_title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/callPhoneNumberRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialogPhoneNumberTitle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="22dp"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+</RelativeLayout>

@@ -164,5 +164,7 @@
 
     <string name="title_pager_incoming_proposals">Входящие</string>
     <string name="title_pager_outgoing_proposals">Исходящие</string>
+    <string name="dialog_phone_number_not_found">Нет доступных номеров</string>
+    <string name="dialog_phone_number_title">Доступные телефоны</string>
 
 </resources>

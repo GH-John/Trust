@@ -2,6 +2,9 @@ package com.application.arenda.Entities.Announcements.Models;
 
 import android.net.Uri;
 
+import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.ModelPhoneNumber;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ModelViewAnnouncement implements IModel {
@@ -25,15 +28,9 @@ public class ModelViewAnnouncement implements IModel {
     private String address = "";
     private String placementDate = "";
 
-    private String phone_1 = "";
-    private String phone_2 = "";
-    private String phone_3 = "";
+    private List<ModelPhoneNumber> phoneNumbers = new ArrayList<>();
 
-    private boolean visiblePhone_1 = false;
-    private boolean visiblePhone_2 = false;
-    private boolean visiblePhone_3 = false;
-
-    private List<Uri> uriCollection;
+    private List<Uri> uriCollection = new ArrayList<>();
 
     public long getIdUser() {
         return idUser;
@@ -131,54 +128,6 @@ public class ModelViewAnnouncement implements IModel {
         this.address = address;
     }
 
-    public String getPhone_1() {
-        return phone_1;
-    }
-
-    public void setPhone_1(String phone_1) {
-        this.phone_1 = phone_1;
-    }
-
-    public String getPhone_2() {
-        return phone_2;
-    }
-
-    public void setPhone_2(String phone_2) {
-        this.phone_2 = phone_2;
-    }
-
-    public String getPhone_3() {
-        return phone_3;
-    }
-
-    public void setPhone_3(String phone_3) {
-        this.phone_3 = phone_3;
-    }
-
-    public boolean isVisiblePhone_1() {
-        return visiblePhone_1;
-    }
-
-    public void setVisiblePhone_1(boolean visiblePhone_1) {
-        this.visiblePhone_1 = visiblePhone_1;
-    }
-
-    public boolean isVisiblePhone_2() {
-        return visiblePhone_2;
-    }
-
-    public void setVisiblePhone_2(boolean visiblePhone_2) {
-        this.visiblePhone_2 = visiblePhone_2;
-    }
-
-    public boolean isVisiblePhone_3() {
-        return visiblePhone_3;
-    }
-
-    public void setVisiblePhone_3(boolean visiblePhone_3) {
-        this.visiblePhone_3 = visiblePhone_3;
-    }
-
     public List<Uri> getUriCollection() {
         return uriCollection;
     }
@@ -193,6 +142,14 @@ public class ModelViewAnnouncement implements IModel {
 
     public void setPlacementDate(String placementDate) {
         this.placementDate = placementDate;
+    }
+
+    public List<ModelPhoneNumber> getPhoneNumbers() {
+        return phoneNumbers;
+    }
+
+    public void setPhoneNumbers(List<ModelPhoneNumber> phoneNumbers) {
+        this.phoneNumbers = phoneNumbers;
     }
 
     @Override

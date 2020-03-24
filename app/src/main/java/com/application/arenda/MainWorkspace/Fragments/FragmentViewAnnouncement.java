@@ -20,6 +20,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
 import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
+import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.DialogCallPhoneNumber;
+import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.ModelPhoneNumber;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.IDataViewPager;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
 import com.application.arenda.Entities.Utils.Network.ServerUtils;
@@ -27,6 +29,7 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindDrawable;
@@ -103,6 +106,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
     private long idAnnouncement;
 
+    private List<ModelPhoneNumber> phoneNumbers = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -134,6 +139,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
                     @Override
                     public void onNext(ModelViewAnnouncement model) {
+                        phoneNumbers.addAll(model.getPhoneNumbers());
+
                         textPlacementDate.setText(model.getPlacementDate());
                         textNameProduct.setText(model.getName());
 
@@ -250,7 +257,12 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
         itemBtnBack.setOnClickListener(v -> getActivity().onBackPressed());
-        itemPhone.setOnClickListener(v -> Utils.messageOutput(getContext(), "phone"));
+        itemPhone.setOnClickListener(v -> {
+            if (phoneNumbers.size() > 0)
+                new DialogCallPhoneNumber(phoneNumbers).show(getActivity().getSupportFragmentManager(), DialogCallPhoneNumber.TAG);
+            else
+                Utils.messageOutput(getContext(), getContext().getResources().getString(R.string.dialog_phone_number_not_found));
+        });
         itemMessage.setOnClickListener(v -> Utils.messageOutput(getContext(), "message"));
         itemMore.setOnClickListener(v -> Utils.messageOutput(getContext(), "more"));
     }

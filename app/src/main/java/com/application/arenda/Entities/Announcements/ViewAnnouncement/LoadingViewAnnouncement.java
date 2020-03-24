@@ -14,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncement;
+import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.ModelPhoneNumber;
 import com.application.arenda.Entities.User.UserCookie;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
@@ -50,13 +51,14 @@ public class LoadingViewAnnouncement implements ILoadingViewAnnouncement {
                                 JSONObject object;
                                 ModelViewAnnouncement model = new ModelViewAnnouncement();
                                 List<Uri> uriList = new ArrayList<>();
+                                List<ModelPhoneNumber> phoneNumbers = new ArrayList<>();
 
                                 for (int i = 0; i < announcement.length(); i++) {
                                     object = announcement.getJSONObject(i);
 
                                     model.setID(Integer.parseInt(object.getString("idAnnouncement")));
 
-                                    model.setIdUser(Integer.valueOf(object.getString("idUser")));
+                                    model.setIdUser(Integer.parseInt(object.getString("idUser")));
 
                                     model.setName(object.getString("name"));
                                     model.setDescription(object.getString("description"));
@@ -71,10 +73,16 @@ public class LoadingViewAnnouncement implements ILoadingViewAnnouncement {
                                     model.setRate(Float.parseFloat(object.getString("rating")));
                                     model.setCountRent(Integer.parseInt(object.getString("countRent")));
 
-                                    if (object.getString("isFavorite").equals("1"))
-                                        model.setFavorite(true);
-                                    else
-                                        model.setFavorite(false);
+                                    if (object.getString("isVisible_phone_1").equals("1"))
+                                        phoneNumbers.add(new ModelPhoneNumber(1, object.getString("phone_1")));
+                                    if (object.getString("isVisible_phone_2").equals("1"))
+                                        phoneNumbers.add(new ModelPhoneNumber(2, object.getString("phone_2")));
+                                    if (object.getString("isVisible_phone_3").equals("1"))
+                                        phoneNumbers.add(new ModelPhoneNumber(3, object.getString("phone_3")));
+
+                                    model.setPhoneNumbers(phoneNumbers);
+
+                                    model.setFavorite(object.getString("isFavorite").equals("1"));
                                 }
 
                                 for (int i = 0; i < uris.length(); i++) {
