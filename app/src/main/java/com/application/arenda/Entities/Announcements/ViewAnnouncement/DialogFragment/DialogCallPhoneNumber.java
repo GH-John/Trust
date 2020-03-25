@@ -3,6 +3,8 @@ package com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFra
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,6 +14,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.arenda.Entities.Utils.PermissionUtils;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
 import java.util.ArrayList;
@@ -23,16 +27,29 @@ import butterknife.Unbinder;
 
 public class DialogCallPhoneNumber extends DialogFragment {
     public static String TAG = "CallPhoneNumber";
+    public static short PERMISSION_CODE = 7365;
+
     @Nullable
     @BindView(R.id.callPhoneNumberRV)
     RecyclerView recyclerView;
 
     private Unbinder unbinder;
+    private Intent intentPhoneNumber;
 
     private List<ModelPhoneNumber> collection = new ArrayList();
 
     public DialogCallPhoneNumber(List<ModelPhoneNumber> collection) {
         this.collection = collection;
+    }
+
+    public void callPhone(ModelPhoneNumber phoneNumber) {
+        Utils.messageOutput(getContext(), "call");
+        intentPhoneNumber = new Intent(Intent.ACTION_CALL, Uri.parse(phoneNumber.getNumber()));
+
+        if (!PermissionUtils.Check_CALL_PHONE(getActivity()))
+            PermissionUtils.Request_CALL_PHONE(getActivity(), PERMISSION_CODE);
+
+        getActivity().startActivity(intentPhoneNumber);
     }
 
     @NonNull
@@ -48,6 +65,8 @@ public class DialogCallPhoneNumber extends DialogFragment {
 
         DialogAdapterRV adapterRV = new DialogAdapterRV();
         adapterRV.addToCollection(collection);
+
+        adapterRV.setOnItemClick((viewHolder, model) -> callPhone((ModelPhoneNumber) model));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
 

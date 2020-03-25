@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layoutActivityViewImage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    tools:context="com.application.arenda.MainWorkspace.Activities.ActivityViewImages">
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/pagerBigImageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/itemBtnBack"
+            android:layout_width="@dimen/sizeBtnActionBar"
+            android:layout_height="@dimen/sizeBtnActionBar"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="8dp"
+            android:background="@drawable/btn_background_light"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ab_item_back_white" />
+
+        <TextView
+            android:id="@+id/pagerIndicator"
+            style="@style/DefaultStyleTextRegular.Header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:textColor="@color/colorWhite"
+            tools:ignore="RelativeOverlap" />
+
+    </RelativeLayout>
+</FrameLayout>

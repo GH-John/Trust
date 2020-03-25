@@ -48,6 +48,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
+    implementation "androidx.fragment:fragment:1.2.3"
 
     implementation "io.reactivex.rxjava2:rxjava:2.2.16"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
@@ -65,12 +66,6 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.4.1'
 
-    implementation "android.arch.paging:runtime:1.0.1"
-
-    implementation 'androidx.paging:paging-runtime:2.1.1'
-
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.2'
@@ -82,4 +77,8 @@ dependencies {
     releaseImplementation 'com.readystatesoftware.chuck:library-no-op:1.1.0'
 
     implementation 'com.github.devlight.navigationtabstrip:navigationtabstrip:1.0.4'
+
+    implementation 'com.github.piasy:BigImageViewer:1.6.2'
+    implementation 'com.github.piasy:GlideImageLoader:1.6.2'
+    implementation 'com.github.piasy:ProgressPieIndicator:1.6.2'
 }

@@ -1,9 +1,11 @@
 package com.application.arenda.MainWorkspace.Fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -22,10 +25,11 @@ import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncemen
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.DialogCallPhoneNumber;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.ModelPhoneNumber;
-import com.application.arenda.Entities.Announcements.ViewAnnouncement.IDataViewPager;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
+import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
 import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.Utils;
+import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 
@@ -95,14 +99,19 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     @BindView(R.id.progressBarVA)
     ProgressBar progressBar;
 
+    @Nullable
+    @BindView(R.id.viewAnnouncementContainer)
+    ConstraintLayout viewAnnouncementContainer;
+
     private ImageView itemBtnBack, itemPhone,
             itemMessage, itemMore;
 
     private Unbinder unbinder;
     private AdapterViewPager adapterViewPager;
     private ViewPager.OnPageChangeListener pageListener;
-    private LoadingViewAnnouncement announcement = new LoadingViewAnnouncement();
+
     private InsertToFavorite favorite = new InsertToFavorite();
+    private LoadingViewAnnouncement announcement = new LoadingViewAnnouncement();
 
     private long idAnnouncement;
 
@@ -116,17 +125,26 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         Bundle bundle = getArguments();
 
-        if (bundle != null)
-            idAnnouncement = bundle.getLong("idAnnouncement");
+        idAnnouncement = bundle != null ? bundle.getLong("idAnnouncement") : 0;
 
         loadData();
 
         return view;
     }
 
+    private void setProgress(boolean b) {
+        if (b) {
+            progressBar.setVisibility(View.VISIBLE);
+            viewAnnouncementContainer.setVisibility(View.INVISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            viewAnnouncementContainer.setVisibility(View.VISIBLE);
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private void loadData() {
-        progressBar.setVisibility(View.VISIBLE);
+        setProgress(true);
 
         announcement.loadAnnouncement(getContext(), ServerUtils.URL_LOADING_VIEW_ANNOUNCEMENT, idAnnouncement)
                 .subscribeOn(Schedulers.io())
@@ -157,19 +175,19 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
                         selectHeart(model.isFavorite());
 
-                        setImgViewPager(model.getUriCollection());
+                        initViewPager(model.getUriCollection());
 
-                        progressBar.setVisibility(View.GONE);
+                        setProgress(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        progressBar.setVisibility(View.GONE);
+                        setProgress(false);
                     }
 
                     @Override
                     public void onComplete() {
-                        progressBar.setVisibility(View.GONE);
+                        setProgress(false);
                     }
                 });
     }
@@ -208,29 +226,36 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             btnInsertToFavorite.setImageDrawable(getContext().getDrawable(R.drawable.ic_heart_not_selected));
     }
 
-    private void setImgViewPager(List<Uri> uris) {
-        adapterViewPager = new AdapterViewPager(getContext(),
-                new IDataViewPager() {
-                    @Override
-                    public List<Uri> getCollectionUriBitmap() {
-                        return uris;
-                    }
+    private void initViewPager(List<Uri> uris) {
+        adapterViewPager = new AdapterViewPager(new ModelViewPager() {
+            @Override
+            public List<Uri> getCollectionUriBitmap() {
+                return uris;
+            }
 
-                    @Override
-                    public LinearLayout getDotsLayout() {
-                        return dotsLayout;
-                    }
+            @Override
+            public LinearLayout getDotsLayout() {
+                return dotsLayout;
+            }
 
-                    @Override
-                    public Drawable getDotUnselected() {
-                        return dotUnselected;
-                    }
+            @Override
+            public Drawable getDotUnselected() {
+                return dotUnselected;
+            }
 
-                    @Override
-                    public Drawable getDotSelected() {
-                        return dotSelected;
-                    }
-                });
+            @Override
+            public Drawable getDotSelected() {
+                return dotSelected;
+            }
+        });
+
+        adapterViewPager.setOnClickListener((uriList, selectedUri) -> {
+            Intent intent = new Intent(getActivity(), ActivityViewImages.class);
+            intent.putParcelableArrayListExtra("CollectionUri", (ArrayList<? extends Parcelable>) uriList);
+            intent.putExtra("SelectedUri", selectedUri);
+
+            startActivity(intent);
+        });
 
         imgViewPager.setAdapter(adapterViewPager);
     }

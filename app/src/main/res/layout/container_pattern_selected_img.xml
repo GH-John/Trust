@@ -38,6 +38,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:contentDescription="@string/todo"
-        app:srcCompat="@drawable/ic_close"
+        app:srcCompat="@drawable/ic_close_black"
         tools:ignore="RtlHardcoded" />
 </FrameLayout>

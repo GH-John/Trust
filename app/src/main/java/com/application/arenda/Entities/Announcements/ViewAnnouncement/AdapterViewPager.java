@@ -1,38 +1,29 @@
 package com.application.arenda.Entities.Announcements.ViewAnnouncement;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.viewpager.widget.PagerAdapter;
 
+import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.R;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 
 public class AdapterViewPager extends PagerAdapter {
 
-    private IDataViewPager data;
-    private Context context;
-    private ImageView[] dots;
-    private LayoutInflater layoutInflater;
+    private ModelViewPager data;
 
-    public AdapterViewPager(Context context, IDataViewPager data) {
+    private OnItemClickViewPager itemListener;
+
+    public AdapterViewPager(ModelViewPager data) {
         this.data = data;
-        this.context = context;
+    }
+
+    public void setOnClickListener(OnItemClickViewPager listener) {
+        this.itemListener = listener;
     }
 
     @Override
@@ -45,42 +36,18 @@ public class AdapterViewPager extends PagerAdapter {
         return view == object;
     }
 
-    @SuppressLint("CheckResult")
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        layoutInflater = layoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.vp_img_swiper_pattern, container, false);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.vp_img_swiper_pattern, container, false);
 
         ImageView imgContainer = view.findViewById(R.id.imgContainer);
-        ProgressBar progressBar = view.findViewById(R.id.progressBarLoadImg);
+        Uri uri = data.getCollectionUriBitmap().get(position);
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.color.colorNotFoundPicture);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
-        requestOptions.centerCrop();
-        requestOptions.timeout(3000);
+        if (itemListener != null)
+            imgContainer.setOnClickListener(v -> itemListener.onClick(data.getCollectionUriBitmap(), uri));
 
-        Glide.with(context)
-                .load(data.getCollectionUriBitmap().get(position))
-                .apply(requestOptions)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model,
-                                                Target<Drawable> target, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model,
-                                                   Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        progressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(imgContainer);
+        GlideUtils.loadImage(container.getContext(), uri, imgContainer);
 
         container.addView(view);
         return view;

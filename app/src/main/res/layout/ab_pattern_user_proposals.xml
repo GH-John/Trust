@@ -23,10 +23,10 @@
         android:layout_width="@dimen/sizeBtnActionBar"
         android:layout_height="@dimen/sizeBtnActionBar"
         android:layout_marginStart="16dp"
-        android:background="@drawable/btn_background"
+        android:background="@drawable/btn_background_dark"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toBottomOf="@+id/itemHeaderName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/itemHeaderName"
-        app:srcCompat="@drawable/ab_item_burger_menu" />
+        app:srcCompat="@drawable/ab_item_burger_menu_black" />
 </androidx.constraintlayout.widget.ConstraintLayout>
