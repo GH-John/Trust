@@ -2,6 +2,7 @@ package com.application.arenda.UI.Components.SideBar;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -61,6 +62,8 @@ public final class ContainerDrawerLayout implements SideBar,
 
         itemLogout = activity.findViewById(R.id.itemLogout);
         itemUserAccount = activity.findViewById(R.id.itemUserAccount);
+
+        drawerLayout.setScrimColor(Color.TRANSPARENT);
     }
 
     private void initListeners() {
