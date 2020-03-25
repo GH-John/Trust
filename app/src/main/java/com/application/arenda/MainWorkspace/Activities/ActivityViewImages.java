@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -36,6 +38,10 @@ public class ActivityViewImages extends AppCompatActivity {
     @BindView(R.id.pagerIndicator)
     TextView pagerIndicator;
 
+    @Nullable
+    @BindView(R.id.viewImagePanel)
+    RelativeLayout viewImagePanel;
+
     private Uri selectedUri;
     private List<Uri> uriList = new ArrayList<>();
 
@@ -55,7 +61,16 @@ public class ActivityViewImages extends AppCompatActivity {
         uriList = intent.getParcelableArrayListExtra("CollectionUri");
         selectedUri = intent.getParcelableExtra("SelectedUri");
 
-        pagerBigImageView.setAdapter(new AdapterPagerBigImageView(uriList));
+        AdapterPagerBigImageView adapter = new AdapterPagerBigImageView(uriList);
+
+        adapter.setImageClickListener(v -> {
+            if (viewImagePanel.getVisibility() == View.INVISIBLE)
+                viewImagePanel.setVisibility(View.VISIBLE);
+            else
+                viewImagePanel.setVisibility(View.INVISIBLE);
+        });
+
+        pagerBigImageView.setAdapter(adapter);
 
         pagerBigImageView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -76,7 +91,7 @@ public class ActivityViewImages extends AppCompatActivity {
 
         int positionSelectedUri = uriList.indexOf(selectedUri);
 
-        setIndicatorPosition(positionSelectedUri);
+        setIndicatorPosition(positionSelectedUri + 1);
 
         pagerBigImageView.setCurrentItem(positionSelectedUri);
 

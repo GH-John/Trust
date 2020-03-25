@@ -1,6 +1,7 @@
 package com.application.arenda.MainWorkspace.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -23,11 +24,11 @@ import androidx.viewpager.widget.ViewPager;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
 import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
-import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.DialogCallPhoneNumber;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.ModelPhoneNumber;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
 import com.application.arenda.Entities.Utils.Network.ServerUtils;
+import com.application.arenda.Entities.Utils.PermissionUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
 import com.application.arenda.R;
@@ -279,13 +280,35 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         itemMore = viewGroup.findViewById(R.id.itemMore);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
         itemBtnBack.setOnClickListener(v -> getActivity().onBackPressed());
         itemPhone.setOnClickListener(v -> {
-            if (phoneNumbers.size() > 0)
-                new DialogCallPhoneNumber(phoneNumbers).show(getActivity().getSupportFragmentManager(), DialogCallPhoneNumber.TAG);
-            else
+            if (phoneNumbers.size() > 0) {
+                String[] array = new String[phoneNumbers.size()];
+
+                for (int i = 0; i < phoneNumbers.size(); i++) {
+                    array[i] = phoneNumbers.get(i).getNumber();
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                builder.setTitle(R.string.dialog_phone_number_title);
+                builder.setItems(array, (dialog, which) -> {
+
+                    if (!PermissionUtils.Check_CALL_PHONE(getActivity()))
+                        PermissionUtils.Request_CALL_PHONE(getActivity(), 4322);
+                    else
+                        getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
+                });
+
+                builder.create();
+
+                builder.show();
+
+//                new DialogCallPhoneNumber(phoneNumbers).show(getActivity().getSupportFragmentManager(), DialogCallPhoneNumber.TAG);
+            } else
                 Utils.messageOutput(getContext(), getContext().getResources().getString(R.string.dialog_phone_number_not_found));
         });
         itemMessage.setOnClickListener(v -> Utils.messageOutput(getContext(), "message"));

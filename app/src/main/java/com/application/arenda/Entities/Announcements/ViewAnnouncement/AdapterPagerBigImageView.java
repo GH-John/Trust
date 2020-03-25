@@ -3,6 +3,7 @@ package com.application.arenda.Entities.Announcements.ViewAnnouncement;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -17,8 +18,14 @@ import java.util.List;
 public class AdapterPagerBigImageView extends PagerAdapter {
     private List<Uri> uriList;
 
+    private OnClickListener listener;
+
     public AdapterPagerBigImageView(List<Uri> uriList) {
         this.uriList = uriList;
+    }
+
+    public void setImageClickListener(OnClickListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -38,6 +45,9 @@ public class AdapterPagerBigImageView extends PagerAdapter {
 
         BigImageView imgContainer = view.findViewById(R.id.vpBigImageView);
         imgContainer.setProgressIndicator(new ProgressPieIndicator());
+
+        if (listener != null)
+            imgContainer.setOnClickListener(listener);
 
         imgContainer.showImage(uriList.get(position));
 

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.application.arenda.UI.ContainerImg.CustomViews.CustomViewImg;
-import com.application.arenda.UI.Thumbnail.ThumbnailCompression;
+import com.application.arenda.Entities.Utils.BitmapUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class ContainerFiller implements AdapterContainer {
                 imageUri = data.getData();
 
                 if (!mapBitmap.containsKey(imageUri)) {
-                    bitmap = ThumbnailCompression.getThumbnail(context, 1000, imageUri);
+                    bitmap = BitmapUtils.getThumbnail(context, 1000, imageUri);
                     mapBitmap.put(imageUri, bitmap);
                 }
 
@@ -54,7 +54,7 @@ public class ContainerFiller implements AdapterContainer {
                     imageUri = clipData.getItemAt(i).getUri();
 
                     if (!mapBitmap.containsKey(imageUri)) {
-                        bitmap = ThumbnailCompression.getThumbnail(context, 1000, imageUri);
+                        bitmap = BitmapUtils.getThumbnail(context, 1000, imageUri);
                         mapBitmap.put(imageUri, bitmap);
                     }
                 }

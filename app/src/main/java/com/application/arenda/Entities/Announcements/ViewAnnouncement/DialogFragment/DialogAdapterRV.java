@@ -25,7 +25,6 @@ public class DialogAdapterRV extends BaseAdapter<ModelPhoneNumber, DialogViewHol
     public void onBindViewHolder(@NonNull DialogViewHolderRV holder, int position) {
         holder.onBind(getItem(position), position);
 
-        if (itemClick != null)
-            holder.setOnItemClick(itemClick);
+        holder.setOnItemClick(itemClick);
     }
 }

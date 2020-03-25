@@ -1,13 +1,17 @@
 package com.application.arenda.Entities.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.application.arenda.R;
 import com.jakewharton.threetenabp.AndroidThreeTen;
@@ -32,6 +36,19 @@ public class Utils {
 
     public static Handler getHandler() {
         return handler;
+    }
+
+    public static void changeStatusBarColor(Activity activity) {
+        Window window = activity.getWindow();
+
+// clear FLAG_TRANSLUCENT_STATUS flag:
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+// add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+// finally change the color
+        window.setStatusBarColor(ContextCompat.getColor(activity, R.color.colorAccent));
     }
 
     public static String getFormatingDate(Context context, String date) {

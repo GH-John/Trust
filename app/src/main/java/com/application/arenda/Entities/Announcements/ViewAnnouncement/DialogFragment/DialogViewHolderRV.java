@@ -27,6 +27,7 @@ public class DialogViewHolderRV extends BaseViewHolder {
 
     public DialogViewHolderRV(@NonNull View itemView) {
         super(itemView);
+
         ButterKnife.bind(this, itemView);
     }
 
@@ -39,6 +40,8 @@ public class DialogViewHolderRV extends BaseViewHolder {
     public void setOnItemClick(OnItemClick itemClick) {
         if (itemClick != null && modelPhoneNumber != null) {
             itemView.setOnClickListener(v -> itemClick.onClick(this, modelPhoneNumber));
+        } else {
+            throw new NullPointerException("Model not initialized");
         }
     }
 

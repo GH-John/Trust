@@ -1,12 +1,11 @@
 package com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.Entities.Utils.PermissionUtils;
-import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
 import java.util.ArrayList;
@@ -43,38 +41,30 @@ public class DialogCallPhoneNumber extends DialogFragment {
     }
 
     public void callPhone(ModelPhoneNumber phoneNumber) {
-        Utils.messageOutput(getContext(), "call");
-        intentPhoneNumber = new Intent(Intent.ACTION_CALL, Uri.parse(phoneNumber.getNumber()));
+        intentPhoneNumber = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber.getNumber()));
 
         if (!PermissionUtils.Check_CALL_PHONE(getActivity()))
             PermissionUtils.Request_CALL_PHONE(getActivity(), PERMISSION_CODE);
-
-        getActivity().startActivity(intentPhoneNumber);
+        else
+            getActivity().startActivity(intentPhoneNumber);
     }
 
-    @NonNull
-    @SuppressLint("InflateParams")
+    @Nullable
     @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_call_phone_number, null);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_call_phone_number, container);
 
         unbinder = ButterKnife.bind(this, view);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
 
         DialogAdapterRV adapterRV = new DialogAdapterRV();
         adapterRV.addToCollection(collection);
 
         adapterRV.setOnItemClick((viewHolder, model) -> callPhone((ModelPhoneNumber) model));
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-
         recyclerView.setAdapter(adapterRV);
-
-        builder.setView(view);
-
-        return builder.create();
+        return view;
     }
 
     @Override

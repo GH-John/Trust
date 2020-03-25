@@ -20,7 +20,7 @@ import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.User.UserCookie;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
-import com.application.arenda.UI.Thumbnail.ThumbnailCompression;
+import com.application.arenda.Entities.Utils.BitmapUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,7 +150,7 @@ public class InsertAnnouncement implements IInsertAnnouncement {
                     params.put("phone_3", announcement.getPhone_3());
                     params.put("isVisible_phone_3", String.valueOf(announcement.isVisiblePhone_3()));
 
-                    params.put("encodedString", ThumbnailCompression.getEncodeBase64(announcement.getBitmap()));
+                    params.put("encodedString", BitmapUtils.getEncodeBase64(announcement.getBitmap()));
 
 //                params.put("placementDate", new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault())
 //                .format(Calendar.getInstance().getTime()));
@@ -224,7 +224,7 @@ public class InsertAnnouncement implements IInsertAnnouncement {
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
                     params.put("idAnnouncement", String.valueOf(idAnnouncement));
-                    params.put("encodedString", ThumbnailCompression.getEncodeBase64(bitmap));
+                    params.put("encodedString", BitmapUtils.getEncodeBase64(bitmap));
                     return params;
                 }
             };
