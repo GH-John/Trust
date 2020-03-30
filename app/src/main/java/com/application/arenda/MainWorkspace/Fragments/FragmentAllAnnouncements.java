@@ -74,11 +74,18 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
     private String searchQuery;
 
+    private ContainerFragments containerFragments;
+
     public static FragmentAllAnnouncements getInstance() {
         if (fragmentAllAnnouncements == null)
             fragmentAllAnnouncements = new FragmentAllAnnouncements();
 
         return fragmentAllAnnouncements;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -95,6 +102,8 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     private void init() {
         loadData = new LoadingAnnouncements(getContext());
         rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
+
+        containerFragments = ContainerFragments.getInstance(getContext());
 
         initAdapters();
         initStyles();
@@ -244,7 +253,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         bundle.putLong("idAnnouncement", idAnnouncement);
         announcement.setArguments(bundle);
 
-        ContainerFragments.getInstance().replaceFragmentInContainer(announcement);
+        containerFragments.add(announcement);
     }
 
     public void searchAnnouncements(String query, long lastId) {

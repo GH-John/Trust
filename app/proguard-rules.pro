@@ -37,3 +37,8 @@
 
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
+
+# Firebase
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepclassmembers class com.yourcompany.models.** { *; }

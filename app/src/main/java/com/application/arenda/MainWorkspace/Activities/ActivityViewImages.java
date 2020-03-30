@@ -45,6 +45,8 @@ public class ActivityViewImages extends AppCompatActivity {
     private Uri selectedUri;
     private List<Uri> uriList = new ArrayList<>();
 
+    private AdapterPagerBigImageView adapterPagerBigImageView;
+
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,21 +58,30 @@ public class ActivityViewImages extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        initComponents();
+
+        initListeners();
+
+        initAdapter();
+    }
+
+    private void initComponents() {
         Intent intent = getIntent();
 
         uriList = intent.getParcelableArrayListExtra("CollectionUri");
         selectedUri = intent.getParcelableExtra("SelectedUri");
 
-        AdapterPagerBigImageView adapter = new AdapterPagerBigImageView(uriList);
+        adapterPagerBigImageView = new AdapterPagerBigImageView(uriList);
+    }
 
-        adapter.setImageClickListener(v -> {
-            if (viewImagePanel.getVisibility() == View.INVISIBLE)
+    private void initListeners() {
+        adapterPagerBigImageView.setImageClickListener(v -> {
+            if (viewImagePanel.getVisibility() == View.INVISIBLE) {
                 viewImagePanel.setVisibility(View.VISIBLE);
-            else
+            } else {
                 viewImagePanel.setVisibility(View.INVISIBLE);
+            }
         });
-
-        pagerBigImageView.setAdapter(adapter);
 
         pagerBigImageView.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -89,13 +100,17 @@ public class ActivityViewImages extends AppCompatActivity {
             }
         });
 
+        itemBtnBack.setOnClickListener(v -> onBackPressed());
+    }
+
+    private void initAdapter() {
+        pagerBigImageView.setAdapter(adapterPagerBigImageView);
+
         int positionSelectedUri = uriList.indexOf(selectedUri);
 
         setIndicatorPosition(positionSelectedUri + 1);
 
         pagerBigImageView.setCurrentItem(positionSelectedUri);
-
-        itemBtnBack.setOnClickListener(v -> onBackPressed());
     }
 
     @SuppressLint("SetTextI18n")

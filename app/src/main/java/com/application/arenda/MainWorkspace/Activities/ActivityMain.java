@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.CustomActionBar;
 import com.application.arenda.UI.Components.BottomNavigation.CustomBottomNavigation;
@@ -35,25 +36,13 @@ public class ActivityMain extends AppCompatActivity {
         ButterKnife.bind(this);
 
         init();
-
-        initializationManager();
     }
 
     private void init() {
-        containerFragments = ContainerFragments.getInstance();
+        containerFragments = ContainerFragments.getInstance(this);
         containerDrawerLayout = ContainerDrawerLayout.getInstance(this);
-    }
 
-    private void initializationManager() {
         ComponentManager.addLink(containerFragments, customBottomNavigation, customActionBar, containerDrawerLayout);
-
-        containerFragments.start(this);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        containerFragments.notifyObservers(containerFragments.getCurrentFragment(this));
+        containerFragments.add(FragmentAllAnnouncements.getInstance());
     }
 }

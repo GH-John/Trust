@@ -250,12 +250,13 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             }
         });
 
-        adapterViewPager.setOnClickListener((uriList, selectedUri) -> {
-            Intent intent = new Intent(getActivity(), ActivityViewImages.class);
-            intent.putParcelableArrayListExtra("CollectionUri", (ArrayList<? extends Parcelable>) uriList);
-            intent.putExtra("SelectedUri", selectedUri);
+        Intent activityViewImages = new Intent(getActivity(), ActivityViewImages.class);
 
-            startActivity(intent);
+        adapterViewPager.setOnClickListener((uriList, selectedUri) -> {
+            activityViewImages.putParcelableArrayListExtra("CollectionUri", (ArrayList<? extends Parcelable>) uriList);
+            activityViewImages.putExtra("SelectedUri", selectedUri);
+
+            startActivity(activityViewImages);
         });
 
         imgViewPager.setAdapter(adapterViewPager);

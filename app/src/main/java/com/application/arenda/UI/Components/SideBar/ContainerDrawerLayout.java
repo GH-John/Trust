@@ -42,6 +42,8 @@ public final class ContainerDrawerLayout implements SideBar,
 
     private ImageButton itemUserAccount, itemLogout;
 
+    private ContainerFragments containerFragments;
+
     private ContainerDrawerLayout(Activity activity) {
         initComponents(activity);
 
@@ -62,6 +64,8 @@ public final class ContainerDrawerLayout implements SideBar,
 
         itemLogout = activity.findViewById(R.id.itemLogout);
         itemUserAccount = activity.findViewById(R.id.itemUserAccount);
+
+        containerFragments = ContainerFragments.getInstance(activity);
 
         drawerLayout.setScrimColor(Color.TRANSPARENT);
     }
@@ -102,34 +106,34 @@ public final class ContainerDrawerLayout implements SideBar,
         switch (item.getItemId()) {
 
             case R.id.item_all_announcements:
-                ContainerFragments.getInstance().replaceFragmentInContainer(FragmentAllAnnouncements.getInstance());
+                containerFragments.add(FragmentAllAnnouncements.getInstance());
                 return true;
             case R.id.item_user_announcements:
-                ContainerFragments.getInstance().replaceFragmentInContainer(FragmentUserAnnouncements.getInstance());
+                containerFragments.add(FragmentUserAnnouncements.getInstance());
                 return true;
             case R.id.item_proposals:
-                ContainerFragments.getInstance().replaceFragmentInContainer(FragmentUserProposals.getInstance());
+                containerFragments.add(FragmentUserProposals.getInstance());
                 return true;
             case R.id.item_statistics:
-                ContainerFragments.getInstance().replaceFragmentInContainer(FragmentUserStatistics.getInstance());
+                containerFragments.add(FragmentUserStatistics.getInstance());
                 return true;
             case R.id.item_favorites:
-                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentUserFavorites());
+                containerFragments.add(new FragmentUserFavorites());
                 return true;
             case R.id.item_wallet:
-                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentUserWallet());
+                containerFragments.add(new FragmentUserWallet());
                 return true;
             case R.id.item_services:
-                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentServices());
+                containerFragments.add(new FragmentServices());
                 return true;
             case R.id.item_regulations:
-                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentRegulations());
+                containerFragments.add(new FragmentRegulations());
                 return true;
             case R.id.item_customer_service:
-                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentCustomerService());
+                containerFragments.add(new FragmentCustomerService());
                 return true;
             case R.id.item_prohibited:
-                ContainerFragments.getInstance().replaceFragmentInContainer(new FragmentProhibited());
+                containerFragments.add(new FragmentProhibited());
                 return true;
         }
 

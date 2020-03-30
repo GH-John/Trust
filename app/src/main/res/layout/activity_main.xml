@@ -22,9 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.fragment.app.FragmentContainerView
+            <FrameLayout
                 android:id="@+id/containerFragments"
-                android:name="com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -80,12 +79,6 @@
             android:layout_gravity="end"
             android:background="@drawable/sb_right_navigation_background">
 
-            <fragment
-                android:id="@+id/sbRightMenuContainer"
-                android:name="com.application.arenda.MainWorkspace.Fragments.FragmentFilterAllAnnouncements"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="FragmentTagUsage" />
         </FrameLayout>
 
     </androidx.drawerlayout.widget.DrawerLayout>

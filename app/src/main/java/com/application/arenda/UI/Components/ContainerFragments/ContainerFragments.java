@@ -6,9 +6,12 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ComponentManager;
+
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -16,46 +19,89 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
     @SuppressLint("StaticFieldLeak")
     private static ContainerFragments containerFragments;
     private final int idContainer = R.id.containerFragments;
-    private boolean isLoad = false;
-    private Fragment fragment;
 
-    private ContainerFragments() {
+    private List<Fragment> fragments;
+
+    private FragmentManager fragmentManager;
+
+    private boolean isLoad = false;
+
+    private ContainerFragments(Context context) {
+        fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
+        initListeners();
     }
 
-    public static ContainerFragments getInstance() {
+    public static ContainerFragments getInstance(Context context) {
         if (containerFragments == null)
-            containerFragments = new ContainerFragments();
+            containerFragments = new ContainerFragments(context);
 
         return containerFragments;
     }
 
-    public void start(Context context) {
-        try {
-            fragment = getCurrentFragment(context);
-            notifyObservers(fragment);
-        } catch (NullPointerException | IllegalArgumentException e) {
-            Timber.d(e);
+    public void initListeners() {
+        getSupportFragmentManager().addOnBackStackChangedListener(() -> {
+            notifyObservers(getCurrentFragment());
+
+            Timber.tag("FRAGMENT_MANAGER").i("Size - %s", getSupportFragmentManager().getFragments().size());
+
+            fragments = getFragments();
+
+            for (int i = 0; i < fragments.size(); i++) {
+                Timber.tag("FRAGMENT_MANAGER").i("Fragment - %s", fragments.get(i).getClass().getSimpleName());
+            }
+        });
+    }
+
+    public Fragment getCurrentFragment() {
+        return getSupportFragmentManager().findFragmentById(idContainer);
+    }
+
+    public FragmentManager getSupportFragmentManager() {
+        return fragmentManager;
+    }
+
+    public void add(@NonNull Fragment fragment) {
+        if (!isLoad && fragment != null) {
+            if (!fragment.isVisible()) {
+                Timber.tag("FRAGMENT_MANAGER").i("Visible - false");
+
+                isLoad = true;
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(idContainer, fragment, fragment.getClass().getSimpleName())
+                        .addToBackStack(fragment.getClass().getSimpleName())
+                        .commit();
+
+                isLoad = false;
+            } else {
+                Timber.tag("FRAGMENT_MANAGER").i("Visible - true");
+
+                isLoad = true;
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(idContainer, fragment, fragment.getClass().getSimpleName())
+                        .addToBackStack(fragment.getClass().getSimpleName())
+                        .commit();
+
+                isLoad = false;
+            }
         }
     }
 
-    public Fragment getCurrentFragment(Context context) {
-        return ((AppCompatActivity) context).getSupportFragmentManager().findFragmentById(idContainer);
+    public boolean isContains(Fragment fragment) {
+        return fragment != null && getFragments().contains(fragment);
     }
 
-    public void replaceFragmentInContainer(Fragment fragment) {
-        this.fragment = getCurrentFragment(this.fragment.getContext());
-        if (!this.fragment.equals(fragment) && !isLoad) {
-            isLoad = true;
-            ((AppCompatActivity) this.fragment.getContext()).getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(idContainer, fragment)
-                    .addToBackStack(String.valueOf(fragment.getClass()))
-                    .commit();
+    public List<Fragment> getFragments() {
+        return getSupportFragmentManager().getFragments();
+    }
 
-            isLoad = false;
+    public int getBackStackEntryCount() {
+        return getSupportFragmentManager().getBackStackEntryCount();
+    }
 
-            notifyObservers(fragment);
-        }
+    public void popBackStack() {
+        getSupportFragmentManager().popBackStack();
     }
 
     @Override
@@ -67,6 +113,6 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
     @Override
     public void update(@NonNull Object object) {
         if (object instanceof Fragment)
-            replaceFragmentInContainer((Fragment) object);
+            add((Fragment) object);
     }
 }

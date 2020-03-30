@@ -35,6 +35,8 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
             leftPanelBN,
             rightPanelBN;
 
+    private ContainerFragments containerFragments;
+
     public CustomBottomNavigation(Context context, AttributeSet attrs) {
         super(context, attrs);
         initializationComponents(context, attrs);
@@ -56,6 +58,8 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
         itemInsertAnnouncement = findViewById(R.id.itemAddAnnouncement);
         itemUserStatistics = findViewById(R.id.itemUserStatistics);
         itemUserProposals = findViewById(R.id.itemUserProposals);
+
+        containerFragments = ContainerFragments.getInstance(context);
     }
 
     @SuppressLint({"ResourceAsColor"})
@@ -82,20 +86,20 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
 
     @Override
     public void itemListener() {
-        itemAllAnnouncements.setOnClickListener(v -> ContainerFragments.getInstance()
-                .replaceFragmentInContainer(FragmentAllAnnouncements.getInstance()));
+        itemAllAnnouncements.setOnClickListener(v -> containerFragments
+                .add(FragmentAllAnnouncements.getInstance()));
 
-        itemUserAnnouncements.setOnClickListener(v -> ContainerFragments.getInstance()
-                .replaceFragmentInContainer(FragmentUserAnnouncements.getInstance()));
+        itemUserAnnouncements.setOnClickListener(v -> containerFragments
+                .add(FragmentUserAnnouncements.getInstance()));
 
-        itemInsertAnnouncement.setOnClickListener(v -> ContainerFragments.getInstance()
-                .replaceFragmentInContainer(FragmentInsertAnnouncement.getInstance()));
+        itemInsertAnnouncement.setOnClickListener(v -> containerFragments
+                .add(FragmentInsertAnnouncement.getInstance()));
 
-        itemUserProposals.setOnClickListener(v -> ContainerFragments.getInstance()
-                .replaceFragmentInContainer(FragmentUserProposals.getInstance()));
+        itemUserProposals.setOnClickListener(v -> containerFragments
+                .add(FragmentUserProposals.getInstance()));
 
-        itemUserStatistics.setOnClickListener(v -> ContainerFragments.getInstance()
-                .replaceFragmentInContainer(FragmentUserStatistics.getInstance()));
+        itemUserStatistics.setOnClickListener(v -> containerFragments
+                .add(FragmentUserStatistics.getInstance()));
     }
 
     @Override

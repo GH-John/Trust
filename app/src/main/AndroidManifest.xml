@@ -18,6 +18,15 @@
         android:theme="@style/AppThemeLight"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,InnerclassSeparator">
+
+<!--        <service-->
+<!--            android:name=".MainWorkspace.Activities.FirebaseController"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
+
         <activity
             android:name=".MainWorkspace.Activities.ActivityViewImages"
             android:theme="@style/AppThemeDark" />
@@ -52,6 +61,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing"
             tools:ignore="InnerclassSeparator,LockedOrientationActivity" />
+
+        <meta-data
+            android:name="firebase_performance_logcat_enabled"
+            android:value="true" />
+
     </application>
 
 </manifest>
