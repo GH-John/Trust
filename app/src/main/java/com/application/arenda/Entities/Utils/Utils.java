@@ -202,7 +202,7 @@ public class Utils {
             for (EditText field : fields) {
                 matcher = pattern.matcher(field.getText().toString());
                 if (!matcher.find()) {
-                    field.setError(context.getResources().getString(R.string.error_incorrect_email));
+                    field.setError(context.getResources().getString(R.string.error_incorrect_format_email));
                     countIncorrectFields++;
                 }
             }

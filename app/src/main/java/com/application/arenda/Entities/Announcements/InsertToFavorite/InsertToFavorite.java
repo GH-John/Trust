@@ -57,7 +57,7 @@ public class InsertToFavorite implements IInsertToFavorite {
                                 Log.d(getClass().toString(), response);
 
                                 observableEmitter.onComplete();
-                                Utils.messageOutput(context, context.getString(R.string.error_user_not_identified));
+                                Utils.messageOutput(context, context.getString(R.string.error_user_not_found));
                                 break;
                             }
 

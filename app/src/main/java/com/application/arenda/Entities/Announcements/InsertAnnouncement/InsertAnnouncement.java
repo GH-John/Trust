@@ -50,7 +50,7 @@ public class InsertAnnouncement implements IInsertAnnouncement {
                             case "0": {
                                 observableEmitter.onComplete();
 
-                                Utils.messageOutput(context, context.getString(R.string.error_user_not_identified));
+                                Utils.messageOutput(context, context.getString(R.string.error_user_not_found));
                                 break;
                             }
 

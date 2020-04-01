@@ -2,70 +2,34 @@ package com.application.arenda.MainWorkspace.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.application.arenda.Entities.Authorization.AuthorizationUseToken;
-import com.application.arenda.Entities.User.UserCookie;
+import com.application.arenda.Entities.Authentication.Authentication;
 import com.application.arenda.R;
-import com.application.arenda.UI.ComponentBackground;
-import com.application.arenda.UI.Components.ComponentManager;
-import com.application.arenda.UI.Style.SetBtnStyle;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public class ActivityLoading extends AppCompatActivity implements ComponentManager.Observer {
-    @BindView(R.id.btnReconnect)
-    Button btnReconnect;
+public class ActivityLoading extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        ButterKnife.bind(this);
-
-        initializationListeners();
-        initializationStyles();
+        checkUser();
     }
 
-    private void initializationListeners() {
-        btnReconnect.setOnClickListener(v -> {
-            btnReconnect.setVisibility(View.INVISIBLE);
-            new AuthorizationUseToken(getApplicationContext()).authorization(UserCookie.getToken(getApplicationContext()), ActivityLoading.this);
-        });
-    }
+    private void checkUser() {
+        Intent intent;
 
-    private void initializationStyles() {
-        SetBtnStyle.setStyle(new ComponentBackground(getApplicationContext(), R.color.colorAccent, R.color.shadowColor,
-                6f, 0f, 3f, 20f), btnReconnect);
-    }
+        if (Authentication.getCurrentUser() != null)
+            intent = new Intent(ActivityLoading.this, ActivityMain.class);
+        else
+            intent = new Intent(ActivityLoading.this, ActivityPreview.class);
 
-    private void checkToken() {
-        String token = UserCookie.getToken(getApplicationContext());
-        if (token.isEmpty())
-            startActivity(new Intent(ActivityLoading.this, ActivityPreview.class));
-        else {
-            new AuthorizationUseToken(getApplicationContext()).authorization(token, this);
-        }
-    }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        checkToken();
-    }
+        startActivity(intent);
 
-    @Override
-    public void update(@NonNull Object object) {
-        if (object instanceof Boolean) {
-            if ((Boolean) object)
-                startActivity(new Intent(ActivityLoading.this, ActivityMain.class));
-            else btnReconnect.setVisibility(View.VISIBLE);
-        }
+        finish();
     }
 }

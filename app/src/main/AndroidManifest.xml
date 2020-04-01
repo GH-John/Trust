@@ -32,7 +32,6 @@
             android:theme="@style/AppThemeDark" />
         <activity
             android:name=".MainWorkspace.Activities.ActivityLoading"
-            android:noHistory="true"
             tools:ignore="InnerclassSeparator">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,13 +45,11 @@
             tools:ignore="InnerclassSeparator,LockedOrientationActivity" />
         <activity
             android:name=".MainWorkspace.Activities.ActivityRegistration"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator,LockedOrientationActivity" />
         <activity
             android:name=".MainWorkspace.Activities.ActivityAuthorization"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="InnerclassSeparator,LockedOrientationActivity" />

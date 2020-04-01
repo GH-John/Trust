@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.application.arenda.Entities.Utils.ObjectStreamHelper;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
