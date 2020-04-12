@@ -8,37 +8,10 @@
     android:background="@color/backgroundApp"
     tools:context="com.application.arenda.MainWorkspace.Activities.ActivityRegistration">
 
-    <ImageView
-        android:id="@+id/imagePinReg"
-        android:layout_width="260dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="40dp"
-        android:contentDescription="@string/todo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/headerReg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:fontFamily="@font/gotham_office_bold_regular"
-        android:text="@string/header_registration"
-        android:textColor="@color/colorText"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="@+id/imagePinReg"
-        app:layout_constraintEnd_toEndOf="@+id/imagePinReg"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@id/imagePinReg"
-        app:layout_constraintTop_toTopOf="@+id/imagePinReg" />
-
     <ScrollView
         android:id="@+id/scrollViewReg"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="40dp"
         android:layout_weight="0"
         android:fillViewport="true"
         android:measureAllChildren="false"
@@ -48,21 +21,48 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imagePinReg"
+        app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ScrollViewCount">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/imagePinReg"
+                android:layout_width="260dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="40dp"
+                android:contentDescription="@string/todo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/headerReg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:fontFamily="@font/gotham_office_bold_regular"
+                android:text="@string/header_registration"
+                android:textColor="@color/colorText"
+                android:textSize="30sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imagePinReg"
+                app:layout_constraintEnd_toEndOf="@+id/imagePinReg"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@id/imagePinReg"
+                app:layout_constraintTop_toTopOf="@+id/imagePinReg" />
+
             <RadioGroup
                 android:id="@+id/radioGroup"
                 style="@style/DefaultStyleRadioGroup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toBottomOf="@+id/imagePinReg">
 
                 <RadioButton
                     android:id="@+id/radioBtnPrivatePerson"
@@ -184,11 +184,12 @@
                 style="@style/DefaultStylePrimaryBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/btn_registration_reg"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldPhoneReg" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 

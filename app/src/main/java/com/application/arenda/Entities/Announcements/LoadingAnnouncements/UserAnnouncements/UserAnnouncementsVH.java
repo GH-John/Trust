@@ -10,11 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.application.arenda.Entities.Models.Announcement;
-import com.application.arenda.Entities.Models.BackendlessTable;
+import com.application.arenda.Entities.Models.IModel;
+import com.application.arenda.Entities.Models.ModelUserAnnouncement;
 import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
-import com.application.arenda.Entities.Utils.Utils;
+import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.R;
 
 import butterknife.BindView;
@@ -57,7 +57,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
     @BindView(R.id.textCountFavorites)
     TextView textCountFavorites;
 
-    private Announcement model;
+    private ModelUserAnnouncement model;
     private int position;
 
     public UserAnnouncementsVH(@NonNull View itemView) {
@@ -78,8 +78,8 @@ public class UserAnnouncementsVH extends BaseViewHolder {
     }
 
     @Override
-    public void onBind(BackendlessTable model, int position) {
-        this.model = (Announcement) model;
+    public void onBind(IModel model, int position) {
+        this.model = (ModelUserAnnouncement) model;
         this.position = position;
 
         bind();
@@ -87,10 +87,10 @@ public class UserAnnouncementsVH extends BaseViewHolder {
 
     @SuppressLint("SetTextI18n")
     private void bind() {
-//        GlideUtils.loadImage(itemView.getContext(), model.getMainUriBitmap(), imgProduct);
+        GlideUtils.loadImage(itemView.getContext(), model.getMainUriBitmap(), imgProduct);
 
-        textPlacementDate.setText(Utils.getFormatingDate(itemView.getContext(), model.getCreated().toString()));
-        textRatingAnnouncement.setText(String.valueOf(model.getRating()));
+        textPlacementDate.setText(model.getPlacementDate());
+        textRatingAnnouncement.setText(String.valueOf(model.getRate()));
 
         textCountViewers.setText(String.valueOf(model.getCountViewers()));
         textCountFavorites.setText(String.valueOf(model.getCountFavorites()));

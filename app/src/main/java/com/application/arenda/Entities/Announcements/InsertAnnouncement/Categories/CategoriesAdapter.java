@@ -1,14 +1,14 @@
-package com.application.arenda.Entities.Announcements.Categories;
+package com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories;
 
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.Entities.Models.Category;
+import com.application.arenda.Entities.Models.ModelCategory;
 import com.application.arenda.Entities.RecyclerView.BaseAdapter;
 import com.github.florent37.expansionpanel.viewgroup.ExpansionLayoutCollection;
 
-public class CategoriesAdapter extends BaseAdapter<Category, CategoriesVH> {
+public class CategoriesAdapter extends BaseAdapter<ModelCategory, CategoriesVH> {
     private final ExpansionLayoutCollection expansionLayoutCollection;
 
     private CategoriesVH.OnClickItemCategory listener;

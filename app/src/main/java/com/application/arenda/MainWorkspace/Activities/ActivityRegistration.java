@@ -8,9 +8,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.application.arenda.Entities.Authentication.ApiAuthentication;
 import com.application.arenda.Entities.Authentication.Authentication;
+import com.application.arenda.Entities.Authentication.OnAuthenticationListener;
 import com.application.arenda.Entities.User.AccountType;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
@@ -18,9 +21,9 @@ import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.SetDrawableImageViews;
 import com.application.arenda.UI.Style.SetBtnStyle;
 import com.application.arenda.UI.Style.SetFieldStyle;
-import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 
 import timber.log.Timber;
 
@@ -77,6 +80,7 @@ public class ActivityRegistration extends AppCompatActivity {
         btnReg = findViewById(R.id.btnReg);
 
         authentication = Authentication.getInstance();
+
         Utils.setPhoneMask(getResources().getString(R.string.hint_phone), fieldPhoneReg);
     }
 
@@ -98,6 +102,45 @@ public class ActivityRegistration extends AppCompatActivity {
     }
 
     private void initListeners() {
+        authentication.setOnAuthenticationListener(new OnAuthenticationListener() {
+            @Override
+            public void onComplete(@NonNull ApiAuthentication.AuthenticationCodes code) {
+                switch (code) {
+                    case USER_WITH_LOGIN_EXISTS:
+                        progressBarReg.setVisibility(View.INVISIBLE);
+                        fieldLoginReg.setError(getString(R.string.error_user_login_exists));
+                        break;
+                    case USER_EXISTS:
+                        progressBarReg.setVisibility(View.INVISIBLE);
+                        fieldEmailReg.setError(getString(R.string.error_user_exists));
+                        break;
+                    case USER_SUCCESS_REGISTERED:
+                        progressBarReg.setVisibility(View.INVISIBLE);
+
+                        onBackPressed();
+                        finish();
+                        break;
+
+                    case USER_UNSUCCESS_REGISTERED:
+                    case UNKNOW_ERROR:
+                    case NETWORK_ERROR:
+                    case NOT_CONNECT_TO_DB:
+                        progressBarReg.setVisibility(View.INVISIBLE);
+                        Utils.messageOutput(ActivityRegistration.this, getString(R.string.error_check_internet_connect));
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                Timber.e(t);
+                progressBarReg.setVisibility(View.INVISIBLE);
+                if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
+                    Utils.messageOutput(ActivityRegistration.this, getString(R.string.error_check_internet_connect));
+                }
+            }
+        });
+
         btnReg.setOnClickListener(v -> {
             if (!Utils.fieldIsEmpty(getApplicationContext(),
                     fieldNameReg,
@@ -118,30 +161,14 @@ public class ActivityRegistration extends AppCompatActivity {
                     Utils.isConfirmPassword(getApplicationContext(), fieldPassReg, fieldConfirmPassReg)) {
                 progressBarReg.setVisibility(View.VISIBLE);
 
-                authentication.registration(fieldNameReg.getText().toString().trim(),
+                authentication.registration(this,
+                        fieldNameReg.getText().toString().trim(),
                         fieldLastNameReg.getText().toString().trim(),
                         fieldLoginReg.getText().toString().trim(),
                         fieldEmailReg.getText().toString().trim(),
                         fieldPassReg.getText().toString().trim(),
                         fieldPhoneReg.getText().toString().trim(),
-                        getAccountType(),
-                        new AsyncCallback<BackendlessUser>() {
-                            @Override
-                            public void handleResponse(BackendlessUser response) {
-                                progressBarReg.setVisibility(View.INVISIBLE);
-
-                                onBackPressed();
-                                finish();
-                            }
-
-                            @Override
-                            public void handleFault(BackendlessFault fault) {
-                                progressBarReg.setVisibility(View.INVISIBLE);
-
-                                Utils.messageOutput(getApplicationContext(), "Error: - " + fault.getMessage());
-                                Timber.e(fault.getMessage());
-                            }
-                        });
+                        getAccountType());
             }
         });
     }

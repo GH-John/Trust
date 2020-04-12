@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
@@ -23,10 +22,6 @@ android {
             debuggable true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-
-            buildConfigField "String", "BackendlessURL", "\"https://api.backendless.com\""
-            buildConfigField "String", "BackendlessAppID", "\"19296DC2-5955-5C8B-FFE2-69EECE7C0100\""
-            buildConfigField "String", "BackendlessApiKey", "\"30582E07-1801-428A-BDC6-3512DF237F35\""
 
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
@@ -53,10 +48,6 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String", "BackendlessURL", "\"https://api.backendless.com\""
-            buildConfigField "String", "BackendlessAppID", "\"19296DC2-5955-5C8B-FFE2-69EECE7C0100\""
-            buildConfigField "String", "BackendlessApiKey", "\"30582E07-1801-428A-BDC6-3512DF237F35\""
-
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
 
@@ -77,14 +68,6 @@ android {
 
         }
     }
-
-    defaultConfig {
-        multiDexEnabled true
-    }
-
-    dexOptions {
-        javaMaxHeapSize "3g" //specify the heap size for the dex process
-    }
 }
 
 dependencies {
@@ -97,7 +80,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation "androidx.fragment:fragment:1.2.4"
+    implementation "androidx.fragment:fragment:1.2.3"
 
     implementation "io.reactivex.rxjava2:rxjava:2.2.16"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
@@ -132,19 +115,11 @@ dependencies {
     implementation 'com.github.piasy:GlideImageLoader:1.6.2'
     implementation 'com.github.piasy:ProgressPieIndicator:1.6.2'
 
-    implementation 'com.google.firebase:firebase-analytics:17.3.0'
-    implementation 'com.google.firebase:firebase-core:17.3.0'
-    implementation 'com.google.firebase:firebase-messaging:20.1.5'
-
-    implementation group: 'com.backendless', name: 'backendless', version: '5.7.0'
-    implementation ( group: 'io.socket', name: 'socket.io-client', version: '1.0.0' ) {
-        //      excluding org.json which is provided by Android
-        exclude group: 'org.json', module: 'json'
-    }
-
     implementation 'com.github.florent37:expansionpanel:1.2.2'
 
     implementation 'org.greenrobot:eventbus:3.2.0'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    implementation 'com.karumi:dexter:6.1.0'
 }

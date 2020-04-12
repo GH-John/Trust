@@ -19,7 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.application.arenda.BuildConfig;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.UserAnnouncements.UserAnnouncementsAdapter;
+import com.application.arenda.Entities.Models.ModelUserAnnouncement;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
@@ -28,9 +31,15 @@ import com.application.arenda.UI.Components.SideBar.ItemSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.DisplayUtils;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public final class FragmentUserAnnouncements extends Fragment implements AdapterActionBar, ItemSideBar {
     @SuppressLint("StaticFieldLeak")
@@ -58,6 +67,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
 
     private String searchQuery;
 
+    private LoadingAnnouncements loadData;
     private LinearLayoutManager rvLayoutManager;
     private RVOnScrollListener rvOnScrollListener;
     private UserAnnouncementsAdapter userAnnouncementsAdapter;
@@ -80,13 +90,14 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     }
 
     private void init() {
+        loadData = new LoadingAnnouncements(getContext());
         rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
         initAdapters();
         initStyles();
         initListeners();
 
-        loadListAnnouncement("0");
+        loadListAnnouncement(0);
     }
 
     private void initAdapters() {
@@ -127,16 +138,100 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
         setLoadMoreForUserAnnouncements();
     }
 
-    public void loadListAnnouncement(String lastID) {
+    public void loadListAnnouncement(long lastID) {
+        if (!userAnnouncementsAdapter.isLoading()) {
+            userAnnouncementsAdapter.setLoading(true);
 
+            loadData.loadUserAnnouncements(lastID, 10, BuildConfig.URL_LOADING_USER_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelUserAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<ModelUserAnnouncement> collection) {
+                            userAnnouncementsAdapter.addToCollection(collection);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            userAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
     }
 
     public void refreshLayout() {
+        if (!userAnnouncementsAdapter.isLoading()) {
+            userAnnouncementsAdapter.setLoading(true);
 
+            loadData.loadUserAnnouncements(0, 10, BuildConfig.URL_LOADING_USER_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelUserAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(List<ModelUserAnnouncement> collection) {
+                            userAnnouncementsAdapter.rewriteCollection(collection);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            userAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
     }
 
-    public void searchAnnouncements(String query, String lastID) {
+    public void searchAnnouncements(String query, long lastID) {
+        if (!userAnnouncementsAdapter.isLoading()) {
+            userAnnouncementsAdapter.setLoading(true);
+            swipeRefreshLayout.setRefreshing(true);
 
+            loadData.searchToUserAnnouncements(lastID, 10, query, BuildConfig.URL_LOADING_USER_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelUserAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<ModelUserAnnouncement> modelUserAnnouncements) {
+                            userAnnouncementsAdapter.rewriteCollection(modelUserAnnouncements);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            userAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
     }
 
     private void setLoadMoreForUserAnnouncements() {
@@ -205,7 +300,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
 
                 if (!searchQuery.isEmpty()) {
                     itemHeaderName.setText(searchQuery);
-                    searchAnnouncements(searchQuery, "0");
+                    searchAnnouncements(searchQuery, 0);
 
                     setLoadMoreForSearchAnnouncement();
                 } else {

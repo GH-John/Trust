@@ -1,4 +1,4 @@
-package com.application.arenda.Entities.Announcements.Categories;
+package com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.Entities.Models.BackendlessTable;
-import com.application.arenda.Entities.Models.Subcategory;
+import com.application.arenda.Entities.Models.IModel;
+import com.application.arenda.Entities.Models.ModelSubcategory;
 import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.R;
@@ -23,7 +23,7 @@ public class SubcategoryVH extends BaseViewHolder {
     @BindView(R.id.subcategoryTitle)
     TextView subcategoryTitle;
 
-    private Subcategory subcategory;
+    private ModelSubcategory modelSubcategory;
 
     public SubcategoryVH(@NonNull View itemView) {
         super(itemView);
@@ -43,21 +43,21 @@ public class SubcategoryVH extends BaseViewHolder {
     }
 
     @Override
-    public void onBind(BackendlessTable model, int position) {
-        subcategory = (Subcategory) model;
+    public void onBind(IModel model, int position) {
+        modelSubcategory = (ModelSubcategory) model;
 
-        subcategoryTitle.setText(subcategory.getName());
+        subcategoryTitle.setText(modelSubcategory.getName());
     }
 
-    public String getIdSubcategory() {
-        return subcategory.getObjectId();
+    public long getIdSubcategory() {
+        return modelSubcategory.getID();
     }
 
-    public String getIdCategory() {
-        return subcategory.getObjectId();
+    public long getIdCategory() {
+        return modelSubcategory.getIdCategory();
     }
 
     public void setOnClickListener(OnItemClick itemClick){
-        itemView.setOnClickListener(v -> itemClick.onClick(SubcategoryVH.this, subcategory));
+        itemView.setOnClickListener(v -> itemClick.onClick(SubcategoryVH.this, modelSubcategory));
     }
 }

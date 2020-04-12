@@ -38,16 +38,9 @@
 # RxAndroid
 -dontwarn rx.internal.util.unsafe.**
 
-# Eventbus
+#Eventbus
 -keepattributes *Annotation*
--keepclassmembers class ** {@org.greenrobot.eventbus.Subscribe <methods>;}
+-keepclassmembers class ** {
+    @org.greenrobot.eventbus.Subscribe <methods>;
+}
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
-
-# Firebase
--keepattributes Signature
-
-# Backendless
--dontwarn com.backendless.**
--dontwarn weborb.**
--keep class weborb.** {*;}
--keep class com.backendless.** {*;}

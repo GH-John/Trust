@@ -1,14 +1,14 @@
-package com.application.arenda.Entities.Announcements.Categories;
+package com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories;
 
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.Entities.Models.Subcategory;
+import com.application.arenda.Entities.Models.ModelSubcategory;
 import com.application.arenda.Entities.RecyclerView.BaseAdapter;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
 
-public class SubcategoriesAdapter extends BaseAdapter<Subcategory, SubcategoryVH> {
+public class SubcategoriesAdapter extends BaseAdapter<ModelSubcategory, SubcategoryVH> {
     private OnItemClick itemClick;
 
     @NonNull

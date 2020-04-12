@@ -8,16 +8,20 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.arenda.Entities.Announcements.Announcement;
 import com.application.arenda.Entities.Announcements.ApiAnnouncement;
-import com.application.arenda.Entities.Announcements.Categories.CategoriesAdapter;
-import com.application.arenda.Entities.Announcements.Categories.EventSendID;
-import com.application.arenda.Entities.Announcements.Categories.SubcategoriesAdapter;
-import com.application.arenda.Entities.Models.Category;
-import com.application.arenda.Entities.Models.Subcategory;
+import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.CategoriesAdapter;
+import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.EventSendID;
+import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.SubcategoriesAdapter;
+import com.application.arenda.Entities.Announcements.OnAnnouncementListener;
+import com.application.arenda.Entities.Models.ModelCategory;
+import com.application.arenda.Entities.Models.ModelSubcategory;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
@@ -25,6 +29,8 @@ import com.application.arenda.UI.Components.ContainerFragments.ContainerFragment
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,7 +57,7 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
     private Unbinder unbinder;
 
-    private ApiAnnouncement apiAnnouncement;
+    private Announcement apiAnnouncement;
     private CategoriesAdapter categoriesAdapter;
     private CompositeDisposable compositeDisposable;
 
@@ -83,13 +89,38 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
     private void initComponents() {
         categoriesAdapter = new CategoriesAdapter();
-        apiAnnouncement = ApiAnnouncement.getInstance();
+        apiAnnouncement = Announcement.getInstance();
 
         rvCategories.setHasFixedSize(true);
         rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
     }
 
     private void initListeners() {
+        OnAnnouncementListener announcementListener = new OnAnnouncementListener() {
+            @Override
+            public void onComplete(@NonNull ApiAnnouncement.AnnouncementCodes code) {
+                switch (code) {
+                    case SUCCESS_CATEGORIES_LOADED:
+                        break;
+
+                    case UNSUCCESS_CATEGORIES_LOADED:
+                    case NOT_CONNECT_TO_DB:
+                    case NETWORK_ERROR:
+                    case UNKNOW_ERROR:
+                        Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                Timber.e(t);
+                if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
+                    Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
+                }
+            }
+        };
+
         categoriesAdapter.setOnClickCategory((idCategory, rvItemCategory) -> {
 
             if (rvItemCategory.getAdapter() == null || rvItemCategory.getAdapter().getItemCount() == 0) {
@@ -97,25 +128,23 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
                 SubcategoriesAdapter adapter = new SubcategoriesAdapter();
 
                 adapter.setItemClick((viewHolder, model) -> {
-                    EventBus.getDefault().post(new EventSendID(model.getObjectId(), ((Subcategory) model).getName()));
+                    EventBus.getDefault().post(new EventSendID((int) model.getID(), ((ModelSubcategory) model).getName()));
 
                     ContainerFragments.getInstance(getContext()).popBackStack();
                 });
 
-                apiAnnouncement.getSubcategories(getContext(), idCategory)
+                apiAnnouncement.getSubcategories(idCategory, announcementListener)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<List<Subcategory>>() {
+                        .subscribe(new Observer<List<ModelSubcategory>>() {
                             @Override
                             public void onSubscribe(Disposable d) {
                                 compositeDisposable.add(d);
                             }
 
                             @Override
-                            public void onNext(List<Subcategory> modelSubcategories) {
-                                rvItemCategory.setLayoutManager(new LinearLayoutManager(rvItemCategory.getContext(), RecyclerView.VERTICAL, false));
+                            public void onNext(List<ModelSubcategory> modelSubcategories) {
                                 adapter.addToCollection(modelSubcategories);
-                                rvItemCategory.setAdapter(adapter);
                             }
 
                             @Override
@@ -125,29 +154,27 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
                             @Override
                             public void onComplete() {
-
+                                rvItemCategory.setLayoutManager(new LinearLayoutManager(rvItemCategory.getContext(), RecyclerView.VERTICAL, false));
+                                rvItemCategory.setAdapter(adapter);
                             }
                         });
             }
         });
     }
 
-    @SuppressLint("CheckResult")
     private void initAdapters() {
-        apiAnnouncement.getCategories(getContext())
+        apiAnnouncement.getCategories(null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Category>>() {
+                .subscribe(new Observer<List<ModelCategory>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         compositeDisposable.add(d);
                     }
 
                     @Override
-                    public void onNext(List<Category> categories) {
-                        rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-                        categoriesAdapter.addToCollection(categories);
-                        rvCategories.setAdapter(categoriesAdapter);
+                    public void onNext(List<ModelCategory> modelCategories) {
+                        categoriesAdapter.addToCollection(modelCategories);
                     }
 
                     @Override
@@ -157,7 +184,8 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
                     @Override
                     public void onComplete() {
-
+                        rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+                        rvCategories.setAdapter(categoriesAdapter);
                     }
                 });
     }

@@ -1,22 +1,36 @@
 package com.application.arenda.Entities.Authentication;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.Entities.Models.User;
 import com.application.arenda.Entities.User.AccountType;
-import com.backendless.Backendless;
-import com.backendless.BackendlessUser;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.local.UserIdStorageFactory;
+import com.application.arenda.Entities.User.UserCookie;
+import com.application.arenda.Entities.User.UserProfile;
+import com.application.arenda.Entities.Utils.Retrofit.ApiClient;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import timber.log.Timber;
 
 public final class Authentication {
     @SuppressLint("StaticFieldLeak")
     private static Authentication instance;
 
+    private OnAuthenticationListener authenticationListener;
+
+    private ApiAuthentication authentication;
+
     private Authentication() {
+        authentication = ApiClient.getApi().create(ApiAuthentication.class);
     }
 
     public static Authentication getInstance() {
@@ -26,93 +40,124 @@ public final class Authentication {
         return instance;
     }
 
-    public void registration(@NonNull String name,
+    private void authentication(@NonNull Context context, @NonNull Response<ResponseBody> response) {
+        String res = null;
+        try {
+            res = response.body().string();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (res != null) {
+            try {
+                JSONObject object = new JSONObject(res);
+
+                String token = object.getString("token");
+                String message = object.getString("response");
+
+                if (!token.equals("-1"))
+                    UserCookie.putProfile(context, token, new UserProfile());
+
+                if (message != null)
+                    authenticationListener.onComplete(ApiAuthentication.AuthenticationCodes.valueOf(message));
+                else
+                    authenticationListener.onComplete(ApiAuthentication.AuthenticationCodes.NETWORK_ERROR);
+
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
+    }
+
+    public void registration(@NonNull Context context,
+                             @NonNull String name,
                              @NonNull String lastName,
                              @NonNull String login,
                              @NonNull String email,
                              @NonNull String password,
                              @NonNull String phone,
-                             @NonNull AccountType accountType,
-                             @NonNull AsyncCallback<BackendlessUser> callback) {
+                             @NonNull AccountType accountType) {
 
-        BackendlessUser user = new BackendlessUser();
 
-        user.setEmail(email);
-        user.setPassword(password);
+        Call<ResponseBody> registrationCall = authentication
+                .registration(name, lastName, login, email, password, phone, accountType.getType());
 
-        user.setProperty("name", name);
-        user.setProperty("lastName", lastName);
-
-        user.setProperty("login", login);
-
-        user.setProperty("phone_1", phone);
-
-        user.setProperty("accountType", accountType.getType());
-
-        Backendless.UserService.register(user, callback);
-    }
-
-    public void authorization(@NonNull String email,
-                              @NonNull String password,
-                              @NonNull AsyncCallback<BackendlessUser> callback) {
-
-        Backendless.UserService.login(email, password, callback, true);
-    }
-
-    public void restorePassword(@NonNull String email,
-                                @NonNull AsyncCallback<Void> callback) {
-        Backendless.UserService.restorePassword(email, callback);
-    }
-
-    public void getUserData(@NonNull AsyncCallback<User> callback) {
-        Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
+        registrationCall.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void handleResponse(Boolean response) {
-                if (response) {
-                    Backendless.Data.of(BackendlessUser.class).findById(getUserID(), new AsyncCallback<BackendlessUser>() {
-                        @Override
-                        public void handleResponse(BackendlessUser response) {
-                            User user = new User();
-
-                            user.setObjectId(response.getObjectId());
-                            user.setName(String.valueOf(response.getProperty("name")));
-                            user.setLastName(String.valueOf(response.getProperty("lastName")));
-
-                            user.setLogin(String.valueOf(response.getProperty("login")));
-                            user.setEmail(String.valueOf(response.getProperty("email")));
-                            user.setUserPhotoUri(String.valueOf(response.getProperty("userPhotoUri")));
-
-                            user.setAddress_1(String.valueOf(response.getProperty("address_1")));
-                            user.setAddress_2(String.valueOf(response.getProperty("address_2")));
-                            user.setAddress_3(String.valueOf(response.getProperty("address_3")));
-
-                            user.setPhone_1(String.valueOf(response.getProperty("phone_1")));
-                            user.setPhone_2(String.valueOf(response.getProperty("phone_2")));
-                            user.setPhone_3(String.valueOf(response.getProperty("phone_3")));
-
-                            user.setAccountType(AccountType.valueOf(String.valueOf(response.getProperty("accountType"))));
-                            user.setBalance(Double.parseDouble(String.valueOf(response.getProperty("balance"))));
-                            user.setRating(Double.parseDouble(String.valueOf(response.getProperty("rating"))));
-
-                            callback.handleResponse(user);
-                        }
-
-                        @Override
-                        public void handleFault(BackendlessFault fault) {
-                            callback.handleFault(fault);
-                        }
-                    });
-                }
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                authentication(context, response);
             }
 
             @Override
-            public void handleFault(BackendlessFault fault) {
-                callback.handleFault(fault);
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                authenticationListener.onFailure(t);
             }
         });
     }
 
-    private String getUserID() {
-        return UserIdStorageFactory.instance().getStorage().get();
+    public void authorization(@NonNull Context context,
+                              @NonNull String email,
+                              @NonNull String password) {
+        Call<ResponseBody> registrationCall = authentication
+                .authorization(email, password);
+
+        registrationCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                authentication(context, response);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                authenticationListener.onFailure(t);
+            }
+        });
+    }
+
+    public void authorizationUseToken(Context context) {
+        String token = UserCookie.getToken(context);
+        if (token != null) {
+            Call<ResponseBody> registrationCall = authentication
+                    .authorizationUseToken(token);
+
+            registrationCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    String res = null;
+                    try {
+                        res = response.body().string();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (res != null) {
+                        try {
+                            JSONObject object = new JSONObject(res);
+
+                            String message = object.getString("response");
+
+                            if (message != null)
+                                authenticationListener.onComplete(ApiAuthentication.AuthenticationCodes.valueOf(message));
+                            else
+                                authenticationListener.onComplete(ApiAuthentication.AuthenticationCodes.NETWORK_ERROR);
+
+                        } catch (JSONException e) {
+                            Timber.e(e);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    authenticationListener.onFailure(t);
+                }
+            });
+        } else {
+            authenticationListener.onComplete(ApiAuthentication.AuthenticationCodes.WRONG_TOKEN);
+        }
+    }
+
+    public void setOnAuthenticationListener(OnAuthenticationListener listener) {
+        authenticationListener = listener;
     }
 }

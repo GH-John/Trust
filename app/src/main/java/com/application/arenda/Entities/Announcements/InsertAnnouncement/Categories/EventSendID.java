@@ -1,12 +1,12 @@
-package com.application.arenda.Entities.Announcements.Categories;
+package com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories;
 
 import org.greenrobot.eventbus.Subscribe;
 
 public class EventSendID {
-    private String idSubcategory;
+    private int idSubcategory;
     private String name;
 
-    public EventSendID(String idSubcategory, String name) {
+    public EventSendID(int idSubcategory, String name) {
         this.idSubcategory = idSubcategory;
         this.name = name;
     }
@@ -20,11 +20,11 @@ public class EventSendID {
     }
 
     @Subscribe
-    public void setSelectedSubcategory(String idSubcategory) {
+    public void setSelectedSubcategory(int idSubcategory) {
         this.idSubcategory = idSubcategory;
     }
 
-    public String getIdSubcategory() {
+    public int getIdSubcategory() {
         return idSubcategory;
     }
 }

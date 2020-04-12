@@ -20,9 +20,10 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.arenda.Entities.Announcements.Announcement;
 import com.application.arenda.Entities.Announcements.ApiAnnouncement;
-import com.application.arenda.Entities.Announcements.Categories.EventSendID;
-import com.application.arenda.Entities.Models.Announcement;
+import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.EventSendID;
+import com.application.arenda.Entities.Models.ModelInsertAnnouncement;
 import com.application.arenda.Entities.Utils.DecimalDigitsInputFilter;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
@@ -40,6 +41,8 @@ import com.application.arenda.UI.Style.SetFieldStyle;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -48,6 +51,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public final class FragmentInsertAnnouncement extends Fragment implements ItemSideBar, AdapterActionBar, AdapterGalery {
     @SuppressLint("StaticFieldLeak")
@@ -102,15 +106,15 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     private SideBar sideBar;
     private Unbinder unbinder;
-    private ApiAnnouncement apiAnnouncement;
+    private Announcement apiAnnouncement;
     private ContainerFiller containerFiller = new ContainerFiller();
-    private Announcement announcement = new Announcement();
+    private ModelInsertAnnouncement announcement = new ModelInsertAnnouncement();
 
     private ContainerFragments containerFragments;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private String selectedSubcategory = "-1";
+    private int selectedSubcategory = -1;
 
     private FragmentInsertAnnouncement() {
         notificationCompatLoadImage = new NotificationCompat.Builder(getContext(), CHANNEL_LOADING_IMAGES_CODE);
@@ -138,7 +142,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     }
 
     private void initComponents() {
-        apiAnnouncement = ApiAnnouncement.getInstance();
+        apiAnnouncement = Announcement.getInstance();
         containerFragments = ContainerFragments.getInstance(getContext());
 
         containerSelectedImages.setAdapterGalery(this);
@@ -176,23 +180,21 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
         btnCreateAnnouncement.setOnClickListener(v -> {
             if (containerFiller.getSize() > 0 &&
                     !Utils.fieldIsEmpty(getContext(), fieldProductName, fieldProductDescription, fieldCostProduct)) {
-//                announcement.setUrisBitmap(new ArrayList<>(containerFiller.getUris()));
-//                announcement.setMainUriBitmap(containerFiller.getFirstUri());
+                announcement.setUrisBitmap(new ArrayList<>(containerFiller.getUris()));
+                announcement.setMainUriBitmap(containerFiller.getFirstUri());
 
                 announcement.setName(fieldProductName.getText().toString());
-                announcement.addSubcategory(selectedSubcategory);
+                announcement.setIdSubcategory(selectedSubcategory);
                 announcement.setDescription(fieldProductDescription.getText().toString());
 
-                announcement.setCostToBYN(Double.parseDouble(fieldCostProduct.getText().toString()));
-                announcement.setCostToUSD(0d);
-                announcement.setCostToEUR(0d);
+                announcement.setCostToBYN(Float.parseFloat(fieldCostProduct.getText().toString()));
+                announcement.setCostToUSD(0f);
+                announcement.setCostToEUR(0f);
 
                 announcement.setAddress("адрес");
 
                 announcement.setPhone_1("+375(29)659-50-73");
-
                 announcement.setPhone_2("+375(29)681-37-83");
-
                 announcement.setPhone_3("+375(44)702-04-50");
 
                 insertAnnouncement(announcement);
@@ -200,33 +202,55 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
         });
     }
 
-    public void insertAnnouncement(@NonNull Announcement announcement) {
-        apiAnnouncement.insertAnnouncement(announcement)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-                        if (aBoolean) {
-                            resetComponents();
+    public void insertAnnouncement(@NonNull ModelInsertAnnouncement announcement) {
+        if (announcement != null) {
+            apiAnnouncement.insertAnnouncement(getContext(), announcement)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<ApiAnnouncement.AnnouncementCodes>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            compositeDisposable.add(d);
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
+                        @Override
+                        public void onNext(ApiAnnouncement.AnnouncementCodes announcementCodes) {
+                            switch (announcementCodes) {
+                                case SUCCESS_ANNOUNCEMENT_ADDED:
+                                case SUCCESS_PICTURES_ADDED:
+                                    resetComponents();
+                                    Utils.messageOutput(getContext(), getString(R.string.success_announcement_added));
+                                    break;
 
-                    }
+                                case USER_NOT_FOUND:
+                                    Utils.messageOutput(getContext(), getString(R.string.error_user_not_found));
+                                    break;
 
-                    @Override
-                    public void onComplete() {
+                                case NETWORK_ERROR:
+                                    Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
+                                    break;
 
-                    }
-                });
+                                case PHP_INI_NOT_LOADED:
+                                    throw new IllegalArgumentException(ApiAnnouncement.AnnouncementCodes.PHP_INI_NOT_LOADED.name());
+
+                                case UNSUCCESS_ANNOUNCEMENT_ADDED:
+                                case UNKNOW_ERROR:
+                                    Utils.messageOutput(getContext(), getString(R.string.unknown_error));
+                                    break;
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.e(e);
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
     }
 
     private void resetComponents() {

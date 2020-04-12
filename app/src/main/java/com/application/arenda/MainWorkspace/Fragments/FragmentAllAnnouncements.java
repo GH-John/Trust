@@ -22,6 +22,8 @@ import com.application.arenda.BuildConfig;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsAdapter;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsVH;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
+import com.application.arenda.Entities.Models.ModelAllAnnouncement;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
@@ -30,6 +32,8 @@ import com.application.arenda.UI.Components.ContainerFragments.ContainerFragment
 import com.application.arenda.UI.Components.SideBar.ItemSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.DisplayUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,6 +69,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     private RVOnScrollListener rvOnScrollListener;
     private AllAnnouncementsAdapter allAnnouncementsAdapter;
 
+    private LoadingAnnouncements loadData;
     private InsertToFavorite insertToFavorite = new InsertToFavorite();
 
     private String searchQuery;
@@ -95,6 +100,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     private void init() {
+        loadData = new LoadingAnnouncements(getContext());
         rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
         containerFragments = ContainerFragments.getInstance(getContext());
@@ -103,7 +109,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         initStyles();
         initListeners();
 
-        loadListAnnouncement("0");
+        loadListAnnouncement(0);
     }
 
     private void initAdapters() {
@@ -124,11 +130,11 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
         recyclerView.setAdapter(allAnnouncementsAdapter);
 
-        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> onItemClick(model.getObjectId()));
+        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> onItemClick(model.getID()));
 
         allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) -> insertToFavorite
                 .insertToFavorite(getContext(), BuildConfig.URL_INSERT_TO_FAVORITE,
-                        model.getObjectId())
+                        model.getID())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Boolean>() {
@@ -176,29 +182,111 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID));
     }
 
-    public void loadListAnnouncement(String lastID) {
+    public void loadListAnnouncement(long lastID) {
+        if (!allAnnouncementsAdapter.isLoading()) {
+            allAnnouncementsAdapter.setLoading(true);
 
+
+            loadData.loadAllAnnouncements(lastID, 10, BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<ModelAllAnnouncement> collection) {
+                            allAnnouncementsAdapter.addToCollection(collection);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            allAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
     }
 
     public void refreshLayout() {
+        if (!allAnnouncementsAdapter.isLoading()) {
+            allAnnouncementsAdapter.setLoading(true);
 
+
+            loadData.loadAllAnnouncements(0, 10, BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(List<ModelAllAnnouncement> collection) {
+                            allAnnouncementsAdapter.rewriteCollection(collection);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            allAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
+        }
     }
 
-    private void onItemClick(String idAnnouncement) {
+    private void onItemClick(long idAnnouncement) {
         FragmentViewAnnouncement announcement = new FragmentViewAnnouncement();
         Bundle bundle = new Bundle();
-        bundle.putString("idAnnouncement", idAnnouncement);
+        bundle.putLong("idAnnouncement", idAnnouncement);
         announcement.setArguments(bundle);
 
         containerFragments.add(announcement);
     }
 
-    public void searchAnnouncements(String query, String lastId) {
+    public void searchAnnouncements(String query, long lastId) {
         if (!allAnnouncementsAdapter.isLoading()) {
             allAnnouncementsAdapter.setLoading(true);
             swipeRefreshLayout.setRefreshing(true);
 
 
+            loadData.searchToAllAnnouncements(lastId, 10, query, BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
+                            allAnnouncementsAdapter.rewriteCollection(modelAllAnnouncements);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            allAnnouncementsAdapter.setLoading(false);
+                            swipeRefreshLayout.setRefreshing(false);
+
+                        }
+                    });
         }
     }
 
@@ -260,7 +348,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
                 if (!searchQuery.isEmpty()) {
                     itemHeaderName.setText(searchQuery);
-                    searchAnnouncements(searchQuery, "0");
+                    searchAnnouncements(searchQuery, 0);
 
                     setLoadMoreForSearchAnnouncement();
                 } else {

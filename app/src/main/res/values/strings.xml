@@ -10,10 +10,11 @@
     </string-array>
 
     <string name="error_empty_field">Пустое поле</string>
-    <string name="error_user_not_found">Неверная почта</string>
     <string name="error_wrong_password">Неверный пароль</string>
     <string name="error_select_category">Выберите категорию</string>
+    <string name="error_confirm_password">Пароли не совпадают</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
+    <string name="error_user_not_found">Пользователь не найден</string>
     <string name="error_please_select_category">Выберите категорию</string>
     <string name="error_incorrect_format_email">Неверный формат почты</string>
     <string name="error_fail_load_list">Ошибка: не удалось загрузить список</string>
@@ -74,6 +75,7 @@
 
     <string name="hint_code">Код</string>
     <string name="hint_email">Email</string>
+    <string name="hint_login">Логин</string>
     <string name="hint_user_name">Имя</string>
     <string name="hint_password">Пароль</string>
     <string name="hint_cost_product">0.00</string>
@@ -83,6 +85,7 @@
     <string name="hint_user_last_name">Фамилия</string>
     <string name="hint_phone">+375(__)___-__-__</string>
     <string name="hint_product_description">Описание</string>
+    <string name="hint_confirm_password">Подтвердите пароль</string>
     <string name="hint_description_get_code">Последние 4 цифры входящего номера телефона</string>
 
     <string name="text_rate">Рейтинг</string>
@@ -99,6 +102,7 @@
     <string name="text_some_text">Какой-то текст</string>
     <string name="text_cost_announcement">5 руб./ч.</string>
     <string name="text_add_photos">Добавить фотографию</string>
+    <string name="text_forgot_password">Забыли пароль?</string>
     <string name="text_hourly_cost">Почасовая стоимость</string>
     <string name="text_made_for_people">сделано для людей</string>
     <string name="text_select_category">Выберите категорию</string>
@@ -167,10 +171,8 @@
 
     <string name="notification_loading_text_insert_announcement">Загрузка …</string>
     <string name="notification_title_insert_announcement">Загрузка объявления</string>
-    <string name="internal_storage">Internal storage</string>
-    <string name="hint_login">Логин</string>
-    <string name="hint_confirm_password">Подтвердите пароль</string>
-    <string name="error_confirm_password">Пароли не совпадают</string>
-    <string name="text_forgot_password">Забыли пароль?</string>
+
     <string name="instruction_send_to_email">Инструкция по восстановлению отправлена на почту</string>
+    <string name="error_user_login_exists">Пользоваель с таким логином уже существует</string>
+    <string name="text_select_picture">Выберите изображение</string>
 </resources>

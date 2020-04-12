@@ -67,15 +67,9 @@ public class Utils {
     public static String getFormatingDate(Context context, String date) {
         LocalDate today = LocalDate.now();
 
-        //"E, MMM dd yyyy HH:mm:ss"
-        //Thu, Dec 31 1998 23:37:50
+        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
-        //E MMM dd HH:mm:ss  yyyy
-        //Fri Apr 10 10:11:53 GMT+03:00 2020
-
-
-        LocalDateTime dateTime = LocalDateTime.parse(date);
-//        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime test = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 0)
             return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));

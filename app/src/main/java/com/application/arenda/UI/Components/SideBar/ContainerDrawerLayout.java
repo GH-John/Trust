@@ -13,8 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.application.arenda.Entities.Authentication.Authentication;
-import com.application.arenda.Entities.Models.User;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityAuthorization;
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
@@ -30,8 +28,6 @@ import com.application.arenda.MainWorkspace.Fragments.Proposals.FragmentUserProp
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ComponentManager;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
 import com.google.android.material.navigation.NavigationView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -59,7 +55,6 @@ public final class ContainerDrawerLayout implements SideBar,
 
     private ContainerFragments containerFragments;
 
-    private Authentication authentication;
 
     private ContainerDrawerLayout(Activity activity) {
         initComponents(activity);
@@ -77,8 +72,6 @@ public final class ContainerDrawerLayout implements SideBar,
     }
 
     private void initComponents(Activity activity) {
-        authentication = Authentication.getInstance();
-
         leftMenu = activity.findViewById(R.id.sbLeftMenu);
         headerNavigation = leftMenu.getHeaderView(0);
 
@@ -99,19 +92,7 @@ public final class ContainerDrawerLayout implements SideBar,
 
     @SuppressLint("SetTextI18n")
     private void inflateComponents(Context context) {
-        authentication.getUserData(new AsyncCallback<User>() {
-            @Override
-            public void handleResponse(User response) {
-                itemUserName.setText(response.getLastName() + " " + response.getName());
-                itemUserLogin.setText(response.getLogin());
-            }
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Utils.messageOutput(context, "Error - " + fault.getMessage());
-                Timber.e(fault.getMessage());
-            }
-        });
     }
 
     private void initListeners() {

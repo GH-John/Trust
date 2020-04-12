@@ -1,141 +1,75 @@
 package com.application.arenda.Entities.Announcements;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
-import com.application.arenda.Entities.Models.Announcement;
-import com.application.arenda.Entities.Models.Category;
-import com.application.arenda.Entities.Models.Subcategory;
-import com.backendless.Backendless;
-import com.backendless.async.callback.AsyncCallback;
-import com.backendless.exceptions.BackendlessFault;
-import com.backendless.persistence.DataQueryBuilder;
+import com.application.arenda.BuildConfig;
 
 import java.util.List;
-import java.util.Map;
 
-import io.reactivex.Observable;
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import timber.log.Timber;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
+import retrofit2.http.POST;
+import retrofit2.http.Part;
 
-public class ApiAnnouncement {
-    @SuppressLint("StaticFieldLeak")
-    private static ApiAnnouncement apiAnnouncement;
+public interface ApiAnnouncement {
+    @POST(BuildConfig.URL_LOAD_CATEGORY)
+    Call<ResponseBody> getCategories();
 
-    private ApiAnnouncement() {
-    }
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOAD_SUBCATEGORY)
+    Call<ResponseBody> getSubcategories(@Field("idCategory") long idCategory);
 
-    public static ApiAnnouncement getInstance() {
-        if (apiAnnouncement == null)
-            apiAnnouncement = new ApiAnnouncement();
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_INSERT_ANNOUNCEMENT)
+    Call<ResponseBody> insertAnnouncement(
+            @Field("token") String token,
+            @Field("idSubcategory") int idSubcategory,
 
-        return apiAnnouncement;
-    }
+            @Field("name") String name,
+            @Field("description") String description,
 
-    public Observable<Boolean> insertAnnouncement(Announcement announcement) {
-        return Observable.create(emitter -> Backendless.Data.of("Announcements").save(Announcement.convertToMap(announcement), new AsyncCallback<Map>() {
-            @Override
-            public void handleResponse(Map response) {
-                Backendless.Data.of("Announcements")
-                        .setRelation(response,
-                                "subcategory:Subcategories:n",
-                                announcement.getSubcategories(),
-                                new AsyncCallback<Integer>() {
-                                    @Override
-                                    public void handleResponse(Integer response) {
-                                        if (response > 0)
-                                            emitter.onNext(true);
-                                        else
-                                            emitter.onNext(false);
-                                    }
+            @Field("costToBYN") float costToBYN,
+            @Field("costToUSD") float costToUSD,
+            @Field("costToEUR") float costToEUR,
 
-                                    @Override
-                                    public void handleFault(BackendlessFault fault) {
-                                        Timber.e(fault.toString());
-                                    }
-                                });
-            }
+            @Field("address") String address,
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Timber.e(fault.toString());
-            }
-        }));
-    }
+            @Field("phone_1") String phone_1,
 
-    public Observable<List<Category>> getCategories(Context context) {
-        return Observable.create(emitter -> Backendless.Data.of("Categories").find(new AsyncCallback<List<Map>>() {
-            @SuppressLint("CheckResult")
-            @Override
-            public void handleResponse(List<Map> response) {
-                Observable.fromIterable(response)
-                        .subscribeOn(Schedulers.io())
-                        .map(map -> Category.convertFromMap(context, map))
-                        .toList()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new SingleObserver<List<Category>>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                            }
+            @Field("phone_2") String phone_2,
 
-                            @Override
-                            public void onSuccess(List<Category> categories) {
-                                emitter.onNext(categories);
-                            }
+            @Field("phone_3") String phone_3
+    );
 
-                            @Override
-                            public void onError(Throwable e) {
-                                emitter.onError(e);
-                            }
-                        });
-            }
+    @Multipart
+    @POST(BuildConfig.URL_INSERT_PHOTO)
+    Call<ResponseBody> insertPictures(
+            @Part("idAnnouncement") RequestBody idAnnouncement,
+            @Part List<MultipartBody.Part> pictures, @Part("countPictures") int countPictures);
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Timber.e(fault.toString());
-            }
-        }));
-    }
+    enum AnnouncementCodes {
+        SUCCESS_CATEGORIES_LOADED,
+        UNSUCCESS_CATEGORIES_LOADED,
 
-    public Observable<List<Subcategory>> getSubcategories(@NonNull Context context, @NonNull String idCategory) {
-        DataQueryBuilder builder = DataQueryBuilder.create();
-        builder.setWhereClause("Categories[subcategory].objectId = '" + idCategory + "'");
+        SUCCESS_SUBCATEGORIES_LOADED,
+        UNSUCCESS_SUBCATEGORIES_LOADED,
 
+        SUCCESS_ANNOUNCEMENT_ADDED,
+        UNSUCCESS_ANNOUNCEMENT_ADDED,
 
-        return Observable.create(emitter -> Backendless.Data.of("Subcategories").find(builder, new AsyncCallback<List<Map>>() {
-            @Override
-            public void handleResponse(List<Map> response) {
-                Observable.fromIterable(response)
-                        .subscribeOn(Schedulers.io())
-                        .map(map -> Subcategory.convertFromMap(context, map))
-                        .toList()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new SingleObserver<List<Subcategory>>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                            }
+        SUCCESS_PICTURES_ADDED,
+        UNSUCCESS_PICTURES_ADDED,
 
-                            @Override
-                            public void onSuccess(List<Subcategory> categories) {
-                                emitter.onNext(categories);
-                            }
+        USER_NOT_FOUND,
+        UNSUCCESS_LOAD_MAIN_PICTURE,
 
-                            @Override
-                            public void onError(Throwable e) {
-                                emitter.onError(e);
-                            }
-                        });
-            }
+        PHP_INI_NOT_LOADED,
 
-            @Override
-            public void handleFault(BackendlessFault fault) {
-                Timber.e(fault.toString());
-            }
-        }));
+        NETWORK_ERROR,
+        NOT_CONNECT_TO_DB,
+        UNKNOW_ERROR
     }
 }

@@ -27,7 +27,7 @@ import io.reactivex.Observable;
 
 public class InsertToFavorite implements IInsertToFavorite {
     @Override
-    public Observable<Boolean> insertToFavorite(@NonNull Context context, @NonNull String url, String idAnnouncement) {
+    public Observable<Boolean> insertToFavorite(@NonNull Context context, @NonNull String url, long idAnnouncement) {
         return Observable.create(observableEmitter -> {
             StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override

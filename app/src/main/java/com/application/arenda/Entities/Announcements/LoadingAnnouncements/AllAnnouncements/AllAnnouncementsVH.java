@@ -10,11 +10,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.application.arenda.Entities.Models.Announcement;
-import com.application.arenda.Entities.Models.BackendlessTable;
+import com.application.arenda.Entities.Models.IModel;
+import com.application.arenda.Entities.Models.ModelAllAnnouncement;
 import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
-import com.application.arenda.Entities.Utils.Utils;
+import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.R;
 
 import butterknife.BindView;
@@ -53,13 +53,18 @@ public class AllAnnouncementsVH extends BaseViewHolder {
     @BindView(R.id.textRatingAnnouncement)
     TextView textRatingAnnouncement;
 
-    private Announcement model;
+    private ModelAllAnnouncement model;
     private int position;
 
     public AllAnnouncementsVH(@NonNull View itemView) {
         super(itemView);
 
         ButterKnife.bind(this, itemView);
+    }
+
+    @Override
+    public int getResourceLayoutId() {
+        return R.layout.vh_announcement;
     }
 
     public static AllAnnouncementsVH create(ViewGroup parent) {
@@ -69,13 +74,8 @@ public class AllAnnouncementsVH extends BaseViewHolder {
     }
 
     @Override
-    public int getResourceLayoutId() {
-        return R.layout.vh_announcement;
-    }
-
-    @Override
-    public void onBind(BackendlessTable model, int position) {
-        this.model = (Announcement) model;
+    public void onBind(IModel model, int position) {
+        this.model = (ModelAllAnnouncement) model;
         this.position = position;
 
         bind();
@@ -83,10 +83,10 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     @SuppressLint({"SetTextI18n"})
     private void bind() {
-//        GlideUtils.loadImage(itemView.getContext(), model.getMainUriBitmap(), imgProduct);
+        GlideUtils.loadImage(itemView.getContext(), model.getMainUriBitmap(), imgProduct);
 
-        textPlacementDate.setText(Utils.getFormatingDate(itemView.getContext(), model.getCreated().toString()));
-        textRatingAnnouncement.setText(String.valueOf(model.getRating()));
+        textPlacementDate.setText(model.getPlacementDate());
+        textRatingAnnouncement.setText(String.valueOf(model.getRate()));
 
         textNameProduct.setText(model.getName());
 
@@ -96,7 +96,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
         textCountRent.setText(String.valueOf(model.getCountRent()));
         textLocation.setText(model.getAddress());
 
-//        setActiveHeart(model.);
+        setActiveHeart(model.isFavorite());
     }
 
     public void setOnItemViewClick(OnItemClick itemClick) {

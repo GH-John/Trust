@@ -25,9 +25,9 @@
                 android:id="@+id/itemImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:contentDescription="@string/todo"
                 android:scaleType="centerCrop" />
-
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>

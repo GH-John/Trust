@@ -2,8 +2,8 @@ package com.application.arenda.Entities.RecyclerView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Models.BackendlessTable;
+import com.application.arenda.Entities.Models.IModel;
 
 public interface OnItemClick {
-    void onClick(RecyclerView.ViewHolder viewHolder, BackendlessTable model);
+    void onClick(RecyclerView.ViewHolder viewHolder, IModel model);
 }

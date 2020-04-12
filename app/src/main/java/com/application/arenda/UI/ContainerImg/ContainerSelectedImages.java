@@ -8,15 +8,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
+
 import com.application.arenda.R;
-import com.application.arenda.UI.ContainerImg.CustomViews.CustomBtnAddImg;
 import com.application.arenda.UI.ContainerImg.CustomViews.CustomViewImg;
 import com.application.arenda.UI.ContainerImg.Galery.AdapterGalery;
 import com.application.arenda.UI.ContainerImg.Galery.ChooseImages;
 
 public class ContainerSelectedImages extends LinearLayout implements Container {
     private LinearLayout containerImg;
-    private CustomBtnAddImg btnAddImg;
+    private CardView btnGalery;
     private TextView counter;
 
     private AdapterGalery adapterGalery;
@@ -31,7 +32,7 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
 
     private void initializationComponents() {
         inflate(getContext(), R.layout.container_selected_img, this);
-        btnAddImg = findViewById(R.id.btnAddImg);
+        btnGalery = findViewById(R.id.btnSelectPicture);
         containerImg = findViewById(R.id.containerImg);
     }
 
@@ -39,7 +40,7 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
     }
 
     private void initializationListeners() {
-        btnAddImg.setOnClickListener(v -> ChooseImages.getInstance(adapterGalery).open());
+        btnGalery.setOnClickListener(v -> ChooseImages.getInstance(adapterGalery).openGalery());
     }
 
     public void setAdapterGalery(AdapterGalery galery) {

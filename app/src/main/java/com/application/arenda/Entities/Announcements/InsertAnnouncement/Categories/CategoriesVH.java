@@ -1,4 +1,4 @@
-package com.application.arenda.Entities.Announcements.Categories;
+package com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories;
 
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -10,8 +10,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Models.BackendlessTable;
-import com.application.arenda.Entities.Models.Category;
+import com.application.arenda.Entities.Models.IModel;
+import com.application.arenda.Entities.Models.ModelCategory;
 import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.R;
@@ -40,7 +40,7 @@ public class CategoriesVH extends BaseViewHolder {
     ExpansionLayout categoryExpansionLayout;
 
 
-    private Category category;
+    private ModelCategory modelCategory;
 
     public CategoriesVH(@NonNull View itemView) {
         super(itemView);
@@ -58,14 +58,14 @@ public class CategoriesVH extends BaseViewHolder {
     }
 
     @Override
-    public void onBind(BackendlessTable model, int position) {
+    public void onBind(IModel model, int position) {
         categoryExpansionLayout.collapse(false);
 
-        category = (Category) model;
+        modelCategory = (ModelCategory) model;
 
-        categoryTitle.setText(category.getName());
+        categoryTitle.setText(modelCategory.getName());
 
-        GlideUtils.loadVector(itemView.getContext(), Uri.parse(category.getIconUri()), categoryIcon);
+        GlideUtils.loadVector(itemView.getContext(), Uri.parse(modelCategory.getIconUri()), categoryIcon);
     }
 
     public ExpansionLayout getCategoryExpansionLayout() {
@@ -75,11 +75,11 @@ public class CategoriesVH extends BaseViewHolder {
     public void setOnClickListener(OnClickItemCategory listener) {
         categoryExpansionLayout.addListener((expansionLayout, expanded) -> {
             if (expanded)
-                listener.inflateRecyclerViewOnClick(category.getObjectId(), rvItemCategory);
+                listener.inflateRecyclerViewOnClick(modelCategory.getID(), rvItemCategory);
         });
     }
 
     public interface OnClickItemCategory {
-        void inflateRecyclerViewOnClick(String idCategory, RecyclerView rvItemCategory);
+        void inflateRecyclerViewOnClick(long idCategory, RecyclerView rvItemCategory);
     }
 }

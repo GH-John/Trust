@@ -23,7 +23,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.application.arenda.BuildConfig;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
+import com.application.arenda.Entities.Models.ModelViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
+import com.application.arenda.Entities.Models.ModelPhoneNumber;
+import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
 import com.application.arenda.Entities.Utils.PermissionUtils;
 import com.application.arenda.Entities.Utils.Utils;
@@ -109,10 +112,11 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private ViewPager.OnPageChangeListener pageListener;
 
     private InsertToFavorite favorite = new InsertToFavorite();
+    private LoadingViewAnnouncement announcement = new LoadingViewAnnouncement();
 
-    private String idAnnouncement;
+    private long idAnnouncement;
 
-    private List<String> phoneNumbers = new ArrayList<>();
+    private List<ModelPhoneNumber> phoneNumbers = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,7 +126,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         Bundle bundle = getArguments();
 
-        idAnnouncement = bundle != null ? bundle.getString("idAnnouncement") : "";
+        idAnnouncement = bundle != null ? bundle.getLong("idAnnouncement") : 0;
 
         loadData();
 
@@ -143,10 +147,53 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private void loadData() {
         setProgress(true);
 
+        announcement.loadAnnouncement(getContext(), BuildConfig.URL_LOADING_VIEW_ANNOUNCEMENT, idAnnouncement)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ModelViewAnnouncement>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
+                    }
+
+                    @Override
+                    public void onNext(ModelViewAnnouncement model) {
+                        phoneNumbers.addAll(model.getPhoneNumbers());
+
+                        textPlacementDate.setText(model.getPlacementDate());
+                        textNameProduct.setText(model.getName());
+
+                        //будет браться стоимость в зависимости от настроек по умолчанию
+                        textCostProduct.setText(model.getCostToBYN() + " руб./ч.");
+
+                        textAddress.setText(model.getAddress());
+                        textRating.setText(String.valueOf(model.getRate()));
+                        textCountRent.setText(String.valueOf(model.getCountRent()));
+
+                        textDescriptionProduct.setText(model.getDescription());
+
+                        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(model.getID()));
+
+                        selectHeart(model.isFavorite());
+
+                        initViewPager(model.getUriCollection());
+
+                        setProgress(false);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        setProgress(false);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        setProgress(false);
+                    }
+                });
     }
 
-    public void onClickFavorite(String idAnnouncement) {
+    public void onClickFavorite(long idAnnouncement) {
         favorite.insertToFavorite(getContext(), BuildConfig.URL_INSERT_TO_FAVORITE,
                 idAnnouncement)
                 .subscribeOn(Schedulers.io())
@@ -243,7 +290,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                 String[] array = new String[phoneNumbers.size()];
 
                 for (int i = 0; i < phoneNumbers.size(); i++) {
-                    array[i] = phoneNumbers.get(i);
+                    array[i] = phoneNumbers.get(i).getNumber();
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -254,12 +301,14 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                     if (!PermissionUtils.Check_CALL_PHONE(getActivity()))
                         PermissionUtils.Request_CALL_PHONE(getActivity(), 4322);
                     else
-                        getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which))));
+                        getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
                 });
 
                 builder.create();
 
                 builder.show();
+
+//                new DialogCallPhoneNumber(phoneNumbers).show(getActivity().getSupportFragmentManager(), DialogCallPhoneNumber.TAG);
             } else
                 Utils.messageOutput(getContext(), getContext().getResources().getString(R.string.dialog_phone_number_not_found));
         });

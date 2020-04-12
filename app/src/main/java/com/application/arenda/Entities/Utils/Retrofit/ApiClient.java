@@ -1,10 +1,14 @@
-package com.application.arenda.Entities.Utils.Network;
+package com.application.arenda.Entities.Utils.Retrofit;
 
 import com.application.arenda.BuildConfig;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
@@ -16,11 +20,23 @@ public class ApiClient {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
             OkHttpClient.Builder client = new OkHttpClient.Builder()
+                    .readTimeout(2, TimeUnit.MINUTES)
+                    .writeTimeout(2, TimeUnit.MINUTES)
+                    .addInterceptor(chain -> {
+                        Request original = chain.request();
+                        Request.Builder builder = original.newBuilder()
+                                .method(original.method(), original.body());
+
+                        Request request = builder.build();
+
+                        return chain.proceed(request);
+                    })
                     .addInterceptor(interceptor);
 
             retrofit = new Retrofit.Builder()
                     .baseUrl(BuildConfig.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(client.build())
                     .build();
         }

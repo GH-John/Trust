@@ -2,12 +2,12 @@ package com.application.arenda.Entities.RecyclerView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Models.BackendlessTable;
+import com.application.arenda.Entities.Models.IModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BaseAdapter<M extends BackendlessTable, V extends BaseViewHolder> extends RecyclerView.Adapter<V> implements RVAdapter<M> {
+public abstract class BaseAdapter<M extends IModel, V extends BaseViewHolder> extends RecyclerView.Adapter<V> implements RVAdapter<M> {
     private boolean isLoading = false;
 
     private List<M> collection = new ArrayList<>();
