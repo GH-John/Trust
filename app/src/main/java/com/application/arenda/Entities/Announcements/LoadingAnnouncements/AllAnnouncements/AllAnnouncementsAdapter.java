@@ -4,11 +4,11 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.Models.Announcement;
 import com.application.arenda.Entities.RecyclerView.BaseAdapter;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
 
-public class AllAnnouncementsAdapter extends BaseAdapter<ModelAllAnnouncement, AllAnnouncementsVH> {
+public class AllAnnouncementsAdapter extends BaseAdapter<Announcement, AllAnnouncementsVH> {
 
     private OnItemClick itemViewClick;
     private OnItemClick itemHeartClick;

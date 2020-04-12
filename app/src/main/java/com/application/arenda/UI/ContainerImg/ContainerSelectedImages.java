@@ -39,7 +39,7 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
     }
 
     private void initializationListeners() {
-        btnAddImg.setOnClickListener(v -> new ChooseImages(adapterGalery).open());
+        btnAddImg.setOnClickListener(v -> ChooseImages.getInstance(adapterGalery).open());
     }
 
     public void setAdapterGalery(AdapterGalery galery) {
@@ -94,6 +94,14 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
     public void removeFromContainer(final View v) {
         this.containerImg.post(() -> {
             containerImg.removeView(v);
+            decrementToCounter();
+        });
+    }
+
+    @Override
+    public void clearContainer() {
+        this.containerImg.post(() -> {
+            containerImg.removeViews(1, CURRENT_SIZE_CONTAINER());
             decrementToCounter();
         });
     }

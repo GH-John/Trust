@@ -38,7 +38,7 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
         return containerFragments;
     }
 
-    public void initListeners() {
+    private void initListeners() {
         getSupportFragmentManager().addOnBackStackChangedListener(() -> {
             notifyObservers(getCurrentFragment());
 

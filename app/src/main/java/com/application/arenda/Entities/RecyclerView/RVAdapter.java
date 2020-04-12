@@ -1,11 +1,10 @@
 package com.application.arenda.Entities.RecyclerView;
 
-import com.application.arenda.Entities.Announcements.Models.IModel;
-import com.application.arenda.Entities.Announcements.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.Models.BackendlessTable;
 
 import java.util.List;
 
-public interface RVAdapter<M extends IModel> {
+public interface RVAdapter<M extends BackendlessTable> {
     boolean isLoading();
 
     void setLoading(boolean b);

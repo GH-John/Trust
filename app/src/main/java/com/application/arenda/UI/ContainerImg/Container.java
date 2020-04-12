@@ -13,6 +13,7 @@ public interface Container {
     void decrementToCounter();
     boolean addToContainer(final View view);
     void removeFromContainer(final View v);
+    void clearContainer();
 
     int CURRENT_SIZE_CONTAINER();
     int MAX_SIZE_CONTAINER();

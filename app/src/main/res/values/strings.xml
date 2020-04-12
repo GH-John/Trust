@@ -11,7 +11,7 @@
 
     <string name="error_empty_field">Пустое поле</string>
     <string name="error_user_not_found">Неверная почта</string>
-    <string name="error_incorrect_password">Неверный пароль</string>
+    <string name="error_wrong_password">Неверный пароль</string>
     <string name="error_select_category">Выберите категорию</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
     <string name="error_please_select_category">Выберите категорию</string>
@@ -44,6 +44,7 @@
     <string name="ab_title_all_announcements">Все объявления</string>
     <string name="ab_title_user_announcements">Мои объявления</string>
     <string name="ab_title_new_announcements">Новое объявление</string>
+    <string name="ab_title_select_category">Выберите категорию</string>
 
     <string name="itemList_wallet">Кошелек</string>
     <string name="itemList_services">Услуги</string>
@@ -89,7 +90,6 @@
     <string name="text_today">Сегодня</string>
     <string name="text_count_rent">465</string>
     <string name="text_yesterday">Вчера</string>
-    <string name="text_category">Категории</string>
     <string name="textDescription">Описание</string>
     <string name="text_rate_announcement">5</string>
     <string name="text_limit_add_photos">0/9</string>
@@ -97,18 +97,18 @@
     <string name="text_rent">Колличество аренд</string>
     <string name="text_published">Опубликовано: </string>
     <string name="text_some_text">Какой-то текст</string>
-    <string name="text_product_category">Категория</string>
     <string name="text_cost_announcement">5 руб./ч.</string>
     <string name="text_add_photos">Добавить фотографию</string>
     <string name="text_hourly_cost">Почасовая стоимость</string>
     <string name="text_made_for_people">сделано для людей</string>
+    <string name="text_select_category">Выберите категорию</string>
     <string name="text_lacation_announcement">Местоположение</string>
     <string name="text_name_announcement">Название объявления</string>
     <string name="text_placement_date_announcement">Сегодня, 13:21</string>
     <string name="text_additional_fields">Дополнительная информация:</string>
     <string name="text_note_photos">Первая фотография является главной</string>
-    <string name="text_visible_addresses">Показать адрес в объявлении:</string>
     <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
+    <string name="text_visible_addresses">Показать адрес(а) в объявлении:</string>
 
     <string name="monday">Пн</string>
     <string name="tuesday">Вт</string>
@@ -161,7 +161,16 @@
 
     <string name="title_pager_incoming_proposals">Входящие</string>
     <string name="title_pager_outgoing_proposals">Исходящие</string>
-    <string name="dialog_phone_number_not_found">Нет доступных номеров</string>
-    <string name="dialog_phone_number_title">Доступные телефоны</string>
 
+    <string name="dialog_phone_number_title">Доступные телефоны</string>
+    <string name="dialog_phone_number_not_found">Нет доступных номеров</string>
+
+    <string name="notification_loading_text_insert_announcement">Загрузка …</string>
+    <string name="notification_title_insert_announcement">Загрузка объявления</string>
+    <string name="internal_storage">Internal storage</string>
+    <string name="hint_login">Логин</string>
+    <string name="hint_confirm_password">Подтвердите пароль</string>
+    <string name="error_confirm_password">Пароли не совпадают</string>
+    <string name="text_forgot_password">Забыли пароль?</string>
+    <string name="instruction_send_to_email">Инструкция по восстановлению отправлена на почту</string>
 </resources>

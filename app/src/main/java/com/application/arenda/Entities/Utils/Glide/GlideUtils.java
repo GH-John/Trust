@@ -16,17 +16,34 @@ import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 public class GlideUtils {
     private static RequestOptions defaultRequestOptions = new RequestOptions()
             .format(DecodeFormat.PREFER_ARGB_8888)
-            .placeholder(R.color.colorNotFoundPicture)
-            .error(R.color.colorNotFoundPicture)
+            .placeholder(R.color.colorPlaceHolderPicture)
+            .error(R.drawable.ic_none)
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .override(800, 800)
             .timeout(3000);
 
     private static DrawableCrossFadeFactory defaultFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
 
+    public static void loadVector(Context context, Uri uri, ImageView imageView) {
+        if (context != null && uri != null && imageView != null) {
+
+            Glide.with(context)
+                    .load(uri)
+                    .into(imageView);
+
+//            GlideToVectorYou
+//                    .init()
+//                    .with(context)
+//                    .setPlaceHolder(R.color.colorPlaceHolderPicture, R.drawable.ic_none)
+//                    .load(uri, imageView);
+        } else {
+            throw new NullPointerException("GlideUtils.loadVector contains in parameters null");
+        }
+    }
+
     public static void loadImage(Context context, Uri uri, ImageView imageView) {
         if (context != null && uri != null && imageView != null) {
-            GlideApp.with(context)
+            Glide.with(context)
                     .load(uri)
                     .apply(defaultOptions())
                     .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
@@ -38,7 +55,7 @@ public class GlideUtils {
 
     public static void loadImage(Context context, RequestOptions requestOptions, DrawableCrossFadeFactory factory, Uri uri, ImageView imageView) {
         if (context != null && requestOptions != null && factory != null && uri != null && imageView != null) {
-            GlideApp.with(context)
+            Glide.with(context)
                     .load(uri)
                     .apply(requestOptions)
                     .transition(DrawableTransitionOptions.withCrossFade(factory))
@@ -50,7 +67,7 @@ public class GlideUtils {
 
     public static void loadImage(Context context, RequestOptions requestOptions, DrawableCrossFadeFactory factory, RequestListener listener, Uri uri, ImageView imageView) {
         if (context != null && requestOptions != null && factory != null && listener != null && uri != null && imageView != null) {
-            GlideApp.with(context)
+            Glide.with(context)
                     .load(uri)
                     .apply(requestOptions)
                     .listener(listener)

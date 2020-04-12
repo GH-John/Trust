@@ -9,27 +9,21 @@ import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.application.arenda.UI.ContainerImg.CustomViews.CustomViewImg;
 import com.application.arenda.Entities.Utils.BitmapUtils;
+import com.application.arenda.UI.ContainerImg.CustomViews.CustomViewImg;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @SuppressLint("Registered")
 public class ContainerFiller implements AdapterContainer {
     private Container container;
 
-    private Context context;
     private Bitmap firstBitmap;
-    private HashMap<Uri, View> currentMap;
-    private HashMap<Uri, Bitmap> mapBitmap;
-
-    public ContainerFiller(Context context) {
-        this.context = context;
-        this.mapBitmap = new HashMap<>();
-        this.currentMap = new HashMap<>();
-    }
+    private HashMap<Uri, View> currentMap = new HashMap<>();
+    private HashMap<Uri, Bitmap> mapBitmap = new HashMap<>();
 
     @Override
     public void setActivityResult(final Intent data, final Context context) {
@@ -71,38 +65,40 @@ public class ContainerFiller implements AdapterContainer {
 
     @Override
     public void inflateContainer() {
-        final ViewGroup viewGroup = container.getContainer();
+        if (container != null) {
+            final ViewGroup viewGroup = container.getContainer();
 
-        viewGroup.post(() -> {
-            Uri uri;
-            Bitmap bitmap;
-            View view;
+            viewGroup.post(() -> {
+                Uri uri;
+                Bitmap bitmap;
+                View view;
 
-            int imgCount = mapBitmap.size();
-            for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
+                int imgCount = mapBitmap.size();
+                for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
 
-                uri = entry.getKey();
-                bitmap = mapBitmap.get(uri);
+                    uri = entry.getKey();
+                    bitmap = mapBitmap.get(uri);
 
-                if (!currentMap.containsKey(uri)) {
-                    view = container.getInstanceFiller();
+                    if (!currentMap.containsKey(uri)) {
+                        view = container.getInstanceFiller();
 
-                    if (((CustomViewImg) view).setImageBitmap(bitmap)) {
+                        if (((CustomViewImg) view).setImageBitmap(bitmap)) {
 
-                        final View finalCustomViewImg = view;
-                        final Uri finalUri = uri;
+                            final View finalCustomViewImg = view;
+                            final Uri finalUri = uri;
 
-                        ((CustomViewImg) view).itemDeleteOnClickListener(v -> {
-                            container.removeFromContainer(finalCustomViewImg);
-                            removeFromCurrentMap(finalUri);
-                        });
+                            ((CustomViewImg) view).itemDeleteOnClickListener(v -> {
+                                container.removeFromContainer(finalCustomViewImg);
+                                removeFromCurrentMap(finalUri);
+                            });
 
-                        if (container.addToContainer(view))
-                            currentMap.put(uri, view);
+                            if (container.addToContainer(view))
+                                currentMap.put(uri, view);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     public Bitmap getFirstBitmap() {
@@ -114,8 +110,22 @@ public class ContainerFiller implements AdapterContainer {
         return null;
     }
 
+    public Uri getFirstUri() {
+        if (mapBitmap.size() > 0) {
+            for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
+                return entry.getKey();
+            }
+        }
+
+        return null;
+    }
+
     public Map<Uri, Bitmap> getMapBitmap() {
         return mapBitmap;
+    }
+
+    public Set<Uri> getUris() {
+        return mapBitmap.keySet();
     }
 
     @Override
@@ -126,5 +136,10 @@ public class ContainerFiller implements AdapterContainer {
     @Override
     public void removeFromCurrentMap(final Object key) {
         this.currentMap.remove(key);
+    }
+
+    @Override
+    public int getSize() {
+        return mapBitmap.size();
     }
 }

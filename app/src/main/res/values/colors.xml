@@ -19,5 +19,5 @@
 
     <color name="colorText">#3A3A3A</color>
     <color name="colorHint">#9B9B9B</color>
-    <color name="colorNotFoundPicture">#F1F1F1</color>
+    <color name="colorPlaceHolderPicture">#F1F1F1</color>
 </resources>

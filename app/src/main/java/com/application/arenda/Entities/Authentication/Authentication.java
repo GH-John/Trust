@@ -2,24 +2,21 @@ package com.application.arenda.Entities.Authentication;
 
 import android.annotation.SuppressLint;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import androidx.annotation.NonNull;
 
-import java.util.HashMap;
+import com.application.arenda.Entities.Models.User;
+import com.application.arenda.Entities.User.AccountType;
+import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.local.UserIdStorageFactory;
 
 public final class Authentication {
+    @SuppressLint("StaticFieldLeak")
     private static Authentication instance;
 
-    private FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
-
-    private OnAuthenticationListener registerListener;
-    private OnAuthenticationListener authorizationListener;
-
-    public Authentication() {
-        firebaseAuth = FirebaseAuth.getInstance();
+    private Authentication() {
     }
 
     public static Authentication getInstance() {
@@ -29,65 +26,93 @@ public final class Authentication {
         return instance;
     }
 
-    @SuppressLint("ShowToast")
-    public void registration(final String name,
-                             final String lastName,
-                             final String email,
-                             final String password,
-                             final String phone,
-                             final String accountType) {
+    public void registration(@NonNull String name,
+                             @NonNull String lastName,
+                             @NonNull String login,
+                             @NonNull String email,
+                             @NonNull String password,
+                             @NonNull String phone,
+                             @NonNull AccountType accountType,
+                             @NonNull AsyncCallback<BackendlessUser> callback) {
 
-        firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = firebaseAuth.getCurrentUser();
-                        String userId = firebaseAuth.getUid();
+        BackendlessUser user = new BackendlessUser();
 
-                        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+        user.setEmail(email);
+        user.setPassword(password);
 
-                        HashMap<String, String> hashMap = new HashMap<>();
-                        hashMap.put("id", userId);
+        user.setProperty("name", name);
+        user.setProperty("lastName", lastName);
 
-                        hashMap.put("name", name);
-                        hashMap.put("lastName", lastName);
+        user.setProperty("login", login);
 
-                        hashMap.put("userPhoto", "");
+        user.setProperty("phone_1", phone);
 
-                        hashMap.put("phone_1", phone);
-                        hashMap.put("phone_2", "");
-                        hashMap.put("phone_3", "");
+        user.setProperty("accountType", accountType.getType());
 
-                        hashMap.put("address_1", "");
-                        hashMap.put("address_2", "");
-                        hashMap.put("address_3", "");
-
-                        hashMap.put("balance", "0");
-                        hashMap.put("rating", "0.0");
-                        hashMap.put("accountType", accountType);
-
-                        databaseReference.setValue(hashMap)
-                                .addOnCompleteListener(task1 -> registerListener.onComplete(task1))
-                                .addOnFailureListener(e -> registerListener.onFailure(e));
-                    }
-                }).addOnFailureListener(e -> registerListener.onFailure(e));
+        Backendless.UserService.register(user, callback);
     }
 
-    @SuppressLint("ShowToast")
-    public void authorization(final String email, final String password) {
-        firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> authorizationListener.onComplete(task))
-                .addOnFailureListener(e -> authorizationListener.onFailure(e));
+    public void authorization(@NonNull String email,
+                              @NonNull String password,
+                              @NonNull AsyncCallback<BackendlessUser> callback) {
+
+        Backendless.UserService.login(email, password, callback, true);
     }
 
-    public static FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
+    public void restorePassword(@NonNull String email,
+                                @NonNull AsyncCallback<Void> callback) {
+        Backendless.UserService.restorePassword(email, callback);
     }
 
-    public void setOnRegisterListener(OnAuthenticationListener listener) {
-        registerListener = listener;
+    public void getUserData(@NonNull AsyncCallback<User> callback) {
+        Backendless.UserService.isValidLogin(new AsyncCallback<Boolean>() {
+            @Override
+            public void handleResponse(Boolean response) {
+                if (response) {
+                    Backendless.Data.of(BackendlessUser.class).findById(getUserID(), new AsyncCallback<BackendlessUser>() {
+                        @Override
+                        public void handleResponse(BackendlessUser response) {
+                            User user = new User();
+
+                            user.setObjectId(response.getObjectId());
+                            user.setName(String.valueOf(response.getProperty("name")));
+                            user.setLastName(String.valueOf(response.getProperty("lastName")));
+
+                            user.setLogin(String.valueOf(response.getProperty("login")));
+                            user.setEmail(String.valueOf(response.getProperty("email")));
+                            user.setUserPhotoUri(String.valueOf(response.getProperty("userPhotoUri")));
+
+                            user.setAddress_1(String.valueOf(response.getProperty("address_1")));
+                            user.setAddress_2(String.valueOf(response.getProperty("address_2")));
+                            user.setAddress_3(String.valueOf(response.getProperty("address_3")));
+
+                            user.setPhone_1(String.valueOf(response.getProperty("phone_1")));
+                            user.setPhone_2(String.valueOf(response.getProperty("phone_2")));
+                            user.setPhone_3(String.valueOf(response.getProperty("phone_3")));
+
+                            user.setAccountType(AccountType.valueOf(String.valueOf(response.getProperty("accountType"))));
+                            user.setBalance(Double.parseDouble(String.valueOf(response.getProperty("balance"))));
+                            user.setRating(Double.parseDouble(String.valueOf(response.getProperty("rating"))));
+
+                            callback.handleResponse(user);
+                        }
+
+                        @Override
+                        public void handleFault(BackendlessFault fault) {
+                            callback.handleFault(fault);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                callback.handleFault(fault);
+            }
+        });
     }
 
-    public void setOnAuthorizationListener(OnAuthenticationListener listener) {
-        authorizationListener = listener;
+    private String getUserID() {
+        return UserIdStorageFactory.instance().getStorage().get();
     }
 }

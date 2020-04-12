@@ -1,6 +1,5 @@
 package com.application.arenda.MainWorkspace.Activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,27 +8,20 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.application.arenda.Entities.Authentication.Authentication;
-import com.application.arenda.Entities.Authentication.OnAuthenticationListener;
+import com.application.arenda.Entities.User.AccountType;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.SetDrawableImageViews;
 import com.application.arenda.UI.Style.SetBtnStyle;
 import com.application.arenda.UI.Style.SetFieldStyle;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseNetworkException;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 
-import ru.tinkoff.decoro.MaskImpl;
-import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
-import ru.tinkoff.decoro.slots.Slot;
-import ru.tinkoff.decoro.watchers.FormatWatcher;
-import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 import timber.log.Timber;
 
 public class ActivityRegistration extends AppCompatActivity {
@@ -37,15 +29,15 @@ public class ActivityRegistration extends AppCompatActivity {
     private RadioGroup radioGroup;
     private ImageView imagePinReg;
     private EditText
-            fieldLastNameReg,
-            fieldEmailReg,
-            fieldPhoneReg,
             fieldNameReg,
+            fieldLastNameReg,
+            fieldLoginReg,
+            fieldEmailReg,
             fieldPassReg,
-            fieldCodeReg;
-    private Button
-            btnGetCodeReg,
-            btnReg;
+            fieldConfirmPassReg,
+            fieldPhoneReg;
+
+    private Button btnReg;
 
     private Authentication authentication;
 
@@ -71,17 +63,21 @@ public class ActivityRegistration extends AppCompatActivity {
 
         progressBarReg = findViewById(R.id.progressBarReg);
 
-        fieldLastNameReg = findViewById(R.id.fieldLastNameReg);
-        fieldEmailReg = findViewById(R.id.fieldEmailReg);
-        fieldPhoneReg = findViewById(R.id.fieldPhoneReg);
         fieldNameReg = findViewById(R.id.fieldNameReg);
-        fieldPassReg = findViewById(R.id.fieldPassReg);
-        fieldCodeReg = findViewById(R.id.fieldCodeReg);
+        fieldLastNameReg = findViewById(R.id.fieldLastNameReg);
 
-        btnGetCodeReg = findViewById(R.id.btnGetCodeReg);
+        fieldLoginReg = findViewById(R.id.fieldLoginReg);
+        fieldEmailReg = findViewById(R.id.fieldEmailReg);
+
+        fieldPassReg = findViewById(R.id.fieldPassReg);
+        fieldConfirmPassReg = findViewById(R.id.fieldConfirmPassReg);
+
+        fieldPhoneReg = findViewById(R.id.fieldPhoneReg);
+
         btnReg = findViewById(R.id.btnReg);
 
         authentication = Authentication.getInstance();
+        Utils.setPhoneMask(getResources().getString(R.string.hint_phone), fieldPhoneReg);
     }
 
     private void initStyles() {
@@ -91,105 +87,74 @@ public class ActivityRegistration extends AppCompatActivity {
         SetFieldStyle.setEditTextBackground(new ComponentBackground(this, R.color.colorWhite,
                         R.color.shadowColor, 6f, 0f, 3f, 20f), fieldNameReg,
                 fieldLastNameReg,
+                fieldLoginReg,
                 fieldEmailReg,
                 fieldPassReg,
-                fieldPhoneReg,
-                fieldCodeReg);
-
-        SetBtnStyle.setStyle(new ComponentBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), btnGetCodeReg);
+                fieldConfirmPassReg,
+                fieldPhoneReg);
 
         SetBtnStyle.setStyle(new ComponentBackground(this, R.color.colorAccent,
                 R.color.shadowColor, 6f, 0f, 3f, 20f), btnReg);
     }
 
     private void initListeners() {
-        Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots(getResources().getString(R.string.hint_phone));
-        FormatWatcher formatWatcher = new MaskFormatWatcher(
-                MaskImpl.createTerminated(slots)
-        );
-        formatWatcher.installOn(fieldPhoneReg);
-
-        authentication.setOnRegisterListener(new OnAuthenticationListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                if (task.isSuccessful()) {
-                    progressBarReg.setVisibility(View.INVISIBLE);
-
-                    Intent intent = new Intent(ActivityRegistration.this, ActivityMain.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    startActivity(intent);
-
-                    finish();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Timber.e(e);
-
-                progressBarReg.setVisibility(View.INVISIBLE);
-
-                if (e instanceof FirebaseAuthUserCollisionException)
-                    fieldEmailReg.setError(getString(R.string.error_user_exists));
-                else if (e instanceof FirebaseNetworkException)
-                    Utils.messageOutput(ActivityRegistration.this, getString(R.string.error_check_internet_connect));
-                else if (e instanceof FirebaseAuthException) {
-                    switch (((FirebaseAuthException) e).getErrorCode()) {
-                        case "ERROR_INVALID_EMAIL":
-                            fieldEmailReg.setError(getString(R.string.error_incorrect_format_email));
-                            break;
-                        case "ERROR_WEAK_PASSWORD":
-                            fieldPassReg.setError(getString(R.string.error_weak_password));
-                            break;
-                        default:
-                            Utils.messageOutput(ActivityRegistration.this, getString(R.string.unknown_error));
-                            break;
-                    }
-                }
-            }
-        });
-
         btnReg.setOnClickListener(v -> {
-            if (Utils.textIsAlphabet(getApplicationContext(),
+            if (!Utils.fieldIsEmpty(getApplicationContext(),
                     fieldNameReg,
-                    fieldLastNameReg) &&
+                    fieldLastNameReg,
+                    fieldLoginReg,
+                    fieldEmailReg,
+                    fieldPhoneReg,
+                    fieldPassReg) &&
 
                     Utils.isEmail(getApplicationContext(), fieldEmailReg) &&
 
-                    !Utils.fieldIsEmpty(getApplicationContext(),
+                    Utils.textIsAlphabet(getApplicationContext(),
                             fieldNameReg,
-                            fieldLastNameReg,
-                            fieldEmailReg,
-                            fieldPhoneReg,
-                            fieldPassReg,
-                            fieldCodeReg)) {
+                            fieldLastNameReg) &&
+
+                    !Utils.isWeakPassword(getApplicationContext(), fieldPassReg) &&
+
+                    Utils.isConfirmPassword(getApplicationContext(), fieldPassReg, fieldConfirmPassReg)) {
                 progressBarReg.setVisibility(View.VISIBLE);
 
                 authentication.registration(fieldNameReg.getText().toString().trim(),
                         fieldLastNameReg.getText().toString().trim(),
+                        fieldLoginReg.getText().toString().trim(),
                         fieldEmailReg.getText().toString().trim(),
                         fieldPassReg.getText().toString().trim(),
                         fieldPhoneReg.getText().toString().trim(),
-                        getAccountType());
+                        getAccountType(),
+                        new AsyncCallback<BackendlessUser>() {
+                            @Override
+                            public void handleResponse(BackendlessUser response) {
+                                progressBarReg.setVisibility(View.INVISIBLE);
+
+                                onBackPressed();
+                                finish();
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault fault) {
+                                progressBarReg.setVisibility(View.INVISIBLE);
+
+                                Utils.messageOutput(getApplicationContext(), "Error: - " + fault.getMessage());
+                                Timber.e(fault.getMessage());
+                            }
+                        });
             }
         });
     }
 
-    private String getAccountType() {
-        String type = "person";
-
+    private AccountType getAccountType() {
         switch (radioGroup.getCheckedRadioButtonId()) {
-            case R.id.radioBtnPrivatePerson: {
-                type = "person";
-                break;
-            }
-            case R.id.radioBtnBusiness: {
-                type = "business";
-                break;
-            }
+            case R.id.radioBtnPrivatePerson:
+                return AccountType.PRIVATE_PERSON;
+
+            case R.id.radioBtnBusiness:
+                return AccountType.BUSINESS_PERSON;
         }
-        return type;
+
+        return AccountType.PRIVATE_PERSON;
     }
 }

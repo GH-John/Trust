@@ -10,47 +10,54 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.AdapterRecyclerView;
-import com.application.arenda.Entities.Announcements.InsertAnnouncement.InflateDropDownList.LoadingCategories;
-import com.application.arenda.Entities.Announcements.InsertAnnouncement.InsertAnnouncement;
-import com.application.arenda.Entities.Announcements.Models.ModelInsertAnnouncement;
+import com.application.arenda.Entities.Announcements.ApiAnnouncement;
+import com.application.arenda.Entities.Announcements.Categories.EventSendID;
+import com.application.arenda.Entities.Models.Announcement;
 import com.application.arenda.Entities.Utils.DecimalDigitsInputFilter;
-import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
 import com.application.arenda.UI.Components.SideBar.ItemSideBar;
 import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.ContainerImg.ContainerFiller;
 import com.application.arenda.UI.ContainerImg.ContainerSelectedImages;
 import com.application.arenda.UI.ContainerImg.Galery.AdapterGalery;
-import com.application.arenda.UI.DropDownList.DropDownList;
 import com.application.arenda.UI.Style.SetBtnStyle;
 import com.application.arenda.UI.Style.SetFieldStyle;
 
-import java.util.List;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public final class FragmentInsertAnnouncement extends Fragment implements ItemSideBar, AdapterActionBar, AdapterGalery {
     @SuppressLint("StaticFieldLeak")
     private static FragmentInsertAnnouncement fragmentInsertAnnouncement;
-    private final int SELECTED_IMG_CODE = 1001;
+
+    private final short SELECTED_IMG_CODE = 1001;
+    private final String CHANNEL_LOADING_IMAGES_CODE = "938";
+    private final String CHANNEL_LOADING_ANNOUNCEMENT_CODE = "939";
+
+    private final NotificationCompat.Builder notificationCompatLoadImage;
 
     @Nullable
     @BindView(R.id.groupPhones)
@@ -59,8 +66,14 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     @BindView(R.id.itemBurgerMenu)
     ImageView itemBurgerMenu;
     @Nullable
-    @BindView(R.id.dropDownList)
-    DropDownList dropDownList;
+    @BindView(R.id.categoryTitle)
+    TextView categoryTitle;
+    @Nullable
+    @BindView(R.id.categoryHeaderIndicator)
+    ImageView categoryHeaderIndicator;
+    @Nullable
+    @BindView(R.id.rvCategories)
+    RecyclerView rvCategories;
     @Nullable
     @BindView(R.id.groupAdditionalFields)
     Group groupAdditionalFields;
@@ -70,6 +83,9 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     @Nullable
     @BindView(R.id.btnCreateAnnouncement)
     Button btnCreateAnnouncement;
+    @Nullable
+    @BindView(R.id.btnSelectCategory)
+    Button btnSelectCategory;
     @Nullable
     @BindView(R.id.containerImg)
     ContainerSelectedImages containerSelectedImages;
@@ -82,16 +98,23 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     @Nullable
     @BindView(R.id.fieldCostProduct)
     EditText fieldCostProduct;
-    @Nullable
-    @BindView(R.id.progressBarInsert)
-    ProgressBar progressBarInsert;
+    private NotificationManagerCompat notificationManager;
 
-    private ContainerFiller containerFiller;
     private SideBar sideBar;
     private Unbinder unbinder;
-    private LoadingCategories categories = new LoadingCategories();
-    private InsertAnnouncement insertAnnouncement = new InsertAnnouncement();
-    private ModelInsertAnnouncement announcement = new ModelInsertAnnouncement();
+    private ApiAnnouncement apiAnnouncement;
+    private ContainerFiller containerFiller = new ContainerFiller();
+    private Announcement announcement = new Announcement();
+
+    private ContainerFragments containerFragments;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private String selectedSubcategory = "-1";
+
+    private FragmentInsertAnnouncement() {
+        notificationCompatLoadImage = new NotificationCompat.Builder(getContext(), CHANNEL_LOADING_IMAGES_CODE);
+    }
 
     public static FragmentInsertAnnouncement getInstance() {
         if (fragmentInsertAnnouncement == null)
@@ -107,151 +130,117 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
         unbinder = ButterKnife.bind(this, view);
 
-        initializationComponents(view);
-        initializationStyles();
-        initializationListeners();
+        initComponents();
+        initStyles();
+        initListeners();
+
         return view;
     }
 
-    private void initializationComponents(View view) {
+    private void initComponents() {
+        apiAnnouncement = ApiAnnouncement.getInstance();
+        containerFragments = ContainerFragments.getInstance(getContext());
+
         containerSelectedImages.setAdapterGalery(this);
         containerSelectedImages.setInstanceCounter(textLimitAddPhotos);
 
-        containerFiller = new ContainerFiller(getContext());
         containerFiller.setContainer(containerSelectedImages);
 
-        categories.loadingCategories(getContext())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<DropDownList.ModelItemContent>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                    }
+        notificationManager = NotificationManagerCompat.from(getContext());
 
-                    @Override
-                    public void onNext(List<DropDownList.ModelItemContent> modelItemContents) {
-                        dropDownList.setAdapter(new AdapterRecyclerView(R.layout.drop_down_list_pattern_item,
-                                modelItemContents));
-                        dropDownList.pushToStack(modelItemContents);
-                        dropDownList.progressBarActive(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        dropDownList.progressBarActive(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        dropDownList.progressBarActive(false);
-                    }
-                });
+        notificationCompatLoadImage
+                .setSmallIcon(R.drawable.ic_logo)
+                .setContentTitle(getString(R.string.notification_title_insert_announcement))
+                .setContentText(getString(R.string.notification_loading_text_insert_announcement))
+                .setOngoing(true)
+                .setOnlyAlertOnce(true);
     }
 
-    private void initializationStyles() {
+    private void initStyles() {
         SetBtnStyle.setStyle(new ComponentBackground(getContext(), R.color.colorAccent,
                 R.color.shadowColor, 6f, 0f, 3f, 20f), btnCreateAnnouncement);
+        SetBtnStyle.setStyle(new ComponentBackground(getContext(), R.color.colorWhite,
+                R.color.shadowColor, 6f, 0f, 3f, 20f), btnSelectCategory);
 
         SetFieldStyle.setEditTextBackground(new ComponentBackground(getContext(), R.color.colorWhite,
                 R.color.shadowColor, 6f, 0f, 3f, 20f), fieldProductName, fieldCostProduct);
         SetFieldStyle.setEditTextBackground(new ComponentBackground(getContext(), R.color.colorWhite,
                 R.color.shadowColor, 6f, 0f, 3f, 20f), fieldProductDescription);
-
-        dropDownList.setBackground(new ComponentBackground(getContext(), R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f));
-
-        dropDownList.setDefaultTitle(getString(R.string.text_category));
-        dropDownList.setDefaultError(getResources().getString(R.string.error_please_select_category));
     }
 
-    private void initializationListeners() {
-        dropDownList.setOnClickLastElement(v -> setVisibleAdditionalFields(true));
-
-        dropDownList.setOnClickBack(v -> {
-            if (!dropDownList.isEmptyBackStack() && dropDownList.CURRENT_SIZE_STACK() > 1) {
-                if (dropDownList.isHiden) {
-                    dropDownList.expandList();
-                } else {
-                    dropDownList.popToStack();
-                    dropDownList.setTitle(dropDownList.getDefaultTitle());
-                    dropDownList.rewriteCollection(dropDownList.getLastElementToStack());
-                }
-            } else {
-                if (dropDownList.isHiden)
-                    dropDownList.expandList();
-                else
-                    dropDownList.hideList();
-            }
-        });
-
-        dropDownList.setOnClickListener(v -> {
-            if (dropDownList.isHiden)
-                dropDownList.expandList();
-            else {
-                dropDownList.hideList();
-            }
-        });
-
+    private void initListeners() {
         fieldCostProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
 
+        btnSelectCategory.setOnClickListener(v -> containerFragments.add(FragmentSelectCategory.getInnstance()));
+
         btnCreateAnnouncement.setOnClickListener(v -> {
-            if (!Utils.fieldIsEmpty(getContext(), fieldProductName, fieldProductDescription, fieldCostProduct)) {
-                announcement.setMapBitmap(containerFiller.getMapBitmap());
-                announcement.setBitmap(containerFiller.getFirstBitmap());
+            if (containerFiller.getSize() > 0 &&
+                    !Utils.fieldIsEmpty(getContext(), fieldProductName, fieldProductDescription, fieldCostProduct)) {
+//                announcement.setUrisBitmap(new ArrayList<>(containerFiller.getUris()));
+//                announcement.setMainUriBitmap(containerFiller.getFirstUri());
+
                 announcement.setName(fieldProductName.getText().toString());
-                announcement.setIdSubcategory(dropDownList.getIdSelectedElement());
+                announcement.addSubcategory(selectedSubcategory);
                 announcement.setDescription(fieldProductDescription.getText().toString());
 
-                announcement.setCostToBYN(Float.parseFloat(fieldCostProduct.getText().toString()));
-                announcement.setCostToUSD(0f);
-                announcement.setCostToEUR(0f);
+                announcement.setCostToBYN(Double.parseDouble(fieldCostProduct.getText().toString()));
+                announcement.setCostToUSD(0d);
+                announcement.setCostToEUR(0d);
 
                 announcement.setAddress("адрес");
 
                 announcement.setPhone_1("+375(29)659-50-73");
-                announcement.setVisiblePhone_1(true);
 
                 announcement.setPhone_2("+375(29)681-37-83");
-                announcement.setVisiblePhone_2(false);
 
                 announcement.setPhone_3("+375(44)702-04-50");
-                announcement.setVisiblePhone_3(false);
 
                 insertAnnouncement(announcement);
             }
         });
     }
 
-    public void insertAnnouncement(@NonNull ModelInsertAnnouncement announcement) {
-        if (announcement != null) {
-            progressBarInsert.setVisibility(View.VISIBLE);
-            insertAnnouncement.insertAnnouncement(getContext(), ServerUtils.URL_INSERT_ANNOUNCEMENT, announcement)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+    public void insertAnnouncement(@NonNull Announcement announcement) {
+        apiAnnouncement.insertAnnouncement(announcement)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        compositeDisposable.add(d);
+                    }
 
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            resetComponents();
                         }
+                    }
 
-                        @Override
-                        public void onNext(Object o) {
-                            Utils.messageOutput(getContext(), getResources().getString(R.string.success_announcement_added));
-                            progressBarInsert.setVisibility(View.GONE);
-                        }
+                    @Override
+                    public void onError(Throwable e) {
 
-                        @Override
-                        public void onError(Throwable e) {
-                            progressBarInsert.setVisibility(View.GONE);
-                        }
+                    }
 
-                        @Override
-                        public void onComplete() {
-                            Utils.messageOutput(getContext(), getResources().getString(R.string.success_announcement_added));
-                            progressBarInsert.setVisibility(View.GONE);
-                        }
-                    });
-        }
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void resetComponents() {
+        Utils.getHandler().post(() -> {
+            containerSelectedImages.clearContainer();
+
+            fieldProductName.getText().clear();
+            fieldProductDescription.getText().clear();
+            fieldCostProduct.getText().clear();
+
+            btnSelectCategory.setText(R.string.text_select_category);
+
+            setVisibleAdditionalFields(false);
+        });
     }
 
     public void setVisibleAdditionalFields(boolean b) {
@@ -297,6 +286,31 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     @Override
     public void setSideBar(SideBar sideBar) {
         this.sideBar = sideBar;
+    }
+
+    @Subscribe
+    public void setSelectedSubcategory(EventSendID sendID) {
+        if (sendID != null) {
+            selectedSubcategory = sendID.getIdSubcategory();
+            btnSelectCategory.setText(sendID.getName());
+
+            setVisibleAdditionalFields(true);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        EventBus.getDefault().unregister(this);
+        compositeDisposable.clear();
     }
 
     @Override

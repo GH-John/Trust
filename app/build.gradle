@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.firebase-perf'
 
 android {
     compileSdkVersion 29
@@ -25,8 +24,28 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
+            buildConfigField "String", "BackendlessURL", "\"https://api.backendless.com\""
+            buildConfigField "String", "BackendlessAppID", "\"19296DC2-5955-5C8B-FFE2-69EECE7C0100\""
+            buildConfigField "String", "BackendlessApiKey", "\"30582E07-1801-428A-BDC6-3512DF237F35\""
+
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
+
+            buildConfigField "String", "URL_REGISTRATION", "\"php/authentication/RegistrationUser.php\""
+            buildConfigField "String", "URL_AUTHORIZATION", "\"php/authentication/AuthorizationUser.php\""
+            buildConfigField "String", "URL_AUTHORIZATION_USE_TOKEN", "\"php/authentication/AuthorizationUseToken.php\""
+
+            buildConfigField "String", "URL_LOAD_CATEGORY", "\"php/load/LoadCategory.php\""
+            buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/load/LoadSubcategory.php\""
+
+            buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/InsertAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPhoto.php\""
+            buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
+
+            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_VIEW_ANNOUNCEMENT", "\"php/load/LoadingViewAnnouncement.php\""
+
         }
 
         release {
@@ -34,9 +53,37 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
+            buildConfigField "String", "BackendlessURL", "\"https://api.backendless.com\""
+            buildConfigField "String", "BackendlessAppID", "\"19296DC2-5955-5C8B-FFE2-69EECE7C0100\""
+            buildConfigField "String", "BackendlessApiKey", "\"30582E07-1801-428A-BDC6-3512DF237F35\""
+
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
+
+            buildConfigField "String", "URL_REGISTRATION", "\"php/authentication/RegistrationUser.php\""
+            buildConfigField "String", "URL_AUTHORIZATION", "\"php/authentication/AuthorizationUser.php\""
+            buildConfigField "String", "URL_AUTHORIZATION_USE_TOKEN", "\"php/authentication/AuthorizationUseToken.php\""
+
+            buildConfigField "String", "URL_LOAD_CATEGORY", "\"php/load/LoadCategory.php\""
+            buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/load/LoadSubcategory.php\""
+
+            buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/InsertAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPhoto.php\""
+            buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
+
+            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_VIEW_ANNOUNCEMENT", "\"php/load/LoadingViewAnnouncement.php\""
+
         }
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+
+    dexOptions {
+        javaMaxHeapSize "3g" //specify the heap size for the dex process
     }
 }
 
@@ -45,14 +92,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.firebase:firebase-firestore:21.4.1'
-    implementation 'com.google.firebase:firebase-perf:19.0.5'
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation "androidx.fragment:fragment:1.2.3"
+    implementation "androidx.fragment:fragment:1.2.4"
 
     implementation "io.reactivex.rxjava2:rxjava:2.2.16"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
@@ -66,6 +111,7 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+//    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
 
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.4.1'
@@ -86,10 +132,19 @@ dependencies {
     implementation 'com.github.piasy:GlideImageLoader:1.6.2'
     implementation 'com.github.piasy:ProgressPieIndicator:1.6.2'
 
-    implementation 'com.google.firebase:firebase-analytics:17.2.3'
-    implementation 'com.google.firebase:firebase-auth:19.3.0'
-    implementation 'com.google.firebase:firebase-core:17.2.3'
-    implementation 'com.google.firebase:firebase-database:19.2.1'
-    implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-messaging:20.1.3'
+    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-core:17.3.0'
+    implementation 'com.google.firebase:firebase-messaging:20.1.5'
+
+    implementation group: 'com.backendless', name: 'backendless', version: '5.7.0'
+    implementation ( group: 'io.socket', name: 'socket.io-client', version: '1.0.0' ) {
+        //      excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
+
+    implementation 'com.github.florent37:expansionpanel:1.2.2'
+
+    implementation 'org.greenrobot:eventbus:3.2.0'
+
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
 }

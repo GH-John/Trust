@@ -12,4 +12,6 @@ public interface AdapterContainer {
 
     Map getCurrentMap();
     void removeFromCurrentMap(final Object key);
+
+    int getSize();
 }

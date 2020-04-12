@@ -21,13 +21,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.application.arenda.BuildConfig;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
-import com.application.arenda.Entities.Announcements.Models.ModelViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
-import com.application.arenda.Entities.Announcements.ViewAnnouncement.DialogFragment.ModelPhoneNumber;
-import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
-import com.application.arenda.Entities.Utils.Network.ServerUtils;
 import com.application.arenda.Entities.Utils.PermissionUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
@@ -112,11 +109,10 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private ViewPager.OnPageChangeListener pageListener;
 
     private InsertToFavorite favorite = new InsertToFavorite();
-    private LoadingViewAnnouncement announcement = new LoadingViewAnnouncement();
 
-    private long idAnnouncement;
+    private String idAnnouncement;
 
-    private List<ModelPhoneNumber> phoneNumbers = new ArrayList<>();
+    private List<String> phoneNumbers = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,7 +122,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         Bundle bundle = getArguments();
 
-        idAnnouncement = bundle != null ? bundle.getLong("idAnnouncement") : 0;
+        idAnnouncement = bundle != null ? bundle.getString("idAnnouncement") : "";
 
         loadData();
 
@@ -147,54 +143,11 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private void loadData() {
         setProgress(true);
 
-        announcement.loadAnnouncement(getContext(), ServerUtils.URL_LOADING_VIEW_ANNOUNCEMENT, idAnnouncement)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ModelViewAnnouncement>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
 
-                    }
-
-                    @Override
-                    public void onNext(ModelViewAnnouncement model) {
-                        phoneNumbers.addAll(model.getPhoneNumbers());
-
-                        textPlacementDate.setText(model.getPlacementDate());
-                        textNameProduct.setText(model.getName());
-
-                        //будет браться стоимость в зависимости от настроек по умолчанию
-                        textCostProduct.setText(model.getCostToBYN() + " руб./ч.");
-
-                        textAddress.setText(model.getAddress());
-                        textRating.setText(String.valueOf(model.getRate()));
-                        textCountRent.setText(String.valueOf(model.getCountRent()));
-
-                        textDescriptionProduct.setText(model.getDescription());
-
-                        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(model.getID()));
-
-                        selectHeart(model.isFavorite());
-
-                        initViewPager(model.getUriCollection());
-
-                        setProgress(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        setProgress(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        setProgress(false);
-                    }
-                });
     }
 
-    public void onClickFavorite(long idAnnouncement) {
-        favorite.insertToFavorite(getContext(), ServerUtils.URL_INSERT_TO_FAVORITE,
+    public void onClickFavorite(String idAnnouncement) {
+        favorite.insertToFavorite(getContext(), BuildConfig.URL_INSERT_TO_FAVORITE,
                 idAnnouncement)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -290,7 +243,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                 String[] array = new String[phoneNumbers.size()];
 
                 for (int i = 0; i < phoneNumbers.size(); i++) {
-                    array[i] = phoneNumbers.get(i).getNumber();
+                    array[i] = phoneNumbers.get(i);
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -301,14 +254,12 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                     if (!PermissionUtils.Check_CALL_PHONE(getActivity()))
                         PermissionUtils.Request_CALL_PHONE(getActivity(), 4322);
                     else
-                        getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
+                        getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which))));
                 });
 
                 builder.create();
 
                 builder.show();
-
-//                new DialogCallPhoneNumber(phoneNumbers).show(getActivity().getSupportFragmentManager(), DialogCallPhoneNumber.TAG);
             } else
                 Utils.messageOutput(getContext(), getContext().getResources().getString(R.string.dialog_phone_number_not_found));
         });

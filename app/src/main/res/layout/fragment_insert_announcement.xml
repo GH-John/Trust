@@ -92,18 +92,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/textNotePhotos"
                 tools:ignore="Autofill,LabelFor" />
 
-            <com.application.arenda.UI.DropDownList.DropDownList
-                android:id="@+id/dropDownList"
-                android:layout_width="match_parent"
+            <Button
+                android:id="@+id/btnSelectCategory"
+                style="@style/DefaultStyleSecondaryBtn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:text="@string/text_select_category"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fieldProductName">
-
-            </com.application.arenda.UI.DropDownList.DropDownList>
+                app:layout_constraintTop_toBottomOf="@+id/fieldProductName" />
 
             <EditText
                 android:id="@+id/fieldDescription"
@@ -118,7 +119,7 @@
                 android:minHeight="50dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/dropDownList"
+                app:layout_constraintTop_toBottomOf="@+id/btnSelectCategory"
                 tools:ignore="Autofill,LabelFor" />
 
             <TextView
@@ -162,7 +163,7 @@
             <CheckBox
                 android:id="@+id/checkBoxWithSale"
                 style="@style/DefaultStyleCheckBox"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="@string/check_box_with_sale"
@@ -180,40 +181,37 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxWithSale" />
 
-            <RadioGroup
-                android:id="@+id/radioGroupAddresses"
-                android:layout_width="wrap_content"
+            <CheckBox
+                android:id="@+id/checkAddress_1"
+                style="@style/DefaultStyleCheckBox"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
+                android:checked="false"
+                android:text="@string/text_some_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textVisibleAddresses">
+                app:layout_constraintTop_toBottomOf="@+id/textVisibleAddresses" />
 
-                <RadioButton
-                    android:id="@+id/radioAddress_1"
-                    style="@style/DefaultStyleRadioBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/text_some_text" />
+            <CheckBox
+                android:id="@+id/checkAddress_2"
+                style="@style/DefaultStyleCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:checked="false"
+                android:text="@string/text_some_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkAddress_1" />
 
-                <RadioButton
-                    android:id="@+id/radioAddress_2"
-                    style="@style/DefaultStyleRadioBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:checked="false"
-                    android:text="@string/text_some_text" />
-
-                <RadioButton
-                    android:id="@+id/radioAddress_3"
-                    style="@style/DefaultStyleRadioBtn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/text_some_text" />
-            </RadioGroup>
+            <CheckBox
+                android:id="@+id/checkAddress_3"
+                style="@style/DefaultStyleCheckBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/text_some_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/checkAddress_2" />
 
             <TextView
                 android:id="@+id/textVisiblePhones"
@@ -224,12 +222,12 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/text_visible_phones"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/radioGroupAddresses" />
+                app:layout_constraintTop_toBottomOf="@+id/checkAddress_3" />
 
             <CheckBox
                 android:id="@+id/checkPhone_1"
                 style="@style/DefaultStyleCheckBox"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/hint_phone"
@@ -239,7 +237,7 @@
             <CheckBox
                 android:id="@+id/checkPhone_2"
                 style="@style/DefaultStyleCheckBox"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/hint_phone"
@@ -249,7 +247,7 @@
             <CheckBox
                 android:id="@+id/checkPhone_3"
                 style="@style/DefaultStyleCheckBox"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/hint_phone"
@@ -274,7 +272,6 @@
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@+id/btnCreateAnnouncement"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -293,7 +290,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="fieldDescription,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,radioGroupAddresses,textVisibleAddresses,fieldCostProduct,textHourlyCost"
+                app:constraint_referenced_ids="fieldDescription,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,checkAddress_1,checkAddress_2,checkAddress_3,textVisibleAddresses,fieldCostProduct,textHourlyCost"
                 tools:layout_editor_absoluteX="24dp"
                 tools:layout_editor_absoluteY="245dp"
                 tools:visibility="visible" />

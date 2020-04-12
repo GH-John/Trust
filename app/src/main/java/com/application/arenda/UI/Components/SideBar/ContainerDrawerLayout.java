@@ -2,15 +2,21 @@ package com.application.arenda.UI.Components.SideBar;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Context;
+import android.content.Intent;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.application.arenda.Entities.Authentication.Authentication;
+import com.application.arenda.Entities.Models.User;
 import com.application.arenda.Entities.Utils.Utils;
+import com.application.arenda.MainWorkspace.Activities.ActivityAuthorization;
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
 import com.application.arenda.MainWorkspace.Fragments.FragmentCustomerService;
 import com.application.arenda.MainWorkspace.Fragments.FragmentProhibited;
@@ -24,8 +30,11 @@ import com.application.arenda.MainWorkspace.Fragments.Proposals.FragmentUserProp
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ComponentManager;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 import com.google.android.material.navigation.NavigationView;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
 
 public final class ContainerDrawerLayout implements SideBar,
@@ -38,14 +47,24 @@ public final class ContainerDrawerLayout implements SideBar,
 
     private NavigationView leftMenu;
 
+    private View headerNavigation;
+
+    private TextView itemUserName, itemUserLogin;
+
     private FrameLayout rightMenu;
 
-    private ImageButton itemUserAccount, itemLogout;
+    private ImageButton itemLogout, itemSignIn, itemSettings;
+
+    private CircleImageView itemUserLogo;
 
     private ContainerFragments containerFragments;
 
+    private Authentication authentication;
+
     private ContainerDrawerLayout(Activity activity) {
         initComponents(activity);
+
+        inflateComponents(activity);
 
         initListeners();
     }
@@ -58,20 +77,51 @@ public final class ContainerDrawerLayout implements SideBar,
     }
 
     private void initComponents(Activity activity) {
+        authentication = Authentication.getInstance();
+
         leftMenu = activity.findViewById(R.id.sbLeftMenu);
+        headerNavigation = leftMenu.getHeaderView(0);
+
         drawerLayout = activity.findViewById(R.id.sbDrawerMenu);
         rightMenu = activity.findViewById(R.id.sbRightMenuLayout);
 
-        itemLogout = activity.findViewById(R.id.itemLogout);
-        itemUserAccount = activity.findViewById(R.id.itemUserAccount);
+        itemLogout = headerNavigation.findViewById(R.id.itemLogout);
+        itemSignIn = headerNavigation.findViewById(R.id.itemSignIn);
+        itemSettings = headerNavigation.findViewById(R.id.itemSettings);
+        itemUserName = headerNavigation.findViewById(R.id.itemUserName);
+        itemUserLogin = headerNavigation.findViewById(R.id.itemUserLogin);
+        itemUserLogo = headerNavigation.findViewById(R.id.itemUserLogo);
 
         containerFragments = ContainerFragments.getInstance(activity);
 
-        drawerLayout.setScrimColor(Color.TRANSPARENT);
+        drawerLayout.setScrimColor(activity.getResources().getColor(R.color.shadowColor));
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void inflateComponents(Context context) {
+        authentication.getUserData(new AsyncCallback<User>() {
+            @Override
+            public void handleResponse(User response) {
+                itemUserName.setText(response.getLastName() + " " + response.getName());
+                itemUserLogin.setText(response.getLogin());
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Utils.messageOutput(context, "Error - " + fault.getMessage());
+                Timber.e(fault.getMessage());
+            }
+        });
     }
 
     private void initListeners() {
         leftMenu.setNavigationItemSelectedListener(this);
+
+        itemSignIn.setOnClickListener(this::openActivityAuthorization);
+    }
+
+    private void openActivityAuthorization(View view) {
+        view.getContext().startActivity(new Intent(view.getContext(), ActivityAuthorization.class));
     }
 
     private void setCheckedItem(ItemSideBar item) {

@@ -11,7 +11,7 @@ public class PermissionUtils {
     //Request Permisson
     public static void Request_STORAGE(Activity act, int code) {
         ActivityCompat.requestPermissions(act, new
-                String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, code);
+                String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, code);
     }
 
     public static void Request_CALL_PHONE(Activity act, int code) {

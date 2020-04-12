@@ -8,13 +8,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.application.arenda.R;
-import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -24,6 +24,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.Action;
+import ru.tinkoff.decoro.MaskImpl;
+import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
+import ru.tinkoff.decoro.slots.Slot;
+import ru.tinkoff.decoro.watchers.FormatWatcher;
+import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 
 public class Utils {
     public static final Action<View> V_GONE = (view, index) -> view.setVisibility(View.GONE);
@@ -36,6 +41,14 @@ public class Utils {
 
     public static Handler getHandler() {
         return handler;
+    }
+
+    public static void setPhoneMask(String pattern, TextView textView) {
+        Slot[] slots = new UnderscoreDigitSlotsParser().parseSlots(pattern);
+        FormatWatcher formatWatcher = new MaskFormatWatcher(
+                MaskImpl.createTerminated(slots)
+        );
+        formatWatcher.installOn(textView);
     }
 
     public static void changeStatusBarColor(Activity activity) {
@@ -52,12 +65,17 @@ public class Utils {
     }
 
     public static String getFormatingDate(Context context, String date) {
-        AndroidThreeTen.init(context);
         LocalDate today = LocalDate.now();
 
-        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        //"E, MMM dd yyyy HH:mm:ss"
+        //Thu, Dec 31 1998 23:37:50
 
-        LocalDateTime test = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        //E MMM dd HH:mm:ss  yyyy
+        //Fri Apr 10 10:11:53 GMT+03:00 2020
+
+
+        LocalDateTime dateTime = LocalDateTime.parse(date);
+//        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 0)
             return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
@@ -191,7 +209,17 @@ public class Utils {
     }
 
     public static void messageOutput(Context context, String str) {
-        Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
+        handler.post(() -> Toast.makeText(context, str, Toast.LENGTH_SHORT).show());
+    }
+
+    public static boolean isWeakPassword(@NonNull Context context, @NonNull EditText editText) {
+        if (editText != null)
+            if (editText.getText().length() < 6) {
+                editText.setError(context.getResources().getString(R.string.error_weak_password));
+                return true;
+            }
+
+        return false;
     }
 
     public static boolean isEmail(@NonNull Context context, @NonNull EditText... fields) {
@@ -200,10 +228,12 @@ public class Utils {
         pattern = Pattern.compile(".+@.+\\..+");
         if (fields.length > 0) {
             for (EditText field : fields) {
-                matcher = pattern.matcher(field.getText().toString());
-                if (!matcher.find()) {
-                    field.setError(context.getResources().getString(R.string.error_incorrect_format_email));
-                    countIncorrectFields++;
+                if (field != null) {
+                    matcher = pattern.matcher(field.getText().toString());
+                    if (!matcher.find()) {
+                        field.setError(context.getResources().getString(R.string.error_incorrect_format_email));
+                        countIncorrectFields++;
+                    }
                 }
             }
             return countIncorrectFields == 0;
@@ -215,7 +245,7 @@ public class Utils {
         int countEmpty = 0;
         if (fields.length > 0) {
             for (EditText field : fields) {
-                if (field.getText().toString().isEmpty()) {
+                if (field != null && field.getText().toString().isEmpty()) {
                     field.setError(context.getResources().getString(R.string.error_empty_field));
                     countEmpty++;
                 }
@@ -231,14 +261,26 @@ public class Utils {
         pattern = Pattern.compile("[\\W_0-9]+");
         if (fields.length > 0) {
             for (EditText field : fields) {
-                matcher = pattern.matcher(field.getText().toString());
-                if (matcher.find()) {
-                    field.setError(context.getResources().getString(R.string.error_incorrect_chars));
-                    countIncorrectFields++;
+                if (field != null) {
+                    matcher = pattern.matcher(field.getText().toString());
+                    if (matcher.find()) {
+                        field.setError(context.getResources().getString(R.string.error_incorrect_chars));
+                        countIncorrectFields++;
+                    }
                 }
             }
             return countIncorrectFields == 0;
         }
+        return false;
+    }
+
+    public static boolean isConfirmPassword(Context context, EditText fieldPassReg, EditText fieldConfirmPassReg) {
+        if (fieldPassReg.getText().toString().equals(fieldConfirmPassReg.getText().toString())) {
+            return true;
+        } else {
+            fieldConfirmPassReg.setError(context.getResources().getString(R.string.error_confirm_password));
+        }
+
         return false;
     }
 }

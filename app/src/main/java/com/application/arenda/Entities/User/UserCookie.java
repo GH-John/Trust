@@ -1,11 +1,8 @@
 package com.application.arenda.Entities.User;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.application.arenda.Entities.Utils.ObjectStreamHelper;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 public class UserCookie {
     private static final String getProfilesDir = "map_profiles.ar";
@@ -37,13 +36,13 @@ public class UserCookie {
 
             token = new String(bytes);
         } catch (IOException ex) {
-            Log.d("UserCookie", ex.getMessage());
+            Timber.tag("UserCookie").e(ex);
         } finally {
             try {
                 if (fileInputStream != null)
                     fileInputStream.close();
             } catch (IOException ex) {
-                Log.d("UserCookie", ex.getMessage());
+                Timber.tag("UserCookie").e(ex);
             }
         }
         return token;
@@ -67,13 +66,13 @@ public class UserCookie {
                 fileOutputStream = context.openFileOutput(getUseProfileDir, Context.MODE_PRIVATE);
                 fileOutputStream.write(token.getBytes());
             } catch (IOException ex) {
-                Log.d("UserCookie", ex.getMessage());
+                Timber.tag("UserCookie").e(ex);
             } finally {
                 try {
                     if (fileOutputStream != null)
                         fileOutputStream.close();
                 } catch (IOException ex) {
-                    Log.d("UserCookie", ex.getMessage());
+                    Timber.tag("UserCookie").e(ex);
                 }
             }
         }).start();
@@ -83,7 +82,7 @@ public class UserCookie {
         try {
             return ObjectStreamHelper.ObjectInputStream(context.openFileInput(getProfilesDir));
         } catch (FileNotFoundException e) {
-            Log.d("UserCookie", e.getMessage());
+            Timber.tag("UserCookie").e(e);
         }
         return null;
     }
@@ -92,7 +91,7 @@ public class UserCookie {
         try {
             ObjectStreamHelper.ObjectOutputStream(mapSaveProfiles, context.openFileOutput(getProfilesDir, Context.MODE_PRIVATE));
         } catch (FileNotFoundException e) {
-            Log.d("UserCookie", e.getMessage());
+            Timber.tag("UserCookie").e(e);
         }
     }
 }

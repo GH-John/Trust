@@ -57,6 +57,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="Autofill,LabelFor" />
 
+    <TextView
+        android:id="@+id/itemForgotPass"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/text_forgot_password"
+        android:textColor="@color/colorHint"
+        app:layout_constraintEnd_toEndOf="@+id/fieldPassAuth"
+        app:layout_constraintStart_toStartOf="@+id/fieldPassAuth"
+        app:layout_constraintTop_toBottomOf="@+id/fieldPassAuth" />
+
     <Button
         android:id="@+id/btnSignAuth"
         style="@style/DefaultStylePrimaryBtn"

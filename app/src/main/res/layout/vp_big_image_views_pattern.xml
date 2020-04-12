@@ -8,7 +8,7 @@
         android:id="@+id/vpBigImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:failureImage="@color/colorNotFoundPicture"
+        app:failureImage="@color/colorPlaceHolderPicture"
         app:initScaleType="centerInside"
         app:optimizeDisplay="false"
         app:tapToRetry="true" />

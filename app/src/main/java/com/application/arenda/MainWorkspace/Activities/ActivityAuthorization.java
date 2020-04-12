@@ -7,26 +7,26 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.application.arenda.Entities.Authentication.Authentication;
-import com.application.arenda.Entities.Authentication.OnAuthenticationListener;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
 import com.application.arenda.UI.SetDrawableImageViews;
 import com.application.arenda.UI.Style.SetBtnStyle;
 import com.application.arenda.UI.Style.SetFieldStyle;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseNetworkException;
-import com.google.firebase.auth.FirebaseAuthException;
+import com.backendless.BackendlessUser;
+import com.backendless.async.callback.AsyncCallback;
+import com.backendless.exceptions.BackendlessFault;
 
 import timber.log.Timber;
 
 public class ActivityAuthorization extends AppCompatActivity {
     private EditText fieldEmailAuth, fieldPassAuth;
+    private TextView itemForgotPass;
     private ImageView imagePinAuth;
     private Button btnSignAuth, btnRegAuth;
     private ProgressBar progressBarAuth;
@@ -52,6 +52,8 @@ public class ActivityAuthorization extends AppCompatActivity {
         btnRegAuth = findViewById(R.id.btnRegAuth);
         btnSignAuth = findViewById(R.id.btnSignAuth);
 
+        itemForgotPass = findViewById(R.id.itemForgotPass);
+
         progressBarAuth = findViewById(R.id.progressBarAuth);
 
         authentication = Authentication.getInstance();
@@ -72,55 +74,27 @@ public class ActivityAuthorization extends AppCompatActivity {
     }
 
     private void initListeners() {
-        authentication.setOnAuthorizationListener(new OnAuthenticationListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                if (task.isSuccessful()) {
-                    progressBarAuth.setVisibility(View.INVISIBLE);
-
-                    Intent intent = new Intent(ActivityAuthorization.this, ActivityMain.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                    startActivity(intent);
-
-                    finish();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Timber.e(e);
-
-                progressBarAuth.setVisibility(View.INVISIBLE);
-
-                if (e instanceof FirebaseNetworkException)
-                    Utils.messageOutput(ActivityAuthorization.this, getString(R.string.error_check_internet_connect));
-                else if (e instanceof FirebaseAuthException) {
-                    switch (((FirebaseAuthException) e).getErrorCode()) {
-                        case "ERROR_USER_NOT_FOUND":
-                            fieldEmailAuth.setError(getString(R.string.error_user_not_found));
-                            break;
-                        case "ERROR_USER_DISABLED":
-                            Utils.messageOutput(ActivityAuthorization.this, getString(R.string.error_user_disabled));
-                            break;
-                        case "ERROR_INVALID_EMAIL":
-                            fieldEmailAuth.setError(getString(R.string.error_incorrect_format_email));
-                            break;
-                        case "ERROR_WEAK_PASSWORD":
-                            fieldPassAuth.setError(getString(R.string.error_weak_password));
-                            break;
-                        case "ERROR_WRONG_PASSWORD":
-                            fieldPassAuth.setError(getString(R.string.error_incorrect_password));
-                            break;
-                        default:
-                            Utils.messageOutput(ActivityAuthorization.this, getString(R.string.unknown_error));
-                            break;
-                    }
-                }
-            }
-        });
-
         btnRegAuth.setOnClickListener(v -> startActivity(new Intent(ActivityAuthorization.this, ActivityRegistration.class)));
+
+        itemForgotPass.setOnClickListener(v -> {
+            if (!Utils.fieldIsEmpty(getApplicationContext(), fieldEmailAuth))
+                authentication.restorePassword(fieldEmailAuth.getText().toString(), new AsyncCallback<Void>() {
+                    @Override
+                    public void handleResponse(Void response) {
+                        progressBarAuth.setVisibility(View.INVISIBLE);
+
+                        Utils.messageOutput(getApplicationContext(), getResources().getString(R.string.instruction_send_to_email));
+                    }
+
+                    @Override
+                    public void handleFault(BackendlessFault fault) {
+                        progressBarAuth.setVisibility(View.INVISIBLE);
+
+                        Utils.messageOutput(getApplicationContext(), "Error: - " + fault.getMessage());
+                        Timber.e(fault.getMessage());
+                    }
+                });
+        });
 
         btnSignAuth.setOnClickListener(v -> {
             if (!Utils.fieldIsEmpty(getApplicationContext(), fieldEmailAuth, fieldPassAuth)) {
@@ -128,7 +102,24 @@ public class ActivityAuthorization extends AppCompatActivity {
 
                 authentication.authorization(
                         fieldEmailAuth.getText().toString().trim(),
-                        fieldPassAuth.getText().toString().trim());
+                        fieldPassAuth.getText().toString().trim(),
+                        new AsyncCallback<BackendlessUser>() {
+                            @Override
+                            public void handleResponse(BackendlessUser response) {
+                                progressBarAuth.setVisibility(View.INVISIBLE);
+
+                                onBackPressed();
+                                finish();
+                            }
+
+                            @Override
+                            public void handleFault(BackendlessFault fault) {
+                                progressBarAuth.setVisibility(View.INVISIBLE);
+
+                                Utils.messageOutput(getApplicationContext(), "Error: - " + fault.getMessage());
+                                Timber.e(fault.getMessage());
+                            }
+                        });
             }
         });
     }
