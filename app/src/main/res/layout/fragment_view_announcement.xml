@@ -97,10 +97,10 @@
                 android:layout_marginStart="24dp"
                 android:text="@string/text_cost_announcement"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textAddress" />
+                app:layout_constraintTop_toTopOf="@+id/itemLocation" />
 
             <TextView
-                android:id="@+id/textAddress"
+                android:id="@+id/itemLocation"
                 style="@style/DefaultStyleTextRegular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                 app:cardElevation="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textAddress">
+                app:layout_constraintTop_toBottomOf="@+id/itemLocation">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

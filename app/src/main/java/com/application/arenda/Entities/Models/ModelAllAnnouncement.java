@@ -14,11 +14,20 @@ public class ModelAllAnnouncement implements IModel {
     @SerializedName("countRent")
     private int countRent = 0;
 
+    @SerializedName("countReviews")
+    private int countReviews = 0;
+
     @SerializedName("placementDate")
     private String placementDate;
 
     @SerializedName("idUser")
     private long idUser = 0;
+
+    @SerializedName("userLogo")
+    private Uri userLogoUri;
+
+    @SerializedName("login")
+    private String login = "";
 
     @SerializedName("idAnnouncement")
     private long idAnnouncement = 0;
@@ -36,17 +45,41 @@ public class ModelAllAnnouncement implements IModel {
     private float costToEUR = 0.0f;
 
     @SerializedName("photoPath")
-    private Uri mainUriBitmap;
+    private Uri mainUri;
 
     @SerializedName("address")
     private String address = "";
 
-    public Uri getMainUriBitmap() {
-        return mainUriBitmap;
+    public int getCountReviews() {
+        return countReviews;
     }
 
-    public void setMainUriBitmap(Uri mainUriBitmap) {
-        this.mainUriBitmap = mainUriBitmap;
+    public void setCountReviews(int countReviews) {
+        this.countReviews = countReviews;
+    }
+
+    public Uri getUserLogoUri() {
+        return userLogoUri;
+    }
+
+    public void setUserLogoUri(Uri userLogoUri) {
+        this.userLogoUri = userLogoUri;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public Uri getMainUri() {
+        return mainUri;
+    }
+
+    public void setMainUri(Uri mainUri) {
+        this.mainUri = mainUri;
     }
 
     public boolean isFavorite() {
@@ -130,12 +163,12 @@ public class ModelAllAnnouncement implements IModel {
     }
 
     @Override
-    public void setID(long id) {
-        idAnnouncement = id;
+    public long getID() {
+        return idAnnouncement;
     }
 
     @Override
-    public long getID() {
-        return idAnnouncement;
+    public void setID(long id) {
+        idAnnouncement = id;
     }
 }

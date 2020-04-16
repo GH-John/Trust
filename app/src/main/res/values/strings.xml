@@ -110,7 +110,7 @@
     <string name="text_name_announcement">Название объявления</string>
     <string name="text_placement_date_announcement">Сегодня, 13:21</string>
     <string name="text_additional_fields">Дополнительная информация:</string>
-    <string name="text_note_photos">Первая фотография является главной</string>
+    <string name="text_note_photos">Выберите главную фотографию</string>
     <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
     <string name="text_visible_addresses">Показать адрес(а) в объявлении:</string>
 
@@ -176,4 +176,6 @@
     <string name="error_user_login_exists">Пользоваель с таким логином уже существует</string>
     <string name="text_select_picture">Выберите изображение</string>
     <string name="text_view_reviews">Показать отзывы</string>
+    <string name="text_camera">Камера</string>
+    <string name="text_galery">Галерея</string>
 </resources>

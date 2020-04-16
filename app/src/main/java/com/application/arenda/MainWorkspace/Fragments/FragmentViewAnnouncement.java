@@ -73,7 +73,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     TextView textCostProduct;
 
     @Nullable
-    @BindView(R.id.textAddress)
+    @BindView(R.id.itemLocation)
     TextView textAddress;
 
     @Nullable

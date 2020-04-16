@@ -7,12 +7,15 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 
 import com.application.arenda.BuildConfig;
+import com.application.arenda.Entities.Models.ModelAllAnnouncement;
 import com.application.arenda.Entities.Models.ModelCategory;
 import com.application.arenda.Entities.Models.ModelInsertAnnouncement;
 import com.application.arenda.Entities.Models.ModelSubcategory;
 import com.application.arenda.Entities.User.UserCookie;
+import com.application.arenda.Entities.Utils.FileUtils;
 import com.application.arenda.Entities.Utils.Retrofit.ApiClient;
 import com.application.arenda.Entities.Utils.Retrofit.RetrofitUtils;
+import com.application.arenda.Entities.Utils.Utils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,7 +122,7 @@ public class Announcement {
     }
 
     @NonNull
-    public Observable<List<ModelSubcategory>> getSubcategories(long idCategory, OnAnnouncementListener announcementListener) {
+    public Observable<List<ModelSubcategory>> getSubcategories(long idCategory, OnAnnouncementListener listener) {
         return Observable.create(observableEmitter -> {
             List<ModelSubcategory> subcategoryList = new ArrayList<>();
 
@@ -142,8 +145,6 @@ public class Announcement {
 
                                 JSONObject model;
 
-                                Timber.tag("SUB_SIZE").i(String.valueOf(subcategories.length()));
-
                                 for (int i = 0; i < subcategories.length(); i++) {
                                     model = subcategories.getJSONObject(i);
 
@@ -155,17 +156,17 @@ public class Announcement {
 
                                 observableEmitter.onNext(subcategoryList);
 
-                                if (announcementListener != null)
-                                    announcementListener.onComplete(ApiAnnouncement.AnnouncementCodes.valueOf(message));
+                                if (listener != null)
+                                    listener.onComplete(ApiAnnouncement.AnnouncementCodes.valueOf(message));
                             }
                         } else {
-                            if (announcementListener != null)
-                                announcementListener.onComplete(ApiAnnouncement.AnnouncementCodes.NETWORK_ERROR);
+                            if (listener != null)
+                                listener.onComplete(ApiAnnouncement.AnnouncementCodes.NETWORK_ERROR);
                         }
                     } catch (JSONException | IOException e) {
                         Timber.e(e);
-                        if (announcementListener != null)
-                            announcementListener.onFailure(e);
+                        if (listener != null)
+                            listener.onFailure(e);
 
                         observableEmitter.onError(e);
 
@@ -177,8 +178,8 @@ public class Announcement {
 
                 @Override
                 public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    if (announcementListener != null)
-                        announcementListener.onFailure(t);
+                    if (listener != null)
+                        listener.onFailure(t);
 
                     observableEmitter.onError(t);
                 }
@@ -231,7 +232,7 @@ public class Announcement {
 
                                 emitter.onNext(ApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENT_ADDED);
 
-                                insertPhotos(object.getString("idAnnouncement"), partList, new OnAnnouncementListener() {
+                                insertPhotos(object.getString("idAnnouncement"), FileUtils.getFileName(context, announcement.getMainUri()), partList, new OnAnnouncementListener() {
                                     @Override
                                     public void onComplete(@NonNull ApiAnnouncement.AnnouncementCodes code) {
                                         emitter.onNext(code);
@@ -264,10 +265,92 @@ public class Announcement {
         });
     }
 
-    private synchronized void insertPhotos(String idAnnouncement, List<MultipartBody.Part> partList, OnAnnouncementListener listener) {
+    public Observable<List<ModelAllAnnouncement>> loadAnnouncements(Context context, long lastID, int limitItemsInPage, String query, OnAnnouncementListener listener) {
+        List<ModelAllAnnouncement> listAnnouncements = new ArrayList<>();
+
+        return Observable.create(emitter ->
+                ApiClient.getApi()
+                        .create(ApiAnnouncement.class).loadAnnouncements(
+                        UserCookie.getToken(context),
+                        lastID,
+                        limitItemsInPage,
+                        query)
+                        .enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                                try {
+                                    String res = response.body().string();
+
+                                    if (res != null) {
+                                        JSONObject object = new JSONObject(res);
+
+                                        String message = object.getString("response");
+
+                                        if (ApiAnnouncement.AnnouncementCodes.valueOf(message) == ApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENTS_LOADED) {
+
+                                            JSONArray announcements = object.getJSONArray("announcements");
+
+                                            JSONObject model;
+
+                                            for (int i = 0; i < announcements.length(); i++) {
+                                                model = announcements.getJSONObject(i);
+
+                                                ModelAllAnnouncement announcement = new ModelAllAnnouncement();
+
+                                                announcement.setID(Long.parseLong(model.getString("idAnnouncement")));
+                                                announcement.setIdUser(Long.parseLong(model.getString("idUser")));
+
+                                                announcement.setName(model.getString("name"));
+                                                announcement.setMainUri(Uri.parse(model.getString("photoPath")));
+
+                                                announcement.setLogin(model.getString("login"));
+                                                announcement.setUserLogoUri(Uri.parse(model.getString("userLogo")));
+
+                                                announcement.setCostToBYN(Float.parseFloat(model.getString("costToBYN")));
+                                                announcement.setCostToUSD(Float.parseFloat(model.getString("costToUSD")));
+                                                announcement.setCostToEUR(Float.parseFloat(model.getString("costToEUR")));
+
+                                                announcement.setAddress(model.getString("address"));
+                                                announcement.setPlacementDate(Utils.getFormatingDate(context, model.getString("placementDate")));
+                                                announcement.setCountRent(Integer.parseInt(model.getString("countRent")));
+                                                announcement.setRate(Float.parseFloat(model.getString("rating")));
+
+                                                listAnnouncements.add(announcement);
+                                            }
+
+                                            emitter.onNext(listAnnouncements);
+
+                                            if (listener != null)
+                                                listener.onComplete(ApiAnnouncement.AnnouncementCodes.valueOf(message));
+
+                                        } else {
+                                            if (listener != null)
+                                                listener.onComplete(ApiAnnouncement.AnnouncementCodes.UNSUCCESS_ANNOUNCEMENTS_LOADED);
+                                        }
+                                    }
+                                } catch (JSONException | IOException e) {
+                                    Timber.e(e);
+                                    if (listener != null)
+                                        listener.onFailure(e);
+                                    emitter.onError(e);
+                                } finally {
+                                    emitter.onComplete();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
+    private synchronized void insertPhotos(String idAnnouncement, String mainUri, List<MultipartBody.Part> partList, OnAnnouncementListener listener) {
         ApiClient.getApi()
                 .create(ApiAnnouncement.class)
-                .insertPictures(RetrofitUtils.createPartFromString(idAnnouncement), partList, partList.size())
+                .insertPictures(RetrofitUtils.createPartFromString(idAnnouncement), RetrofitUtils.createPartFromString(mainUri), partList, partList.size())
                 .enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {

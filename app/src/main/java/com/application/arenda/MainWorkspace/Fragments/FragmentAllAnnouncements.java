@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.application.arenda.BuildConfig;
+import com.application.arenda.Entities.Announcements.Announcement;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsAdapter;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsVH;
-import com.application.arenda.Entities.Announcements.LoadingAnnouncements.LoadingAnnouncements;
 import com.application.arenda.Entities.Models.ModelAllAnnouncement;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
 import com.application.arenda.Entities.Utils.Utils;
@@ -40,8 +40,10 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
 public final class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, ItemSideBar {
     @SuppressLint("StaticFieldLeak")
@@ -69,12 +71,14 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     private RVOnScrollListener rvOnScrollListener;
     private AllAnnouncementsAdapter allAnnouncementsAdapter;
 
-    private LoadingAnnouncements loadData;
+    private Announcement api;
     private InsertToFavorite insertToFavorite = new InsertToFavorite();
 
     private String searchQuery;
 
     private ContainerFragments containerFragments;
+
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static FragmentAllAnnouncements getInstance() {
         if (fragmentAllAnnouncements == null)
@@ -100,7 +104,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     private void init() {
-        loadData = new LoadingAnnouncements(getContext());
+        api = Announcement.getInstance();
         rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
         containerFragments = ContainerFragments.getInstance(getContext());
@@ -140,7 +144,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        compositeDisposable.add(d);
                     }
 
                     @Override
@@ -150,6 +154,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
                     @Override
                     public void onError(Throwable e) {
+                        Timber.e(e);
                     }
 
                     @Override
@@ -187,13 +192,13 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             allAnnouncementsAdapter.setLoading(true);
 
 
-            loadData.loadAllAnnouncements(lastID, 10, BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
+            api.loadAnnouncements(getContext(), lastID, 10, null, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<List<ModelAllAnnouncement>>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            compositeDisposable.add(d);
                         }
 
                         @Override
@@ -203,6 +208,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
                         @Override
                         public void onError(Throwable e) {
+                            Timber.e(e);
                         }
 
                         @Override
@@ -220,12 +226,13 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             allAnnouncementsAdapter.setLoading(true);
 
 
-            loadData.loadAllAnnouncements(0, 10, BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
+            api.loadAnnouncements(getContext(), 0, 10, null, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<List<ModelAllAnnouncement>>() {
                         @Override
                         public void onSubscribe(Disposable d) {
+                            compositeDisposable.add(d);
                         }
 
                         @Override
@@ -235,6 +242,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
                         @Override
                         public void onError(Throwable e) {
+                            Timber.e(e);
                         }
 
                         @Override
@@ -261,14 +269,13 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             allAnnouncementsAdapter.setLoading(true);
             swipeRefreshLayout.setRefreshing(true);
 
-
-            loadData.searchToAllAnnouncements(lastId, 10, query, BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
+            api.loadAnnouncements(getContext(), lastId, 10, query, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<List<ModelAllAnnouncement>>() {
                         @Override
                         public void onSubscribe(Disposable d) {
-
+                            compositeDisposable.add(d);
                         }
 
                         @Override
@@ -278,6 +285,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
                         @Override
                         public void onError(Throwable e) {
+                            Timber.e(e);
                         }
 
                         @Override
@@ -367,6 +375,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     @Override
     public void onPause() {
         super.onPause();
+        compositeDisposable.clear();
     }
 
     @Override

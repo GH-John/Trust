@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="12dp"
     tools:ignore="PrivateResource">
 
     <RelativeLayout
@@ -17,11 +17,12 @@
             android:id="@+id/itemUserLogo"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_marginStart="8dp"
-            android:src="@drawable/sb_item_user_logo" />
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/ic_user_logo" />
 
         <TextView
-            android:id="@+id/itemUserLogin"
+            android:id="@+id/textUserLogin"
             style="@style/DefaultStyleTextRegular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +30,19 @@
             android:layout_marginStart="12dp"
             android:layout_toEndOf="@+id/itemUserLogo"
             android:text="@string/hint_login"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:ignore="RelativeOverlap" />
+
+        <ImageButton
+            android:id="@+id/itemAnnouncementMore"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="12dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/btn_background_dark"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ab_item_more_black" />
 
     </RelativeLayout>
 
@@ -38,16 +51,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layoutUserDesc"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="2dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="2dp"
         tools:ignore="PrivateResource">
 
         <ImageView
-            android:id="@+id/imgProduct"
+            android:id="@+id/itemImgProduct"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
+            android:minHeight="200dp"
             android:scaleType="centerCrop"
             android:transitionName="imgProduct" />
     </androidx.cardview.widget.CardView>
@@ -57,11 +73,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imgContainer"
-        android:layout_alignStart="@id/imgContainer"
-        android:layout_alignEnd="@id/imgContainer"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp">
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="12dp">
 
         <TextView
             android:id="@+id/textRatingAnnouncement"
@@ -99,9 +113,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layoutDesc"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="12dp"
         tools:ignore="PrivateResource">
 
         <TextView
@@ -129,32 +143,28 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/layoutReviews"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/itemViewReviews"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layoutNameCost"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="8dp">
-
-        <TextView
-            android:id="@+id/itemViewReviews"
-            style="@style/DefaultStyleTextRegular"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:text="@string/text_view_reviews"
-            android:textSize="12sp" />
-    </RelativeLayout>
+        android:layout_marginEnd="12dp"
+        android:text="@string/text_view_reviews"
+        android:textColor="@color/colorHint"
+        android:textSize="12sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layoutReviews"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp">
+        android:layout_below="@+id/itemViewReviews"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="12dp">
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -164,7 +174,7 @@
             android:layout_toEndOf="@id/textPlacementDate">
 
             <TextView
-                android:id="@+id/textAddress"
+                android:id="@+id/itemLocation"
                 style="@style/DefaultStyleTextRegular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -187,6 +197,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/text_placement_date_announcement"
+            android:textColor="@color/colorHint"
             android:textSize="8sp"
             tools:ignore="SmallSp" />
 

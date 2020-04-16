@@ -106,6 +106,11 @@ public class ActivityAuthorization extends AppCompatActivity {
                         progressBarAuth.setVisibility(View.INVISIBLE);
                         Utils.messageOutput(ActivityAuthorization.this, getString(R.string.error_check_internet_connect));
                         break;
+
+                    default:
+                        progressBarAuth.setVisibility(View.INVISIBLE);
+                        Utils.messageOutput(ActivityAuthorization.this, getString(R.string.unknown_error));
+                        break;
                 }
             }
 

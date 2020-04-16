@@ -1,8 +1,13 @@
 package com.application.arenda.Entities.Utils.Glide;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
 
 import com.application.arenda.R;
 import com.bumptech.glide.Glide;
@@ -46,6 +51,22 @@ public class GlideUtils {
             Glide.with(context)
                     .load(uri)
                     .apply(defaultOptions())
+                    .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
+                    .into(imageView);
+        } else {
+            throw new NullPointerException("GlideUtils.loadImage contains in parameters null");
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    public static void loadImage(Context context, Uri uri, ImageView imageView, @DrawableRes int drawableError) {
+        if (context != null && uri != null && imageView != null) {
+            RequestOptions options = defaultOptions();
+            options.error(drawableError);
+
+            Glide.with(context)
+                    .load(uri)
+                    .apply(options)
                     .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                     .into(imageView);
         } else {

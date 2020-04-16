@@ -21,13 +21,25 @@
             app:cardCornerRadius="10dp"
             app:cardElevation="3dp">
 
-            <ImageView
-                android:id="@+id/itemImg"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:contentDescription="@string/todo"
-                android:scaleType="centerCrop" />
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/itemImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/todo"
+                    android:scaleType="centerCrop" />
+
+                <RadioButton
+                    android:id="@+id/imgRadioSelecter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:buttonTint="@color/colorBlue" />
+            </FrameLayout>
         </androidx.cardview.widget.CardView>
 
     </RelativeLayout>

@@ -81,7 +81,7 @@ public class ModelInsertAnnouncement implements IModel {
         this.urisBitmap = urisBitmap;
     }
 
-    public Uri getMainUriBitmap() {
+    public Uri getMainUri() {
         return mainUriBitmap;
     }
 

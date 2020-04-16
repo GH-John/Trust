@@ -26,7 +26,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp">
 
             <ImageView
                 android:id="@+id/imagePinReg"
@@ -85,19 +86,42 @@
                     tools:ignore="RtlHardcoded" />
             </RadioGroup>
 
+            <FrameLayout
+                android:id="@+id/layoutSelectUserLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="@+id/radioGroup"
+                app:layout_constraintStart_toStartOf="@+id/radioGroup"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/itemSelectUserLogo"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_item_user_logo" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="bottom|end"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/ic_item_plus" />
+            </FrameLayout>
+
             <EditText
                 android:id="@+id/fieldNameReg"
                 style="@style/DefaultStyleField"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
                 android:hint="@string/hint_user_name"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+                app:layout_constraintTop_toBottomOf="@+id/layoutSelectUserLogo"
                 tools:ignore="Autofill" />
 
             <EditText
@@ -185,7 +209,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
                 android:text="@string/btn_registration_reg"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -181,7 +181,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
             if (containerFiller.getSize() > 0 &&
                     !Utils.fieldIsEmpty(getContext(), fieldProductName, fieldProductDescription, fieldCostProduct)) {
                 announcement.setUrisBitmap(new ArrayList<>(containerFiller.getUris()));
-                announcement.setMainUriBitmap(containerFiller.getFirstUri());
+                announcement.setMainUriBitmap(containerFiller.getLastSelected());
 
                 announcement.setName(fieldProductName.getText().toString());
                 announcement.setIdSubcategory(selectedSubcategory);

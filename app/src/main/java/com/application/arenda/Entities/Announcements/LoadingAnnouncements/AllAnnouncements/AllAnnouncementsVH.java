@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,11 +20,29 @@ import com.application.arenda.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AllAnnouncementsVH extends BaseViewHolder {
+
     @Nullable
-    @BindView(R.id.imgProduct)
-    ImageView imgProduct;
+    @BindView(R.id.itemUserLogo)
+    CircleImageView itemUserLogo;
+
+    @Nullable
+    @BindView(R.id.textUserLogin)
+    TextView textUserLogin;
+
+    @Nullable
+    @BindView(R.id.itemAnnouncementMore)
+    ImageButton itemAnnouncementMore;
+
+    @Nullable
+    @BindView(R.id.itemViewReviews)
+    TextView itemViewReviews;
+
+    @Nullable
+    @BindView(R.id.itemImgProduct)
+    ImageView itemImgProduct;
 
     @Nullable
     @BindView(R.id.imgHeart)
@@ -34,8 +53,8 @@ public class AllAnnouncementsVH extends BaseViewHolder {
     TextView textNameProduct;
 
     @Nullable
-    @BindView(R.id.textAddress)
-    TextView textLocation;
+    @BindView(R.id.itemLocation)
+    TextView itemLocation;
 
     @Nullable
     @BindView(R.id.textCountRent)
@@ -62,15 +81,15 @@ public class AllAnnouncementsVH extends BaseViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    @Override
-    public int getResourceLayoutId() {
-        return R.layout.vh_announcement;
-    }
-
     public static AllAnnouncementsVH create(ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.vh_announcement, parent, false);
+        View view = layoutInflater.inflate(R.layout.vh_announcement_new, parent, false);
         return new AllAnnouncementsVH(view);
+    }
+
+    @Override
+    public int getResourceLayoutId() {
+        return R.layout.vh_announcement_new;
     }
 
     @Override
@@ -83,7 +102,16 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     @SuppressLint({"SetTextI18n"})
     private void bind() {
-        GlideUtils.loadImage(itemView.getContext(), model.getMainUriBitmap(), imgProduct);
+        GlideUtils.loadImage(itemView.getContext(), model.getMainUri(), itemImgProduct);
+
+        GlideUtils.loadImage(itemView.getContext(), model.getUserLogoUri(), itemUserLogo, R.drawable.ic_user_logo);
+
+        if (model.getCountReviews() > 0) {
+            itemViewReviews.setText(itemViewReviews.getText().toString() + " (" + model.getCountReviews() + ")");
+            itemViewReviews.setVisibility(View.VISIBLE);
+        }
+
+        textUserLogin.setText(model.getLogin());
 
         textPlacementDate.setText(model.getPlacementDate());
         textRatingAnnouncement.setText(String.valueOf(model.getRate()));
@@ -94,14 +122,46 @@ public class AllAnnouncementsVH extends BaseViewHolder {
         textCostProduct.setText(model.getCostToBYN() + " руб./ч.");
 
         textCountRent.setText(String.valueOf(model.getCountRent()));
-        textLocation.setText(model.getAddress());
+        itemLocation.setText(model.getAddress());
 
         setActiveHeart(model.isFavorite());
     }
 
+    public void setItemLocationClick(OnItemClick itemClick) {
+        if (model != null && itemClick != null) {
+            itemLocation.setOnClickListener(v -> itemClick.onClick(this, model));
+        } else {
+            throw new NullPointerException("Model not initialized");
+        }
+    }
+
+    public void setItemUserLogoClick(OnItemClick itemClick) {
+        if (model != null && itemClick != null) {
+            itemUserLogo.setOnClickListener(v -> itemClick.onClick(this, model));
+        } else {
+            throw new NullPointerException("Model not initialized");
+        }
+    }
+
+    public void setItemAnnouncementMoreClick(OnItemClick itemClick) {
+        if (model != null && itemClick != null) {
+            itemAnnouncementMore.setOnClickListener(v -> itemClick.onClick(this, model));
+        } else {
+            throw new NullPointerException("Model not initialized");
+        }
+    }
+
+    public void setItemViewReviewsClick(OnItemClick itemClick) {
+        if (model != null && itemClick != null) {
+            itemViewReviews.setOnClickListener(v -> itemClick.onClick(this, model));
+        } else {
+            throw new NullPointerException("Model not initialized");
+        }
+    }
+
     public void setOnItemViewClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemView.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemImgProduct.setOnClickListener(v -> itemClick.onClick(this, model));
         } else {
             throw new NullPointerException("Model not initialized");
         }

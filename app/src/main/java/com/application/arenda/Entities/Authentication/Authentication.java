@@ -98,10 +98,10 @@ public final class Authentication {
     public void authorization(@NonNull Context context,
                               @NonNull String email,
                               @NonNull String password) {
-        Call<ResponseBody> registrationCall = authentication
+        Call<ResponseBody> authenticationCall = authentication
                 .authorization(email, password);
 
-        registrationCall.enqueue(new Callback<ResponseBody>() {
+        authenticationCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 authentication(context, response);
@@ -117,10 +117,10 @@ public final class Authentication {
     public void authorizationUseToken(Context context) {
         String token = UserCookie.getToken(context);
         if (token != null) {
-            Call<ResponseBody> registrationCall = authentication
+            Call<ResponseBody> authenticationCall = authentication
                     .authorizationUseToken(token);
 
-            registrationCall.enqueue(new Callback<ResponseBody>() {
+            authenticationCall.enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                     String res = null;

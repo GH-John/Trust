@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.application.arenda.R;
@@ -15,9 +16,18 @@ import com.application.arenda.UI.ContainerImg.CustomViews.CustomViewImg;
 import com.application.arenda.UI.ContainerImg.Galery.AdapterGalery;
 import com.application.arenda.UI.ContainerImg.Galery.ChooseImages;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class ContainerSelectedImages extends LinearLayout implements Container {
-    private LinearLayout containerImg;
-    private CardView btnGalery;
+    @Nullable
+    @BindView(R.id.containerImg)
+    LinearLayout containerImg;
+
+    @Nullable
+    @BindView(R.id.btnSelectPicture)
+    CardView btnGalery;
+
     private TextView counter;
 
     private AdapterGalery adapterGalery;
@@ -26,17 +36,12 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
     public ContainerSelectedImages(Context context, AttributeSet attrs) {
         super(context, attrs);
         initializationComponents();
-        initializationStyles();
         initializationListeners();
     }
 
     private void initializationComponents() {
         inflate(getContext(), R.layout.container_selected_img, this);
-        btnGalery = findViewById(R.id.btnSelectPicture);
-        containerImg = findViewById(R.id.containerImg);
-    }
-
-    private void initializationStyles() {
+        ButterKnife.bind(this);
     }
 
     private void initializationListeners() {
@@ -93,7 +98,7 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
 
     @Override
     public void removeFromContainer(final View v) {
-        this.containerImg.post(() -> {
+        containerImg.post(() -> {
             containerImg.removeView(v);
             decrementToCounter();
         });
@@ -101,7 +106,7 @@ public class ContainerSelectedImages extends LinearLayout implements Container {
 
     @Override
     public void clearContainer() {
-        this.containerImg.post(() -> {
+        containerImg.post(() -> {
             containerImg.removeViews(1, CURRENT_SIZE_CONTAINER());
             decrementToCounter();
         });

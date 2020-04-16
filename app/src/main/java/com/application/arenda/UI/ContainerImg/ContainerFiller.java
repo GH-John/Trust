@@ -13,6 +13,7 @@ import com.application.arenda.Entities.Utils.BitmapUtils;
 import com.application.arenda.UI.ContainerImg.CustomViews.CustomViewImg;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +21,9 @@ import java.util.Set;
 @SuppressLint("Registered")
 public class ContainerFiller implements AdapterContainer {
     private Container container;
+
+    private View lastSelectedView;
+    private Uri lastSelectedUri;
 
     private Bitmap firstBitmap;
     private HashMap<Uri, View> currentMap = new HashMap<>();
@@ -87,9 +91,32 @@ public class ContainerFiller implements AdapterContainer {
                             final View finalCustomViewImg = view;
                             final Uri finalUri = uri;
 
+                            if (lastSelectedView == null) {
+                                ((CustomViewImg) finalCustomViewImg).setItemChecked(true);
+
+                                lastSelectedView = finalCustomViewImg;
+                                lastSelectedUri = finalUri;
+                            }
+
                             ((CustomViewImg) view).itemDeleteOnClickListener(v -> {
                                 container.removeFromContainer(finalCustomViewImg);
                                 removeFromCurrentMap(finalUri);
+
+                                if (lastSelectedUri != null && lastSelectedView != null)
+                                    if (lastSelectedUri.equals(finalUri) || (getUri(0).equals(finalUri)) && currentMap.size() > 1) {
+                                        lastSelectedUri = getUri(0);
+                                        lastSelectedView = getView(0);
+
+                                        ((CustomViewImg) lastSelectedView).setItemChecked(true);
+                                    }
+                            });
+
+                            ((CustomViewImg) view).setImgClickListener(v -> {
+                                ((CustomViewImg) lastSelectedView).setItemChecked(false);
+                                ((CustomViewImg) finalCustomViewImg).setItemChecked(true);
+
+                                lastSelectedView = finalCustomViewImg;
+                                lastSelectedUri = finalUri;
                             });
 
                             if (container.addToContainer(view))
@@ -101,31 +128,46 @@ public class ContainerFiller implements AdapterContainer {
         }
     }
 
-    public Bitmap getFirstBitmap() {
-        if (mapBitmap.size() > 0) {
-            for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
-                return entry.getValue();
-            }
-        }
-        return null;
-    }
-
-    public Uri getFirstUri() {
-        if (mapBitmap.size() > 0) {
-            for (HashMap.Entry<Uri, Bitmap> entry : mapBitmap.entrySet()) {
+    public Uri getUri(View view) {
+        for (Map.Entry<Uri, View> entry : currentMap.entrySet()) {
+            if (entry.getValue().equals(view))
                 return entry.getKey();
-            }
         }
 
         return null;
     }
 
-    public Map<Uri, Bitmap> getMapBitmap() {
-        return mapBitmap;
+    public Uri getUri(int index) {
+        int i = 0;
+        for (Uri uri : getUris()) {
+            if (i == index)
+                return uri;
+            i++;
+        }
+
+        return null;
+    }
+
+    public View getView(int index) {
+        int i = 0;
+        for (View view : getViews()) {
+            if (i == index)
+                return view;
+            i++;
+        }
+        return null;
+    }
+
+    public Uri getLastSelected() {
+        return lastSelectedUri;
     }
 
     public Set<Uri> getUris() {
-        return mapBitmap.keySet();
+        return currentMap.keySet();
+    }
+
+    public Collection<View> getViews() {
+        return currentMap.values();
     }
 
     @Override
@@ -136,10 +178,16 @@ public class ContainerFiller implements AdapterContainer {
     @Override
     public void removeFromCurrentMap(final Object key) {
         this.currentMap.remove(key);
+        this.mapBitmap.remove(key);
+
+        if (currentMap.size() == 0) {
+            lastSelectedUri = null;
+            lastSelectedView = null;
+        }
     }
 
     @Override
     public int getSize() {
-        return mapBitmap.size();
+        return currentMap.size();
     }
 }

@@ -50,7 +50,7 @@ public class LoadingAnnouncements {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(long lastID, int limitItemInPage, final String url) {
+    public Observable<List<ModelAllAnnouncement>> loadAllAnnouncements(long lastID, int limitItemsInPage, final String url) {
         return Observable.create(observableEmitter -> {
             List<ModelAllAnnouncement> models = new ArrayList<>();
 
@@ -84,7 +84,7 @@ public class LoadingAnnouncements {
                                 model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
                                 model.setRate(Float.parseFloat(object.getString("rating")));
                                 model.setCountRent(Integer.parseInt(object.getString("countRent")));
-                                model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
+                                model.setMainUri(Uri.parse(object.getString("photoPath")));
 
                                 if (object.getString("isFavorite").equals("1"))
                                     model.setFavorite(true);
@@ -152,7 +152,7 @@ public class LoadingAnnouncements {
                     HashMap<String, String> params = new HashMap<>();
                     params.put("token", UserCookie.getToken(context));
                     params.put("idAnnouncement", String.valueOf(lastID));
-                    params.put("limitItemInPage", String.valueOf(limitItemInPage));
+                    params.put("limitItemsInPage", String.valueOf(limitItemsInPage));
 
                     return params;
                 }
@@ -198,7 +198,7 @@ public class LoadingAnnouncements {
                                 model.setPlacementDate(Utils.getFormatingDate(context, object.getString("placementDate")));
                                 model.setRate(Float.parseFloat(object.getString("rating")));
                                 model.setCountRent(Integer.parseInt(object.getString("countRent")));
-                                model.setMainUriBitmap(Uri.parse(object.getString("photoPath")));
+                                model.setMainUri(Uri.parse(object.getString("photoPath")));
 
                                 if (object.getString("isFavorite").equals("1"))
                                     model.setFavorite(true);

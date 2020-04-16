@@ -60,6 +60,11 @@ public class PermissionUtils {
     }
 
     //Check Permisson
+    public static boolean Check_CAMERA(Activity act) {
+        int result = ContextCompat.checkSelfPermission(act, Manifest.permission.CAMERA);
+        return result == PackageManager.PERMISSION_GRANTED;
+    }
+
     public static boolean Check_STORAGE(Activity act) {
         int result = ContextCompat.checkSelfPermission(act, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         return result == PackageManager.PERMISSION_GRANTED;

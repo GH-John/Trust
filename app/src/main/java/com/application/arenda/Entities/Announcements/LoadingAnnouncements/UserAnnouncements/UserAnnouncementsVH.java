@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 
 public class UserAnnouncementsVH extends BaseViewHolder {
     @Nullable
-    @BindView(R.id.imgProduct)
+    @BindView(R.id.itemImgProduct)
     ImageView imgProduct;
 
     @Nullable
@@ -30,7 +30,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
     TextView textNameProduct;
 
     @Nullable
-    @BindView(R.id.textAddress)
+    @BindView(R.id.itemLocation)
     TextView textLocation;
 
     @Nullable

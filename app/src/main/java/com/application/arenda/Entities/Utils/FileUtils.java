@@ -33,7 +33,7 @@ public class FileUtils {
         return null;
     }
 
-    private static String getFileName(Context context, Uri uri) {
+    public static String getFileName(Context context, Uri uri) {
         String name = "";
         Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
         if (cursor != null) {

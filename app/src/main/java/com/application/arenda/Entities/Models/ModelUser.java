@@ -12,7 +12,7 @@ public class ModelUser implements IModel {
     private String lastName = "";
 
     private String email = "";
-    private String userPhoto = "";
+    private String userLogo = "";
 
     private List<ModelAddress> addresses = new ArrayList<>();
     private List<ModelPhoneNumber> phoneNumbers = new ArrayList<>();
@@ -45,12 +45,12 @@ public class ModelUser implements IModel {
         this.email = email;
     }
 
-    public String getUserPhoto() {
-        return userPhoto;
+    public String getUserLogo() {
+        return userLogo;
     }
 
-    public void setUserPhoto(String userPhoto) {
-        this.userPhoto = userPhoto;
+    public void setUserLogo(String userLogo) {
+        this.userLogo = userLogo;
     }
 
     public List<ModelAddress> getAddresses() {

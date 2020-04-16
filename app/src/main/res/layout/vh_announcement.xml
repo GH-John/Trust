@@ -15,7 +15,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/imgProduct"
+            android:id="@+id/itemImgProduct"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:contentDescription="@string/todo"
@@ -26,15 +26,15 @@
             android:id="@+id/frameIndent"
             android:layout_width="match_parent"
             android:layout_height="10dp"
-            android:layout_alignBottom="@id/imgProduct">
+            android:layout_alignBottom="@id/itemImgProduct">
 
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_alignStart="@id/imgProduct"
-            android:layout_alignTop="@id/imgProduct"
+            android:layout_alignStart="@id/itemImgProduct"
+            android:layout_alignTop="@id/itemImgProduct"
             android:background="@drawable/item_date">
 
             <TextView
@@ -51,8 +51,8 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@id/imgProduct"
-            android:layout_alignEnd="@id/imgProduct"
+            android:layout_alignTop="@id/itemImgProduct"
+            android:layout_alignEnd="@id/itemImgProduct"
             android:background="@drawable/item_heart">
 
             <ImageView
@@ -67,7 +67,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_alignStart="@id/imgProduct"
+            android:layout_alignStart="@id/itemImgProduct"
             android:layout_alignBottom="@id/frameIndent"
             android:background="@drawable/item_rate"
             android:paddingBottom="10dp">
@@ -134,7 +134,7 @@
                     android:layout_toEndOf="@id/textCountRent">
 
                     <TextView
-                        android:id="@+id/textAddress"
+                        android:id="@+id/itemLocation"
                         style="@style/DefaultStyleTextRegular"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -48,7 +48,17 @@ public interface ApiAnnouncement {
     @POST(BuildConfig.URL_INSERT_PHOTO)
     Call<ResponseBody> insertPictures(
             @Part("idAnnouncement") RequestBody idAnnouncement,
+            @Part("nameMainPicture") RequestBody nameMainPicture,
             @Part List<MultipartBody.Part> pictures, @Part("countPictures") int countPictures);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
+    Call<ResponseBody> loadAnnouncements(
+            @Field("token") String token,
+            @Field("idAnnouncement") long lastID,
+            @Field("limitItemsInPage") int limitItemsInPage,
+            @Field("query") String query
+    );
 
     enum AnnouncementCodes {
         SUCCESS_CATEGORIES_LOADED,
@@ -60,6 +70,9 @@ public interface ApiAnnouncement {
         SUCCESS_ANNOUNCEMENT_ADDED,
         UNSUCCESS_ANNOUNCEMENT_ADDED,
 
+        SUCCESS_ANNOUNCEMENTS_LOADED,
+        UNSUCCESS_ANNOUNCEMENTS_LOADED,
+
         SUCCESS_PICTURES_ADDED,
         UNSUCCESS_PICTURES_ADDED,
 
@@ -68,6 +81,7 @@ public interface ApiAnnouncement {
 
         PHP_INI_NOT_LOADED,
 
+        NONE_REZULT,
         NETWORK_ERROR,
         NOT_CONNECT_TO_DB,
         UNKNOW_ERROR

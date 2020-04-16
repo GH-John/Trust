@@ -28,6 +28,9 @@
   public *;
 }
 
+## for DexGuard only
+#-keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+
 # OkHttp
 -keepattributes Signature
 -keepattributes *Annotation*
@@ -44,3 +47,6 @@
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+#CropImage
+-keep class androidx.appcompat.widget.** { *; }
