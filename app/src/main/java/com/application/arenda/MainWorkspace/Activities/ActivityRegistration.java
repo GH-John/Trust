@@ -37,7 +37,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 import com.zhihu.matisse.engine.impl.GlideEngine;
@@ -73,7 +72,7 @@ public class ActivityRegistration extends AppCompatActivity {
 
     private Button btnReg;
 
-    private String imageFilePath;
+    private Uri currentUriFromCamera;
 
     private Authentication authentication;
 
@@ -236,7 +235,7 @@ public class ActivityRegistration extends AppCompatActivity {
     }
 
     private void choosePicture(boolean isCamera) {
-        Dexter.withContext(getApplicationContext())
+        Dexter.withContext(this)
                 .withPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
@@ -247,7 +246,7 @@ public class ActivityRegistration extends AppCompatActivity {
                                 Intent pictureIntent = new Intent(
                                         MediaStore.ACTION_IMAGE_CAPTURE);
                                 if (pictureIntent.resolveActivity(getPackageManager()) != null) {
-                                    //Create a file to store the image
+
                                     File photoFile = null;
                                     try {
                                         photoFile = createImageFile();
@@ -256,7 +255,7 @@ public class ActivityRegistration extends AppCompatActivity {
                                     }
 
                                     if (photoFile != null) {
-                                        Uri photoURI = FileProvider.getUriForFile(ActivityRegistration.this, BuildConfig.APPLICATION_ID + ".provider", photoFile);
+                                        Uri photoURI = FileProvider.getUriForFile(getApplicationContext(), BuildConfig.APPLICATION_ID + ".provider", photoFile);
                                         pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 
                                         startActivityForResult(pictureIntent, CAMERA_REQUEST);
@@ -279,10 +278,10 @@ public class ActivityRegistration extends AppCompatActivity {
 
                     @Override
                     public void onPermissionRationaleShouldBeShown(List<PermissionRequest> list, PermissionToken permissionToken) {
-
+                        if (permissionToken != null)
+                            permissionToken.continuePermissionRequest();
                     }
                 })
-                .onSameThread()
                 .check();
     }
 
@@ -290,16 +289,13 @@ public class ActivityRegistration extends AppCompatActivity {
         String timeStamp =
                 new SimpleDateFormat("yyyyMMdd_HHmmss",
                         Locale.getDefault()).format(new Date());
-        String imageFileName = "IMG_" + timeStamp + "_";
-        File storageDir =
-                getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
-        imageFilePath = image.getAbsolutePath();
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        currentUriFromCamera = Uri.fromFile(image);
         return image;
     }
 
@@ -321,13 +317,15 @@ public class ActivityRegistration extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_CHOOSE && resultCode == RESULT_OK) {
 
             CropImage.activity(Matisse.obtainResult(data).get(0))
-                    .setCropShape(CropImageView.CropShape.OVAL)
                     .start(this);
 
         } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
-            CropImage.activity(Uri.parse(imageFilePath))
-                    .setCropShape(CropImageView.CropShape.OVAL)
-                    .start(this);
+            try {
+                CropImage.activity(currentUriFromCamera)
+                        .start(this);
+            } catch (Throwable e) {
+                Timber.e(e);
+            }
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {

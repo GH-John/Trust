@@ -49,7 +49,8 @@ public interface ApiAnnouncement {
     Call<ResponseBody> insertPictures(
             @Part("idAnnouncement") RequestBody idAnnouncement,
             @Part("nameMainPicture") RequestBody nameMainPicture,
-            @Part List<MultipartBody.Part> pictures, @Part("countPictures") int countPictures);
+            @Part List<MultipartBody.Part> pictures,
+            @Part("countPictures") int countPictures);
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
