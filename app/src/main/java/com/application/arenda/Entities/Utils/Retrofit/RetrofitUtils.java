@@ -1,5 +1,6 @@
 package com.application.arenda.Entities.Utils.Retrofit;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
@@ -25,7 +26,10 @@ public class RetrofitUtils {
         try {
             File file = FileUtils.getFileFromUri(context, uri);
 
-            RequestBody requestBody = RequestBody.create(MediaType.parse(context.getContentResolver().getType(uri)), file);
+            RequestBody requestBody = RequestBody.create(
+                    MediaType.parse(ContentResolver.SCHEME_CONTENT.equals(uri.getScheme()) ?
+                            context.getContentResolver().getType(uri) : "multipart/form-data"),
+                    file);
 
             return MultipartBody.Part.createFormData(partName, file.getName(), requestBody);
 

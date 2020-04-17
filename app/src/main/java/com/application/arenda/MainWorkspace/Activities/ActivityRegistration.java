@@ -72,7 +72,7 @@ public class ActivityRegistration extends AppCompatActivity {
 
     private Button btnReg;
 
-    private Uri currentUriFromCamera;
+    private Uri currentUriUserLogo;
 
     private Authentication authentication;
 
@@ -223,6 +223,7 @@ public class ActivityRegistration extends AppCompatActivity {
                 progressBarReg.setVisibility(View.VISIBLE);
 
                 authentication.registration(this,
+                        currentUriUserLogo,
                         fieldNameReg.getText().toString().trim(),
                         fieldLastNameReg.getText().toString().trim(),
                         fieldLoginReg.getText().toString().trim(),
@@ -295,7 +296,9 @@ public class ActivityRegistration extends AppCompatActivity {
 
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
-        currentUriFromCamera = Uri.fromFile(image);
+        currentUriUserLogo = Uri.fromFile(image);
+
+        Timber.tag("CURRENT_URI").d(currentUriUserLogo.toString());
         return image;
     }
 
@@ -321,7 +324,7 @@ public class ActivityRegistration extends AppCompatActivity {
 
         } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
             try {
-                CropImage.activity(currentUriFromCamera)
+                CropImage.activity(currentUriUserLogo)
                         .start(this);
             } catch (Throwable e) {
                 Timber.e(e);
@@ -329,6 +332,7 @@ public class ActivityRegistration extends AppCompatActivity {
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
+                currentUriUserLogo = result.getUri();
                 itemSelectUserLogo.setImageURI(result.getUri());
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Timber.e(result.getError());

@@ -1,5 +1,6 @@
 package com.application.arenda.MainWorkspace.Fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -23,16 +24,21 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.application.arenda.BuildConfig;
 import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
-import com.application.arenda.Entities.Models.ModelViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
-import com.application.arenda.Entities.Models.ModelPhoneNumber;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
-import com.application.arenda.Entities.Utils.PermissionUtils;
+import com.application.arenda.Entities.Models.ModelPhoneNumber;
+import com.application.arenda.Entities.Models.ModelViewAnnouncement;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -296,19 +302,30 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
                 builder.setTitle(R.string.dialog_phone_number_title);
-                builder.setItems(array, (dialog, which) -> {
+                builder.setItems(array, (dialog, which) -> Dexter
+                        .withContext(getContext())
+                        .withPermission(Manifest.permission.CALL_PHONE)
+                        .withListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                                getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
+                            }
 
-                    if (!PermissionUtils.Check_CALL_PHONE(getActivity()))
-                        PermissionUtils.Request_CALL_PHONE(getActivity(), 4322);
-                    else
-                        getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
-                });
+                            @Override
+                            public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                                getActivity().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+
+                            }
+                        })
+                        .check());
 
                 builder.create();
 
                 builder.show();
-
-//                new DialogCallPhoneNumber(phoneNumbers).show(getActivity().getSupportFragmentManager(), DialogCallPhoneNumber.TAG);
             } else
                 Utils.messageOutput(getContext(), getContext().getResources().getString(R.string.dialog_phone_number_not_found));
         });

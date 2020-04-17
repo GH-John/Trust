@@ -2,6 +2,7 @@ package com.application.arenda.Entities.Authentication;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
@@ -9,6 +10,7 @@ import com.application.arenda.Entities.User.AccountType;
 import com.application.arenda.Entities.User.UserCookie;
 import com.application.arenda.Entities.User.UserProfile;
 import com.application.arenda.Entities.Utils.Retrofit.ApiClient;
+import com.application.arenda.Entities.Utils.Retrofit.RetrofitUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,6 +72,7 @@ public final class Authentication {
     }
 
     public void registration(@NonNull Context context,
+                             @NonNull Uri userLogo,
                              @NonNull String name,
                              @NonNull String lastName,
                              @NonNull String login,
@@ -80,7 +83,14 @@ public final class Authentication {
 
 
         Call<ResponseBody> registrationCall = authentication
-                .registration(name, lastName, login, email, password, phone, accountType.getType());
+                .registration(RetrofitUtils.createFilePart(context, "userLogo", userLogo),
+                        RetrofitUtils.createPartFromString(name),
+                        RetrofitUtils.createPartFromString(lastName),
+                        RetrofitUtils.createPartFromString(login),
+                        RetrofitUtils.createPartFromString(email),
+                        RetrofitUtils.createPartFromString(password),
+                        RetrofitUtils.createPartFromString(phone),
+                        RetrofitUtils.createPartFromString(accountType.getType()));
 
         registrationCall.enqueue(new Callback<ResponseBody>() {
             @Override
