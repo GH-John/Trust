@@ -50,6 +50,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
 
@@ -57,20 +60,41 @@ public class ActivityRegistration extends AppCompatActivity {
     private static final short REQUEST_CODE_CHOOSE = 901;
     private static final short CAMERA_REQUEST = 902;
 
-    private ProgressBar progressBarReg;
-    private RadioGroup radioGroup;
-    private CircleImageView itemSelectUserLogo;
-    private ImageView imagePinReg;
-    private EditText
-            fieldNameReg,
-            fieldLastNameReg,
-            fieldLoginReg,
-            fieldEmailReg,
-            fieldPassReg,
-            fieldConfirmPassReg,
-            fieldPhoneReg;
+    @BindView(R.id.btnReg)
+    Button btnReg;
 
-    private Button btnReg;
+    @BindView(R.id.progressBarReg)
+    ProgressBar progressBarReg;
+
+    @BindView(R.id.radioGroupReg)
+    RadioGroup radioGroupReg;
+
+    @BindView(R.id.itemSelectUserLogo)
+    CircleImageView itemSelectUserLogo;
+
+    @BindView(R.id.imagePinReg)
+    ImageView imagePinReg;
+
+    @BindView(R.id.fieldNameReg)
+    EditText fieldNameReg;
+
+    @BindView(R.id.fieldLastNameReg)
+    EditText fieldLastNameReg;
+
+    @BindView(R.id.fieldLoginReg)
+    EditText fieldLoginReg;
+
+    @BindView(R.id.fieldEmailReg)
+    EditText fieldEmailReg;
+
+    @BindView(R.id.fieldPassReg)
+    EditText fieldPassReg;
+
+    @BindView(R.id.fieldConfirmPassReg)
+    EditText fieldConfirmPassReg;
+
+    @BindView(R.id.fieldPhoneReg)
+    EditText fieldPhoneReg;
 
     private Uri currentUriUserLogo;
 
@@ -80,6 +104,8 @@ public class ActivityRegistration extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+
+        ButterKnife.bind(this);
 
         initComponents();
         initStyles();
@@ -92,27 +118,6 @@ public class ActivityRegistration extends AppCompatActivity {
     }
 
     private void initComponents() {
-
-        radioGroup = findViewById(R.id.radioGroup);
-
-        imagePinReg = findViewById(R.id.imagePinReg);
-
-        itemSelectUserLogo = findViewById(R.id.itemSelectUserLogo);
-
-        progressBarReg = findViewById(R.id.progressBarReg);
-
-        fieldNameReg = findViewById(R.id.fieldNameReg);
-        fieldLastNameReg = findViewById(R.id.fieldLastNameReg);
-
-        fieldLoginReg = findViewById(R.id.fieldLoginReg);
-        fieldEmailReg = findViewById(R.id.fieldEmailReg);
-
-        fieldPassReg = findViewById(R.id.fieldPassReg);
-        fieldConfirmPassReg = findViewById(R.id.fieldConfirmPassReg);
-
-        fieldPhoneReg = findViewById(R.id.fieldPhoneReg);
-
-        btnReg = findViewById(R.id.btnReg);
 
         authentication = Authentication.getInstance();
 
@@ -181,27 +186,6 @@ public class ActivityRegistration extends AppCompatActivity {
             }
         });
 
-        itemSelectUserLogo.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            String[] array = {getResources().getString(R.string.text_camera), getResources().getString(R.string.text_galery)};
-
-            builder
-                    .setTitle(R.string.text_select_picture)
-                    .setItems(array, (dialog, which) -> {
-                        switch (which) {
-                            case 0:
-                                choosePicture(true);
-                                break;
-
-                            case 1:
-                                choosePicture(false);
-                        }
-                    })
-                    .create()
-                    .show();
-        });
-
         btnReg.setOnClickListener(v -> {
             if (!Utils.fieldIsEmpty(getApplicationContext(),
                     fieldNameReg,
@@ -233,6 +217,28 @@ public class ActivityRegistration extends AppCompatActivity {
                         getAccountType());
             }
         });
+    }
+
+    @OnClick(R.id.layoutSelectUserLogo)
+    void openAlertDialogChoosePicture() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        String[] array = {getResources().getString(R.string.text_camera), getResources().getString(R.string.text_galery)};
+
+        builder
+                .setTitle(R.string.text_select_picture)
+                .setItems(array, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            choosePicture(true);
+                            break;
+
+                        case 1:
+                            choosePicture(false);
+                    }
+                })
+                .create()
+                .show();
     }
 
     private void choosePicture(boolean isCamera) {
@@ -303,7 +309,7 @@ public class ActivityRegistration extends AppCompatActivity {
     }
 
     private AccountType getAccountType() {
-        switch (radioGroup.getCheckedRadioButtonId()) {
+        switch (radioGroupReg.getCheckedRadioButtonId()) {
             case R.id.radioBtnPrivatePerson:
                 return AccountType.PRIVATE_PERSON;
 

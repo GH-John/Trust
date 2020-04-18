@@ -20,5 +20,6 @@
     <color name="colorText">#3A3A3A</color>
     <color name="colorHint">#9B9B9B</color>
     <color name="colorPlaceHolderPicture">#F1F1F1</color>
-    <color name="colorGray">#B6B6B6</color>
+
+    <color name="colorGray50">#80E8E8E8</color>
 </resources>
