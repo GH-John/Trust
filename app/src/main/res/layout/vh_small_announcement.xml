@@ -1,100 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="200dp"
-    android:layout_height="wrap_content"
-    android:padding="4dp">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content">
 
-    <FrameLayout
-        android:id="@+id/layoutPicture"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        tools:ignore="UselessParent">
 
-        <ImageView
-            android:id="@+id/itemPicture"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:contentDescription="@string/todo" />
-
-        <FrameLayout
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="end">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/layoutItemImg"
+            android:layout_width="200dp"
+            android:layout_height="220dp"
+            app:cardCornerRadius="10dp"
+            android:layout_margin="4dp"
+            app:cardElevation="@null">
 
             <ImageView
+                android:id="@+id/itemImgProduct"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/item_heart" />
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
 
-            <ImageView
-                android:id="@+id/itemHeart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_heart_not_selected" />
-        </FrameLayout>
+        <View
+            android:id="@+id/viewMargin"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_alignStart="@+id/layoutItemImg"
+            android:layout_alignEnd="@+id/btnInsertToFavorite"
+            android:layout_alignBottom="@+id/layoutItemImg" />
 
-    </FrameLayout>
+        <ImageButton
+            android:id="@+id/btnInsertToFavorite"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignTop="@+id/viewMargin"
+            android:layout_alignEnd="@+id/layoutItemImg"
+            android:layout_marginTop="-26dp"
+            android:layout_marginEnd="-24dp"
+            android:background="@drawable/btn_heart"
+            android:contentDescription="@string/todo"
+            android:elevation="2dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_heart_not_selected"
+            android:translationZ="3dp" />
 
-    <View
-        android:id="@+id/viewMargin"
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:layout_alignBottom="@+id/layoutPicture" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/viewMargin"
-        android:elevation="2dp"
-        app:cardCornerRadius="10dp">
-
-        <RelativeLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:layout_alignStart="@id/layoutItemImg"
+            android:layout_alignTop="@+id/viewMargin"
+            android:layout_alignEnd="@id/layoutItemImg"
+            android:elevation="2dp"
+            android:layout_marginBottom="4dp"
+            app:cardCornerRadius="10dp">
 
-            <TextView
-                android:id="@+id/textNameProduct"
-                style="@style/DefaultStyleTextRegular"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
-                android:text="@string/text_some_text" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/textNameProduct"
-                android:layout_marginTop="18dp">
+                android:padding="10dp">
 
                 <TextView
-                    android:id="@+id/itemCountRent"
+                    android:id="@+id/textNameProduct"
                     style="@style/DefaultStyleTextRegular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:drawableStart="@drawable/ic_count_rent"
-                    android:drawablePadding="8dp"
-                    android:gravity="center"
-                    android:text="@string/text_some_number" />
-
-                <TextView
-                    android:id="@+id/textCostProduct"
-                    style="@style/DefaultStyleTextBoldRegular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginStart="24dp"
-                    android:gravity="end"
-                    android:text="@string/text_cost_announcement" />
+                    android:layout_marginEnd="25dp"
+                    android:maxLines="2"
+                    android:text="@string/text_some_text" />
 
-            </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textNameProduct"
+                    android:layout_marginTop="18dp">
 
-        </RelativeLayout>
+                    <TextView
+                        android:id="@+id/textCountRent"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:drawableStart="@drawable/ic_count_rent"
+                        android:drawablePadding="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_some_number" />
 
-    </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/textCostProduct"
+                        style="@style/DefaultStyleTextBoldRegular"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginStart="24dp"
+                        android:gravity="end"
+                        android:text="@string/text_cost_announcement" />
 
-</RelativeLayout>
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+</FrameLayout>

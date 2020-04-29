@@ -15,21 +15,27 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.application.arenda.Entities.Announcements.ApiAnnouncement;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.ViewAnnouncement.LandLord_Similar_AnnouncementsAdapter;
+import com.application.arenda.Entities.Announcements.LoadingAnnouncements.ViewAnnouncement.LandLord_Similar_AnnouncementsVH;
 import com.application.arenda.Entities.Announcements.OnApiListener;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.Models.ModelPicture;
 import com.application.arenda.Entities.Models.ModelViewAnnouncement;
+import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.Room.LocalCacheManager;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
@@ -37,6 +43,7 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.HorizontalList.HorizontalList;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -56,14 +63,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.ResourceSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public final class FragmentViewAnnouncement extends Fragment implements AdapterActionBar {
-
-    @SuppressLint("StaticFieldLeak")
-    private static FragmentViewAnnouncement instance;
+public class FragmentViewAnnouncement extends Fragment implements AdapterActionBar {
 
     @Nullable
     @BindView(R.id.dotsLayout)
@@ -141,6 +146,18 @@ public final class FragmentViewAnnouncement extends Fragment implements AdapterA
     @BindView(R.id.viewAnnouncementContainer)
     ConstraintLayout viewAnnouncementContainer;
 
+    @Nullable
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+
+    @Nullable
+    @BindView(R.id.landLordAnnouncements)
+    HorizontalList landLordAnnouncements;
+
+    @Nullable
+    @BindView(R.id.similarAnnouncements)
+    HorizontalList similarAnnouncements;
+
     private ImageView itemBtnBack, itemPhone,
             itemMessage, itemMore;
 
@@ -160,16 +177,16 @@ public final class FragmentViewAnnouncement extends Fragment implements AdapterA
     private Consumer<ModelViewAnnouncement> subscriber;
     private Consumer<Boolean> favoriteSubscriber;
     private OnApiListener listenerFavoriteInsert;
+    private LandLord_Similar_AnnouncementsAdapter landLordAnnouncementsAdapter;
+    private LandLord_Similar_AnnouncementsAdapter similarAnnouncementsAdapter;
 
-    private FragmentViewAnnouncement() {
-    }
+    private OnItemClick landLordSimilarItemClick;
+    private OnItemClick landLordSimilarItemHeartClick;
 
-    public static FragmentViewAnnouncement getInstance() {
-        if (instance == null)
-            instance = new FragmentViewAnnouncement();
+    private LinearLayoutManager rvLandLordLayout;
+    private LinearLayoutManager rvSimilarLayout;
 
-        return instance;
-    }
+    private SingleObserver<Boolean> subscriberFavoriteClick;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -181,15 +198,25 @@ public final class FragmentViewAnnouncement extends Fragment implements AdapterA
 
         initComponents();
 
+        initInterfaces();
+
         Bundle bundle = getArguments();
 
-        loadData(bundle != null ? bundle.getLong("idAnnouncement") : 0);
+        loadDataFromCache(bundle != null ? bundle.getLong("idAnnouncement") : 0);
 
         return view;
     }
 
     @SuppressLint({"SetTextI18n", "CheckResult"})
     private void initComponents() {
+        rvLandLordLayout = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+
+        landLordAnnouncements.initRV(rvLandLordLayout);
+
+        rvSimilarLayout = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+
+        similarAnnouncements.initRV(rvSimilarLayout);
+
         listenerFavoriteInsert = new OnApiListener() {
             @Override
             public void onComplete(@NonNull CodeHandler code) {
@@ -221,61 +248,245 @@ public final class FragmentViewAnnouncement extends Fragment implements AdapterA
                 }));
 
         subscriber = viewAnnouncement -> {
+            setProgress(false);
+
             ModelAnnouncement announcement = viewAnnouncement.getAnnouncement();
+            announcement.setPictures(viewAnnouncement.getPictures());
 
-            phoneNumbers.clear();
+            inflateUI(announcement);
 
-            phoneNumbers.add(announcement.getPhone_1());
-            phoneNumbers.add(announcement.getPhone_2());
-            phoneNumbers.add(announcement.getPhone_3());
+            initLandLordAnnouncements(announcement.getIdUser());
+            initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
 
-            textPlacementDate.setText(Utils.getFormatingDate(getContext(), announcement.getAnnouncementCreated()));
-            textNameProduct.setText(announcement.getName());
-
-            //будет браться стоимость в зависимости от настроек по умолчанию
-            textCostProduct.setText(announcement.getCostToBYN() + " руб./ч.");
-
-            textAddress.setText(announcement.getAddress());
-            textRating.setText(String.valueOf(announcement.getAnnouncementRating()));
-            textCountRent.setText(String.valueOf(announcement.getCountRent()));
-
-            textDescriptionProduct.setText(announcement.getDescription());
-
-            GlideUtils.loadAvatar(getContext(), Uri.parse(announcement.getUserLogo()), userCardLogo);
-            userCardLogin.setText(announcement.getLogin());
-            userCardRating.setText(String.valueOf(announcement.getUserRating()));
-            userCardCountAnnouncements.setText(String.valueOf(announcement.getCountAnnouncementsUser()));
-            userCardUserCreated.setText(Utils.getFormatingDate(getContext(), announcement.getUserCreated(), Utils.DatePattern.DATE_PATTERN_dd_MM_yyyy));
-
-            btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(announcement.getID()));
-
-            selectHeart(announcement.isFavorite());
-
-            cacheManager.pictures()
-                    .getPictures(announcement.getID())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(pictures -> {
-                        Timber.tag("COUNT_PICTURES").d(String.valueOf(pictures.size()));
-
-                        ModelPicture.convertToUris(pictures)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new ResourceSingleObserver<List<Uri>>() {
-                                    @Override
-                                    public void onSuccess(List<Uri> uriList) {
-                                        initViewPager(uriList);
-                                    }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        Timber.e(e);
-                                    }
-                                });
-
-                        setProgress(false);
-                    });
+            setViewerAnnouncement(viewAnnouncement.getAnnouncement().getID());
         };
+
+        landLordAnnouncementsAdapter = new LandLord_Similar_AnnouncementsAdapter();
+        similarAnnouncementsAdapter = new LandLord_Similar_AnnouncementsAdapter();
+    }
+
+    public void initInterfaces() {
+        subscriberFavoriteClick = new SingleObserver<Boolean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                disposable.add(d);
+            }
+
+            @Override
+            public void onSuccess(Boolean isFavorite) {
+                selectHeart(isFavorite);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+            }
+        };
+
+        landLordSimilarItemClick = (viewHolder, model) -> {
+            ModelAnnouncement announcement = (ModelAnnouncement) model;
+
+            scrollView.smoothScrollTo(0, 0);
+
+            inflateUI(announcement);
+
+//            cacheManager
+//                    .announcements()
+//                    .insertToRoom(announcement)
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread())
+//                    .subscribe(new ResourceCompletableObserver() {
+//                        @Override
+//                        public void onComplete() {
+//                            cacheManager.pictures()
+//                                    .insertToRoom(announcement.getPictures())
+//                                    .subscribeOn(Schedulers.io())
+//                                    .observeOn(AndroidSchedulers.mainThread())
+//                                    .subscribe(new ResourceCompletableObserver() {
+//                                        @Override
+//                                        public void onComplete() {
+//                                            scrollView.smoothScrollTo(0, 0);
+//
+//                                            loadDataFromCache(announcement.getID());
+//
+////                                            FragmentViewAnnouncement viewAnnouncement = new FragmentViewAnnouncement();
+////
+////                                            Bundle bundle = new Bundle();
+////                                            bundle.putLong("idAnnouncement", model.getID());
+////                                            viewAnnouncement.setArguments(bundle);
+////
+////                                            containerFragments.open(viewAnnouncement);
+//                                        }
+//
+//                                        @Override
+//                                        public void onError(Throwable e) {
+//                                            Timber.e(e);
+//                                        }
+//                                    });
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            Timber.e(e);
+//                        }
+//                    });
+        };
+
+        landLordSimilarItemHeartClick = (viewHolder, model) ->
+                api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new SingleObserver<Boolean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposable.add(d);
+                            }
+
+                            @Override
+                            public void onSuccess(Boolean isFavorite) {
+                                ((LandLord_Similar_AnnouncementsVH) viewHolder).setActiveHeart(isFavorite);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e(e);
+                            }
+                        });
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void inflateUI(ModelAnnouncement announcement) {
+
+        phoneNumbers.clear();
+
+        phoneNumbers.add(announcement.getPhone_1());
+        phoneNumbers.add(announcement.getPhone_2());
+        phoneNumbers.add(announcement.getPhone_3());
+
+        textPlacementDate.setText(Utils.getFormatingDate(getContext(), announcement.getAnnouncementCreated()));
+        textNameProduct.setText(announcement.getName());
+
+        //будет браться стоимость в зависимости от настроек по умолчанию
+        textCostProduct.setText(announcement.getCostToBYN() + " руб./ч.");
+
+        textAddress.setText(announcement.getAddress());
+        textRating.setText(String.valueOf(announcement.getAnnouncementRating()));
+        textCountRent.setText(String.valueOf(announcement.getCountRent()));
+
+        textDescriptionProduct.setText(announcement.getDescription());
+
+        GlideUtils.loadAvatar(getContext(), Uri.parse(announcement.getUserLogo()), userCardLogo);
+        userCardLogin.setText(announcement.getLogin());
+        userCardRating.setText(String.valueOf(announcement.getUserRating()));
+        userCardCountAnnouncements.setText(String.valueOf(announcement.getCountAnnouncementsUser()));
+        userCardUserCreated.setText(Utils.getFormatingDate(getContext(), announcement.getUserCreated(), Utils.DatePattern.DATE_PATTERN_dd_MM_yyyy));
+
+        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(announcement.getID()));
+
+        selectHeart(announcement.isFavorite());
+
+        ModelPicture.convertToUris(announcement.getPictures())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ResourceSingleObserver<List<Uri>>() {
+                    @Override
+                    public void onSuccess(List<Uri> uriList) {
+                        initViewPager(uriList);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
+    }
+
+    private void setViewerAnnouncement(long idAnnouncement) {
+        api.insertViewer(userToken, idAnnouncement, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
+    }
+
+    private void initLandLordAnnouncements(long idLandLord) {
+        landLordAnnouncementsAdapter.setItemViewClick(landLordSimilarItemClick);
+
+        landLordAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
+
+        api.loadLandLordAnnouncements(getContext(), userToken, idLandLord, 0, 10, null, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<List<ModelAnnouncement>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable.add(d);
+                    }
+
+                    @Override
+                    public void onSuccess(List<ModelAnnouncement> modelAnnouncements) {
+                        if (modelAnnouncements.size() > 1) {
+                            landLordAnnouncements.setVisibility(View.VISIBLE);
+
+                            landLordAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
+
+                            landLordAnnouncements.initAdapter(landLordAnnouncementsAdapter);
+                        } else {
+                            landLordAnnouncements.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        landLordAnnouncements.setVisibility(View.GONE);
+
+                        Timber.e(e);
+                    }
+                });
+    }
+
+    private void initSimilarAnnouncements(long idAnnouncement, long idSubcategory) {
+        similarAnnouncementsAdapter.setItemViewClick(landLordSimilarItemClick);
+
+        similarAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
+
+        api.loadSimilarAnnouncements(getContext(), userToken, idAnnouncement, idSubcategory, 10, null, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<List<ModelAnnouncement>>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposable.add(d);
+                    }
+
+                    @Override
+                    public void onSuccess(List<ModelAnnouncement> modelAnnouncements) {
+                        if (modelAnnouncements.size() > 1) {
+                            similarAnnouncements.setVisibility(View.VISIBLE);
+
+                            similarAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
+
+                            similarAnnouncements.initAdapter(landLordAnnouncementsAdapter);
+                        } else {
+                            similarAnnouncements.setVisibility(View.GONE);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        similarAnnouncements.setVisibility(View.GONE);
+
+                        Timber.e(e);
+                    }
+                });
     }
 
     private void setProgress(boolean b) {
@@ -289,7 +500,7 @@ public final class FragmentViewAnnouncement extends Fragment implements AdapterA
     }
 
     @SuppressLint("CheckResult")
-    private void loadData(long idAnnouncement) {
+    private void loadDataFromCache(long idAnnouncement) {
         setProgress(true);
 
         disposable.add(cacheManager
@@ -303,22 +514,7 @@ public final class FragmentViewAnnouncement extends Fragment implements AdapterA
         api.insertToFavorite(userToken, idAnnouncement, listenerFavoriteInsert)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SingleObserver<Boolean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposable.add(d);
-                    }
-
-                    @Override
-                    public void onSuccess(Boolean isFavorite) {
-                        selectHeart(isFavorite);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                    }
-                });
+                .subscribe(subscriberFavoriteClick);
     }
 
     public void selectHeart(boolean b) {

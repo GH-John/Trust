@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
@@ -349,6 +350,86 @@ public final class ApiAnnouncement {
                         }));
     }
 
+    public synchronized Single<List<ModelAnnouncement>> loadLandLordAnnouncements(Context context, String token, long idLandLord, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadLandLordAnnouncements(
+                        token,
+                        idLandLord,
+                        lastID,
+                        limitItemsInPage,
+                        query)
+                        .enqueue(new Callback<ServerHandler<List<ModelAnnouncement>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Response<ServerHandler<List<ModelAnnouncement>>> response) {
+                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else if (response.code() >= 200 && response.code() <= 300) {
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+
+                                    Timber.tag("LoadingError").e(response.body().getError());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
+    public Single<List<ModelAnnouncement>> loadSimilarAnnouncements(Context context, String userToken, long idAnnouncement, long idSubcategory, int limitItemsInPage, String query, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadSimilarAnnouncements(
+                        userToken,
+                        idAnnouncement,
+                        idSubcategory,
+                        limitItemsInPage,
+                        query)
+                        .enqueue(new Callback<ServerHandler<List<ModelAnnouncement>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Response<ServerHandler<List<ModelAnnouncement>>> response) {
+                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else if (response.code() >= 200 && response.code() <= 300) {
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+
+                                    Timber.tag("LoadingError").e(response.body().getError());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
     public synchronized Single<Boolean> insertToFavorite(String token, long idAnnouncement, OnApiListener listener) {
         return Single.create(emitter -> api
                 .insertToFavorite(token, idAnnouncement)
@@ -432,5 +513,52 @@ public final class ApiAnnouncement {
 //                        listener.onComplete(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
                     }
                 });
+    }
+
+    public synchronized Completable insertViewer(String token, long idAnnouncement, OnApiListener listener) {
+        return Completable.create(emitter -> api
+                .insertViewer(token, idAnnouncement)
+                .enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            try {
+                                String res = response.body().string();
+
+                                if (res != null) {
+                                    JSONObject object = new JSONObject(res);
+
+                                    int code = object.getInt("code");
+
+                                    if (CodeHandler.SUCCESS.getCode() == code) {
+                                        emitter.onComplete();
+                                    }
+
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.get(code));
+                                }
+                            } catch (Throwable throwable) {
+                                emitter.onError(throwable);
+                            }
+                        } else {
+                            emitter.onComplete();
+
+                            if (listener != null)
+                                listener.onComplete(CodeHandler.UNKNOW_ERROR);
+
+                            Timber.tag("ErrorInsertToFavorite").e(response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                        emitter.onError(t);
+
+                        if (listener != null)
+                            listener.onFailure(t);
+
+                        Timber.e(t);
+                    }
+                }));
     }
 }

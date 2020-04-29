@@ -1,14 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="CustomBottomNavigation">
-
-    </declare-styleable>
-
-    <declare-styleable name="CustomActionBar">
-
-    </declare-styleable>
-
-    <declare-styleable name="ContainerDrawerLayout">
-
+    <declare-styleable name="HorizontalList">
+        <attr name="titleSeeAll" format="string" />
     </declare-styleable>
 </resources>

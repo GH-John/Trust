@@ -272,6 +272,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
             api.loadUserAnnouncements(getContext(), userToken, lastId, 10, query, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .cache()
                     .subscribe(rewrite ? singleLoaderWithRewriteAnnouncements : singleLoaderWithoutRewriteAnnouncements);
         } else {
             swipeRefreshLayout.setRefreshing(false);

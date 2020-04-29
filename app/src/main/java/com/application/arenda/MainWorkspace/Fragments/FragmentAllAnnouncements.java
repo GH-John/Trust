@@ -280,7 +280,6 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
         allAnnouncementsAdapter = new AllAnnouncementsAdapter();
         rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
-        recyclerView.setAdapter(allAnnouncementsAdapter);
 
         allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> {
             ModelAnnouncement announcement = (ModelAnnouncement) model;
@@ -300,7 +299,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                                     .subscribe(new ResourceCompletableObserver() {
                                         @Override
                                         public void onComplete() {
-                                            FragmentViewAnnouncement viewAnnouncement = FragmentViewAnnouncement.getInstance();
+                                            FragmentViewAnnouncement viewAnnouncement = new FragmentViewAnnouncement();
 
                                             Bundle bundle = new Bundle();
                                             bundle.putLong("idAnnouncement", model.getID());
@@ -377,6 +376,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             api.loadAnnouncements(getContext(), userToken, lastId, 10, query, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
+                    .cache()
                     .subscribe(rewrite ? singleLoaderWithRewriteAnnouncements : singleLoaderWithoutRewriteAnnouncements);
         } else {
             swipeRefreshLayout.setRefreshing(false);

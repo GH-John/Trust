@@ -185,4 +185,7 @@
     <string name="warning_login_required">Требуется авторизация</string>
     <string name="text_updated">Обновлен:</string>
     <string name="text_some_number">34</string>
+    <string name="title_horizantal_list">Заголовок</string>
+    <string name="text_title_announcements_landlord">Объявления арендодателя</string>
+    <string name="text_title_announcements_similar">Похожие объявления</string>
 </resources>

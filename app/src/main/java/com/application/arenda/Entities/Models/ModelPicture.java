@@ -88,6 +88,17 @@ public class ModelPicture implements IModel {
                 }));
     }
 
+    public static Single<Uri> getMainPicture(List<ModelPicture> collection) {
+        return Single.create(emitter -> {
+            for (ModelPicture picture : collection) {
+                if(picture.isMainPicture) {
+                    emitter.onSuccess(Uri.parse(picture.getPicture()));
+                    break;
+                }
+            }
+        });
+    }
+
     public long getIdPicture() {
         return idPicture;
     }

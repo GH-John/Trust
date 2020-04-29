@@ -57,7 +57,8 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
             System.out.println("Status: " + currentVisibleItems + " + " + firstVisibleItem + " >= " + (totalItems - countIgnoreItem) + " && " + firstVisibleItem + ">= 0");
             System.out.println("LastItemID: " + rvAdapter.getLastItem().getID());
 
-            loadMoreData.loadMore(rvAdapter.getLastItem().getID());
+            if (loadMoreData != null)
+                loadMoreData.loadMore(rvAdapter.getLastItem().getID());
         }
 
         if (scrollCallBack != null && lastVisibleItem == totalItems)

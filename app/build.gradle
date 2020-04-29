@@ -12,7 +12,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation":"$projectDir/app_schemas".toString()]
+                arguments = ["room.schemaLocation": "$projectDir/app_schemas".toString()]
             }
         }
     }
@@ -44,11 +44,13 @@ android {
             buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/InsertAnnouncement.php\""
             buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPictures.php\""
             buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_VIEWER", "\"php/insert/InsertViewer.php\""
 
             buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_PICTURES", "\"php/load/LoadingPictures.php\""
-            buildConfigField "String", "URL_LOADING_VIEW_ANNOUNCEMENT", "\"php/load/LoadingViewAnnouncement.php\""
+            buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/load/announcements/landLord/LoadingLandLordAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/load/announcements/similar/LoadingSimilarAnnouncements.php\""
         }
 
         release {
@@ -72,12 +74,13 @@ android {
             buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/InsertAnnouncement.php\""
             buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPictures.php\""
             buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_VIEWER", "\"php/insert/InsertViewer.php\""
 
             buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_PICTURES", "\"php/load/LoadingPictures.php\""
-            buildConfigField "String", "URL_LOADING_VIEW_ANNOUNCEMENT", "\"php/load/LoadingViewAnnouncement.php\""
-
+            buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/load/announcements/landLord/LoadingLandLordAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/load/announcements/similar/LoadingSimilarAnnouncements.php\""
         }
     }
 }

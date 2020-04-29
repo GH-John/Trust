@@ -59,7 +59,7 @@ public interface IApiAnnouncement {
     @POST(BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
     Call<ServerHandler<List<ModelAnnouncement>>> loadAnnouncements(
             @Field("token") String token,
-            @Field("idAnnouncement") long lastID,
+            @Field("idAnnouncement") long lastIdAnnouncement,
             @Field("limitItemsInPage") int limitItemsInPage,
             @Field("query") String query
     );
@@ -68,7 +68,17 @@ public interface IApiAnnouncement {
     @POST(BuildConfig.URL_LOADING_USER_ANNOUNCEMENT)
     Call<ServerHandler<List<ModelAnnouncement>>> loadUserAnnouncements(
             @Field("token") String token,
-            @Field("idAnnouncement") long lastID,
+            @Field("idAnnouncement") long lastIdAnnouncement,
+            @Field("limitItemsInPage") int limitItemsInPage,
+            @Field("query") String query
+    );
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_LAND_LORD_ANNOUNCEMENT)
+    Call<ServerHandler<List<ModelAnnouncement>>> loadLandLordAnnouncements(
+            @Field("token") String token,
+            @Field("idLandLord") long idLandLord,
+            @Field("idAnnouncement") long lastIdAnnouncement,
             @Field("limitItemsInPage") int limitItemsInPage,
             @Field("query") String query
     );
@@ -80,6 +90,19 @@ public interface IApiAnnouncement {
     @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_TO_FAVORITE)
     Call<ResponseBody> insertToFavorite(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_INSERT_VIEWER)
+    Call<ResponseBody> insertViewer(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_SIMILAR_ANNOUNCEMENT)
+    Call<ServerHandler<List<ModelAnnouncement>>> loadSimilarAnnouncements(@Field("token") String userToken,
+                                                                          @Field("idAnnouncement") long idAnnouncement,
+                                                                          @Field("idSubcategory") long idSubcategory,
+                                                                          @Field("limitItemsInPage") int limitItemsInPage,
+                                                                          @Field("query") String query
+    );
 
     enum AnnouncementCodes {
         SUCCESS_CATEGORIES_LOADED,

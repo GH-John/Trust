@@ -250,7 +250,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                                     break;
 
                                 case PHP_INI_NOT_LOADED:
-                                    throw new IllegalArgumentException(IApiAnnouncement.AnnouncementCodes.PHP_INI_NOT_LOADED.name());
+                                    Timber.tag("Error on server").e(IApiAnnouncement.AnnouncementCodes.PHP_INI_NOT_LOADED.name());
 
                                 case UNSUCCESS_ANNOUNCEMENT_ADDED:
                                 case UNKNOW_ERROR:
