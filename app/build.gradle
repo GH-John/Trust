@@ -10,6 +10,11 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":"$projectDir/app_schemas".toString()]
+            }
+        }
     }
 
     compileOptions {
@@ -23,6 +28,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
+            buildConfigField "int", "APP_DB_VERSION", "1"
+            buildConfigField "String", "APP_DB_NAME", "\"db_app\""
+
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
 
@@ -34,13 +42,13 @@ android {
             buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/load/LoadSubcategory.php\""
 
             buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/InsertAnnouncement.php\""
-            buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPhoto.php\""
+            buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPictures.php\""
             buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
 
-            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/LoadingAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_PICTURES", "\"php/load/LoadingPictures.php\""
             buildConfigField "String", "URL_LOADING_VIEW_ANNOUNCEMENT", "\"php/load/LoadingViewAnnouncement.php\""
-
         }
 
         release {
@@ -48,6 +56,9 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
+            buildConfigField "int", "APP_DB_VERSION", "1"
+            buildConfigField "String", "APP_DB_NAME", "\"db_app\""
+
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
 
@@ -59,11 +70,12 @@ android {
             buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/load/LoadSubcategory.php\""
 
             buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/InsertAnnouncement.php\""
-            buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPhoto.php\""
+            buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPictures.php\""
             buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
 
-            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/LoadingAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_PICTURES", "\"php/load/LoadingPictures.php\""
             buildConfigField "String", "URL_LOADING_VIEW_ANNOUNCEMENT", "\"php/load/LoadingViewAnnouncement.php\""
 
         }
@@ -80,7 +92,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
-    implementation "androidx.fragment:fragment:1.2.3"
+    implementation "androidx.fragment:fragment:1.2.4"
 
     implementation "io.reactivex.rxjava2:rxjava:2.2.16"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
@@ -96,13 +108,12 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 //    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
 
-    implementation 'com.android.volley:volley:1.1.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.4.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
@@ -126,4 +137,12 @@ dependencies {
     implementation 'com.zhihu.android:matisse:0.5.3-beta3'
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    implementation "androidx.room:room-runtime:2.2.5"
+    annotationProcessor "androidx.room:room-compiler:2.2.5"
+    implementation "androidx.room:room-rxjava2:2.2.5"
+    testImplementation "androidx.room:room-testing:2.2.5"
+
+    implementation 'com.facebook.stetho:stetho:1.5.1'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
 }

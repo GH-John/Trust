@@ -2,12 +2,10 @@ package com.application.arenda.Entities.Utils.Glide;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.widget.ImageView;
 
 import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
 
 import com.application.arenda.R;
 import com.bumptech.glide.Glide;
@@ -46,8 +44,38 @@ public class GlideUtils {
         }
     }
 
+    @SuppressLint("CheckResult")
+    public static void loadAvatar(Context context, Uri uri, ImageView imageView) {
+        if (context != null && imageView != null) {
+            RequestOptions options = defaultOptions().clone();
+            options.circleCrop();
+            options.placeholder(R.drawable.ic_user_logo);
+            options.error(R.drawable.ic_user_logo);
+
+            Glide.with(context)
+                    .load(uri)
+                    .apply(options)
+                    .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
+                    .into(imageView);
+        } else {
+            throw new NullPointerException("GlideUtils.loadImage contains in parameters null");
+        }
+    }
+
+    public static void loadImage(Context context, @DrawableRes int drawable, ImageView imageView) {
+        if (context != null && imageView != null) {
+            Glide.with(context)
+                    .load(drawable)
+                    .apply(defaultOptions())
+                    .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
+                    .into(imageView);
+        } else {
+            throw new NullPointerException("GlideUtils.loadImage contains in parameters null");
+        }
+    }
+
     public static void loadImage(Context context, Uri uri, ImageView imageView) {
-        if (context != null && uri != null && imageView != null) {
+        if (context != null && imageView != null) {
             Glide.with(context)
                     .load(uri)
                     .apply(defaultOptions())
@@ -60,7 +88,7 @@ public class GlideUtils {
 
     @SuppressLint("CheckResult")
     public static void loadImage(Context context, Uri uri, ImageView imageView, @DrawableRes int drawableError) {
-        if (context != null && uri != null && imageView != null) {
+        if (context != null && imageView != null) {
             RequestOptions options = defaultOptions();
             options.error(drawableError);
 

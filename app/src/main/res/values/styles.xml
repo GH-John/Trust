@@ -84,6 +84,14 @@
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
     </style>
 
+    <style name="DefaultStyleBtnActionBar">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:background">@drawable/btn_background_dark</item>
+        <item name="android:fontFamily">@font/gotham_office_regular</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
+    </style>
+
     <style name="DefaultStyleRadioGroup">
         <item name="android:gravity">center</item>
         <item name="android:layout_marginEnd">24dp</item>

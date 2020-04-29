@@ -60,7 +60,7 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
         return fragmentManager;
     }
 
-    public void add(@NonNull Fragment fragment) {
+    public void open(@NonNull Fragment fragment) {
         if (!isLoad && fragment != null) {
             if (!fragment.isVisible()) {
                 Timber.tag("FRAGMENT_MANAGER").i("Visible - false");
@@ -113,6 +113,6 @@ public final class ContainerFragments implements ComponentManager.Observer, Comp
     @Override
     public void update(@NonNull Object object) {
         if (object instanceof Fragment)
-            add((Fragment) object);
+            open((Fragment) object);
     }
 }

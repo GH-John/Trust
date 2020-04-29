@@ -99,9 +99,7 @@
                     android:id="@+id/itemSelectUserLogo"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
-                    android:src="@drawable/ic_item_user_logo"
-                    app:civ_border_color="@color/colorGray50"
-                    app:civ_border_width="4dp" />
+                    android:src="@drawable/ic_item_user_logo" />
 
                 <ImageView
                     android:layout_width="25dp"

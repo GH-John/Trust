@@ -13,14 +13,15 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Announcements.Announcement;
 import com.application.arenda.Entities.Announcements.ApiAnnouncement;
+import com.application.arenda.Entities.Announcements.IApiAnnouncement;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.CategoriesAdapter;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.EventSendID;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.SubcategoriesAdapter;
-import com.application.arenda.Entities.Announcements.OnAnnouncementListener;
+import com.application.arenda.Entities.Announcements.OnApiListener;
 import com.application.arenda.Entities.Models.ModelCategory;
 import com.application.arenda.Entities.Models.ModelSubcategory;
+import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
@@ -57,7 +58,7 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
     private Unbinder unbinder;
 
-    private Announcement apiAnnouncement;
+    private ApiAnnouncement apiAnnouncement;
     private CategoriesAdapter categoriesAdapter;
     private CompositeDisposable compositeDisposable;
 
@@ -66,7 +67,7 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
         compositeDisposable = new CompositeDisposable();
     }
 
-    public static FragmentSelectCategory getInnstance() {
+    public static FragmentSelectCategory getInstance() {
         if (instanse == null)
             instanse = new FragmentSelectCategory();
 
@@ -89,27 +90,27 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
     private void initComponents() {
         categoriesAdapter = new CategoriesAdapter();
-        apiAnnouncement = Announcement.getInstance();
+        apiAnnouncement = ApiAnnouncement.getInstance();
 
         rvCategories.setHasFixedSize(true);
         rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
     }
 
     private void initListeners() {
-        OnAnnouncementListener announcementListener = new OnAnnouncementListener() {
+        OnApiListener announcementListener = new OnApiListener() {
             @Override
-            public void onComplete(@NonNull ApiAnnouncement.AnnouncementCodes code) {
-                switch (code) {
-                    case SUCCESS_CATEGORIES_LOADED:
-                        break;
-
-                    case UNSUCCESS_CATEGORIES_LOADED:
-                    case NOT_CONNECT_TO_DB:
-                    case NETWORK_ERROR:
-                    case UNKNOW_ERROR:
-                        Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
-                        break;
-                }
+            public void onComplete(@NonNull CodeHandler code) {
+//                switch (code) {
+//                    case SUCCESS_CATEGORIES_LOADED:
+//                        break;
+//
+//                    case UNSUCCESS_CATEGORIES_LOADED:
+//                    case NOT_CONNECT_TO_DB:
+//                    case NETWORK_ERROR:
+//                    case UNKNOW_ERROR:
+//                        Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
+//                        break;
+//                }
             }
 
             @Override

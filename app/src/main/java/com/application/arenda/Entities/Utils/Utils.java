@@ -3,7 +3,7 @@ package com.application.arenda.Entities.Utils;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
-import android.view.View;
+import android.os.Looper;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -23,7 +23,6 @@ import org.threeten.bp.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import butterknife.Action;
 import ru.tinkoff.decoro.MaskImpl;
 import ru.tinkoff.decoro.parser.UnderscoreDigitSlotsParser;
 import ru.tinkoff.decoro.slots.Slot;
@@ -31,11 +30,8 @@ import ru.tinkoff.decoro.watchers.FormatWatcher;
 import ru.tinkoff.decoro.watchers.MaskFormatWatcher;
 
 public class Utils {
-    public static final Action<View> V_GONE = (view, index) -> view.setVisibility(View.GONE);
-    public static final Action<View> V_VISIBLE = (view, index) -> view.setVisibility(View.VISIBLE);
 
-    private static Handler handler = new Handler();
-
+    private static Handler handler = new Handler(Looper.getMainLooper());
     private static Pattern pattern;
     private static Matcher matcher;
 
@@ -64,21 +60,25 @@ public class Utils {
         window.setStatusBarColor(ContextCompat.getColor(activity, R.color.colorAccent));
     }
 
+    public static String getFormatingDate(Context context, String date, DatePattern pattern) {
+        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_yyyy_MM_dd_HH_mm_ss.getPattern()));
+
+        return dateTime.format(DateTimeFormatter.ofPattern(pattern.getPattern()));
+    }
+
     public static String getFormatingDate(Context context, String date) {
         LocalDate today = LocalDate.now();
 
-        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-        LocalDateTime test = LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_yyyy_MM_dd_HH_mm_ss.getPattern()));
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 0)
-            return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+            return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 1)
-            return context.getString(R.string.text_yesterday) + ", " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+            return context.getString(R.string.text_yesterday) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
 
 
-        return dateTime.getDayOfMonth() + " " + getMonthOfYear(context, dateTime) + ", " + dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return dateTime.getDayOfMonth() + " " + getMonthOfYear(context, dateTime) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
     }
 
     public static String getDayOfWeek(Context context, LocalDateTime dateTime) {
@@ -276,5 +276,22 @@ public class Utils {
         }
 
         return false;
+    }
+
+    public enum DatePattern {
+        DATE_PATTERN_yyyy_MM_dd("yyyy-MM-dd"),
+        DATE_PATTERN_dd_MM_yyyy("dd.MM.yyyy"),
+        DATE_PATTERN_yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss"),
+        DATE_PATTERN_HH_mm("HH:mm");
+
+        private String pattern = "";
+
+        DatePattern(String pattern) {
+            this.pattern = pattern;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
     }
 }

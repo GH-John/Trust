@@ -28,7 +28,7 @@ public class AdapterViewPager extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return data.getCollectionUriBitmap().size();
+        return data.getCollectionUri().size();
     }
 
     @Override
@@ -42,10 +42,10 @@ public class AdapterViewPager extends PagerAdapter {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.vp_img_swiper_pattern, container, false);
 
         ImageView imgContainer = view.findViewById(R.id.imgContainer);
-        Uri uri = data.getCollectionUriBitmap().get(position);
+        Uri uri = data.getCollectionUri().get(position);
 
         if (itemListener != null)
-            imgContainer.setOnClickListener(v -> itemListener.onClick(data.getCollectionUriBitmap(), uri));
+            imgContainer.setOnClickListener(v -> itemListener.onClick(data.getCollectionUri(), uri));
 
         GlideUtils.loadImage(container.getContext(), uri, imgContainer);
 

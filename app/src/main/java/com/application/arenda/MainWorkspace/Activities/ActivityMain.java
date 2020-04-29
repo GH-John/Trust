@@ -43,6 +43,6 @@ public class ActivityMain extends AppCompatActivity {
         containerDrawerLayout = ContainerDrawerLayout.getInstance(this);
 
         ComponentManager.addLink(containerFragments, customBottomNavigation, customActionBar, containerDrawerLayout);
-        containerFragments.add(FragmentAllAnnouncements.getInstance());
+        containerFragments.open(FragmentAllAnnouncements.getInstance());
     }
 }

@@ -17,18 +17,22 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.application.arenda.BuildConfig;
-import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
+import com.application.arenda.Entities.Announcements.ApiAnnouncement;
+import com.application.arenda.Entities.Announcements.OnApiListener;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
-import com.application.arenda.Entities.Announcements.ViewAnnouncement.LoadingViewAnnouncement;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
-import com.application.arenda.Entities.Models.ModelPhoneNumber;
+import com.application.arenda.Entities.Models.ModelAnnouncement;
+import com.application.arenda.Entities.Models.ModelPicture;
 import com.application.arenda.Entities.Models.ModelViewAnnouncement;
+import com.application.arenda.Entities.Room.LocalCacheManager;
+import com.application.arenda.Entities.Utils.Glide.GlideUtils;
+import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
 import com.application.arenda.R;
@@ -47,12 +51,19 @@ import butterknife.BindDrawable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.observers.ResourceSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import timber.log.Timber;
 
-public class FragmentViewAnnouncement extends Fragment implements AdapterActionBar {
+public final class FragmentViewAnnouncement extends Fragment implements AdapterActionBar {
+
+    @SuppressLint("StaticFieldLeak")
+    private static FragmentViewAnnouncement instance;
 
     @Nullable
     @BindView(R.id.dotsLayout)
@@ -87,6 +98,26 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     TextView textPlacementDate;
 
     @Nullable
+    @BindView(R.id.userCardLogo)
+    ImageView userCardLogo;
+
+    @Nullable
+    @BindView(R.id.userCardLogin)
+    TextView userCardLogin;
+
+    @Nullable
+    @BindView(R.id.userCardRating)
+    TextView userCardRating;
+
+    @Nullable
+    @BindView(R.id.userCardCountAnnouncements)
+    TextView userCardCountAnnouncements;
+
+    @Nullable
+    @BindView(R.id.userCardUserCreated)
+    TextView userCardUserCreated;
+
+    @Nullable
     @BindView(R.id.textRating)
     TextView textRating;
 
@@ -117,12 +148,28 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private AdapterViewPager adapterViewPager;
     private ViewPager.OnPageChangeListener pageListener;
 
-    private InsertToFavorite favorite = new InsertToFavorite();
-    private LoadingViewAnnouncement announcement = new LoadingViewAnnouncement();
+    private ApiAnnouncement api;
+    private String userToken = null;
 
-    private long idAnnouncement;
+    private LocalCacheManager cacheManager;
 
-    private List<ModelPhoneNumber> phoneNumbers = new ArrayList<>();
+    private List<String> phoneNumbers = new ArrayList<>();
+
+    private CompositeDisposable disposable = new CompositeDisposable();
+
+    private Consumer<ModelViewAnnouncement> subscriber;
+    private Consumer<Boolean> favoriteSubscriber;
+    private OnApiListener listenerFavoriteInsert;
+
+    private FragmentViewAnnouncement() {
+    }
+
+    public static FragmentViewAnnouncement getInstance() {
+        if (instance == null)
+            instance = new FragmentViewAnnouncement();
+
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -130,13 +177,105 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         View view = inflater.inflate(R.layout.fragment_view_announcement, container, false);
         unbinder = ButterKnife.bind(this, view);
 
+        api = ApiAnnouncement.getInstance();
+
+        initComponents();
+
         Bundle bundle = getArguments();
 
-        idAnnouncement = bundle != null ? bundle.getLong("idAnnouncement") : 0;
-
-        loadData();
+        loadData(bundle != null ? bundle.getLong("idAnnouncement") : 0);
 
         return view;
+    }
+
+    @SuppressLint({"SetTextI18n", "CheckResult"})
+    private void initComponents() {
+        listenerFavoriteInsert = new OnApiListener() {
+            @Override
+            public void onComplete(@NonNull CodeHandler code) {
+                if (code.equals(CodeHandler.USER_NOT_FOUND)) {
+                    Utils.messageOutput(getContext(), getResources().getString(R.string.warning_login_required));
+                } else {
+                    Utils.messageOutput(getContext(), getResources().getString(R.string.unknown_error));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                Timber.e(t);
+            }
+        };
+
+        cacheManager = LocalCacheManager.getInstance(getContext());
+
+        disposable.add(cacheManager
+                .users()
+                .getActiveUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(modelUsers -> {
+                    if (modelUsers.size() > 0)
+                        userToken = modelUsers.get(0).getToken();
+                    else
+                        userToken = null;
+                }));
+
+        subscriber = viewAnnouncement -> {
+            ModelAnnouncement announcement = viewAnnouncement.getAnnouncement();
+
+            phoneNumbers.clear();
+
+            phoneNumbers.add(announcement.getPhone_1());
+            phoneNumbers.add(announcement.getPhone_2());
+            phoneNumbers.add(announcement.getPhone_3());
+
+            textPlacementDate.setText(Utils.getFormatingDate(getContext(), announcement.getAnnouncementCreated()));
+            textNameProduct.setText(announcement.getName());
+
+            //будет браться стоимость в зависимости от настроек по умолчанию
+            textCostProduct.setText(announcement.getCostToBYN() + " руб./ч.");
+
+            textAddress.setText(announcement.getAddress());
+            textRating.setText(String.valueOf(announcement.getAnnouncementRating()));
+            textCountRent.setText(String.valueOf(announcement.getCountRent()));
+
+            textDescriptionProduct.setText(announcement.getDescription());
+
+            GlideUtils.loadAvatar(getContext(), Uri.parse(announcement.getUserLogo()), userCardLogo);
+            userCardLogin.setText(announcement.getLogin());
+            userCardRating.setText(String.valueOf(announcement.getUserRating()));
+            userCardCountAnnouncements.setText(String.valueOf(announcement.getCountAnnouncementsUser()));
+            userCardUserCreated.setText(Utils.getFormatingDate(getContext(), announcement.getUserCreated(), Utils.DatePattern.DATE_PATTERN_dd_MM_yyyy));
+
+            btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(announcement.getID()));
+
+            selectHeart(announcement.isFavorite());
+
+            cacheManager.pictures()
+                    .getPictures(announcement.getID())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(pictures -> {
+                        Timber.tag("COUNT_PICTURES").d(String.valueOf(pictures.size()));
+
+                        ModelPicture.convertToUris(pictures)
+                                .subscribeOn(Schedulers.computation())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new ResourceSingleObserver<List<Uri>>() {
+                                    @Override
+                                    public void onSuccess(List<Uri> uriList) {
+                                        initViewPager(uriList);
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        Timber.e(e);
+                                    }
+                                });
+
+                        setProgress(false);
+                    });
+        };
     }
 
     private void setProgress(boolean b) {
@@ -149,79 +288,35 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private void loadData() {
+    @SuppressLint("CheckResult")
+    private void loadData(long idAnnouncement) {
         setProgress(true);
 
-        announcement.loadAnnouncement(getContext(), BuildConfig.URL_LOADING_VIEW_ANNOUNCEMENT, idAnnouncement)
-                .subscribeOn(Schedulers.io())
+        disposable.add(cacheManager
+                .announcements()
+                .getViewAnnouncement(idAnnouncement)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ModelViewAnnouncement>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(ModelViewAnnouncement model) {
-                        phoneNumbers.addAll(model.getPhoneNumbers());
-
-                        textPlacementDate.setText(model.getPlacementDate());
-                        textNameProduct.setText(model.getName());
-
-                        //будет браться стоимость в зависимости от настроек по умолчанию
-                        textCostProduct.setText(model.getCostToBYN() + " руб./ч.");
-
-                        textAddress.setText(model.getAddress());
-                        textRating.setText(String.valueOf(model.getRate()));
-                        textCountRent.setText(String.valueOf(model.getCountRent()));
-
-                        textDescriptionProduct.setText(model.getDescription());
-
-                        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(model.getID()));
-
-                        selectHeart(model.isFavorite());
-
-                        initViewPager(model.getUriCollection());
-
-                        setProgress(false);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        setProgress(false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        setProgress(false);
-                    }
-                });
+                .subscribe(subscriber));
     }
 
     public void onClickFavorite(long idAnnouncement) {
-        favorite.insertToFavorite(getContext(), BuildConfig.URL_INSERT_TO_FAVORITE,
-                idAnnouncement)
+        api.insertToFavorite(userToken, idAnnouncement, listenerFavoriteInsert)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
+                .subscribe(new SingleObserver<Boolean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
-
+                        disposable.add(d);
                     }
 
                     @Override
-                    public void onNext(Boolean isFavorite) {
+                    public void onSuccess(Boolean isFavorite) {
                         selectHeart(isFavorite);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-
+                        Timber.e(e);
                     }
                 });
     }
@@ -236,7 +331,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private void initViewPager(List<Uri> uris) {
         adapterViewPager = new AdapterViewPager(new ModelViewPager() {
             @Override
-            public List<Uri> getCollectionUriBitmap() {
+            public List<Uri> getCollectionUri() {
                 return uris;
             }
 
@@ -269,12 +364,6 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @Override
     public int getIdPatternResource() {
         return R.layout.ab_pattern_view_announcement;
     }
@@ -291,12 +380,13 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     @Override
     public void initListenersActionBar(ViewGroup viewGroup) {
         itemBtnBack.setOnClickListener(v -> getActivity().onBackPressed());
+
         itemPhone.setOnClickListener(v -> {
             if (phoneNumbers.size() > 0) {
                 String[] array = new String[phoneNumbers.size()];
 
                 for (int i = 0; i < phoneNumbers.size(); i++) {
-                    array[i] = phoneNumbers.get(i).getNumber();
+                    array[i] = phoneNumbers.get(i);
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -308,12 +398,12 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                         .withListener(new PermissionListener() {
                             @Override
                             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                                getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
+                                getActivity().startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumbers.get(which))));
                             }
 
                             @Override
                             public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
-                                getActivity().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumbers.get(which).getNumber())));
+                                getActivity().startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumbers.get(which))));
                             }
 
                             @Override
@@ -331,5 +421,17 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         });
         itemMessage.setOnClickListener(v -> Utils.messageOutput(getContext(), "message"));
         itemMore.setOnClickListener(v -> Utils.messageOutput(getContext(), "more"));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        disposable.clear();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

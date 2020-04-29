@@ -178,4 +178,11 @@
     <string name="text_view_reviews">Показать отзывы</string>
     <string name="text_camera">Камера</string>
     <string name="text_galery">Галерея</string>
+    <string name="btn_logout">Выйти</string>
+    <string name="hint_email_login">Email/Логин</string>
+    <string name="text_placed_ads">Разместил объявлений:</string>
+    <string name="text_authorization_user">На площадке с</string>
+    <string name="warning_login_required">Требуется авторизация</string>
+    <string name="text_updated">Обновлен:</string>
+    <string name="text_some_number">34</string>
 </resources>

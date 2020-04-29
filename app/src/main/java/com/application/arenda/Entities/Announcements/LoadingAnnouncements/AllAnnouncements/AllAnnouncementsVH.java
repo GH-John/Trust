@@ -1,6 +1,7 @@
 package com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,21 +13,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.application.arenda.Entities.Models.IModel;
-import com.application.arenda.Entities.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class AllAnnouncementsVH extends BaseViewHolder {
 
     @Nullable
     @BindView(R.id.itemUserLogo)
-    CircleImageView itemUserLogo;
+    ImageView itemUserLogo;
 
     @Nullable
     @BindView(R.id.textUserLogin)
@@ -72,7 +73,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
     @BindView(R.id.textRatingAnnouncement)
     TextView textRatingAnnouncement;
 
-    private ModelAllAnnouncement model;
+    private ModelAnnouncement model;
     private int position;
 
     public AllAnnouncementsVH(@NonNull View itemView) {
@@ -83,18 +84,18 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     public static AllAnnouncementsVH create(ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.vh_announcement_new, parent, false);
+        View view = layoutInflater.inflate(R.layout.vh_announcement, parent, false);
         return new AllAnnouncementsVH(view);
     }
 
     @Override
     public int getResourceLayoutId() {
-        return R.layout.vh_announcement_new;
+        return R.layout.vh_announcement;
     }
 
     @Override
     public void onBind(IModel model, int position) {
-        this.model = (ModelAllAnnouncement) model;
+        this.model = (ModelAnnouncement) model;
         this.position = position;
 
         bind();
@@ -102,9 +103,9 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     @SuppressLint({"SetTextI18n"})
     private void bind() {
-        GlideUtils.loadImage(itemView.getContext(), model.getMainUri(), itemImgProduct);
+        GlideUtils.loadImage(itemView.getContext(), Uri.parse(model.getPictures().get(0).getPicture()), itemImgProduct);
 
-        GlideUtils.loadImage(itemView.getContext(), model.getUserLogoUri(), itemUserLogo, R.drawable.ic_user_logo);
+        GlideUtils.loadAvatar(itemView.getContext(), Uri.parse(model.getUserLogo()), itemUserLogo);
 
         if (model.getCountReviews() > 0) {
             itemViewReviews.setText(itemViewReviews.getText().toString() + " (" + model.getCountReviews() + ")");
@@ -113,8 +114,8 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
         textUserLogin.setText(model.getLogin());
 
-        textPlacementDate.setText(model.getPlacementDate());
-        textRatingAnnouncement.setText(String.valueOf(model.getRate()));
+        textPlacementDate.setText(Utils.getFormatingDate(itemView.getContext(), model.getAnnouncementCreated()));
+        textRatingAnnouncement.setText(String.valueOf(model.getAnnouncementRating()));
 
         textNameProduct.setText(model.getName());
 

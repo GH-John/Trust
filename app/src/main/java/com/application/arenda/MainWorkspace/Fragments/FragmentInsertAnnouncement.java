@@ -20,10 +20,11 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.Entities.Announcements.Announcement;
 import com.application.arenda.Entities.Announcements.ApiAnnouncement;
+import com.application.arenda.Entities.Announcements.IApiAnnouncement;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.EventSendID;
 import com.application.arenda.Entities.Models.ModelInsertAnnouncement;
+import com.application.arenda.Entities.Room.LocalCacheManager;
 import com.application.arenda.Entities.Utils.DecimalDigitsInputFilter;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
@@ -106,8 +107,11 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     private SideBar sideBar;
     private Unbinder unbinder;
-    private Announcement apiAnnouncement;
+    private ApiAnnouncement api;
     private ContainerFiller containerFiller = new ContainerFiller();
+
+    private String userToken = null;
+    private LocalCacheManager cacheManager;
     private ModelInsertAnnouncement announcement = new ModelInsertAnnouncement();
 
     private ContainerFragments containerFragments;
@@ -141,8 +145,21 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
         return view;
     }
 
+    @SuppressLint("CheckResult")
     private void initComponents() {
-        apiAnnouncement = Announcement.getInstance();
+        api = ApiAnnouncement.getInstance();
+        cacheManager = LocalCacheManager.getInstance(getContext());
+
+        cacheManager.users()
+                .getActiveUser()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(modelUsers -> {
+                    if (modelUsers.size() > 0)
+                        userToken = modelUsers.get(0).getToken();
+                    else
+                        userToken = null;
+                });
+
         containerFragments = ContainerFragments.getInstance(getContext());
 
         containerSelectedImages.setAdapterGalery(this);
@@ -175,7 +192,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     private void initListeners() {
         fieldCostProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
 
-        btnSelectCategory.setOnClickListener(v -> containerFragments.add(FragmentSelectCategory.getInnstance()));
+        btnSelectCategory.setOnClickListener(v -> containerFragments.open(FragmentSelectCategory.getInstance()));
 
         btnCreateAnnouncement.setOnClickListener(v -> {
             if (containerFiller.getSize() > 0 &&
@@ -202,19 +219,21 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
         });
     }
 
+    @SuppressLint("CheckResult")
     public void insertAnnouncement(@NonNull ModelInsertAnnouncement announcement) {
-        if (announcement != null) {
-            apiAnnouncement.insertAnnouncement(getContext(), announcement)
+        if (announcement != null && userToken != null) {
+
+            api.insertAnnouncement(getContext(), userToken, announcement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<ApiAnnouncement.AnnouncementCodes>() {
+                    .subscribe(new Observer<IApiAnnouncement.AnnouncementCodes>() {
                         @Override
                         public void onSubscribe(Disposable d) {
                             compositeDisposable.add(d);
                         }
 
                         @Override
-                        public void onNext(ApiAnnouncement.AnnouncementCodes announcementCodes) {
+                        public void onNext(IApiAnnouncement.AnnouncementCodes announcementCodes) {
                             switch (announcementCodes) {
                                 case SUCCESS_ANNOUNCEMENT_ADDED:
                                 case SUCCESS_PICTURES_ADDED:
@@ -231,7 +250,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                                     break;
 
                                 case PHP_INI_NOT_LOADED:
-                                    throw new IllegalArgumentException(ApiAnnouncement.AnnouncementCodes.PHP_INI_NOT_LOADED.name());
+                                    throw new IllegalArgumentException(IApiAnnouncement.AnnouncementCodes.PHP_INI_NOT_LOADED.name());
 
                                 case UNSUCCESS_ANNOUNCEMENT_ADDED:
                                 case UNKNOW_ERROR:

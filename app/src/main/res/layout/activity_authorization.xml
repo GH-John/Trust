@@ -38,7 +38,7 @@
         style="@style/DefaultStyleField"
         android:layout_width="0dp"
         android:layout_marginBottom="16dp"
-        android:hint="@string/hint_email"
+        android:hint="@string/hint_email_login"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/fieldPassAuth"
         app:layout_constraintEnd_toEndOf="parent"

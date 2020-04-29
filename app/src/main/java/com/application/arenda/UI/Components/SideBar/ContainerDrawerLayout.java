@@ -4,15 +4,21 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.application.arenda.Entities.Models.ModelUser;
+import com.application.arenda.Entities.Room.LocalCacheManager;
+import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityAuthorization;
 import com.application.arenda.MainWorkspace.Fragments.FragmentAllAnnouncements;
@@ -31,6 +37,9 @@ import com.application.arenda.UI.Components.ContainerFragments.ContainerFragment
 import com.google.android.material.navigation.NavigationView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.ResourceCompletableObserver;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public final class ContainerDrawerLayout implements SideBar,
@@ -49,12 +58,13 @@ public final class ContainerDrawerLayout implements SideBar,
 
     private FrameLayout rightMenu;
 
-    private ImageButton itemLogout, itemSignIn, itemSettings;
+    private Button itemLogout, itemSignIn;
 
-    private CircleImageView itemUserLogo;
+    private ImageButton itemSettings;
+
+    private ImageView itemUserLogo;
 
     private ContainerFragments containerFragments;
-
 
     private ContainerDrawerLayout(Activity activity) {
         initComponents(activity);
@@ -90,19 +100,67 @@ public final class ContainerDrawerLayout implements SideBar,
         drawerLayout.setScrimColor(activity.getResources().getColor(R.color.shadowColor));
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "CheckResult"})
     private void inflateComponents(Context context) {
+        LocalCacheManager.getInstance(context)
+                .users()
+                .getActiveUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(modelUsers -> {
+                    if (modelUsers.size() > 0) {
+                        ModelUser user = modelUsers.get(0);
 
+                        itemUserName.setText(user.getLastName() + " " + user.getName());
+                        itemUserLogin.setText(user.getLogin());
+                        GlideUtils.loadAvatar(context, Uri.parse(user.getUserLogo()), itemUserLogo);
+
+                        itemSignIn.setVisibility(View.GONE);
+
+                        itemLogout.setVisibility(View.VISIBLE);
+                        itemUserName.setVisibility(View.VISIBLE);
+                        itemUserLogin.setVisibility(View.VISIBLE);
+                        itemUserLogo.setVisibility(View.VISIBLE);
+                    } else {
+                        itemSignIn.setVisibility(View.VISIBLE);
+
+                        itemLogout.setVisibility(View.GONE);
+                        itemUserName.setVisibility(View.GONE);
+                        itemUserLogin.setVisibility(View.GONE);
+                        itemUserLogo.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private void initListeners() {
         leftMenu.setNavigationItemSelectedListener(this);
 
         itemSignIn.setOnClickListener(this::openActivityAuthorization);
+
+        itemLogout.setOnClickListener(this::logoutUser);
     }
 
     private void openActivityAuthorization(View view) {
         view.getContext().startActivity(new Intent(view.getContext(), ActivityAuthorization.class));
+    }
+
+    @SuppressLint("CheckResult")
+    private void logoutUser(View view) {
+        LocalCacheManager.getInstance(view.getContext())
+                .users()
+                .logoutCurrentUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ResourceCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
     }
 
     private void setCheckedItem(ItemSideBar item) {
@@ -137,34 +195,34 @@ public final class ContainerDrawerLayout implements SideBar,
         switch (item.getItemId()) {
 
             case R.id.item_all_announcements:
-                containerFragments.add(FragmentAllAnnouncements.getInstance());
+                containerFragments.open(FragmentAllAnnouncements.getInstance());
                 return true;
             case R.id.item_user_announcements:
-                containerFragments.add(FragmentUserAnnouncements.getInstance());
+                containerFragments.open(FragmentUserAnnouncements.getInstance());
                 return true;
             case R.id.item_proposals:
-                containerFragments.add(FragmentUserProposals.getInstance());
+                containerFragments.open(FragmentUserProposals.getInstance());
                 return true;
             case R.id.item_statistics:
-                containerFragments.add(FragmentUserStatistics.getInstance());
+                containerFragments.open(FragmentUserStatistics.getInstance());
                 return true;
             case R.id.item_favorites:
-                containerFragments.add(new FragmentUserFavorites());
+                containerFragments.open(new FragmentUserFavorites());
                 return true;
             case R.id.item_wallet:
-                containerFragments.add(new FragmentUserWallet());
+                containerFragments.open(new FragmentUserWallet());
                 return true;
             case R.id.item_services:
-                containerFragments.add(new FragmentServices());
+                containerFragments.open(new FragmentServices());
                 return true;
             case R.id.item_regulations:
-                containerFragments.add(new FragmentRegulations());
+                containerFragments.open(new FragmentRegulations());
                 return true;
             case R.id.item_customer_service:
-                containerFragments.add(new FragmentCustomerService());
+                containerFragments.open(new FragmentCustomerService());
                 return true;
             case R.id.item_prohibited:
-                containerFragments.add(new FragmentProhibited());
+                containerFragments.open(new FragmentProhibited());
                 return true;
         }
 

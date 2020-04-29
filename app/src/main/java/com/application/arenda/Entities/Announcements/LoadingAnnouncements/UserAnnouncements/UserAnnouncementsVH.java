@@ -1,6 +1,7 @@
 package com.application.arenda.Entities.Announcements.LoadingAnnouncements.UserAnnouncements;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.application.arenda.Entities.Models.IModel;
-import com.application.arenda.Entities.Models.ModelUserAnnouncement;
+import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
@@ -57,7 +58,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
     @BindView(R.id.textCountFavorites)
     TextView textCountFavorites;
 
-    private ModelUserAnnouncement model;
+    private ModelAnnouncement model;
     private int position;
 
     public UserAnnouncementsVH(@NonNull View itemView) {
@@ -79,7 +80,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
 
     @Override
     public void onBind(IModel model, int position) {
-        this.model = (ModelUserAnnouncement) model;
+        this.model = (ModelAnnouncement) model;
         this.position = position;
 
         bind();
@@ -87,10 +88,10 @@ public class UserAnnouncementsVH extends BaseViewHolder {
 
     @SuppressLint("SetTextI18n")
     private void bind() {
-        GlideUtils.loadImage(itemView.getContext(), model.getMainUriBitmap(), imgProduct);
+        GlideUtils.loadImage(itemView.getContext(), Uri.parse(model.getPictures().get(0).getPicture()), imgProduct);
 
-        textPlacementDate.setText(model.getPlacementDate());
-        textRatingAnnouncement.setText(String.valueOf(model.getRate()));
+        textPlacementDate.setText(model.getAnnouncementCreated());
+        textRatingAnnouncement.setText(String.valueOf(model.getAnnouncementRating()));
 
         textCountViewers.setText(String.valueOf(model.getCountViewers()));
         textCountFavorites.setText(String.valueOf(model.getCountFavorites()));

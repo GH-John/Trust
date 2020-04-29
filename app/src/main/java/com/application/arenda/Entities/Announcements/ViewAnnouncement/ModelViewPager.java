@@ -32,7 +32,7 @@ public class ModelViewPager {
         this.uriList = uriList;
     }
 
-    public List<Uri> getCollectionUriBitmap() {
+    public List<Uri> getCollectionUri() {
         return uriList;
     }
 

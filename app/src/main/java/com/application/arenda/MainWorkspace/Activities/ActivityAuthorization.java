@@ -9,12 +9,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.application.arenda.Entities.Authentication.ApiAuthentication;
-import com.application.arenda.Entities.Authentication.Authentication;
-import com.application.arenda.Entities.Authentication.OnAuthenticationListener;
+import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
@@ -25,6 +23,11 @@ import com.application.arenda.UI.Style.SetFieldStyle;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ActivityAuthorization extends AppCompatActivity {
@@ -34,7 +37,8 @@ public class ActivityAuthorization extends AppCompatActivity {
     private Button btnSignAuth, btnRegAuth;
     private ProgressBar progressBarAuth;
 
-    private Authentication authentication;
+    private ApiAuthentication api;
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,7 @@ public class ActivityAuthorization extends AppCompatActivity {
 
         progressBarAuth = findViewById(R.id.progressBarAuth);
 
-        authentication = Authentication.getInstance();
+        api = ApiAuthentication.getInstance();
     }
 
     private void initStyles() {
@@ -79,61 +83,75 @@ public class ActivityAuthorization extends AppCompatActivity {
     private void initListeners() {
         itemForgotPass.setOnClickListener(v -> Utils.messageOutput(this, "In process developing"));
 
-        authentication.setOnAuthenticationListener(new OnAuthenticationListener() {
-            @Override
-            public void onComplete(@NonNull ApiAuthentication.AuthenticationCodes code) {
-                switch (code) {
-                    case USER_LOGGED:
-                        progressBarAuth.setVisibility(View.INVISIBLE);
-
-                        onBackPressed();
-                        finish();
-                        break;
-
-                    case WRONG_EMAIL:
-                        progressBarAuth.setVisibility(View.INVISIBLE);
-                        fieldEmailAuth.setError(getString(R.string.error_user_not_found));
-                        break;
-
-                    case WRONG_PASSWORD:
-                        progressBarAuth.setVisibility(View.INVISIBLE);
-                        fieldPassAuth.setError(getString(R.string.error_wrong_password));
-                        break;
-
-                    case UNKNOW_ERROR:
-                    case NETWORK_ERROR:
-                    case NOT_CONNECT_TO_DB:
-                        progressBarAuth.setVisibility(View.INVISIBLE);
-                        Utils.messageOutput(ActivityAuthorization.this, getString(R.string.error_check_internet_connect));
-                        break;
-
-                    default:
-                        progressBarAuth.setVisibility(View.INVISIBLE);
-                        Utils.messageOutput(ActivityAuthorization.this, getString(R.string.unknown_error));
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                Timber.e(t);
-                progressBarAuth.setVisibility(View.INVISIBLE);
-                if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-                    Utils.messageOutput(ActivityAuthorization.this, getString(R.string.error_check_internet_connect));
-                }
-            }
-        });
-
         btnRegAuth.setOnClickListener(v -> startActivity(new Intent(ActivityAuthorization.this, ActivityRegistration.class)));
 
         btnSignAuth.setOnClickListener(v -> {
             if (!Utils.fieldIsEmpty(getApplicationContext(), fieldEmailAuth, fieldPassAuth)) {
                 progressBarAuth.setVisibility(View.VISIBLE);
 
-                authentication.authorization(this,
+                api.authorization(this,
                         fieldEmailAuth.getText().toString().trim(),
-                        fieldPassAuth.getText().toString().trim());
+                        fieldPassAuth.getText().toString().trim())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new SingleObserver<CodeHandler>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposable.add(d);
+                            }
+
+                            @Override
+                            public void onSuccess(CodeHandler code) {
+                                if (CodeHandler.SUCCESS.equals(code)) {
+                                    switch (code) {
+                                        case SUCCESS:
+                                            progressBarAuth.setVisibility(View.INVISIBLE);
+
+                                            onBackPressed();
+                                            finish();
+                                            break;
+
+                                        case WRONG_EMAIL_LOGIN:
+                                            progressBarAuth.setVisibility(View.INVISIBLE);
+                                            fieldEmailAuth.setError(getString(R.string.error_user_not_found));
+                                            break;
+
+                                        case WRONG_PASSWORD:
+                                            progressBarAuth.setVisibility(View.INVISIBLE);
+                                            fieldPassAuth.setError(getString(R.string.error_wrong_password));
+                                            break;
+
+                                        case UNKNOW_ERROR:
+                                        case NOT_CONNECT_TO_DB:
+                                            progressBarAuth.setVisibility(View.INVISIBLE);
+                                            Utils.messageOutput(ActivityAuthorization.this, getString(R.string.error_check_internet_connect));
+                                            break;
+
+                                        default:
+                                            progressBarAuth.setVisibility(View.INVISIBLE);
+                                            Utils.messageOutput(ActivityAuthorization.this, getString(R.string.unknown_error));
+                                            break;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e(e);
+                                progressBarAuth.setVisibility(View.INVISIBLE);
+
+                                if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    Utils.messageOutput(ActivityAuthorization.this, getString(R.string.error_check_internet_connect));
+                                }
+                            }
+                        });
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        disposable.clear();
     }
 }

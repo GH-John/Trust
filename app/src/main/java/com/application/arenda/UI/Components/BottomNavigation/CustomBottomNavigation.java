@@ -87,19 +87,19 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
     @Override
     public void itemListener() {
         itemAllAnnouncements.setOnClickListener(v -> containerFragments
-                .add(FragmentAllAnnouncements.getInstance()));
+                .open(FragmentAllAnnouncements.getInstance()));
 
         itemUserAnnouncements.setOnClickListener(v -> containerFragments
-                .add(FragmentUserAnnouncements.getInstance()));
+                .open(FragmentUserAnnouncements.getInstance()));
 
         itemInsertAnnouncement.setOnClickListener(v -> containerFragments
-                .add(FragmentInsertAnnouncement.getInstance()));
+                .open(FragmentInsertAnnouncement.getInstance()));
 
         itemUserProposals.setOnClickListener(v -> containerFragments
-                .add(FragmentUserProposals.getInstance()));
+                .open(FragmentUserProposals.getInstance()));
 
         itemUserStatistics.setOnClickListener(v -> containerFragments
-                .add(FragmentUserStatistics.getInstance()));
+                .open(FragmentUserStatistics.getInstance()));
     }
 
     @Override

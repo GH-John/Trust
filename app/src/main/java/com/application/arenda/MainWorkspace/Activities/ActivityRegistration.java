@@ -15,16 +15,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import com.application.arenda.BuildConfig;
 import com.application.arenda.Entities.Authentication.ApiAuthentication;
-import com.application.arenda.Entities.Authentication.Authentication;
-import com.application.arenda.Entities.Authentication.OnAuthenticationListener;
+import com.application.arenda.Entities.Room.LocalCacheManager;
 import com.application.arenda.Entities.User.AccountType;
+import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.ComponentBackground;
@@ -54,6 +53,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ActivityRegistration extends AppCompatActivity {
@@ -98,7 +102,11 @@ public class ActivityRegistration extends AppCompatActivity {
 
     private Uri currentUriUserLogo;
 
-    private Authentication authentication;
+    private ApiAuthentication api;
+
+    private LocalCacheManager cacheManager;
+
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,11 +123,12 @@ public class ActivityRegistration extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        disposable.clear();
     }
 
     private void initComponents() {
-
-        authentication = Authentication.getInstance();
+        cacheManager = LocalCacheManager.getInstance(this);
+        api = ApiAuthentication.getInstance();
 
         Utils.setPhoneMask(getResources().getString(R.string.hint_phone), fieldPhoneReg);
     }
@@ -142,50 +151,6 @@ public class ActivityRegistration extends AppCompatActivity {
     }
 
     private void initListeners() {
-        authentication.setOnAuthenticationListener(new OnAuthenticationListener() {
-            @Override
-            public void onComplete(@NonNull ApiAuthentication.AuthenticationCodes code) {
-                switch (code) {
-                    case USER_WITH_LOGIN_EXISTS:
-                        progressBarReg.setVisibility(View.INVISIBLE);
-                        fieldLoginReg.setError(getString(R.string.error_user_login_exists));
-                        break;
-                    case USER_EXISTS:
-                        progressBarReg.setVisibility(View.INVISIBLE);
-                        fieldEmailReg.setError(getString(R.string.error_user_exists));
-                        break;
-                    case USER_SUCCESS_REGISTERED:
-                        progressBarReg.setVisibility(View.INVISIBLE);
-
-                        onBackPressed();
-                        finish();
-                        break;
-
-                    case USER_UNSUCCESS_REGISTERED:
-                    case UNKNOW_ERROR:
-                    case NETWORK_ERROR:
-                    case NOT_CONNECT_TO_DB:
-                        progressBarReg.setVisibility(View.INVISIBLE);
-                        Utils.messageOutput(ActivityRegistration.this, getString(R.string.error_check_internet_connect));
-                        break;
-
-                    default:
-                        progressBarReg.setVisibility(View.INVISIBLE);
-                        Utils.messageOutput(ActivityRegistration.this, getString(R.string.unknown_error));
-                        break;
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                Timber.e(t);
-                progressBarReg.setVisibility(View.INVISIBLE);
-                if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-                    Utils.messageOutput(ActivityRegistration.this, getString(R.string.error_check_internet_connect));
-                }
-            }
-        });
-
         btnReg.setOnClickListener(v -> {
             if (!Utils.fieldIsEmpty(getApplicationContext(),
                     fieldNameReg,
@@ -206,7 +171,7 @@ public class ActivityRegistration extends AppCompatActivity {
                     Utils.isConfirmPassword(getApplicationContext(), fieldPassReg, fieldConfirmPassReg)) {
                 progressBarReg.setVisibility(View.VISIBLE);
 
-                authentication.registration(this,
+                api.registration(this,
                         currentUriUserLogo,
                         fieldNameReg.getText().toString().trim(),
                         fieldLastNameReg.getText().toString().trim(),
@@ -214,7 +179,61 @@ public class ActivityRegistration extends AppCompatActivity {
                         fieldEmailReg.getText().toString().trim(),
                         fieldPassReg.getText().toString().trim(),
                         fieldPhoneReg.getText().toString().trim(),
-                        getAccountType());
+                        getAccountType())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new SingleObserver<CodeHandler>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposable.add(d);
+                            }
+
+                            @Override
+                            public void onSuccess(CodeHandler code) {
+                                if (CodeHandler.SUCCESS.equals(code)) {
+                                    switch (code) {
+                                        case SUCCESS:
+                                            progressBarReg.setVisibility(View.INVISIBLE);
+
+                                            onBackPressed();
+                                            finish();
+                                            break;
+
+                                        case USER_WITH_LOGIN_EXISTS:
+                                            progressBarReg.setVisibility(View.INVISIBLE);
+                                            fieldLoginReg.setError(getString(R.string.error_user_login_exists));
+                                            break;
+
+                                        case USER_EXISTS:
+                                            progressBarReg.setVisibility(View.INVISIBLE);
+                                            fieldEmailReg.setError(getString(R.string.error_user_exists));
+                                            break;
+
+                                        case UNSUCCESS:
+                                        case UNKNOW_ERROR:
+                                        case NOT_CONNECT_TO_DB:
+                                            progressBarReg.setVisibility(View.INVISIBLE);
+                                            Utils.messageOutput(ActivityRegistration.this, getString(R.string.error_check_internet_connect));
+                                            break;
+
+                                        default:
+                                            progressBarReg.setVisibility(View.INVISIBLE);
+                                            Utils.messageOutput(ActivityRegistration.this, getString(R.string.unknown_error));
+                                            break;
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e(e);
+                                progressBarReg.setVisibility(View.INVISIBLE);
+
+                                if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    Utils.messageOutput(ActivityRegistration.this, getString(R.string.error_check_internet_connect));
+                                }
+                            }
+                        });
             }
         });
     }

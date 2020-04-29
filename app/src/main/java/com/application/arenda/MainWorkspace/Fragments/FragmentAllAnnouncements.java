@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
@@ -18,13 +19,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.application.arenda.BuildConfig;
-import com.application.arenda.Entities.Announcements.Announcement;
-import com.application.arenda.Entities.Announcements.InsertToFavorite.InsertToFavorite;
+import com.application.arenda.Entities.Announcements.ApiAnnouncement;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsAdapter;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.AllAnnouncements.AllAnnouncementsVH;
-import com.application.arenda.Entities.Models.ModelAllAnnouncement;
+import com.application.arenda.Entities.Announcements.OnApiListener;
+import com.application.arenda.Entities.Models.ModelAnnouncement;
+import com.application.arenda.Entities.Models.ModelUser;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
+import com.application.arenda.Entities.Room.LocalCacheManager;
+import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
@@ -38,10 +41,13 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observer;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableMaybeObserver;
+import io.reactivex.observers.ResourceCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -71,14 +77,28 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     private RVOnScrollListener rvOnScrollListener;
     private AllAnnouncementsAdapter allAnnouncementsAdapter;
 
-    private Announcement api;
-    private InsertToFavorite insertToFavorite = new InsertToFavorite();
+    private ApiAnnouncement api;
 
-    private String searchQuery;
+    private String userToken = null;
+
+    private String searchQuery = null;
 
     private ContainerFragments containerFragments;
+    private LocalCacheManager cacheManager;
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable disposable = new CompositeDisposable();
+    private DisposableMaybeObserver<ModelUser> maybeWithRewriteCollection;
+
+    private SingleObserver<List<ModelAnnouncement>> singleLoaderWithRewriteAnnouncements;
+    private SingleObserver<List<ModelAnnouncement>> singleLoaderWithoutRewriteAnnouncements;
+
+    private DisposableMaybeObserver<ModelUser> maybeWithoutRewriteCollection;
+    private Consumer<List<ModelUser>> consumerUserToken;
+    private OnApiListener listenerFavoriteInsert;
+    private OnApiListener listenerLoadAnnouncement;
+
+    private FragmentAllAnnouncements() {
+    }
 
     public static FragmentAllAnnouncements getInstance() {
         if (fragmentAllAnnouncements == null)
@@ -104,18 +124,146 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     private void init() {
-        api = Announcement.getInstance();
+        api = ApiAnnouncement.getInstance();
+        cacheManager = LocalCacheManager.getInstance(getContext());
+
         rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
         containerFragments = ContainerFragments.getInstance(getContext());
 
+        initInterfaces();
         initAdapters();
         initStyles();
         initListeners();
 
-        loadListAnnouncement(0);
+        refreshLayout();
     }
 
+    @SuppressLint("CheckResult")
+    private void initInterfaces() {
+        listenerFavoriteInsert = new OnApiListener() {
+            @Override
+            public void onComplete(@NonNull CodeHandler code) {
+                if (code.equals(CodeHandler.USER_NOT_FOUND)) {
+                    Utils.messageOutput(getContext(), getResources().getString(R.string.warning_login_required));
+                } else {
+                    Utils.messageOutput(getContext(), getResources().getString(R.string.unknown_error));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                Timber.e(t);
+            }
+        };
+
+        listenerLoadAnnouncement = new OnApiListener() {
+            @Override
+            public void onComplete(@NonNull CodeHandler code) {
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+
+            }
+        };
+
+        consumerUserToken = modelUsers -> {
+            if (modelUsers.size() > 0)
+                userToken = modelUsers.get(0).getToken();
+            else
+                userToken = null;
+        };
+
+        cacheManager
+                .users()
+                .getActiveUser()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumerUserToken);
+
+        singleLoaderWithRewriteAnnouncements = new SingleObserver<List<ModelAnnouncement>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                disposable.add(d);
+            }
+
+            @Override
+            public void onSuccess(List<ModelAnnouncement> collection) {
+                allAnnouncementsAdapter.rewriteCollection(collection);
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+
+                allAnnouncementsAdapter.setLoading(false);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        };
+
+        singleLoaderWithoutRewriteAnnouncements = new SingleObserver<List<ModelAnnouncement>>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                disposable.add(d);
+            }
+
+            @Override
+            public void onSuccess(List<ModelAnnouncement> collection) {
+                allAnnouncementsAdapter.addToCollection(collection);
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+
+                allAnnouncementsAdapter.setLoading(false);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        };
+
+        maybeWithRewriteCollection = new DisposableMaybeObserver<ModelUser>() {
+            @Override
+            public void onSuccess(ModelUser user) {
+                addAnnouncementsToCollection(0, null, true);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+            }
+
+            @Override
+            public void onComplete() {
+                addAnnouncementsToCollection(0, null, true);
+
+            }
+        };
+
+        maybeWithoutRewriteCollection = new DisposableMaybeObserver<ModelUser>() {
+            @Override
+            public void onSuccess(ModelUser user) {
+                addAnnouncementsToCollection(0, null, false);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.e(e);
+            }
+
+            @Override
+            public void onComplete() {
+                addAnnouncementsToCollection(0, null, false);
+            }
+        };
+    }
+
+    @SuppressLint("CheckResult")
     private void initAdapters() {
         recyclerView.setLayoutManager(rvLayoutManager);
 
@@ -134,33 +282,68 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
         recyclerView.setAdapter(allAnnouncementsAdapter);
 
-        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> onItemClick(model.getID()));
+        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> {
+            ModelAnnouncement announcement = (ModelAnnouncement) model;
 
-        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) -> insertToFavorite
-                .insertToFavorite(getContext(), BuildConfig.URL_INSERT_TO_FAVORITE,
-                        model.getID())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Boolean>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
+            cacheManager
+                    .announcements()
+                    .insertToRoom(announcement)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new ResourceCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            cacheManager.pictures()
+                                    .insertToRoom(announcement.getPictures())
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new ResourceCompletableObserver() {
+                                        @Override
+                                        public void onComplete() {
+                                            FragmentViewAnnouncement viewAnnouncement = FragmentViewAnnouncement.getInstance();
 
-                    @Override
-                    public void onNext(Boolean isFavorite) {
-                        ((AllAnnouncementsVH) viewHolder).setActiveHeart(isFavorite);
-                    }
+                                            Bundle bundle = new Bundle();
+                                            bundle.putLong("idAnnouncement", model.getID());
+                                            viewAnnouncement.setArguments(bundle);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                    }
+                                            containerFragments.open(viewAnnouncement);
+                                        }
 
-                    @Override
-                    public void onComplete() {
-                    }
-                }));
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            Timber.e(e);
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.e(e);
+                        }
+                    });
+        });
+
+        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) ->
+                api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new SingleObserver<Boolean>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposable.add(d);
+                            }
+
+                            @Override
+                            public void onSuccess(Boolean isFavorite) {
+                                ((AllAnnouncementsVH) viewHolder).setActiveHeart(isFavorite);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e(e);
+                            }
+                        }));
+
         recyclerView.setAdapter(allAnnouncementsAdapter);
     }
 
@@ -180,122 +363,36 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     private void setLoadMoreForAllAnnouncement() {
-        rvOnScrollListener.setOnLoadMoreData(this::loadListAnnouncement);
+        rvOnScrollListener.setOnLoadMoreData(lastID -> addAnnouncementsToCollection(lastID, null, false));
     }
 
     private void setLoadMoreForSearchAnnouncement() {
         rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID));
     }
 
-    public void loadListAnnouncement(long lastID) {
+    private synchronized void addAnnouncementsToCollection(long lastId, String query, boolean rewrite) {
         if (!allAnnouncementsAdapter.isLoading()) {
             allAnnouncementsAdapter.setLoading(true);
 
-
-            api.loadAnnouncements(getContext(), lastID, 10, null, null)
+            api.loadAnnouncements(getContext(), userToken, lastId, 10, query, null)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            compositeDisposable.add(d);
-                        }
-
-                        @Override
-                        public void onNext(List<ModelAllAnnouncement> collection) {
-                            allAnnouncementsAdapter.addToCollection(collection);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e(e);
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            allAnnouncementsAdapter.setLoading(false);
-                            swipeRefreshLayout.setRefreshing(false);
-
-                        }
-                    });
+                    .subscribe(rewrite ? singleLoaderWithRewriteAnnouncements : singleLoaderWithoutRewriteAnnouncements);
+        } else {
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
+    @SuppressLint("CheckResult")
     public void refreshLayout() {
-        if (!allAnnouncementsAdapter.isLoading()) {
-            allAnnouncementsAdapter.setLoading(true);
-
-
-            api.loadAnnouncements(getContext(), 0, 10, null, null)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            compositeDisposable.add(d);
-                        }
-
-                        @Override
-                        public void onNext(List<ModelAllAnnouncement> collection) {
-                            allAnnouncementsAdapter.rewriteCollection(collection);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e(e);
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            allAnnouncementsAdapter.setLoading(false);
-                            swipeRefreshLayout.setRefreshing(false);
-
-                        }
-                    });
-        }
+        addAnnouncementsToCollection(0, null, true);
     }
 
-    private void onItemClick(long idAnnouncement) {
-        FragmentViewAnnouncement announcement = new FragmentViewAnnouncement();
-        Bundle bundle = new Bundle();
-        bundle.putLong("idAnnouncement", idAnnouncement);
-        announcement.setArguments(bundle);
-
-        containerFragments.add(announcement);
-    }
-
+    @SuppressLint("CheckResult")
     public void searchAnnouncements(String query, long lastId) {
-        if (!allAnnouncementsAdapter.isLoading()) {
-            allAnnouncementsAdapter.setLoading(true);
-            swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setRefreshing(true);
 
-            api.loadAnnouncements(getContext(), lastId, 10, query, null)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<List<ModelAllAnnouncement>>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            compositeDisposable.add(d);
-                        }
-
-                        @Override
-                        public void onNext(List<ModelAllAnnouncement> modelAllAnnouncements) {
-                            allAnnouncementsAdapter.rewriteCollection(modelAllAnnouncements);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e(e);
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            allAnnouncementsAdapter.setLoading(false);
-                            swipeRefreshLayout.setRefreshing(false);
-
-                        }
-                    });
-        }
+        addAnnouncementsToCollection(lastId, query, true);
     }
 
     @Override
@@ -375,7 +472,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     @Override
     public void onPause() {
         super.onPause();
-        compositeDisposable.clear();
+        disposable.clear();
     }
 
     @Override
