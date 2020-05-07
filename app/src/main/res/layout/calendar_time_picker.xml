@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="24dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="6dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TimePicker
+                android:id="@+id/calendarTimePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="clock" />
+
+            <TextView
+                android:id="@+id/calendarPickerMessageError"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/calendarTimePicker"
+                android:layout_marginTop="8dp"
+                android:textSize="8sp"
+                tools:ignore="SmallSp" />
+
+            <Button
+                android:id="@+id/calendarBtnTimeSelect"
+                style="@style/DefaultStyleBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/calendarPickerMessageError"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/calendar_btn_now"
+                android:text="@string/btn_select"
+                android:textColor="@color/colorWhite" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

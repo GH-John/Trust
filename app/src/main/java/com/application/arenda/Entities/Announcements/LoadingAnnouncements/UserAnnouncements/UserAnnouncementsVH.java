@@ -16,6 +16,7 @@ import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
+import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 
 import butterknife.BindView;
@@ -90,7 +91,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
     private void bind() {
         GlideUtils.loadImage(itemView.getContext(), Uri.parse(model.getPictures().get(0).getPicture()), imgProduct);
 
-        textPlacementDate.setText(model.getAnnouncementCreated());
+        textPlacementDate.setText(Utils.getFormatingDate(itemView.getContext(), model.getAnnouncementCreated()));
         textRatingAnnouncement.setText(String.valueOf(model.getAnnouncementRating()));
 
         textCountViewers.setText(String.valueOf(model.getCountViewers()));

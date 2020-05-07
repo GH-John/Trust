@@ -68,6 +68,9 @@ public abstract class BaseAdapter<M extends IModel, V extends BaseViewHolder> ex
 
         setLoading(false);
     }
+    public List<M> getCollection(){
+        return collection;
+    }
 
     @Override
     public M getItem(int position) {

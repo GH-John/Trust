@@ -84,6 +84,16 @@ public interface IApiAnnouncement {
     );
 
     @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_SIMILAR_ANNOUNCEMENT)
+    Call<ServerHandler<List<ModelAnnouncement>>> loadSimilarAnnouncements(
+            @Field("token") String userToken,
+            @Field("idSubcategory") long idSubcategory,
+            @Field("idAnnouncement") long lastIdAnnouncement,
+            @Field("limitItemsInPage") int limitItemsInPage,
+            @Field("query") String query
+    );
+
+    @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_PICTURES)
     Call<List<ModelPicture>> loadPictures(@Field("idAnnouncement") long idAnnouncement);
 
@@ -94,15 +104,6 @@ public interface IApiAnnouncement {
     @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_VIEWER)
     Call<ResponseBody> insertViewer(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_LOADING_SIMILAR_ANNOUNCEMENT)
-    Call<ServerHandler<List<ModelAnnouncement>>> loadSimilarAnnouncements(@Field("token") String userToken,
-                                                                          @Field("idAnnouncement") long idAnnouncement,
-                                                                          @Field("idSubcategory") long idSubcategory,
-                                                                          @Field("limitItemsInPage") int limitItemsInPage,
-                                                                          @Field("query") String query
-    );
 
     enum AnnouncementCodes {
         SUCCESS_CATEGORIES_LOADED,

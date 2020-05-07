@@ -109,6 +109,12 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
+    implementation('com.github.bumptech.glide:recyclerview-integration:4.11.0') {
+        // Excludes the support library because it's already included by Glide.
+        transitive = false
+    }
+
 //    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
 
 
@@ -148,4 +154,6 @@ dependencies {
 
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+
+    implementation 'com.github.szugyi:Android-CircleMenu:2.0.0'
 }

@@ -11,6 +11,7 @@ import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -34,7 +36,7 @@ import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterVie
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.Models.ModelPicture;
-import com.application.arenda.Entities.Models.ModelViewAnnouncement;
+import com.application.arenda.Entities.Models.SharedViewModels;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.Room.LocalCacheManager;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
@@ -43,6 +45,8 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
+import com.application.arenda.UI.Components.CalendarView.CalendarView;
+import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
 import com.application.arenda.UI.HorizontalList.HorizontalList;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -79,11 +83,11 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     ViewPager imgViewPager;
 
     @Nullable
-    @BindDrawable(R.drawable.preview_dot_selected)
+    @BindDrawable(R.drawable.ic_dot_selected)
     Drawable dotSelected;
 
     @Nullable
-    @BindDrawable(R.drawable.preview_dot_unselected)
+    @BindDrawable(R.drawable.ic_dot_unselected)
     Drawable dotUnselected;
 
     @Nullable
@@ -138,9 +142,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     @BindView(R.id.btnInsertToFavorite)
     ImageButton btnInsertToFavorite;
 
-    @Nullable
-    @BindView(R.id.progressBarVA)
-    ProgressBar progressBar;
+    @BindView(R.id.btnBooking)
+    Button btnBooking;
 
     @Nullable
     @BindView(R.id.viewAnnouncementContainer)
@@ -158,7 +161,12 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     @BindView(R.id.similarAnnouncements)
     HorizontalList similarAnnouncements;
 
-    private ImageView itemBtnBack, itemPhone,
+    @BindView(R.id.periodSelector)
+    CalendarView calendarView;
+
+    ProgressBar progressBar;
+
+    private ImageButton itemBtnBack, itemPhone,
             itemMessage, itemMore;
 
     private Unbinder unbinder;
@@ -174,19 +182,23 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
     private CompositeDisposable disposable = new CompositeDisposable();
 
-    private Consumer<ModelViewAnnouncement> subscriber;
     private Consumer<Boolean> favoriteSubscriber;
     private OnApiListener listenerFavoriteInsert;
     private LandLord_Similar_AnnouncementsAdapter landLordAnnouncementsAdapter;
     private LandLord_Similar_AnnouncementsAdapter similarAnnouncementsAdapter;
 
-    private OnItemClick landLordSimilarItemClick;
+    private OnItemClick landLordItemClick;
+    private OnItemClick similarItemClick;
     private OnItemClick landLordSimilarItemHeartClick;
 
     private LinearLayoutManager rvLandLordLayout;
     private LinearLayoutManager rvSimilarLayout;
 
     private SingleObserver<Boolean> subscriberFavoriteClick;
+
+    private SharedViewModels sharedViewModels;
+
+    private ContainerFragments containerFragments;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -198,17 +210,17 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         initComponents();
 
-        initInterfaces();
-
-        Bundle bundle = getArguments();
-
-        loadDataFromCache(bundle != null ? bundle.getLong("idAnnouncement") : 0);
-
         return view;
     }
 
     @SuppressLint({"SetTextI18n", "CheckResult"})
     private void initComponents() {
+        progressBar = new ProgressBar(getContext());
+
+        containerFragments = ContainerFragments.getInstance(getContext());
+
+        sharedViewModels = new ViewModelProvider(requireActivity()).get(SharedViewModels.class);
+
         rvLandLordLayout = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
 
         landLordAnnouncements.initRV(rvLandLordLayout);
@@ -222,7 +234,9 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             public void onComplete(@NonNull CodeHandler code) {
                 if (code.equals(CodeHandler.USER_NOT_FOUND)) {
                     Utils.messageOutput(getContext(), getResources().getString(R.string.warning_login_required));
-                } else {
+                } else if (code.equals(CodeHandler.INTERNAL_SERVER_ERROR)) {
+                    Utils.messageOutput(getContext(), getResources().getString(R.string.error_on_server));
+                } else if (code.equals(CodeHandler.UNKNOW_ERROR)) {
                     Utils.messageOutput(getContext(), getResources().getString(R.string.unknown_error));
                 }
             }
@@ -245,21 +259,13 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                         userToken = modelUsers.get(0).getToken();
                     else
                         userToken = null;
+
+                    initInterfaces();
+
+                    initListeners();
+
+                    loadDataFromCache();
                 }));
-
-        subscriber = viewAnnouncement -> {
-            setProgress(false);
-
-            ModelAnnouncement announcement = viewAnnouncement.getAnnouncement();
-            announcement.setPictures(viewAnnouncement.getPictures());
-
-            inflateUI(announcement);
-
-            initLandLordAnnouncements(announcement.getIdUser());
-            initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
-
-            setViewerAnnouncement(viewAnnouncement.getAnnouncement().getID());
-        };
 
         landLordAnnouncementsAdapter = new LandLord_Similar_AnnouncementsAdapter();
         similarAnnouncementsAdapter = new LandLord_Similar_AnnouncementsAdapter();
@@ -283,53 +289,34 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             }
         };
 
-        landLordSimilarItemClick = (viewHolder, model) -> {
+        landLordItemClick = (viewHolder, model) -> {
             ModelAnnouncement announcement = (ModelAnnouncement) model;
+
+            sharedViewModels.selectLandLordAnnouncement(announcement);
 
             scrollView.smoothScrollTo(0, 0);
 
             inflateUI(announcement);
 
-//            cacheManager
-//                    .announcements()
-//                    .insertToRoom(announcement)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe(new ResourceCompletableObserver() {
-//                        @Override
-//                        public void onComplete() {
-//                            cacheManager.pictures()
-//                                    .insertToRoom(announcement.getPictures())
-//                                    .subscribeOn(Schedulers.io())
-//                                    .observeOn(AndroidSchedulers.mainThread())
-//                                    .subscribe(new ResourceCompletableObserver() {
-//                                        @Override
-//                                        public void onComplete() {
-//                                            scrollView.smoothScrollTo(0, 0);
-//
-//                                            loadDataFromCache(announcement.getID());
-//
-////                                            FragmentViewAnnouncement viewAnnouncement = new FragmentViewAnnouncement();
-////
-////                                            Bundle bundle = new Bundle();
-////                                            bundle.putLong("idAnnouncement", model.getID());
-////                                            viewAnnouncement.setArguments(bundle);
-////
-////                                            containerFragments.open(viewAnnouncement);
-//                                        }
-//
-//                                        @Override
-//                                        public void onError(Throwable e) {
-//                                            Timber.e(e);
-//                                        }
-//                                    });
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            Timber.e(e);
-//                        }
-//                    });
+            initLandLordAnnouncements(announcement.getIdUser());
+            initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
+
+            setViewerAnnouncement(announcement.getID());
+        };
+
+        similarItemClick = (viewHolder, model) -> {
+            ModelAnnouncement announcement = (ModelAnnouncement) model;
+
+            sharedViewModels.selectSimilarAnnouncement(announcement);
+
+            scrollView.smoothScrollTo(0, 0);
+
+            inflateUI(announcement);
+
+            initLandLordAnnouncements(announcement.getIdUser());
+            initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
+
+            setViewerAnnouncement(announcement.getID());
         };
 
         landLordSimilarItemHeartClick = (viewHolder, model) ->
@@ -352,6 +339,42 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                                 Timber.e(e);
                             }
                         });
+    }
+
+    private void initListeners() {
+        landLordAnnouncements.seeAllClickListener(v -> {
+            sharedViewModels.setLandLordAnnouncements(landLordAnnouncementsAdapter.getCollection());
+            containerFragments.open(new FragmentViewAllLandLordAnnouncements());
+        });
+
+        similarAnnouncements.seeAllClickListener(v -> {
+            sharedViewModels.setSimilarAnnouncements(similarAnnouncementsAdapter.getCollection());
+            containerFragments.open(new FragmentViewAllSimilarAnnounements());
+        });
+
+        btnBooking.setOnClickListener(v -> {
+            if (scrollView.getScrollY() != calendarView.getY()) {
+                scrollView.post(() -> scrollView.smoothScrollTo(0, (int) calendarView.getY()));
+            }
+        });
+    }
+
+    @SuppressLint("CheckResult")
+    private void loadDataFromCache() {
+        setProgress(true);
+
+        sharedViewModels.getSelectedAnnouncement()
+                .observe(getViewLifecycleOwner(), announcement -> {
+
+                    inflateUI(announcement);
+
+                    initLandLordAnnouncements(announcement.getIdUser());
+                    initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
+
+                    setViewerAnnouncement(announcement.getID());
+
+                    setProgress(false);
+                });
     }
 
     @SuppressLint("SetTextI18n")
@@ -418,7 +441,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     private void initLandLordAnnouncements(long idLandLord) {
-        landLordAnnouncementsAdapter.setItemViewClick(landLordSimilarItemClick);
+        landLordAnnouncementsAdapter.setItemViewClick(landLordItemClick);
 
         landLordAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
 
@@ -433,7 +456,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
                     @Override
                     public void onSuccess(List<ModelAnnouncement> modelAnnouncements) {
-                        if (modelAnnouncements.size() > 1) {
+                        if (modelAnnouncements.size() > 0) {
                             landLordAnnouncements.setVisibility(View.VISIBLE);
 
                             landLordAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
@@ -454,11 +477,11 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     private void initSimilarAnnouncements(long idAnnouncement, long idSubcategory) {
-        similarAnnouncementsAdapter.setItemViewClick(landLordSimilarItemClick);
+        similarAnnouncementsAdapter.setItemViewClick(similarItemClick);
 
         similarAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
 
-        api.loadSimilarAnnouncements(getContext(), userToken, idAnnouncement, idSubcategory, 10, null, null)
+        api.loadSimilarAnnouncements(getContext(), userToken, idSubcategory, idAnnouncement, 10, null, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<ModelAnnouncement>>() {
@@ -469,12 +492,12 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
                     @Override
                     public void onSuccess(List<ModelAnnouncement> modelAnnouncements) {
-                        if (modelAnnouncements.size() > 1) {
+                        if (modelAnnouncements.size() > 0) {
                             similarAnnouncements.setVisibility(View.VISIBLE);
 
                             similarAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
 
-                            similarAnnouncements.initAdapter(landLordAnnouncementsAdapter);
+                            similarAnnouncements.initAdapter(similarAnnouncementsAdapter);
                         } else {
                             similarAnnouncements.setVisibility(View.GONE);
                         }
@@ -497,17 +520,6 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             progressBar.setVisibility(View.GONE);
             viewAnnouncementContainer.setVisibility(View.VISIBLE);
         }
-    }
-
-    @SuppressLint("CheckResult")
-    private void loadDataFromCache(long idAnnouncement) {
-        setProgress(true);
-
-        disposable.add(cacheManager
-                .announcements()
-                .getViewAnnouncement(idAnnouncement)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber));
     }
 
     public void onClickFavorite(long idAnnouncement) {

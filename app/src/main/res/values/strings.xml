@@ -60,6 +60,7 @@
     <string name="itemList_prohibited">Запрещенные товары и услуги</string>
 
     <string name="btn_sign">Войти</string>
+    <string name="btn_select">Выбрать</string>
     <string name="btn_skip">Пропустить</string>
     <string name="btn_reconnect">Повторить</string>
     <string name="btn_registration_auth">Регистрация</string>
@@ -114,54 +115,47 @@
     <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
     <string name="text_visible_addresses">Показать адрес(а) в объявлении:</string>
 
-    <string name="monday">Пн</string>
-    <string name="tuesday">Вт</string>
-    <string name="wednesday">Ср</string>
-    <string name="thursday">Чт</string>
-    <string name="friday">Пт</string>
-    <string name="saturday">Сб</string>
-    <string name="sunday">Вс</string>
+    <string name="short_monday">Пн</string>
+    <string name="short_tuesday">Вт</string>
+    <string name="short_wednesday">Ср</string>
+    <string name="short_thursday">Чт</string>
+    <string name="short_friday">Пт</string>
+    <string name="short_saturday">Сб</string>
+    <string name="short_sunday">Вс</string>
 
-    <string name="january">Янв</string>
-    <string name="february">Фев</string>
-    <string name="march">Мар</string>
-    <string name="april">Апр</string>
-    <string name="may">Мая</string>
-    <string name="june">Июня</string>
-    <string name="july">Июля</string>
-    <string name="august">Авг</string>
-    <string name="september">Сен</string>
-    <string name="october">Окт</string>
-    <string name="november">Ноя</string>
-    <string name="december">Дек</string>
+    <string name="full_monday">Понедельник</string>
+    <string name="full_tuesday">Вторник</string>
+    <string name="full_wednesday">Среда</string>
+    <string name="full_thursday">Четверг</string>
+    <string name="full_friday">Пятница</string>
+    <string name="full_saturday">Суббота</string>
+    <string name="full_sunday">Воскресенье</string>
 
-    <string name="material_calendar_monday">Пн</string>
-    <string name="material_calendar_tuesday">Вт</string>
-    <string name="material_calendar_wednesday">Ср</string>
-    <string name="material_calendar_thursday">Чт</string>
-    <string name="material_calendar_friday">Пт</string>
-    <string name="material_calendar_saturday">Сб</string>
-    <string name="material_calendar_sunday">Вс</string>
+    <string name="short_january">Янв</string>
+    <string name="short_february">Фев</string>
+    <string name="short_march">Март</string>
+    <string name="short_april">Апр</string>
+    <string name="short_may">Май</string>
+    <string name="short_june">Июнь</string>
+    <string name="short_july">Июль</string>
+    <string name="short_august">Авг</string>
+    <string name="short_september">Сен</string>
+    <string name="short_october">Окт</string>
+    <string name="short_november">Ноя</string>
+    <string name="short_december">Дек</string>
 
-    <array name="material_calendar_months_array">
-        <item>Январь</item>
-        <item>Февраль</item>
-        <item>Март</item>
-        <item>Апрель</item>
-        <item>Май</item>
-        <item>Июнь</item>
-        <item>Июль</item>
-        <item>Август</item>
-        <item>Сентябрь</item>
-        <item>Октябрь</item>
-        <item>Ноябрь</item>
-        <item>Декабрь</item>
-    </array>
-
-    <string name="material_calendar_today_button">Сегодня</string>
-    <string name="material_calendar_positive_button">Ок</string>
-    <string name="material_calendar_negative_button">Отмена</string>
-
+    <string name="full_january">Январь</string>
+    <string name="full_february">Февраль</string>
+    <string name="full_march">Март</string>
+    <string name="full_april">Апрель</string>
+    <string name="full_may">Май</string>
+    <string name="full_june">Июнь</string>
+    <string name="full_july">Июль</string>
+    <string name="full_august">Август</string>
+    <string name="full_september">Сентябрь</string>
+    <string name="full_october">Октябрь</string>
+    <string name="full_november">Ноябрь</string>
+    <string name="full_december">Декабрь</string>
 
     <string name="title_pager_incoming_proposals">Входящие</string>
     <string name="title_pager_outgoing_proposals">Исходящие</string>
@@ -188,4 +182,15 @@
     <string name="title_horizantal_list">Заголовок</string>
     <string name="text_title_announcements_landlord">Объявления арендодателя</string>
     <string name="text_title_announcements_similar">Похожие объявления</string>
+
+    <string name="calendar_title_year">2020</string>
+    <string name="calendar_title_month">Май</string>
+    <string name="calendar_title_day_of_week">Вторник</string>
+    <string name="error_on_server">Ошибка на сервере</string>
+    <string name="title_select_period_rent">Выберите период аренды</string>
+    <string name="text_reset">Сбросить</string>
+    <string name="text_start_rent">Начало</string>
+    <string name="text_three_dots">...</string>
+    <string name="text_end_rent">Конец</string>
+    <string name="btn_booking">Забронировать</string>
 </resources>

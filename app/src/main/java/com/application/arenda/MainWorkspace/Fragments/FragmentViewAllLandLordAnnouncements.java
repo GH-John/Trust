@@ -5,14 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -27,6 +23,7 @@ import com.application.arenda.Entities.Announcements.OnApiListener;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.Models.ModelUser;
 import com.application.arenda.Entities.Models.SharedViewModels;
+import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
 import com.application.arenda.Entities.Room.LocalCacheManager;
 import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
@@ -34,8 +31,6 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
-import com.application.arenda.UI.Components.SideBar.ItemSideBar;
-import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.DisplayUtils;
 
 import java.util.List;
@@ -51,12 +46,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public final class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, ItemSideBar {
-    @SuppressLint("StaticFieldLeak")
-    private static FragmentAllAnnouncements fragmentAllAnnouncements;
+public class FragmentViewAllLandLordAnnouncements extends Fragment implements AdapterActionBar {
 
-    @Nullable
-    @BindView(R.id.rvOutputAllAnnouncements)
+    @BindView(R.id.rvOutputAllLandLordAnnouncements)
     RecyclerView recyclerView;
 
     @Nullable
@@ -64,58 +56,41 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     SwipeRefreshLayout swipeRefreshLayout;
 
     private Unbinder unbinder;
-    private SideBar sideBar;
-    private ImageView itemBurgerMenu,
-            itemSearch,
-            itemFiltr,
-            itemClearFieldSearch;
-    private EditText itemFieldSearch;
-    private TextView itemHeaderName;
-    private Group groupSearch, groupDefault;
 
-    private LinearLayoutManager rvLayoutManager;
-    private RVOnScrollListener rvOnScrollListener;
+    private ImageButton itemBtnBack;
+
     private AllAnnouncementsAdapter allAnnouncementsAdapter;
-
-    private ApiAnnouncement api;
-
-    private String userToken = null;
-
-    private String searchQuery = null;
-
-    private ContainerFragments containerFragments;
-    private LocalCacheManager cacheManager;
-
-    private CompositeDisposable disposable = new CompositeDisposable();
 
     private SingleObserver<List<ModelAnnouncement>> singleLoaderWithRewriteAnnouncements;
     private SingleObserver<List<ModelAnnouncement>> singleLoaderWithoutRewriteAnnouncements;
 
+    private ApiAnnouncement api;
+
+    private String userToken;
     private Consumer<List<ModelUser>> consumerUserToken;
+
+    private String searchQuery = null;
+
+    private long idLandLord;
+
+    private LinearLayoutManager rvLayoutManager;
+    private RVOnScrollListener rvOnScrollListener;
+
+    private LocalCacheManager cacheManager;
+    private SharedViewModels sharedViewModels;
+    private ContainerFragments containerFragments;
+
+    private OnItemClick landLordItemClick;
+    private OnItemClick landLordItemHeartClick;
+
+    private CompositeDisposable disposable = new CompositeDisposable();
     private OnApiListener listenerFavoriteInsert;
     private OnApiListener listenerLoadAnnouncement;
-
-    private SharedViewModels sharedViewModels;
-
-    private FragmentAllAnnouncements() {
-    }
-
-    public static FragmentAllAnnouncements getInstance() {
-        if (fragmentAllAnnouncements == null)
-            fragmentAllAnnouncements = new FragmentAllAnnouncements();
-
-        return fragmentAllAnnouncements;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_all_announcements, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_all_land_lord_announcements, container, false);
 
         unbinder = ButterKnife.bind(this, view);
 
@@ -136,13 +111,16 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         initInterfaces();
         initAdapters();
         initStyles();
-        initListeners();
 
-        refreshLayout();
+        setLoadMoreForAllAnnouncement();
+
+        loadData();
     }
 
     @SuppressLint("CheckResult")
     private void initInterfaces() {
+        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
+
         listenerFavoriteInsert = new OnApiListener() {
             @Override
             public void onComplete(@NonNull CodeHandler code) {
@@ -231,6 +209,13 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
+
+        landLordItemClick = (viewHolder, model) -> {
+
+            sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
+
+            containerFragments.open(new FragmentViewAnnouncement());
+        };
     }
 
     @SuppressLint("CheckResult")
@@ -253,12 +238,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
         rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
 
-        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> {
-
-            sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
-
-            containerFragments.open(new FragmentViewAnnouncement());
-        });
+        allAnnouncementsAdapter.setItemViewClick(landLordItemClick);
 
         allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
@@ -289,14 +269,16 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 R.color.colorBlue,
                 R.color.colorAccent,
                 R.color.colorRed);
+
+        swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120));
     }
 
-    private void initListeners() {
-        swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120));
-
-        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
-
-        setLoadMoreForAllAnnouncement();
+    private void loadData() {
+        sharedViewModels.getLastLandLordAnnouncements()
+                .observe(getViewLifecycleOwner(), modelAnnouncements -> {
+                    idLandLord = modelAnnouncements.get(0).getIdUser();
+                    allAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
+                });
     }
 
     private void setLoadMoreForAllAnnouncement() {
@@ -311,7 +293,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         if (!allAnnouncementsAdapter.isLoading()) {
             allAnnouncementsAdapter.setLoading(true);
 
-            api.loadAnnouncements(getContext(), userToken, lastId, 10, query, listenerLoadAnnouncement)
+            api.loadLandLordAnnouncements(getContext(), userToken, idLandLord, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(rewrite ? singleLoaderWithRewriteAnnouncements : singleLoaderWithoutRewriteAnnouncements);
@@ -334,76 +316,17 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
     @Override
     public int getIdPatternResource() {
-        return R.layout.ab_pattern_all_announcements;
+        return R.layout.ab_pattern_view_all_land_lord_announcements;
     }
 
     @Override
     public void initComponentsActionBar(ViewGroup viewGroup) {
-        itemFiltr = viewGroup.findViewById(R.id.itemFiltr);
-        itemSearch = viewGroup.findViewById(R.id.itemSearch);
-        itemHeaderName = viewGroup.findViewById(R.id.itemHeaderName);
-        itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
-        itemFieldSearch = viewGroup.findViewById(R.id.itemFieldSearch);
-        itemClearFieldSearch = viewGroup.findViewById(R.id.itemClearFieldSearch);
-
-        groupSearch = viewGroup.findViewById(R.id.groupSearch);
-        groupDefault = viewGroup.findViewById(R.id.groupDefault);
+        itemBtnBack = viewGroup.findViewById(R.id.itemBtnBack);
     }
 
     @Override
-    public void initListenersActionBar(final ViewGroup viewGroup) {
-        itemFiltr.setOnClickListener(v -> sideBar.openRightMenu());
-
-        itemSearch.setOnClickListener(v -> {
-            groupDefault.setVisibility(View.GONE);
-            groupSearch.setVisibility(View.VISIBLE);
-
-            itemFieldSearch.requestFocus();
-            Utils.showKeyboard(getContext());
-        });
-
-        itemClearFieldSearch.setOnClickListener(v -> {
-            if (itemFieldSearch.getText().toString().length() > 0)
-                itemFieldSearch.setText("");
-            else {
-                groupSearch.setVisibility(View.GONE);
-                groupDefault.setVisibility(View.VISIBLE);
-                itemHeaderName.setText(getResources().getString(R.string.ab_title_all_announcements));
-
-                setLoadMoreForAllAnnouncement();
-
-                refreshLayout();
-                Utils.closeKeyboard(getContext());
-            }
-        });
-
-        itemFieldSearch.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-                groupSearch.setVisibility(View.GONE);
-                groupDefault.setVisibility(View.VISIBLE);
-
-                searchQuery = itemFieldSearch.getText().toString();
-
-                Utils.closeKeyboard(getContext());
-                itemFieldSearch.clearFocus();
-
-                if (!searchQuery.isEmpty()) {
-                    itemHeaderName.setText(searchQuery);
-                    searchAnnouncements(searchQuery, 0);
-
-                    setLoadMoreForSearchAnnouncement();
-                } else {
-                    itemHeaderName.setText(getResources().getString(R.string.ab_title_all_announcements));
-                    refreshLayout();
-                }
-
-                return true;
-            }
-            return false;
-        });
-
-        itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
+    public void initListenersActionBar(ViewGroup viewGroup) {
+        itemBtnBack.setOnClickListener(v -> getActivity().onBackPressed());
     }
 
     @Override
@@ -413,13 +336,8 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     @Override
-    public void setSideBar(SideBar sideBar) {
-        this.sideBar = sideBar;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         unbinder.unbind();
     }
 }

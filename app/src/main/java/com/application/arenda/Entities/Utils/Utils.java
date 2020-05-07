@@ -18,6 +18,8 @@ import com.application.arenda.R;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.Month;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.regex.Matcher;
@@ -60,6 +62,19 @@ public class Utils {
         window.setStatusBarColor(ContextCompat.getColor(activity, R.color.colorAccent));
     }
 
+    public static String convertTimeTo_24H_or_12h(int hour, int minute, boolean convertTo24H) {
+        if ((hour >= 0 && hour <= 23) && (minute >= 0 && minute <= 59)) {
+            return LocalTime.of(hour, minute)
+                    .format(DateTimeFormatter.ofPattern(
+                            convertTo24H ?
+                                    DatePattern.DATE_PATTERN_HH_mm.getPattern() :
+                                    DatePattern.DATE_PATTERN_hh_mm.getPattern())
+                    );
+        }
+
+        return "";
+    }
+
     public static String getFormatingDate(Context context, String date, DatePattern pattern) {
         LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_yyyy_MM_dd_HH_mm_ss.getPattern()));
 
@@ -78,45 +93,66 @@ public class Utils {
             return context.getString(R.string.text_yesterday) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
 
 
-        return dateTime.getDayOfMonth() + " " + getMonthOfYear(context, dateTime) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
+        return dateTime.getDayOfMonth() + " " + getMonthOfYear(context, dateTime.getMonth(), false) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
     }
 
-    public static String getDayOfWeek(Context context, LocalDateTime dateTime) {
+    public static String getDayOfWeek(Context context, LocalDateTime date, boolean isFull) {
         String dayOfWeek = "";
 
-        switch (dateTime.getDayOfWeek().getValue()) {
+        switch (date.getDayOfWeek().getValue()) {
             case 1: {
-                dayOfWeek = context.getString(R.string.monday);
+                if (isFull)
+                    dayOfWeek = context.getString(R.string.full_monday);
+                else
+                    dayOfWeek = context.getString(R.string.short_monday);
                 break;
             }
 
             case 2: {
-                dayOfWeek = context.getString(R.string.tuesday);
+                if (isFull)
+                    dayOfWeek = context.getString(R.string.full_tuesday);
+                else
+                    dayOfWeek = context.getString(R.string.short_tuesday);
                 break;
             }
 
             case 3: {
-                dayOfWeek = context.getString(R.string.wednesday);
+                if (isFull)
+                    dayOfWeek = context.getString(R.string.full_wednesday);
+                else
+                    dayOfWeek = context.getString(R.string.short_wednesday);
                 break;
             }
 
             case 4: {
-                dayOfWeek = context.getString(R.string.thursday);
+                if (isFull)
+                    dayOfWeek = context.getString(R.string.full_thursday);
+                else
+                    dayOfWeek = context.getString(R.string.short_thursday);
                 break;
             }
 
             case 5: {
-                dayOfWeek = context.getString(R.string.friday);
+                if (isFull)
+                    dayOfWeek = context.getString(R.string.full_friday);
+                else
+                    dayOfWeek = context.getString(R.string.short_friday);
                 break;
             }
 
             case 6: {
-                dayOfWeek = context.getString(R.string.saturday);
+                if (isFull)
+                    dayOfWeek = context.getString(R.string.full_saturday);
+                else
+                    dayOfWeek = context.getString(R.string.short_saturday);
                 break;
             }
 
             case 7: {
-                dayOfWeek = context.getString(R.string.sunday);
+                if (isFull)
+                    dayOfWeek = context.getString(R.string.full_sunday);
+                else
+                    dayOfWeek = context.getString(R.string.short_sunday);
                 break;
             }
         }
@@ -124,72 +160,108 @@ public class Utils {
         return dayOfWeek;
     }
 
-    public static String getMonthOfYear(Context context, LocalDateTime dateTime) {
-        String month = "";
+    public static String getMonthOfYear(Context context, Month month, boolean isFull) {
+        String s = "";
 
-        switch (dateTime.getMonth().getValue()) {
+        switch (month.getValue()) {
             case 1: {
-                month = context.getString(R.string.january);
+                if (isFull)
+                    s = context.getString(R.string.full_january);
+                else
+                    s = context.getString(R.string.short_january);
                 break;
             }
 
             case 2: {
-                month = context.getString(R.string.february);
+                if (isFull)
+                    s = context.getString(R.string.full_february);
+                else
+                    s = context.getString(R.string.short_february);
                 break;
             }
 
             case 3: {
-                month = context.getString(R.string.march);
+                if (isFull)
+                    s = context.getString(R.string.full_march);
+                else
+                    s = context.getString(R.string.short_march);
                 break;
             }
 
             case 4: {
-                month = context.getString(R.string.april);
+                if (isFull)
+                    s = context.getString(R.string.full_april);
+                else
+                    s = context.getString(R.string.short_april);
                 break;
             }
 
             case 5: {
-                month = context.getString(R.string.may);
+                if (isFull)
+                    s = context.getString(R.string.full_may);
+                else
+                    s = context.getString(R.string.short_may);
                 break;
             }
 
             case 6: {
-                month = context.getString(R.string.june);
+                if (isFull)
+                    s = context.getString(R.string.full_june);
+                else
+                    s = context.getString(R.string.short_june);
                 break;
             }
 
             case 7: {
-                month = context.getString(R.string.july);
+                if (isFull)
+                    s = context.getString(R.string.full_july);
+                else
+                    s = context.getString(R.string.short_july);
                 break;
             }
 
             case 8: {
-                month = context.getString(R.string.august);
+                if (isFull)
+                    s = context.getString(R.string.full_august);
+                else
+                    s = context.getString(R.string.short_august);
                 break;
             }
 
             case 9: {
-                month = context.getString(R.string.september);
+                if (isFull)
+                    s = context.getString(R.string.full_september);
+                else
+                    s = context.getString(R.string.short_september);
                 break;
             }
 
             case 10: {
-                month = context.getString(R.string.october);
+                if (isFull)
+                    s = context.getString(R.string.full_october);
+                else
+                    s = context.getString(R.string.short_october);
                 break;
             }
 
             case 11: {
-                month = context.getString(R.string.november);
+                if (isFull)
+                    s = context.getString(R.string.full_november);
+                else
+                    s = context.getString(R.string.short_november);
                 break;
             }
 
             case 12: {
-                month = context.getString(R.string.december);
+                if (isFull)
+                    s = context.getString(R.string.full_december);
+                else
+                    s = context.getString(R.string.short_december);
                 break;
             }
         }
 
-        return month;
+        return s;
     }
 
     public static void showKeyboard(@NonNull Context context) {
@@ -282,7 +354,8 @@ public class Utils {
         DATE_PATTERN_yyyy_MM_dd("yyyy-MM-dd"),
         DATE_PATTERN_dd_MM_yyyy("dd.MM.yyyy"),
         DATE_PATTERN_yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss"),
-        DATE_PATTERN_HH_mm("HH:mm");
+        DATE_PATTERN_HH_mm("HH:mm"),
+        DATE_PATTERN_hh_mm("hh:mm");
 
         private String pattern = "";
 

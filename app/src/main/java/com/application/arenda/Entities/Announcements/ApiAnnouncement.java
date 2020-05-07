@@ -390,12 +390,12 @@ public final class ApiAnnouncement {
                         }));
     }
 
-    public Single<List<ModelAnnouncement>> loadSimilarAnnouncements(Context context, String userToken, long idAnnouncement, long idSubcategory, int limitItemsInPage, String query, OnApiListener listener) {
+    public Single<List<ModelAnnouncement>> loadSimilarAnnouncements(Context context, String userToken, long idSubcategory, long idAnnouncement, int limitItemsInPage, String query, OnApiListener listener) {
         return Single.create(emitter ->
                 api.loadSimilarAnnouncements(
                         userToken,
-                        idAnnouncement,
                         idSubcategory,
+                        idAnnouncement,
                         limitItemsInPage,
                         query)
                         .enqueue(new Callback<ServerHandler<List<ModelAnnouncement>>>() {

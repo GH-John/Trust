@@ -2,4 +2,8 @@
     <declare-styleable name="HorizontalList">
         <attr name="titleSeeAll" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="CalendarView">
+        <attr name="calendarTextSize" format="integer" />
+    </declare-styleable>
 </resources>

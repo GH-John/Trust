@@ -64,6 +64,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
             android:minHeight="250dp"
+            android:maxHeight="400dp"
             android:scaleType="centerCrop"
             android:transitionName="imgProduct" />
     </androidx.cardview.widget.CardView>

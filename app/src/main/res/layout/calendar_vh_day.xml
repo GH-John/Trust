@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:minHeight="40dp">
+
+    <TextView
+        android:id="@+id/calendarDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal|top"
+        android:text="@string/text_some_number"
+        android:textAppearance="@style/DefaultStyleTextRegular"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/calendarEventState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/calendarDay"
+        android:layout_alignStart="@+id/calendarDay"
+        android:layout_alignEnd="@+id/calendarDay"
+        android:contentDescription="@string/todo" />
+</RelativeLayout>

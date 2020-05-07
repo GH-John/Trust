@@ -65,7 +65,7 @@ public class ActivityPreview extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 adapterSystemPreview.changeIndicator(position,
-                        getDrawable(R.drawable.preview_dot_unselected), getDrawable(R.drawable.preview_dot_selected));
+                        getDrawable(R.drawable.ic_dot_unselected), getDrawable(R.drawable.ic_dot_selected));
             }
 
             @Override
@@ -77,7 +77,7 @@ public class ActivityPreview extends AppCompatActivity {
         previewViewPager.addOnPageChangeListener(pageListener);
 
         adapterSystemPreview = new AdapterSystemPreview(this, dotsLayout,
-                getDrawable(R.drawable.preview_dot_unselected), getDrawable(R.drawable.preview_dot_selected));
+                getDrawable(R.drawable.ic_dot_unselected), getDrawable(R.drawable.ic_dot_selected));
         previewViewPager.setAdapter(adapterSystemPreview);
     }
 }

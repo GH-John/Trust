@@ -5,14 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -27,6 +23,7 @@ import com.application.arenda.Entities.Announcements.OnApiListener;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.Models.ModelUser;
 import com.application.arenda.Entities.Models.SharedViewModels;
+import com.application.arenda.Entities.RecyclerView.OnItemClick;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
 import com.application.arenda.Entities.Room.LocalCacheManager;
 import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
@@ -34,8 +31,6 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
-import com.application.arenda.UI.Components.SideBar.ItemSideBar;
-import com.application.arenda.UI.Components.SideBar.SideBar;
 import com.application.arenda.UI.DisplayUtils;
 
 import java.util.List;
@@ -51,12 +46,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public final class FragmentAllAnnouncements extends Fragment implements AdapterActionBar, ItemSideBar {
-    @SuppressLint("StaticFieldLeak")
-    private static FragmentAllAnnouncements fragmentAllAnnouncements;
+public class FragmentViewAllSimilarAnnounements extends Fragment implements AdapterActionBar {
 
-    @Nullable
-    @BindView(R.id.rvOutputAllAnnouncements)
+    @BindView(R.id.rvOutputAllSimilarAnnouncements)
     RecyclerView recyclerView;
 
     @Nullable
@@ -64,62 +56,46 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     SwipeRefreshLayout swipeRefreshLayout;
 
     private Unbinder unbinder;
-    private SideBar sideBar;
-    private ImageView itemBurgerMenu,
-            itemSearch,
-            itemFiltr,
-            itemClearFieldSearch;
-    private EditText itemFieldSearch;
-    private TextView itemHeaderName;
-    private Group groupSearch, groupDefault;
 
-    private LinearLayoutManager rvLayoutManager;
-    private RVOnScrollListener rvOnScrollListener;
-    private AllAnnouncementsAdapter allAnnouncementsAdapter;
+    private ImageButton itemBtnBack;
+
+    private AllAnnouncementsAdapter similarAnnouncementsAdapter;
+
+    private SingleObserver<List<ModelAnnouncement>> singleLoaderWithRewriteSimilarAnnouncements;
+    private SingleObserver<List<ModelAnnouncement>> singleLoaderWithoutRewriteSimilarAnnouncements;
 
     private ApiAnnouncement api;
 
-    private String userToken = null;
+    private String userToken;
+    private Consumer<List<ModelUser>> consumerUserToken;
 
     private String searchQuery = null;
 
-    private ContainerFragments containerFragments;
+    private long idSubcategory;
+
+    private LinearLayoutManager rvLayoutManager;
+    private RVOnScrollListener rvOnScrollListener;
+
     private LocalCacheManager cacheManager;
+    private SharedViewModels sharedViewModels;
+    private ContainerFragments containerFragments;
+
+    private OnItemClick similarItemClick;
+    private OnItemClick similarItemHeartClick;
 
     private CompositeDisposable disposable = new CompositeDisposable();
-
-    private SingleObserver<List<ModelAnnouncement>> singleLoaderWithRewriteAnnouncements;
-    private SingleObserver<List<ModelAnnouncement>> singleLoaderWithoutRewriteAnnouncements;
-
-    private Consumer<List<ModelUser>> consumerUserToken;
     private OnApiListener listenerFavoriteInsert;
     private OnApiListener listenerLoadAnnouncement;
-
-    private SharedViewModels sharedViewModels;
-
-    private FragmentAllAnnouncements() {
-    }
-
-    public static FragmentAllAnnouncements getInstance() {
-        if (fragmentAllAnnouncements == null)
-            fragmentAllAnnouncements = new FragmentAllAnnouncements();
-
-        return fragmentAllAnnouncements;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_all_announcements, container, false);
+        View view = inflater.inflate(R.layout.fragment_view_all_similar_announements, container, false);
 
         unbinder = ButterKnife.bind(this, view);
 
         init();
+
         return view;
     }
 
@@ -136,13 +112,16 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         initInterfaces();
         initAdapters();
         initStyles();
-        initListeners();
 
-        refreshLayout();
+        setLoadMoreForSimilarAnnouncement();
+
+        loadData();
     }
 
     @SuppressLint("CheckResult")
     private void initInterfaces() {
+        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
+
         listenerFavoriteInsert = new OnApiListener() {
             @Override
             public void onComplete(@NonNull CodeHandler code) {
@@ -188,7 +167,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(consumerUserToken);
 
-        singleLoaderWithRewriteAnnouncements = new SingleObserver<List<ModelAnnouncement>>() {
+        singleLoaderWithRewriteSimilarAnnouncements = new SingleObserver<List<ModelAnnouncement>>() {
             @Override
             public void onSubscribe(Disposable d) {
                 disposable.add(d);
@@ -196,7 +175,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                allAnnouncementsAdapter.rewriteCollection(collection);
+                similarAnnouncementsAdapter.rewriteCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -205,12 +184,12 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                allAnnouncementsAdapter.setLoading(false);
+                similarAnnouncementsAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
 
-        singleLoaderWithoutRewriteAnnouncements = new SingleObserver<List<ModelAnnouncement>>() {
+        singleLoaderWithoutRewriteSimilarAnnouncements = new SingleObserver<List<ModelAnnouncement>>() {
             @Override
             public void onSubscribe(Disposable d) {
                 disposable.add(d);
@@ -218,7 +197,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                allAnnouncementsAdapter.addToCollection(collection);
+                similarAnnouncementsAdapter.addToCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -227,9 +206,15 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                allAnnouncementsAdapter.setLoading(false);
+                similarAnnouncementsAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
+        };
+
+        similarItemClick = (viewHolder, model) -> {
+            sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
+
+            containerFragments.open(new FragmentViewAnnouncement());
         };
     }
 
@@ -249,18 +234,13 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
         recyclerView.addOnScrollListener(rvOnScrollListener);
 
-        allAnnouncementsAdapter = new AllAnnouncementsAdapter();
+        similarAnnouncementsAdapter = new AllAnnouncementsAdapter();
 
-        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
+        rvOnScrollListener.setRVAdapter(similarAnnouncementsAdapter);
 
-        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> {
+        similarAnnouncementsAdapter.setItemViewClick(similarItemClick);
 
-            sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
-
-            containerFragments.open(new FragmentViewAnnouncement());
-        });
-
-        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) ->
+        similarAnnouncementsAdapter.setItemHeartClick((viewHolder, model) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -281,7 +261,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                             }
                         }));
 
-        recyclerView.setAdapter(allAnnouncementsAdapter);
+        recyclerView.setAdapter(similarAnnouncementsAdapter);
     }
 
     private void initStyles() {
@@ -289,32 +269,34 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                 R.color.colorBlue,
                 R.color.colorAccent,
                 R.color.colorRed);
-    }
 
-    private void initListeners() {
         swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120));
-
-        swipeRefreshLayout.setOnRefreshListener(this::refreshLayout);
-
-        setLoadMoreForAllAnnouncement();
     }
 
-    private void setLoadMoreForAllAnnouncement() {
-        rvOnScrollListener.setOnLoadMoreData(lastID -> addAnnouncementsToCollection(lastID, null, false));
+    private void loadData() {
+        sharedViewModels.getLastSimilarAnnouncements()
+                .observe(getViewLifecycleOwner(), modelAnnouncements -> {
+                    idSubcategory = modelAnnouncements.get(0).getIdSubcategory();
+                    similarAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
+                });
     }
 
-    private void setLoadMoreForSearchAnnouncement() {
+    private void setLoadMoreForSimilarAnnouncement() {
+        rvOnScrollListener.setOnLoadMoreData(lastID -> addSimilarAnnouncementsToCollection(lastID, null, false));
+    }
+
+    private void setLoadMoreForSearchSimilarAnnouncement() {
         rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID));
     }
 
-    private synchronized void addAnnouncementsToCollection(long lastId, String query, boolean rewrite) {
-        if (!allAnnouncementsAdapter.isLoading()) {
-            allAnnouncementsAdapter.setLoading(true);
+    private synchronized void addSimilarAnnouncementsToCollection(long lastId, String query, boolean rewrite) {
+        if (!similarAnnouncementsAdapter.isLoading()) {
+            similarAnnouncementsAdapter.setLoading(true);
 
-            api.loadAnnouncements(getContext(), userToken, lastId, 10, query, listenerLoadAnnouncement)
+            api.loadSimilarAnnouncements(getContext(), userToken, idSubcategory, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(rewrite ? singleLoaderWithRewriteAnnouncements : singleLoaderWithoutRewriteAnnouncements);
+                    .subscribe(rewrite ? singleLoaderWithRewriteSimilarAnnouncements : singleLoaderWithoutRewriteSimilarAnnouncements);
         } else {
             swipeRefreshLayout.setRefreshing(false);
         }
@@ -322,88 +304,29 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
     @SuppressLint("CheckResult")
     public void refreshLayout() {
-        addAnnouncementsToCollection(0, null, true);
+        addSimilarAnnouncementsToCollection(0, null, true);
     }
 
     @SuppressLint("CheckResult")
     public void searchAnnouncements(String query, long lastId) {
         swipeRefreshLayout.setRefreshing(true);
 
-        addAnnouncementsToCollection(lastId, query, true);
+        addSimilarAnnouncementsToCollection(lastId, query, true);
     }
 
     @Override
     public int getIdPatternResource() {
-        return R.layout.ab_pattern_all_announcements;
+        return R.layout.ab_pattern_view_all_similar_annoncements;
     }
 
     @Override
     public void initComponentsActionBar(ViewGroup viewGroup) {
-        itemFiltr = viewGroup.findViewById(R.id.itemFiltr);
-        itemSearch = viewGroup.findViewById(R.id.itemSearch);
-        itemHeaderName = viewGroup.findViewById(R.id.itemHeaderName);
-        itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu);
-        itemFieldSearch = viewGroup.findViewById(R.id.itemFieldSearch);
-        itemClearFieldSearch = viewGroup.findViewById(R.id.itemClearFieldSearch);
-
-        groupSearch = viewGroup.findViewById(R.id.groupSearch);
-        groupDefault = viewGroup.findViewById(R.id.groupDefault);
+        itemBtnBack = viewGroup.findViewById(R.id.itemBtnBack);
     }
 
     @Override
-    public void initListenersActionBar(final ViewGroup viewGroup) {
-        itemFiltr.setOnClickListener(v -> sideBar.openRightMenu());
-
-        itemSearch.setOnClickListener(v -> {
-            groupDefault.setVisibility(View.GONE);
-            groupSearch.setVisibility(View.VISIBLE);
-
-            itemFieldSearch.requestFocus();
-            Utils.showKeyboard(getContext());
-        });
-
-        itemClearFieldSearch.setOnClickListener(v -> {
-            if (itemFieldSearch.getText().toString().length() > 0)
-                itemFieldSearch.setText("");
-            else {
-                groupSearch.setVisibility(View.GONE);
-                groupDefault.setVisibility(View.VISIBLE);
-                itemHeaderName.setText(getResources().getString(R.string.ab_title_all_announcements));
-
-                setLoadMoreForAllAnnouncement();
-
-                refreshLayout();
-                Utils.closeKeyboard(getContext());
-            }
-        });
-
-        itemFieldSearch.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
-                groupSearch.setVisibility(View.GONE);
-                groupDefault.setVisibility(View.VISIBLE);
-
-                searchQuery = itemFieldSearch.getText().toString();
-
-                Utils.closeKeyboard(getContext());
-                itemFieldSearch.clearFocus();
-
-                if (!searchQuery.isEmpty()) {
-                    itemHeaderName.setText(searchQuery);
-                    searchAnnouncements(searchQuery, 0);
-
-                    setLoadMoreForSearchAnnouncement();
-                } else {
-                    itemHeaderName.setText(getResources().getString(R.string.ab_title_all_announcements));
-                    refreshLayout();
-                }
-
-                return true;
-            }
-            return false;
-        });
-
-        itemBurgerMenu.setOnClickListener(v -> sideBar.openLeftMenu());
+    public void initListenersActionBar(ViewGroup viewGroup) {
+        itemBtnBack.setOnClickListener(v -> getActivity().onBackPressed());
     }
 
     @Override
@@ -413,13 +336,8 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     @Override
-    public void setSideBar(SideBar sideBar) {
-        this.sideBar = sideBar;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         unbinder.unbind();
     }
 }

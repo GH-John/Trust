@@ -181,5 +181,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
             imgHeart.setImageDrawable(itemView.getContext().getDrawable(R.drawable.ic_heart_selected));
         else
             imgHeart.setImageDrawable(itemView.getContext().getDrawable(R.drawable.ic_heart_not_selected));
+
+        model.setFavorite(b);
     }
 }

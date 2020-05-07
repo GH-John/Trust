@@ -61,6 +61,7 @@ public class GlideUtils {
 
                 Glide.with(context)
                         .load(uri)
+                        .thumbnail(0.5f)
                         .apply(options)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
@@ -77,6 +78,7 @@ public class GlideUtils {
             if (context != null && imageView != null) {
                 Glide.with(context)
                         .load(drawable)
+                        .thumbnail(0.35f)
                         .apply(defaultOptions())
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
@@ -93,6 +95,7 @@ public class GlideUtils {
             if (context != null && imageView != null) {
                 Glide.with(context)
                         .load(uri)
+                        .thumbnail(0.35f)
                         .apply(defaultOptions())
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
@@ -113,6 +116,7 @@ public class GlideUtils {
 
                 Glide.with(context)
                         .load(uri)
+                        .thumbnail(0.35f)
                         .apply(options)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
@@ -133,6 +137,7 @@ public class GlideUtils {
 
                 Glide.with(context)
                         .load(uri)
+                        .thumbnail(0.35f)
                         .apply(options)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
@@ -153,6 +158,7 @@ public class GlideUtils {
 
                 Glide.with(context)
                         .load(uri)
+                        .thumbnail(0.35f)
                         .apply(options)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
@@ -169,6 +175,7 @@ public class GlideUtils {
             if (context != null && requestOptions != null && factory != null && uri != null && imageView != null) {
                 Glide.with(context)
                         .load(uri)
+                        .thumbnail(0.35f)
                         .apply(requestOptions)
                         .transition(DrawableTransitionOptions.withCrossFade(factory))
                         .into(imageView);
@@ -185,6 +192,7 @@ public class GlideUtils {
             if (context != null && requestOptions != null && factory != null && listener != null && uri != null && imageView != null) {
                 Glide.with(context)
                         .load(uri)
+                        .thumbnail(0.35f)
                         .apply(requestOptions)
                         .listener(listener)
                         .transition(DrawableTransitionOptions.withCrossFade(factory))
