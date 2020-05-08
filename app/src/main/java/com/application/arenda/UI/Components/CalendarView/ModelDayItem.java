@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DayItem {
+public class ModelDayItem {
     private LocalDateTime date;
 
     private List<String> events = new ArrayList<>();

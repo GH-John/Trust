@@ -8,10 +8,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
@@ -19,8 +20,7 @@ import com.application.arenda.R;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-import java.util.List;
+import timber.log.Timber;
 
 public class CalendarView extends FrameLayout {
 
@@ -32,14 +32,14 @@ public class CalendarView extends FrameLayout {
 
     private ImageButton btn_previous_month, btn_next_month;
     private TextView title_year, title_month, calendarDateStartRent, calendarTimeStartRent, calendarDateEndRent, calendarTimeEndRent;
-    private GridView grid_container;
+    private RecyclerView monthRecycler;
     private RadioButton calendarStartDateSelectorRent, calendarEndDateSelectorRent;
     private Button calendarBtnNowDay, calendarBtnReset;
 
-    private CalendarAdapter adapter;
+    private MonthAdapter recyclerAdapter;
 
-    private CalendarDayVH lastVHStartRent;
-    private CalendarDayVH lastVHEndRent;
+    private DayVH lastVHStartRent;
+    private DayVH lastVHEndRent;
 
     private CalendarTimePicker timePicker;
 
@@ -58,17 +58,12 @@ public class CalendarView extends FrameLayout {
     }
 
     private void initControl(Context context, AttributeSet attrs) {
-//        AndroidThreeTen.init(context);
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.calendar_layout, this);
 
         initUI();
-        initGridCalendar();
         loadAttrs(attrs);
         initListeners();
-
-        resetCalendar();
     }
 
     private void loadAttrs(AttributeSet attrs) {
@@ -100,7 +95,11 @@ public class CalendarView extends FrameLayout {
         calendarStartDateSelectorRent = findViewById(R.id.calendarStartDateSelectorRent);
         calendarEndDateSelectorRent = findViewById(R.id.calendarEndDateSelectorRent);
 
-        grid_container = findViewById(R.id.calendar_grid_container);
+        monthRecycler = findViewById(R.id.monthRecycler);
+
+        recyclerAdapter = new MonthAdapter();
+
+        monthRecycler.setAdapter(recyclerAdapter);
 
         initTimePicker();
     }
@@ -120,12 +119,22 @@ public class CalendarView extends FrameLayout {
         });
     }
 
-    @SuppressLint("SetTextI18n")
-    private void initGridCalendar() {
-        adapter = new CalendarAdapter(getContext());
+    @SuppressLint("CheckResult")
+    private void initListeners() {
+        recyclerAdapter.setMonthCallBack(new MonthAdapter.MonthCallBack() {
 
-        adapter.setDayItemClickListener(vh -> {
+            @Override
+            public void currentMonth(ModelMonthItem monthItem) {
+                inflateHeader(monthItem.getDateTime());
+            }
 
+            @Override
+            public void onError(Throwable throwable) {
+                Timber.e(throwable);
+            }
+        });
+
+        recyclerAdapter.setDayItemClickListener(vh -> {
             if (calendarStartDateSelectorRent.isChecked()) {
                 if (lastVHStartRent != null) {
                     if (!lastVHStartRent.isCurrentDayOfMonth())
@@ -163,63 +172,25 @@ public class CalendarView extends FrameLayout {
             }
         });
 
-        grid_container.setAdapter(adapter);
-    }
+        btn_next_month.setOnClickListener(v -> recyclerAdapter.nextMonth());
 
-    private void initListeners() {
-        btn_next_month.setOnClickListener(v -> {
-            currentMonth = currentMonth.plusMonths(1);
-            updateCalendar(currentMonth, new ArrayList<>());
-        });
-
-        btn_previous_month.setOnClickListener(v -> {
-            currentMonth = currentMonth.minusMonths(1);
-            updateCalendar(currentMonth, new ArrayList<>());
-        });
+        btn_previous_month.setOnClickListener(v -> recyclerAdapter.previousMonth());
 
         calendarStartDateSelectorRent.setOnCheckedChangeListener((buttonView, isChecked) -> calendarEndDateSelectorRent.setChecked(!isChecked));
 
         calendarEndDateSelectorRent.setOnCheckedChangeListener((buttonView, isChecked) -> calendarStartDateSelectorRent.setChecked(!isChecked));
 
-        calendarBtnNowDay.setOnClickListener(v -> resetCalendar());
+//        calendarBtnNowDay.setOnClickListener(v -> resetCalendar());
 
         calendarBtnReset.setOnClickListener(v -> {
-            resetCalendar();
             resetStartPeriod();
             resetEndPeriod();
         });
     }
 
-    private void resetCalendar() {
-        currentMonth = LocalDateTime.now();
-        updateCalendar(currentMonth, new ArrayList<>());
-    }
-
-    public void updateCalendar(LocalDateTime currentVisibleMonth, List<String> events) {
-        ArrayList<DayItem> cells = new ArrayList<>();
-        LocalDateTime toDay = LocalDateTime.now();
-
-        currentVisibleMonth = currentVisibleMonth.minusDays(currentVisibleMonth.getDayOfMonth() - 1);
-
-        int monthBeginningCell = currentVisibleMonth.getDayOfWeek().getValue() - 1;
-
-        currentVisibleMonth = currentVisibleMonth.minusDays(monthBeginningCell);
-
-        while (cells.size() < DAYS_COUNT) {
-            DayItem dayItem = new DayItem();
-            dayItem.setDate(LocalDateTime.of(currentVisibleMonth.toLocalDate(), currentVisibleMonth.toLocalTime()));
-            dayItem.setEvents(events);
-            dayItem.setEventStateDrawable(R.drawable.ic_dot_selected);
-
-            cells.add(dayItem);
-
-            currentVisibleMonth = currentVisibleMonth.plusDays(1);
-        }
-
-        ((CalendarAdapter) grid_container.getAdapter()).replaceDayItems(cells, this.currentMonth);
-
-        title_year.setText(String.valueOf(currentMonth.getYear()));
-        title_month.setText(Utils.getMonthOfYear(getContext(), currentMonth.getMonth(), true));
+    private void inflateHeader(LocalDateTime dateTime) {
+        title_year.setText(String.valueOf(dateTime.getYear()));
+        title_month.setText(Utils.getMonthOfYear(getContext(), dateTime.getMonth(), true));
     }
 
     private void setStartPeriodDate(LocalDateTime dateTime) {

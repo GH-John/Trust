@@ -16,7 +16,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
 
-public class CalendarDayVH {
+public class DayVH {
     private TextView calendarDay;
 
     private ImageView imageEventState;
@@ -29,7 +29,7 @@ public class CalendarDayVH {
     private boolean isDayIncludeToCurrentMonth;
     private boolean isCurrentDayOfMonth;
 
-    private CalendarDayVH(@NonNull View itemView) {
+    private DayVH(@NonNull View itemView) {
         this.itemView = itemView;
         dateTime = LocalDateTime.now();
         toDay = LocalDate.now();
@@ -38,8 +38,8 @@ public class CalendarDayVH {
         imageEventState = itemView.findViewById(R.id.calendarEventState);
     }
 
-    public static CalendarDayVH create(View view) {
-        return new CalendarDayVH(view);
+    public static DayVH create(View view) {
+        return new DayVH(view);
     }
 
     @SuppressLint("InflateParams")
@@ -47,10 +47,10 @@ public class CalendarDayVH {
         return inflater.inflate(R.layout.calendar_vh_day, null);
     }
 
-    public void onBind(DayItem dayItem, LocalDateTime currentMonth) {
-        dateTime = dayItem.getDate();
+    public void onBind(ModelDayItem modelDayItem, LocalDateTime currentMonth) {
+        dateTime = modelDayItem.getDate();
 
-        if (dayItem.getEvents().size() > 0) {
+        if (modelDayItem.getEvents().size() > 0) {
             imageEventState.setImageResource(R.drawable.ic_dot_selected);
         }
 
@@ -141,18 +141,18 @@ public class CalendarDayVH {
         isSelected = false;
     }
 
-    public void setDayItemClick(CalendarDayItemClick listener) {
+    public void setDayItemClick(DayItemOnClickListener listener) {
         if (listener == null)
             return;
 
-        itemView.setOnClickListener(v -> listener.onClick(CalendarDayVH.this));
+        itemView.setOnClickListener(v -> listener.onClick(DayVH.this));
     }
 
     public boolean isSelected() {
         return isSelected;
     }
 
-    public interface CalendarDayItemClick {
-        void onClick(CalendarDayVH vh);
+    public interface DayItemOnClickListener {
+        void onClick(DayVH vh);
     }
 }

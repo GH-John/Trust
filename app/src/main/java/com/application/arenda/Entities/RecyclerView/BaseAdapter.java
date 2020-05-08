@@ -50,6 +50,16 @@ public abstract class BaseAdapter<M extends IModel, V extends BaseViewHolder> ex
     }
 
     @Override
+    public void addToCollection(M model, int position) {
+        if (model != null && position <= getItemCount() && position >= 0) {
+            this.collection.add(position, model);
+            notifyItemInserted(position);
+        }
+
+        setLoading(false);
+    }
+
+    @Override
     public void removeFromCollection(int position) {
         if (position > -1) {
             this.collection.remove(position);
@@ -68,7 +78,8 @@ public abstract class BaseAdapter<M extends IModel, V extends BaseViewHolder> ex
 
         setLoading(false);
     }
-    public List<M> getCollection(){
+
+    public List<M> getCollection() {
         return collection;
     }
 

@@ -13,6 +13,8 @@ public interface RVAdapter<M extends IModel> {
 
     void addToCollection(M model);
 
+    void addToCollection(M model, int position);
+
     void removeFromCollection(int position);
 
     void rewriteCollection(List<M> collection);
