@@ -47,9 +47,6 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
 
         Timber.tag("LAST_VISIBLE_ITEM").d(String.valueOf(lastVisibleItem));
 
-        if (scrollCallBack != null && firstVisibleItem == 0)
-            scrollCallBack.onScrolledToStart();
-
         if (scrollCallBack != null)
             scrollCallBack.onScrolled(currentVisibleItems, firstVisibleItem, totalItems);
 
@@ -60,16 +57,26 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
             if (loadMoreData != null)
                 loadMoreData.loadMore(rvAdapter.getLastItem().getID());
         }
-
-        if (scrollCallBack != null && lastVisibleItem == totalItems)
-            scrollCallBack.onScrolledToEnd();
     }
 
-    public interface ScrollCallBack {
-        void onScrolledToStart();
+    @Override
+    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+//        SCROLL_STATE_IDLE: scrolling is not performed.
+//        SCROLL_STATE_DRAGGING: the user drags a finger across the screen (or is executed programmatically).
+//        SCROLL_STATE_SETTLING: user raised finger and animation now slows down
 
-        void onScrolled(int currentVisibleItems, int firstVisibleItem, int totalItems);
+        if (scrollCallBack != null)
+            scrollCallBack.onScrollState(newState, currentVisibleItems, firstVisibleItem, totalItems);
 
-        void onScrolledToEnd();
+        if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            if (scrollCallBack != null && firstVisibleItem == 0)
+                scrollCallBack.onScrolledToStart();
+
+            if (scrollCallBack != null)
+                scrollCallBack.currentPosition(firstVisibleItem);
+
+            if (scrollCallBack != null && lastVisibleItem == totalItems - 1)
+                scrollCallBack.onScrolledToEnd();
+        }
     }
 }

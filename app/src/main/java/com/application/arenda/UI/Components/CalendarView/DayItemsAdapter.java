@@ -15,10 +15,11 @@ import org.threeten.bp.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class DayItemsAdapter extends BaseAdapter {
     private List<ModelDayItem> modelDayItems = new ArrayList<>();
-
-    private List<List<ModelDayItem>> stackMonth = new ArrayList<>();
+    private List<DayVH> dayVHS = new ArrayList<>();
 
     private ModelDayItem lastSelectedStartItem;
     private ModelDayItem lastSelectedEndItem;
@@ -46,6 +47,8 @@ public class DayItemsAdapter extends BaseAdapter {
         this.modelDayItems.clear();
         this.modelDayItems.addAll(modelDayItems);
         this.currentMonth = currentMonth;
+
+        Timber.tag("DayItemsAdapter_").d("replaceDayItems");
 
         notifyDataSetChanged();
     }
@@ -76,14 +79,24 @@ public class DayItemsAdapter extends BaseAdapter {
     @NonNull
     @Override
     public View getView(int position, View view, @NonNull ViewGroup parent) {
-        if (view == null)
+        DayVH vh = null;
+
+        if (position <= dayVHS.size() - 1)
+            vh = dayVHS.get(position);
+
+        if (vh == null) {
             view = DayVH.createView(inflater);
+            vh = DayVH.create(view);
+            vh.onBind(getItem(position), currentMonth);
 
-        DayVH vh = DayVH.create(view);
-        vh.onBind(getItem(position), currentMonth);
+            if (listener != null)
+                vh.setDayItemClick(listener);
 
-        if (listener != null)
-            vh.setDayItemClick(listener);
+            dayVHS.add(vh);
+        } else {
+            vh = dayVHS.get(position);
+            view = vh.getItemView();
+        }
 
         return view;
     }

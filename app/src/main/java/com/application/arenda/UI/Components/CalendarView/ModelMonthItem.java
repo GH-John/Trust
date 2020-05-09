@@ -1,23 +1,23 @@
 package com.application.arenda.UI.Components.CalendarView;
 
-import androidx.annotation.Nullable;
-
-import com.application.arenda.Entities.Models.IModel;
+import androidx.annotation.NonNull;
 
 import org.threeten.bp.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class ModelMonthItem implements IModel {
-    private long ID;
+public class ModelMonthItem implements ModelMonth, Comparable<ModelMonthItem> {
+    private KeyMonth keyMonth;
 
     private LocalDateTime dateTime;
 
     private List<ModelDayItem> itemList = new ArrayList<>();
 
-    public ModelMonthItem() {
+    public ModelMonthItem(KeyMonth key) {
         dateTime = LocalDateTime.now();
+        this.keyMonth = key;
     }
 
     public LocalDateTime getDateTime() {
@@ -37,31 +37,30 @@ public class ModelMonthItem implements IModel {
     }
 
     @Override
-    public long getID() {
-        return ID;
+    public KeyMonth getKey() {
+        return keyMonth;
     }
 
     @Override
-    public void setID(long id) {
-        this.ID = id;
+    public void setKey(KeyMonth key) {
+        this.keyMonth = key;
+    }
+
+    @Override
+    public int compareTo(@NonNull ModelMonthItem o) {
+        return keyMonth.compareTo(o.getKey());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ModelMonthItem item = (ModelMonthItem) o;
+        return keyMonth.equals(item.keyMonth);
     }
 
     @Override
     public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
-    public boolean equals(@Nullable Object obj) {
-        if (obj == this)
-            return true;
-
-        if (obj == null || !(obj instanceof ModelMonthItem))
-            return false;
-
-        ModelMonthItem item = (ModelMonthItem) obj;
-        LocalDateTime localDateTime = item.getDateTime();
-
-        return dateTime.getMonth() == localDateTime.getMonth() && dateTime.getYear() == localDateTime.getYear();
+        return Objects.hash(keyMonth);
     }
 }

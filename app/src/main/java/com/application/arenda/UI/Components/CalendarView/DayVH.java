@@ -16,10 +16,15 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.Month;
 
-public class DayVH {
-    private TextView calendarDay;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private ImageView imageEventState;
+public class DayVH {
+    @BindView(R.id.calendarDay)
+    TextView calendarDay;
+
+    @BindView(R.id.calendarEventState)
+    ImageView imageEventState;
 
     private View itemView;
 
@@ -31,11 +36,9 @@ public class DayVH {
 
     private DayVH(@NonNull View itemView) {
         this.itemView = itemView;
-        dateTime = LocalDateTime.now();
         toDay = LocalDate.now();
 
-        calendarDay = itemView.findViewById(R.id.calendarDay);
-        imageEventState = itemView.findViewById(R.id.calendarEventState);
+        ButterKnife.bind(this, itemView);
     }
 
     public static DayVH create(View view) {
@@ -47,14 +50,16 @@ public class DayVH {
         return inflater.inflate(R.layout.calendar_vh_day, null);
     }
 
+    public View getItemView() {
+        return itemView;
+    }
+
     public void onBind(ModelDayItem modelDayItem, LocalDateTime currentMonth) {
         dateTime = modelDayItem.getDate();
 
         if (modelDayItem.getEvents().size() > 0) {
             imageEventState.setImageResource(R.drawable.ic_dot_selected);
         }
-
-        unselectDay();
 
         if (isDayIncludeToCurrentMonth(currentMonth.getMonth(), currentMonth.getYear()))
             setTypefaceNormalBlack();
@@ -64,6 +69,9 @@ public class DayVH {
         if (isCurrentDayOfMonth()) {
             selectAsCurrentDay();
         }
+
+        if(isSelected)
+            selectDay();
 
         calendarDay.setText(String.valueOf(dateTime.getDayOfMonth()));
     }
@@ -119,8 +127,6 @@ public class DayVH {
         setTypefaceBoldBlack();
 
         itemView.setBackgroundResource(R.drawable.calendar_current_day_unselected);
-
-        isSelected = true;
     }
 
     public void selectDay() {

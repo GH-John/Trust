@@ -7,15 +7,13 @@ import android.widget.GridView;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.Entities.Models.IModel;
-import com.application.arenda.Entities.RecyclerView.BaseViewHolder;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.CalendarView.DayVH.DayItemOnClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MonthVH extends BaseViewHolder {
+public class MonthVH extends BaseMonthVH {
     @BindView(R.id.month_grid_container)
     GridView month;
 
@@ -25,8 +23,6 @@ public class MonthVH extends BaseViewHolder {
         super(itemView);
 
         ButterKnife.bind(this, itemView);
-
-        month.setAdapter(new DayItemsAdapter(itemView.getContext()));
     }
 
     public static MonthVH create(ViewGroup parent) {
@@ -42,10 +38,15 @@ public class MonthVH extends BaseViewHolder {
     }
 
     @Override
-    public void onBind(IModel model, int position) {
+    public void onBind(ModelMonth model, int position) {
         monthItem = (ModelMonthItem) model;
+        month.setAdapter(new DayItemsAdapter(itemView.getContext()));
 
-        ((DayItemsAdapter) month.getAdapter()).addDayItems(monthItem.getItemList(), monthItem.getDateTime());
+        ((DayItemsAdapter) month.getAdapter()).replaceDayItems(monthItem.getItemList(), monthItem.getDateTime());
+    }
+
+    public KeyMonth getKeyMonth() {
+        return monthItem.getKey();
     }
 
     public void setDayItemClick(DayItemOnClickListener listener) {

@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.Entities.Announcements.ApiAnnouncement;
-import com.application.arenda.Entities.Announcements.IApiAnnouncement;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.CategoriesAdapter;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.EventSendID;
 import com.application.arenda.Entities.Announcements.InsertAnnouncement.Categories.SubcategoriesAdapter;

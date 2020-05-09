@@ -15,26 +15,31 @@ import androidx.annotation.NonNull;
 
 import com.application.arenda.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class CalendarTimePicker extends Dialog {
-    private TimePicker timePicker;
-    private Button btnTimeSelect;
-    private TextView pickerError;
+    @BindView(R.id.calendarTimePicker)
+    TimePicker timePicker;
+
+    @BindView(R.id.calendarBtnTimeSelect)
+    Button btnTimeSelect;
+
+    @BindView(R.id.calendarPickerMessageError)
+    TextView pickerError;
 
     private View.OnClickListener listener;
 
     public CalendarTimePicker(@NonNull Context context) {
         super(context);
+        setContentView(R.layout.calendar_time_picker);
 
+        ButterKnife.bind(this);
         initTimePickerDialog();
     }
 
     private void initTimePickerDialog() {
-        setContentView(R.layout.calendar_time_picker);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        timePicker = findViewById(R.id.calendarTimePicker);
-        btnTimeSelect = findViewById(R.id.calendarBtnTimeSelect);
-        pickerError = findViewById(R.id.calendarPickerMessageError);
 
         toggleModeOnOf(false);
 
@@ -47,7 +52,7 @@ public class CalendarTimePicker extends Dialog {
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         timePicker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
 
         super.onStart();
