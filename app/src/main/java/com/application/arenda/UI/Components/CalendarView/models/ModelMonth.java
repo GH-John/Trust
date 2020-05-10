@@ -1,4 +1,4 @@
-package com.application.arenda.UI.Components.CalendarView;
+package com.application.arenda.UI.Components.CalendarView.models;
 
 public interface ModelMonth {
     KeyMonth getKey();

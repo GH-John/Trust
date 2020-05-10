@@ -1,4 +1,4 @@
-package com.application.arenda.UI.Components.CalendarView;
+package com.application.arenda.UI.Components.CalendarView.adapters;
 
 import android.annotation.SuppressLint;
 import android.view.ViewGroup;
@@ -11,9 +11,14 @@ import androidx.recyclerview.widget.SortedList;
 
 import com.application.arenda.Entities.RecyclerView.ScrollCallBack;
 import com.application.arenda.R;
-import com.application.arenda.UI.Components.CalendarView.DayVH.DayItemOnClickListener;
+import com.application.arenda.UI.Components.CalendarView.CalendarScrollListener;
+import com.application.arenda.UI.Components.CalendarView.models.KeyMonth;
+import com.application.arenda.UI.Components.CalendarView.vh.DayVH.DayItemOnClickListener;
+import com.application.arenda.UI.Components.CalendarView.models.ModelDayItem;
+import com.application.arenda.UI.Components.CalendarView.models.ModelMonthItem;
+import com.application.arenda.UI.Components.CalendarView.vh.MonthVH;
 
-import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +28,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
-public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
+public class CalendarAdapter extends RecyclerView.Adapter<MonthVH> {
     private static final int DAYS_COUNT = 42;
     private static int currentPosition = 0;
+    private static int currentScrollState = 0;
+    private ModelMonthItem visibleMonthItem;
+
     private boolean isMonthCreateRun = false;
 
     private LinearLayoutManager layoutManager;
@@ -43,7 +51,7 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
 
         @Override
         public boolean areContentsTheSame(ModelMonthItem oldItem, ModelMonthItem newItem) {
-            return oldItem.getDateTime().equals(newItem.getDateTime());
+            return oldItem.getDate().equals(newItem.getDate());
         }
 
         @Override
@@ -69,7 +77,8 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
 
     private CalendarScrollListener scrollListener;
 
-    private LocalDateTime currentMonth;
+    private LocalDate today;
+    private LocalDate visibleMonth;
 
     private PagerSnapHelper snapHelper;
 
@@ -77,19 +86,70 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
 
     private MonthCallBack monthCallBack;
 
+    private LocalDate lastSelectedDayStart, lastSelectedDayEnd;
+
     private DayItemOnClickListener dayItemOnClickListener;
 
+    private boolean selectDayStart = true;
+    private boolean selectDayEnd = false;
+
     @SuppressLint("CheckResult")
-    public MonthAdapter() {
+    public CalendarAdapter() {
         setHasStableIds(true);
 
         snapHelper = new PagerSnapHelper();
 
-        currentMonth = LocalDateTime.now();
+        today = LocalDate.now();
+        visibleMonth = LocalDate.now();
+
+        dayItemOnClickListener = (date, month) -> {
+            if (selectDayStart) {
+
+                lastSelectedDayStart = date;
+
+                if (monthCallBack != null)
+                    monthCallBack.getSelectedDateTime(lastSelectedDayStart);
+
+                month.getMonthAdapter().updateAdapter(lastSelectedDayStart, lastSelectedDayEnd);
+            }
+
+            if (selectDayEnd) {
+
+                lastSelectedDayEnd = date;
+
+                if (monthCallBack != null)
+                    monthCallBack.getSelectedDateTime(lastSelectedDayEnd);
+
+                month.getMonthAdapter().updateAdapter(lastSelectedDayStart, lastSelectedDayEnd);
+            }
+        };
     }
 
-    public void setDayItemClickListener(DayItemOnClickListener listener) {
-        this.dayItemOnClickListener = listener;
+    public void goTodayMonth() {
+        int pos = getPositionTodayMonth();
+
+        recyclerView.smoothScrollToPosition(pos > -1 ? pos : 0);
+    }
+
+    public void resetSelectedDays() {
+        lastSelectedDayStart = null;
+        lastSelectedDayEnd = null;
+
+        visibleMonthItem.getMonthAdapter().updateAdapter(lastSelectedDayStart, lastSelectedDayEnd);
+    }
+
+    public void setSelectDayStart(boolean b) {
+        if (selectDayEnd)
+            selectDayEnd = false;
+
+        selectDayStart = b;
+    }
+
+    public void setSelectDayEnd(boolean b) {
+        if (selectDayStart)
+            selectDayStart = b;
+
+        selectDayEnd = b;
     }
 
     public void setMonthCallBack(MonthCallBack callBack) {
@@ -109,19 +169,18 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
 
     @SuppressLint("CheckResult")
     private void startInitMonth() {
-        Observable.just(createMonth(currentMonth.minusMonths(1)), createMonth(currentMonth), createMonth(currentMonth.plusMonths(1)))
+        Observable.just(createMonth(visibleMonth.minusMonths(1)), createMonth(visibleMonth), createMonth(visibleMonth.plusMonths(1)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(item -> {
                     add(item);
 
-                    Timber.tag("Init_month_return").d(item.getKey().getKey());
-
                     if (getItemCount() == 2) {
-                        currentMonth = LocalDateTime.now();
-                        recyclerView.scrollToPosition(1);
+                        visibleMonth = LocalDate.now();
+                        visibleMonthItem = item;
+                        currentPosition = 1;
 
-                        outputList();
+                        recyclerView.scrollToPosition(1);
                     }
                 }, Timber::e);
     }
@@ -129,16 +188,14 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
     @SuppressLint("CheckResult")
     private void createMonth(boolean plus, long months) {
         if (!isMonthCreateRun) {
-            Observable.just(createMonth(plus ? currentMonth.plusMonths(months) : currentMonth.minusMonths(months)))
+            Observable.just(createMonth(plus ? visibleMonth.plusMonths(months) : visibleMonth.minusMonths(months)))
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .subscribe(this::add, Timber::e);
         }
     }
 
-    private synchronized ModelMonthItem createMonth(LocalDateTime dateTimeInflater) {
-        Timber.tag("StartCreateMonth").d(dateTimeInflater.getMonthValue() + "/" + dateTimeInflater.getYear());
-
+    private synchronized ModelMonthItem createMonth(LocalDate dateTimeInflater) {
         isMonthCreateRun = true;
 
         List<ModelDayItem> cells = new ArrayList<>();
@@ -149,11 +206,11 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
 
         dateTimeInflater = dateTimeInflater.minusDays(monthBeginningCell);
 
-        LocalDateTime currentMonth = LocalDateTime.now();
+        LocalDate currentMonth = LocalDate.now();
 
         while (cells.size() < DAYS_COUNT) {
             ModelDayItem modelDayItem = new ModelDayItem();
-            modelDayItem.setDate(LocalDateTime.of(dateTimeInflater.toLocalDate(), dateTimeInflater.toLocalTime()));
+            modelDayItem.setDate(dateTimeInflater);
 //            modelDayItem.setEvents(events);
             modelDayItem.setEventStateDrawable(R.drawable.ic_dot_selected);
 
@@ -166,21 +223,29 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
             dateTimeInflater = dateTimeInflater.plusDays(1);
         }
 
-        ModelMonthItem monthItem = new ModelMonthItem(new KeyMonth(currentMonth.toLocalDate()));
+        ModelMonthItem monthItem = new ModelMonthItem(new KeyMonth(currentMonth));
 
         monthItem.setItemList(cells);
-        monthItem.setDateTime(currentMonth);
+        monthItem.setDate(currentMonth);
 
         isMonthCreateRun = false;
-
-        Timber.tag("EndCreateMonth").d("end");
-
         return monthItem;
     }
 
     private void add(ModelMonthItem item) {
         if (item != null)
             sortedList.add(item);
+    }
+
+    private int getPositionTodayMonth() {
+        int pos = -1;
+        for (int i = 0; i < getItemCount(); i++) {
+
+            if (sortedList.get(i).getKey().getKey().equals(KeyMonth.generateKey(today)))
+                pos = i;
+        }
+
+        return pos;
     }
 
     private ModelMonthItem getItem(int position) {
@@ -202,7 +267,7 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
 
     @Override
     public void onBindViewHolder(@NonNull MonthVH holder, int position) {
-        holder.onBind(sortedList.get(position), position);
+        holder.onBind(sortedList.get(position), lastSelectedDayStart, lastSelectedDayEnd);
 
         holder.setDayItemClick(dayItemOnClickListener);
     }
@@ -228,43 +293,34 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
 
         scrollListener = new CalendarScrollListener(layoutManager);
         scrollListener.setScrollCallBack(new ScrollCallBack() {
-            private int currentScrollState = 0;
 
             @Override
             public void onScrolledToStart() {
-                Timber.tag("ScrolledTo_").d("start");
                 createMonth(false, 1);
             }
 
             @Override
-            public void onScrolled(int currentVisibleItems, int firstVisibleItem, int totalItems) {
-                Timber.tag("onScrolled").d("State - " + currentScrollState + " item" + firstVisibleItem);
-                if (currentScrollState != 1 && firstVisibleItem < 2) {
+            public void onScrolled(int currentVisibleItems, int firstVisibleItem, int lastVisibleItem, int totalItems, int dx, int dy) {
+                if (currentScrollState != 1 && firstVisibleItem < 2)
                     createMonth(false, 2);
-                }
+
+//                if (currentScrollState == 1) {
+//                    if (dx > 0)
+//                        getItem(lastVisibleItem).getMonthAdapter().updateAdapter(lastSelectedDayStart, lastSelectedDayEnd);
+//                    else {
+//                        getItem(firstVisibleItem).getMonthAdapter().updateAdapter(lastSelectedDayStart, lastSelectedDayEnd);
+//                    }
+//                }
             }
 
             @Override
             public void onScrolledToEnd() {
-                Timber.tag("ScrolledTo_").d("end");
                 createMonth(true, 1);
             }
 
             @Override
             public void onScrollState(int state, int currentVisibleItems, int firstVisibleItem, int totalItems) {
                 currentScrollState = state;
-
-                switch (state) {
-                    case RecyclerView.SCROLL_STATE_IDLE:
-                        Timber.tag("ScrollState").d("SCROLL_STATE_IDLE");
-                        break;
-                    case RecyclerView.SCROLL_STATE_DRAGGING:
-                        Timber.tag("ScrollState").d("SCROLL_STATE_DRAGGING");
-                        break;
-                    case RecyclerView.SCROLL_STATE_SETTLING:
-                        Timber.tag("ScrollState").d("SCROLL_STATE_SETTLING");
-                        break;
-                }
             }
 
             @Override
@@ -283,15 +339,14 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
     }
 
     private void handleCurrentPosition(int currentPos) {
-        final ModelMonthItem item = getItem(currentPos);
+        visibleMonthItem = getItem(currentPos);
         currentPosition = currentPos;
-        currentMonth = item.getDateTime();
+        visibleMonth = visibleMonthItem.getDate();
 
-        Timber.tag("CurrentPosition").d(String.valueOf(currentPosition));
-        Timber.tag("HandleCurrentMonth").d(currentMonth.getMonthValue() + "/" + currentMonth.getYear());
+        getItem(currentPos).getMonthAdapter().updateAdapter(lastSelectedDayStart, lastSelectedDayEnd);
 
         if (monthCallBack != null)
-            monthCallBack.currentMonth(item);
+            monthCallBack.currentMonth(visibleMonthItem);
     }
 
     private void outputList() {
@@ -306,6 +361,7 @@ public class MonthAdapter extends RecyclerView.Adapter<MonthVH> {
     }
 
     public interface MonthCallBack {
+        void getSelectedDateTime(LocalDate dateTime);
 
         void currentMonth(ModelMonthItem monthItem);
 

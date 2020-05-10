@@ -32,7 +32,7 @@ public class CalendarScrollListener extends RecyclerView.OnScrollListener {
         lastVisibleItem = layoutManager.findLastVisibleItemPosition();
 
         if (scrollCallBack != null)
-            scrollCallBack.onScrolled(currentVisibleItems, firstVisibleItem, totalItems);
+            scrollCallBack.onScrolled(currentVisibleItems, firstVisibleItem, lastVisibleItem, totalItems, dx, dy);
     }
 
     @Override

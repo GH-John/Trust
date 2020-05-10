@@ -3,7 +3,7 @@
         <attr name="titleSeeAll" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="CalendarView">
+    <declare-styleable name="CalendarDateTimeRange">
         <attr name="calendarTextSize" format="integer" />
     </declare-styleable>
 </resources>

@@ -1,27 +1,25 @@
-package com.application.arenda.UI.Components.CalendarView;
+package com.application.arenda.UI.Components.CalendarView.models;
 
 import androidx.annotation.DrawableRes;
 
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ModelDayItem {
-    private LocalDateTime date;
+    private LocalDate date;
 
     private List<String> events = new ArrayList<>();
 
     @DrawableRes
     private int eventStateDrawable;
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

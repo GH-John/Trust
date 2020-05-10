@@ -1,8 +1,10 @@
-package com.application.arenda.UI.Components.CalendarView;
+package com.application.arenda.UI.Components.CalendarView.models;
 
 import androidx.annotation.NonNull;
 
-import org.threeten.bp.LocalDateTime;
+import com.application.arenda.UI.Components.CalendarView.adapters.MonthAdapter;
+
+import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,21 +13,28 @@ import java.util.Objects;
 public class ModelMonthItem implements ModelMonth, Comparable<ModelMonthItem> {
     private KeyMonth keyMonth;
 
-    private LocalDateTime dateTime;
+    private LocalDate dateTime;
+
+    private MonthAdapter monthAdapter;
 
     private List<ModelDayItem> itemList = new ArrayList<>();
 
     public ModelMonthItem(KeyMonth key) {
-        dateTime = LocalDateTime.now();
+        dateTime = LocalDate.now();
         this.keyMonth = key;
+        monthAdapter = new MonthAdapter();
     }
 
-    public LocalDateTime getDateTime() {
+    public LocalDate getDate() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
+    public void setDate(LocalDate dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public MonthAdapter getMonthAdapter() {
+        return monthAdapter;
     }
 
     public List<ModelDayItem> getItemList() {

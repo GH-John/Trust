@@ -48,7 +48,7 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
         Timber.tag("LAST_VISIBLE_ITEM").d(String.valueOf(lastVisibleItem));
 
         if (scrollCallBack != null)
-            scrollCallBack.onScrolled(currentVisibleItems, firstVisibleItem, totalItems);
+            scrollCallBack.onScrolled(currentVisibleItems, firstVisibleItem, lastVisibleItem, totalItems, dx, dy);
 
         if (!rvAdapter.isLoading() && (currentVisibleItems + firstVisibleItem) >= totalItems - countIgnoreItem && firstVisibleItem >= 0) {
             System.out.println("Status: " + currentVisibleItems + " + " + firstVisibleItem + " >= " + (totalItems - countIgnoreItem) + " && " + firstVisibleItem + ">= 0");

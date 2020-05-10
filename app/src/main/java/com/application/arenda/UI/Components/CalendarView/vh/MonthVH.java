@@ -1,4 +1,4 @@
-package com.application.arenda.UI.Components.CalendarView;
+package com.application.arenda.UI.Components.CalendarView.vh;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +8,12 @@ import android.widget.GridView;
 import androidx.annotation.NonNull;
 
 import com.application.arenda.R;
-import com.application.arenda.UI.Components.CalendarView.DayVH.DayItemOnClickListener;
+import com.application.arenda.UI.Components.CalendarView.models.KeyMonth;
+import com.application.arenda.UI.Components.CalendarView.vh.DayVH.DayItemOnClickListener;
+import com.application.arenda.UI.Components.CalendarView.models.ModelMonth;
+import com.application.arenda.UI.Components.CalendarView.models.ModelMonthItem;
+
+import org.threeten.bp.LocalDate;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +24,7 @@ public class MonthVH extends BaseMonthVH {
 
     private ModelMonthItem monthItem;
 
-    public MonthVH(@NonNull View itemView) {
+    private MonthVH(@NonNull View itemView) {
         super(itemView);
 
         ButterKnife.bind(this, itemView);
@@ -32,17 +37,22 @@ public class MonthVH extends BaseMonthVH {
         return new MonthVH(view);
     }
 
+    public ModelMonthItem getMonthItem() {
+        return monthItem;
+    }
+
     @Override
     public int getResourceLayoutId() {
         return R.layout.calendar_vh_month;
     }
 
     @Override
-    public void onBind(ModelMonth model, int position) {
+    public void onBind(ModelMonth model, LocalDate selectedDayStart, LocalDate selectedDayEnd) {
         monthItem = (ModelMonthItem) model;
-        month.setAdapter(new DayItemsAdapter(itemView.getContext()));
 
-        ((DayItemsAdapter) month.getAdapter()).replaceDayItems(monthItem.getItemList(), monthItem.getDateTime());
+        monthItem.getMonthAdapter().onBindAdapter(monthItem.getItemList(), this);
+
+        month.setAdapter(monthItem.getMonthAdapter());
     }
 
     public KeyMonth getKeyMonth() {
@@ -53,6 +63,6 @@ public class MonthVH extends BaseMonthVH {
         if (listener == null)
             return;
 
-        ((DayItemsAdapter) month.getAdapter()).setDayItemClickListener(listener);
+        monthItem.getMonthAdapter().setDayItemClickListener(listener);
     }
 }

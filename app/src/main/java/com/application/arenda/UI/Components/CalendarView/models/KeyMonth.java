@@ -1,4 +1,4 @@
-package com.application.arenda.UI.Components.CalendarView;
+package com.application.arenda.UI.Components.CalendarView.models;
 
 import androidx.annotation.Nullable;
 

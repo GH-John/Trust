@@ -45,7 +45,7 @@ import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.MainWorkspace.Activities.ActivityViewImages;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
-import com.application.arenda.UI.Components.CalendarView.CalendarView;
+import com.application.arenda.UI.Components.CalendarView.CalendarDateTimeRange;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
 import com.application.arenda.UI.HorizontalList.HorizontalList;
 import com.karumi.dexter.Dexter;
@@ -162,7 +162,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     HorizontalList similarAnnouncements;
 
     @BindView(R.id.periodSelector)
-    CalendarView calendarView;
+    CalendarDateTimeRange calendarDateTimeRange;
 
     ProgressBar progressBar;
 
@@ -353,8 +353,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         });
 
         btnBooking.setOnClickListener(v -> {
-            if (scrollView.getScrollY() != calendarView.getY()) {
-                scrollView.post(() -> scrollView.smoothScrollTo(0, (int) calendarView.getY()));
+            if (scrollView.getScrollY() != calendarDateTimeRange.getY()) {
+                scrollView.post(() -> scrollView.smoothScrollTo(0, (int) calendarDateTimeRange.getY()));
             }
         });
     }
