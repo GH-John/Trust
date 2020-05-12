@@ -12,7 +12,12 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.application.arenda.Entities.Utils.Glide.GlideUtils;
 import com.application.arenda.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AdapterViewPager extends PagerAdapter {
+    @BindView(R.id.imgContainer)
+    ImageView imgContainer;
 
     private ModelViewPager data;
 
@@ -40,8 +45,8 @@ public class AdapterViewPager extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.vp_img_swiper_pattern, container, false);
+        ButterKnife.bind(this, view);
 
-        ImageView imgContainer = view.findViewById(R.id.imgContainer);
         Uri uri = data.getCollectionUri().get(position);
 
         if (itemListener != null)

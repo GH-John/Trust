@@ -48,6 +48,7 @@ import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
 import com.application.arenda.UI.Components.CalendarView.CalendarDateTimeRange;
 import com.application.arenda.UI.Components.ContainerFragments.ContainerFragments;
+import com.application.arenda.UI.Components.ViewPager.PictureViewer;
 import com.application.arenda.UI.HorizontalList.HorizontalList;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -81,7 +82,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
     @Nullable
     @BindView(R.id.imgViewPager)
-    ViewPager imgViewPager;
+    PictureViewer imgViewPager;
 
     @Nullable
     @BindDrawable(R.drawable.ic_dot_selected)
@@ -303,6 +304,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             initLandLordAnnouncements(announcement.getIdUser());
             initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
 
+            loadPeriodRentAnnouncement(announcement.getID());
+
             setViewerAnnouncement(announcement.getID());
         };
 
@@ -317,6 +320,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
             initLandLordAnnouncements(announcement.getIdUser());
             initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
+
+            loadPeriodRentAnnouncement(announcement.getID());
 
             setViewerAnnouncement(announcement.getID());
         };

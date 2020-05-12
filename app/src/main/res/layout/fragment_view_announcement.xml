@@ -22,7 +22,7 @@
             android:paddingBottom="@dimen/paddingBottomFromBottomNav"
             tools:visibility="visible">
 
-            <androidx.viewpager.widget.ViewPager
+            <com.application.arenda.UI.Components.ViewPager.PictureViewer
                 android:id="@+id/imgViewPager"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -36,7 +36,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </androidx.viewpager.widget.ViewPager>
+            </com.application.arenda.UI.Components.ViewPager.PictureViewer>
 
             <ImageButton
                 android:id="@+id/btnInsertToFavorite"
