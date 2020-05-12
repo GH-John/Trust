@@ -51,6 +51,7 @@ android {
             buildConfigField "String", "URL_LOADING_PICTURES", "\"php/load/LoadingPictures.php\""
             buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/load/announcements/landLord/LoadingLandLordAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/load/announcements/similar/LoadingSimilarAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/load/announcements/rent/LoadingPeriodRentAnnouncement.php\""
         }
 
         release {
@@ -81,6 +82,7 @@ android {
             buildConfigField "String", "URL_LOADING_PICTURES", "\"php/load/LoadingPictures.php\""
             buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/load/announcements/landLord/LoadingLandLordAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/load/announcements/similar/LoadingSimilarAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/load/announcements/rent/LoadingPeriodRentAnnouncement.php\""
         }
     }
 }
@@ -100,6 +102,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:2.2.16"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
 
+    //noinspection AnnotationProcessorOnCompilePath
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
@@ -114,9 +117,6 @@ dependencies {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
-
-//    implementation 'com.github.corouteam:GlideToVectorYou:v2.0.0'
-
 
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.2'

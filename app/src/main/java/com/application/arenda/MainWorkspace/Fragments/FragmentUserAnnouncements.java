@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
@@ -21,10 +22,12 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.application.arenda.Entities.Announcements.ApiAnnouncement;
 import com.application.arenda.Entities.Announcements.LoadingAnnouncements.UserAnnouncements.UserAnnouncementsAdapter;
+import com.application.arenda.Entities.Announcements.OnApiListener;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.Models.ModelUser;
 import com.application.arenda.Entities.RecyclerView.RVOnScrollListener;
 import com.application.arenda.Entities.Room.LocalCacheManager;
+import com.application.arenda.Entities.Utils.Retrofit.CodeHandler;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.ActionBar.AdapterActionBar;
@@ -90,6 +93,8 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     private RVOnScrollListener rvOnScrollListener;
     private UserAnnouncementsAdapter userAnnouncementsAdapter;
 
+    private OnApiListener listenerLoadAnnouncement;
+
     private FragmentUserAnnouncements() {
     }
 
@@ -139,6 +144,31 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(consumerUserToken);
+
+        listenerLoadAnnouncement = new OnApiListener() {
+            @Override
+            public void onComplete(@NonNull CodeHandler code) {
+                switch (code) {
+                    case UNKNOW_ERROR:
+                    case UNSUCCESS:
+                    case NOT_CONNECT_TO_DB:
+                    case HTTP_NOT_FOUND:
+                    case NETWORK_ERROR: {
+                        Utils.messageOutput(getContext(), getResources().getString(R.string.error_check_internet_connect));
+                    }
+
+                    case NONE_REZULT: {
+                        Utils.messageOutput(getContext(), "Нет объявлений");
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                Timber.e(t);
+            }
+        };
 
         singleLoaderWithRewriteAnnouncements = new SingleObserver<List<ModelAnnouncement>>() {
             @Override
@@ -269,7 +299,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
         if (!userAnnouncementsAdapter.isLoading()) {
             userAnnouncementsAdapter.setLoading(true);
 
-            api.loadUserAnnouncements(getContext(), userToken, lastId, 10, query, null)
+            api.loadUserAnnouncements(getContext(), userToken, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .cache()

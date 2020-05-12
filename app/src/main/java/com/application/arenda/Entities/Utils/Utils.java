@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -12,9 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
 import com.application.arenda.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -64,19 +67,27 @@ public class Utils {
 
     public static String convertTimeTo_24H_or_12h(int hour, int minute, boolean convertTo24H) {
         if ((hour >= 0 && hour <= 23) && (minute >= 0 && minute <= 59)) {
-            return LocalTime.of(hour, minute)
+            String format = LocalTime.of(hour, minute)
                     .format(DateTimeFormatter.ofPattern(
                             convertTo24H ?
-                                    DatePattern.DATE_PATTERN_HH_mm.getPattern() :
-                                    DatePattern.DATE_PATTERN_hh_mm.getPattern())
+                                    DatePattern.HH_mm.getPattern() :
+                                    DatePattern.hh_mm.getPattern())
                     );
-        }
 
+            if (!convertTo24H) {
+                if (hour >= 12 && hour <= 23)
+                    format = format + " PM";
+                else if (hour >= 0 && hour < 12)
+                    format = format + " AM";
+
+                return format;
+            }
+        }
         return "";
     }
 
     public static String getFormatingDate(Context context, String date, DatePattern pattern) {
-        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_yyyy_MM_dd_HH_mm_ss.getPattern()));
+        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.yyyy_MM_dd_HH_mm_ss.getPattern()));
 
         return dateTime.format(DateTimeFormatter.ofPattern(pattern.getPattern()));
     }
@@ -84,16 +95,16 @@ public class Utils {
     public static String getFormatingDate(Context context, String date) {
         LocalDate today = LocalDate.now();
 
-        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_yyyy_MM_dd_HH_mm_ss.getPattern()));
+        LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.yyyy_MM_dd_HH_mm_ss.getPattern()));
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 0)
-            return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
+            return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.HH_mm.getPattern()));
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 1)
-            return context.getString(R.string.text_yesterday) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
+            return context.getString(R.string.text_yesterday) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.HH_mm.getPattern()));
 
 
-        return dateTime.getDayOfMonth() + " " + getMonthOfYear(context, dateTime.getMonth(), false) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.DATE_PATTERN_HH_mm.getPattern()));
+        return dateTime.getDayOfMonth() + " " + getMonthOfYear(context, dateTime.getMonth(), false) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.HH_mm.getPattern()));
     }
 
     public static String getDayOfWeek(Context context, LocalDateTime date, boolean isFull) {
@@ -340,7 +351,8 @@ public class Utils {
         return false;
     }
 
-    public static boolean isConfirmPassword(Context context, EditText fieldPassReg, EditText fieldConfirmPassReg) {
+    public static boolean isConfirmPassword(Context context, EditText fieldPassReg, EditText
+            fieldConfirmPassReg) {
         if (fieldPassReg.getText().toString().equals(fieldConfirmPassReg.getText().toString())) {
             return true;
         } else {
@@ -351,11 +363,13 @@ public class Utils {
     }
 
     public enum DatePattern {
-        DATE_PATTERN_yyyy_MM_dd("yyyy-MM-dd"),
-        DATE_PATTERN_dd_MM_yyyy("dd.MM.yyyy"),
-        DATE_PATTERN_yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss"),
-        DATE_PATTERN_HH_mm("HH:mm"),
-        DATE_PATTERN_hh_mm("hh:mm");
+        yyyy_MM_dd("yyyy-MM-dd"),
+        dd_MM_yyyy("dd.MM.yyyy"),
+        yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss"),
+        yyyy_MM_dd_hh_mm_ss("yyyy-MM-dd hh:mm:ss aa"),
+        HH_mm("HH:mm"),
+        hh_mm("hh:mm"),
+        hh_mm_aa("hh:mm aa");
 
         private String pattern = "";
 

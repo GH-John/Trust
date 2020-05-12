@@ -7,7 +7,7 @@ public interface ScrollCallBack {
 
     void onScrolledToEnd();
 
-    void onScrollState(int state, int currentVisibleItems, int firstVisibleItem, int totalItems);
+    void onScrollState(int state, int currentVisibleItems, int firstVisibleItem, int lastVisibleItem, int totalItems);
 
-    void currentPosition(int currentPos);
+    void onScrolledToCurrentPosition(int currentPos);
 }

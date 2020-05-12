@@ -6,10 +6,10 @@ import android.widget.BaseAdapter;
 
 import androidx.annotation.NonNull;
 
+import com.application.arenda.UI.Components.CalendarView.models.ModelDayItem;
 import com.application.arenda.UI.Components.CalendarView.vh.DayVH;
 import com.application.arenda.UI.Components.CalendarView.vh.DayVH.DayItemOnClickListener;
-import com.application.arenda.UI.Components.CalendarView.models.ModelDayItem;
-import com.application.arenda.UI.Components.CalendarView.vh.MonthVH;
+import com.application.arenda.UI.Components.CalendarView.vh.VisibleMonthVH;
 
 import org.threeten.bp.LocalDate;
 
@@ -19,13 +19,13 @@ import java.util.List;
 public class MonthAdapter extends BaseAdapter {
     private List<ModelDayItem> modelDayItems = new ArrayList<>();
 
-    private MonthVH monthVH;
+    private VisibleMonthVH monthVH;
 
     private LocalDate startDate, endDate;
 
     private DayItemOnClickListener listener;
 
-    public void onBindAdapter(List<ModelDayItem> modelDayItems, MonthVH monthVH) {
+    public void onBindAdapter(List<ModelDayItem> modelDayItems, VisibleMonthVH monthVH) {
         this.modelDayItems.clear();
         this.modelDayItems.addAll(modelDayItems);
         this.monthVH = monthVH;
@@ -33,10 +33,18 @@ public class MonthAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void updateAdapter(LocalDate startDate, LocalDate endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public void updateAdapter(LocalDate dateStart, LocalDate dateEnd) {
+        if (startDate != null && endDate != null && dateStart != null && dateEnd != null)
+            if (startDate.isEqual(dateStart) && endDate.isEqual(dateEnd))
+                return;
 
+        this.startDate = dateStart;
+        this.endDate = dateEnd;
+
+        notifyDataSetChanged();
+    }
+
+    public void updateAdapter() {
         notifyDataSetChanged();
     }
 

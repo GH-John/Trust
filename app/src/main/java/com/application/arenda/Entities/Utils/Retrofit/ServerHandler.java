@@ -1,19 +1,15 @@
 package com.application.arenda.Entities.Utils.Retrofit;
 
-import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ServerHandler<T> {
     @SerializedName("code")
-    @Expose
     private int code;
 
     @SerializedName("error")
-    @Expose
     private String error;
 
     @SerializedName("response")
-    @Expose
     private T response;
 
     public int getCode() {

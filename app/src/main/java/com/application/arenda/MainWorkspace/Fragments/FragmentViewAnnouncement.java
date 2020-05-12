@@ -35,6 +35,7 @@ import com.application.arenda.Entities.Announcements.OnApiListener;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.AdapterViewPager;
 import com.application.arenda.Entities.Announcements.ViewAnnouncement.ModelViewPager;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
+import com.application.arenda.Entities.Models.ModelPeriodRent;
 import com.application.arenda.Entities.Models.ModelPicture;
 import com.application.arenda.Entities.Models.SharedViewModels;
 import com.application.arenda.Entities.RecyclerView.OnItemClick;
@@ -161,9 +162,10 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     @BindView(R.id.similarAnnouncements)
     HorizontalList similarAnnouncements;
 
-    @BindView(R.id.periodSelector)
-    CalendarDateTimeRange calendarDateTimeRange;
+    @BindView(R.id.bookingCalendar)
+    CalendarDateTimeRange bookingCalendar;
 
+    @BindView(R.id.progressBarViewAnnouncement)
     ProgressBar progressBar;
 
     private ImageButton itemBtnBack, itemPhone,
@@ -200,6 +202,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
     private ContainerFragments containerFragments;
 
+    private List<ModelPeriodRent> periodRents = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -215,8 +219,6 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
     @SuppressLint({"SetTextI18n", "CheckResult"})
     private void initComponents() {
-        progressBar = new ProgressBar(getContext());
-
         containerFragments = ContainerFragments.getInstance(getContext());
 
         sharedViewModels = new ViewModelProvider(requireActivity()).get(SharedViewModels.class);
@@ -353,8 +355,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         });
 
         btnBooking.setOnClickListener(v -> {
-            if (scrollView.getScrollY() != calendarDateTimeRange.getY()) {
-                scrollView.post(() -> scrollView.smoothScrollTo(0, (int) calendarDateTimeRange.getY()));
+            if (scrollView.getScrollY() != bookingCalendar.getY()) {
+                scrollView.post(() -> scrollView.smoothScrollTo(0, (int) bookingCalendar.getY()));
             }
         });
     }
@@ -372,6 +374,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                     initSimilarAnnouncements(announcement.getID(), announcement.getIdSubcategory());
 
                     setViewerAnnouncement(announcement.getID());
+
+                    loadPeriodRentAnnouncement(announcement.getID());
 
                     setProgress(false);
                 });
@@ -402,7 +406,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         userCardLogin.setText(announcement.getLogin());
         userCardRating.setText(String.valueOf(announcement.getUserRating()));
         userCardCountAnnouncements.setText(String.valueOf(announcement.getCountAnnouncementsUser()));
-        userCardUserCreated.setText(Utils.getFormatingDate(getContext(), announcement.getUserCreated(), Utils.DatePattern.DATE_PATTERN_dd_MM_yyyy));
+        userCardUserCreated.setText(Utils.getFormatingDate(getContext(), announcement.getUserCreated(), Utils.DatePattern.dd_MM_yyyy));
 
         btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(announcement.getID()));
 
@@ -438,6 +442,14 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                         Timber.e(e);
                     }
                 });
+    }
+
+    @SuppressLint("CheckResult")
+    private void loadPeriodRentAnnouncement(long idAnnouncement) {
+        api.loadPeriodRentAnnouncement(getContext(), idAnnouncement, null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((modelPeriodRents) -> bookingCalendar.setModelEvents(new ArrayList<>(modelPeriodRents)), Timber::e);
     }
 
     private void initLandLordAnnouncements(long idLandLord) {
@@ -516,9 +528,11 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         if (b) {
             progressBar.setVisibility(View.VISIBLE);
             viewAnnouncementContainer.setVisibility(View.INVISIBLE);
+            btnBooking.setVisibility(View.INVISIBLE);
         } else {
             progressBar.setVisibility(View.GONE);
             viewAnnouncementContainer.setVisibility(View.VISIBLE);
+            btnBooking.setVisibility(View.VISIBLE);
         }
     }
 

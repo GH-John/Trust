@@ -11,33 +11,37 @@ import com.application.arenda.R;
 import com.application.arenda.UI.Components.CalendarView.models.KeyMonth;
 import com.application.arenda.UI.Components.CalendarView.vh.DayVH.DayItemOnClickListener;
 import com.application.arenda.UI.Components.CalendarView.models.ModelMonth;
-import com.application.arenda.UI.Components.CalendarView.models.ModelMonthItem;
+import com.application.arenda.UI.Components.CalendarView.models.ModelVisibleMonths;
 
 import org.threeten.bp.LocalDate;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MonthVH extends BaseMonthVH {
+public class VisibleMonthVH extends BaseMonthVH {
     @BindView(R.id.month_grid_container)
     GridView month;
 
-    private ModelMonthItem monthItem;
+    private ModelVisibleMonths monthItem;
 
-    private MonthVH(@NonNull View itemView) {
+    private VisibleMonthVH(@NonNull View itemView) {
         super(itemView);
 
         ButterKnife.bind(this, itemView);
+//
+//        Animation animation = AnimationUtils.loadAnimation(itemView.getContext(), R.anim.calendar_day_anim);
+//        GridLayoutAnimationController controller = new GridLayoutAnimationController(animation, 0.03f, 0.01f);
+//        month.setLayoutAnimation(controller);
     }
 
-    public static MonthVH create(ViewGroup parent) {
+    public static VisibleMonthVH create(ViewGroup parent) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
         View view = layoutInflater.inflate(R.layout.calendar_vh_month, parent, false);
 
-        return new MonthVH(view);
+        return new VisibleMonthVH(view);
     }
 
-    public ModelMonthItem getMonthItem() {
+    public ModelVisibleMonths getMonthItem() {
         return monthItem;
     }
 
@@ -48,7 +52,7 @@ public class MonthVH extends BaseMonthVH {
 
     @Override
     public void onBind(ModelMonth model, LocalDate selectedDayStart, LocalDate selectedDayEnd) {
-        monthItem = (ModelMonthItem) model;
+        monthItem = (ModelVisibleMonths) model;
 
         monthItem.getMonthAdapter().onBindAdapter(monthItem.getItemList(), this);
 
@@ -56,7 +60,7 @@ public class MonthVH extends BaseMonthVH {
     }
 
     public KeyMonth getKeyMonth() {
-        return monthItem.getKey();
+        return monthItem.getKeyMainMonth();
     }
 
     public void setDayItemClick(DayItemOnClickListener listener) {

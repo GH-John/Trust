@@ -20,8 +20,8 @@ public class ApiClient {
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
             OkHttpClient.Builder client = new OkHttpClient.Builder()
-                    .readTimeout(2, TimeUnit.MINUTES)
-                    .writeTimeout(2, TimeUnit.MINUTES)
+                    .readTimeout(5, TimeUnit.MINUTES)
+                    .writeTimeout(5, TimeUnit.MINUTES)
                     .addInterceptor(chain -> {
                         Request original = chain.request();
                         Request.Builder builder = original.newBuilder()

@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:gravity="center"
+    android:maxWidth="40dp"
     android:minHeight="40dp">
 
     <TextView
@@ -22,5 +23,7 @@
         android:layout_below="@+id/calendarDay"
         android:layout_alignStart="@+id/calendarDay"
         android:layout_alignEnd="@+id/calendarDay"
-        android:contentDescription="@string/todo" />
+        android:contentDescription="@string/todo"
+        android:maxWidth="8dp"
+        android:maxHeight="8dp" />
 </RelativeLayout>

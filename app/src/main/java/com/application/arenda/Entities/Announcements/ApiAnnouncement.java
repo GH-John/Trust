@@ -10,6 +10,7 @@ import com.application.arenda.BuildConfig;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.Models.ModelCategory;
 import com.application.arenda.Entities.Models.ModelInsertAnnouncement;
+import com.application.arenda.Entities.Models.ModelPeriodRent;
 import com.application.arenda.Entities.Models.ModelSubcategory;
 import com.application.arenda.Entities.Utils.FileUtils;
 import com.application.arenda.Entities.Utils.Retrofit.ApiClient;
@@ -560,5 +561,41 @@ public final class ApiAnnouncement {
                         Timber.e(t);
                     }
                 }));
+    }
+
+    public Single<List<ModelPeriodRent>> loadPeriodRentAnnouncement(Context context, long idAnnouncement, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadPeriodRentAnnouncement(
+                        idAnnouncement)
+                        .enqueue(new Callback<ServerHandler<List<ModelPeriodRent>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerHandler<List<ModelPeriodRent>>> call, @NonNull Response<ServerHandler<List<ModelPeriodRent>>> response) {
+                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else if (response.code() >= 200 && response.code() <= 300) {
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+
+                                    Timber.tag("LoadingError").e(response.body().getError());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerHandler<List<ModelPeriodRent>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
     }
 }

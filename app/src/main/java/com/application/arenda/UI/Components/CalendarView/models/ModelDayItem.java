@@ -6,11 +6,12 @@ import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class ModelDayItem {
     private LocalDate date;
 
-    private List<String> events = new ArrayList<>();
+    private List<ModelEvent> events = new ArrayList<>();
 
     @DrawableRes
     private int eventStateDrawable;
@@ -23,11 +24,11 @@ public class ModelDayItem {
         this.date = date;
     }
 
-    public List<String> getEvents() {
+    public List<ModelEvent> getEvents() {
         return events;
     }
 
-    public void setEvents(List<String> events) {
+    public void setEvents(List<ModelEvent> events) {
         this.events = events;
     }
 

@@ -3,6 +3,7 @@ package com.application.arenda.Entities.Announcements;
 import com.application.arenda.BuildConfig;
 import com.application.arenda.Entities.Models.ModelAnnouncement;
 import com.application.arenda.Entities.Models.ModelPicture;
+import com.application.arenda.Entities.Models.ModelPeriodRent;
 import com.application.arenda.Entities.Utils.Retrofit.ServerHandler;
 
 import java.util.List;
@@ -91,6 +92,12 @@ public interface IApiAnnouncement {
             @Field("idAnnouncement") long lastIdAnnouncement,
             @Field("limitItemsInPage") int limitItemsInPage,
             @Field("query") String query
+    );
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_PERIOD_RENT_ANNOUNCEMENT)
+    Call<ServerHandler<List<ModelPeriodRent>>> loadPeriodRentAnnouncement(
+            @Field("idAnnouncement") long idAnnouncement
     );
 
     @FormUrlEncoded

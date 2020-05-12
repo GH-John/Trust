@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
@@ -19,11 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.arenda.Entities.Utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.UI.Components.CalendarView.adapters.CalendarAdapter;
-import com.application.arenda.UI.Components.CalendarView.models.ModelMonthItem;
+import com.application.arenda.UI.Components.CalendarView.models.ModelEvent;
+import com.application.arenda.UI.Components.CalendarView.models.ModelVisibleMonths;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,12 +60,12 @@ public class CalendarDateTimeRange extends FrameLayout {
     Button calendarBtnNowDay;
     @BindView(R.id.calendarBtnReset)
     Button calendarBtnReset;
+
     private int textSize;
     private LocalDateTime currentMonth;
     private CalendarAdapter recyclerAdapter;
 
     private CalendarTimePicker timePicker;
-    private CalendarView calendarView;
 
     public CalendarDateTimeRange(Context context) {
         super(context);
@@ -128,21 +130,21 @@ public class CalendarDateTimeRange extends FrameLayout {
         recyclerAdapter.setMonthCallBack(new CalendarAdapter.MonthCallBack() {
 
             @Override
-            public void getSelectedDateTime(LocalDate dateTime) {
+            public void getSelectedDateTime(LocalDate dateTime, DayController controller) {
                 if (calendarStartDateSelectorRent.isChecked()) {
                     setStartPeriodDate(dateTime);
 
-                    timePicker.show();
+//                    timePicker.show();
                 } else {
                     setEndPeriodDate(dateTime);
 
-                    timePicker.show();
+//                    timePicker.show();
                 }
             }
 
             @Override
-            public void currentMonth(ModelMonthItem monthItem) {
-                inflateHeader(monthItem.getDate());
+            public void currentMonth(ModelVisibleMonths monthItem) {
+                inflateHeader(monthItem.getMainDate());
             }
 
             @Override
@@ -181,7 +183,7 @@ public class CalendarDateTimeRange extends FrameLayout {
     }
 
     private void setStartPeriodDate(LocalDate date) {
-        calendarDateStartRent.setText(date.format(DateTimeFormatter.ofPattern("dd.MM")));
+        calendarDateStartRent.setText(date.format(DateTimeFormatter.ofPattern(Utils.DatePattern.dd_MM_yyyy.getPattern())));
     }
 
     @SuppressLint("SetTextI18n")
@@ -190,7 +192,7 @@ public class CalendarDateTimeRange extends FrameLayout {
     }
 
     private void setEndPeriodDate(LocalDate date) {
-        calendarDateEndRent.setText(date.format(DateTimeFormatter.ofPattern("dd.MM")));
+        calendarDateEndRent.setText(date.format(DateTimeFormatter.ofPattern(Utils.DatePattern.dd_MM_yyyy.getPattern())));
     }
 
     @SuppressLint("SetTextI18n")
@@ -206,5 +208,9 @@ public class CalendarDateTimeRange extends FrameLayout {
     private void resetEndPeriod() {
         calendarDateEndRent.setText(getResources().getString(R.string.text_three_dots));
         calendarTimeEndRent.setText(getResources().getString(R.string.text_three_dots));
+    }
+
+    public void setModelEvents(List<ModelEvent> modelEvents) {
+        recyclerAdapter.setEvents(modelEvents);
     }
 }

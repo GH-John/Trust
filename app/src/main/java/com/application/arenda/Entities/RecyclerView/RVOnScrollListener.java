@@ -66,14 +66,14 @@ public class RVOnScrollListener extends RecyclerView.OnScrollListener {
 //        SCROLL_STATE_SETTLING: user raised finger and animation now slows down
 
         if (scrollCallBack != null)
-            scrollCallBack.onScrollState(newState, currentVisibleItems, firstVisibleItem, totalItems);
+            scrollCallBack.onScrollState(newState, currentVisibleItems, firstVisibleItem, lastVisibleItem, totalItems);
 
         if (newState == RecyclerView.SCROLL_STATE_IDLE) {
             if (scrollCallBack != null && firstVisibleItem == 0)
                 scrollCallBack.onScrolledToStart();
 
             if (scrollCallBack != null)
-                scrollCallBack.currentPosition(firstVisibleItem);
+                scrollCallBack.onScrolledToCurrentPosition(firstVisibleItem);
 
             if (scrollCallBack != null && lastVisibleItem == totalItems - 1)
                 scrollCallBack.onScrolledToEnd();

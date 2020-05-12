@@ -138,6 +138,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         initStyles();
         initListeners();
 
+        swipeRefreshLayout.setRefreshing(true);
         refreshLayout();
     }
 
@@ -148,10 +149,9 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             public void onComplete(@NonNull CodeHandler code) {
                 if (code.equals(CodeHandler.USER_NOT_FOUND)) {
                     Utils.messageOutput(getContext(), getResources().getString(R.string.warning_login_required));
-                } else if(code.equals(CodeHandler.INTERNAL_SERVER_ERROR)){
+                } else if (code.equals(CodeHandler.INTERNAL_SERVER_ERROR)) {
                     Utils.messageOutput(getContext(), getResources().getString(R.string.error_on_server));
-                }
-                else if (code.equals(CodeHandler.UNKNOW_ERROR)) {
+                } else if (code.equals(CodeHandler.UNKNOW_ERROR)) {
                     Utils.messageOutput(getContext(), getResources().getString(R.string.unknown_error));
                 }
             }
@@ -165,12 +165,25 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         listenerLoadAnnouncement = new OnApiListener() {
             @Override
             public void onComplete(@NonNull CodeHandler code) {
+                switch (code) {
+                    case UNKNOW_ERROR:
+                    case UNSUCCESS:
+                    case NOT_CONNECT_TO_DB:
+                    case HTTP_NOT_FOUND:
+                    case NETWORK_ERROR: {
+                        Utils.messageOutput(getContext(), getResources().getString(R.string.error_check_internet_connect));
+                    }
 
+                    case NONE_REZULT: {
+                        Utils.messageOutput(getContext(), "Нет объявлений");
+                        break;
+                    }
+                }
             }
 
             @Override
             public void onFailure(@NonNull Throwable t) {
-
+                Timber.e(t);
             }
         };
 

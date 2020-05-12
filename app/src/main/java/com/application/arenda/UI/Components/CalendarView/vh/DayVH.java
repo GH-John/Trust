@@ -10,16 +10,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.application.arenda.R;
+import com.application.arenda.UI.Components.CalendarView.DayController;
 import com.application.arenda.UI.Components.CalendarView.models.ModelDayItem;
-import com.application.arenda.UI.Components.CalendarView.models.ModelMonthItem;
+import com.application.arenda.UI.Components.CalendarView.models.ModelEvent;
+import com.application.arenda.UI.Components.CalendarView.models.ModelVisibleMonths;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Month;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DayVH extends FrameLayout {
+public class DayVH extends FrameLayout implements DayController {
     @BindView(R.id.calendarDay)
     TextView calendarDay;
 
@@ -28,10 +32,12 @@ public class DayVH extends FrameLayout {
 
     private LocalDate currentMonth, selectedDayStart, selectedDayEnd, date, toDay;
 
-    private MonthVH monthVH;
+    private VisibleMonthVH monthVH;
     private boolean isSelected;
     private boolean isDayIncludeToCurrentMonth;
     private boolean isCurrentDayOfMonth;
+    private boolean isDayIncludeToPeriodStartToEnd = false;
+    private DayItemOnClickListener dayItemOnClickListener;
 
     public DayVH(Context context) {
         super(context);
@@ -47,22 +53,48 @@ public class DayVH extends FrameLayout {
         return new DayVH(context);
     }
 
-    public void onBind(ModelDayItem modelDayItem, MonthVH monthVH, LocalDate selectedDayStart, LocalDate selectedDayEnd) {
+    public void onBind(ModelDayItem modelDayItem, VisibleMonthVH monthVH, LocalDate selectedDayStart, LocalDate selectedDayEnd) {
         date = modelDayItem.getDate();
 
         this.monthVH = monthVH;
         this.selectedDayStart = selectedDayStart;
         this.selectedDayEnd = selectedDayEnd;
 
-        currentMonth = monthVH.getMonthItem().getDate();
+        currentMonth = monthVH.getMonthItem().getMainDate();
 
-        if (modelDayItem.getEvents().size() > 0) {
-            imageEventState.setImageResource(R.drawable.ic_dot_selected);
+        calendarDay.setText(String.valueOf(date.getDayOfMonth()));
+
+        imageEventState.setImageDrawable(null);
+
+        if (dayItemOnClickListener != null)
+            setOnClickListener(v -> dayItemOnClickListener.onClick(date, monthVH.getMonthItem(), DayVH.this));
+
+        List<ModelEvent> monthEvents = monthVH.getMonthItem().getAllEventsMonth();
+        List<ModelEvent> dayEvents = modelDayItem.getEvents();
+
+        if (monthEvents != null) {
+            for (ModelEvent event : monthEvents) {
+                if (!dayEvents.contains(event))
+                    dayEvents.add(event);
+            }
+
+            modelDayItem.setEvents(dayEvents);
+        }
+
+        if (dayEvents.size() > 0) {
+
+            for (ModelEvent event : dayEvents) {
+
+                if (date.isEqual(event.getDateStart()) || date.isEqual(event.getDateEnd())) {
+                    imageEventState.setImageResource(R.drawable.ic_dot_selected);
+                }
+            }
+
         }
 
         unselectDay();
 
-        if (isDayIncludeToCurrentMonth(currentMonth.getMonth(), currentMonth.getYear()))
+        if (isDayIncludeTo(currentMonth.getMonth(), currentMonth.getYear()))
             setTypefaceNormalBlack();
         else
             setTypefaceNormalGray();
@@ -77,8 +109,10 @@ public class DayVH extends FrameLayout {
                 selectDay();
             else if (selectedDayEnd != null) {
                 if (date.isAfter(selectedDayStart) && date.isBefore(selectedDayEnd)) {
+                    isDayIncludeToPeriodStartToEnd = true;
                     setBackgroudIfIncludePeriodStartToEnd();
-                } else if(date.isAfter(selectedDayEnd) && date.isBefore(selectedDayStart)){
+                } else if (date.isAfter(selectedDayEnd) && date.isBefore(selectedDayStart)) {
+                    isDayIncludeToPeriodStartToEnd = false;
                     setBackgroudIfDontIncludePeriodStartToEnd();
                 }
             } else {
@@ -99,8 +133,10 @@ public class DayVH extends FrameLayout {
                 selectDay();
             else if (selectedDayStart != null) {
                 if (date.isAfter(selectedDayStart) && date.isBefore(selectedDayEnd)) {
+                    isDayIncludeToPeriodStartToEnd = true;
                     setBackgroudIfIncludePeriodStartToEnd();
-                } else if(date.isAfter(selectedDayEnd) && date.isBefore(selectedDayStart)){
+                } else if (date.isAfter(selectedDayEnd) && date.isBefore(selectedDayStart)) {
+                    isDayIncludeToPeriodStartToEnd = false;
                     setBackgroudIfDontIncludePeriodStartToEnd();
                 }
             } else {
@@ -118,30 +154,8 @@ public class DayVH extends FrameLayout {
 
         if (selectedDayStart != null && selectedDayEnd != null) {
             if (selectedDayStart.isEqual(selectedDayEnd) && date.isEqual(selectedDayStart))
-                setBackgroubdIfSelectDateStartEqualDateEnd();
+                setBackgroundIfSelectDateStartEqualDateEnd();
         }
-
-        calendarDay.setText(String.valueOf(date.getDayOfMonth()));
-    }
-
-    public MonthVH getMonthVH() {
-        return monthVH;
-    }
-
-    public boolean isCurrentDayOfMonth() {
-        isCurrentDayOfMonth = date.getDayOfMonth() == toDay.getDayOfMonth() && date.getMonth().equals(toDay.getMonth()) && date.getYear() == toDay.getYear();
-
-        return isCurrentDayOfMonth;
-    }
-
-    public boolean isDayIncludeToCurrentMonth(Month month, int year) {
-        isDayIncludeToCurrentMonth = date.getMonth().equals(month) && date.getYear() == year;
-
-        return isDayIncludeToCurrentMonth;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     private void setTypefaceNormalGray() {
@@ -164,6 +178,34 @@ public class DayVH extends FrameLayout {
         calendarDay.setTextColor(Color.WHITE);
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public VisibleMonthVH getMonthVH() {
+        return monthVH;
+    }
+
+    public boolean isCurrentDayOfMonth() {
+        isCurrentDayOfMonth = date.getDayOfMonth() == toDay.getDayOfMonth() && date.getMonth().equals(toDay.getMonth()) && date.getYear() == toDay.getYear();
+
+        return isCurrentDayOfMonth;
+    }
+
+    public boolean isDayIncludeTo(Month month, int year) {
+        isDayIncludeToCurrentMonth = date.getMonth().equals(month) && date.getYear() == year;
+
+        return isDayIncludeToCurrentMonth;
+    }
+
+    @Override
+    public void selectAsCurrentDay() {
+        setTypefaceBoldBlack();
+
+        setBackgroundResource(R.drawable.calendar_current_day_unselected);
+    }
+
+    @Override
     public void unselectCurrentDay() {
         if (isDayIncludeToCurrentMonth)
             setTypefaceBoldBlack();
@@ -175,12 +217,7 @@ public class DayVH extends FrameLayout {
         isSelected = false;
     }
 
-    public void selectAsCurrentDay() {
-        setTypefaceBoldBlack();
-
-        setBackgroundResource(R.drawable.calendar_current_day_unselected);
-    }
-
+    @Override
     public void selectDay() {
         setTypefaceBoldWhite();
         setBackgroundResource(R.drawable.calendar_day_selected);
@@ -188,6 +225,7 @@ public class DayVH extends FrameLayout {
         isSelected = true;
     }
 
+    @Override
     public void unselectDay() {
         if (isDayIncludeToCurrentMonth)
             setTypefaceNormalBlack();
@@ -199,17 +237,20 @@ public class DayVH extends FrameLayout {
         isSelected = false;
     }
 
-    private void setBackgroudIfIncludePeriodStartToEnd() {
+    @Override
+    public void setBackgroudIfIncludePeriodStartToEnd() {
         setTypefaceBoldWhite();
         setBackgroundResource(R.drawable.calendar_day_include_in_period_start_end);
     }
 
-    private void setBackgroudIfDontIncludePeriodStartToEnd() {
+    @Override
+    public void setBackgroudIfDontIncludePeriodStartToEnd() {
         setTypefaceBoldWhite();
         setBackgroundResource(R.drawable.calendar_day_dont_include_in_period_start_end);
     }
 
-    private void setBackgroubdIfSelectDateStartEqualDateEnd() {
+    @Override
+    public void setBackgroundIfSelectDateStartEqualDateEnd() {
         setTypefaceBoldWhite();
         setBackgroundResource(R.drawable.calendar_day_selected_start_and_end);
     }
@@ -218,14 +259,18 @@ public class DayVH extends FrameLayout {
         if (listener == null)
             return;
 
-        setOnClickListener(v -> listener.onClick(date, monthVH.getMonthItem()));
+        dayItemOnClickListener = listener;
     }
 
     public boolean isSelected() {
         return isSelected;
     }
 
+    public boolean isDayIncludeToPeriodStartToEnd() {
+        return isDayIncludeToPeriodStartToEnd;
+    }
+
     public interface DayItemOnClickListener {
-        void onClick(LocalDate dateTime, ModelMonthItem monthItem);
+        void onClick(LocalDate dateTime, ModelVisibleMonths monthItem, DayController controller);
     }
 }
