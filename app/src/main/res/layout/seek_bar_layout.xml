@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/seekBarRelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/textTitleBar"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/textMinValue"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textProgressSeekBar"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/colorHint"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/textProgressSeekBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTitleBar"
+        android:layout_centerInParent="true"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp" />
+
+    <TextView
+        android:id="@+id/textMaxValue"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textProgressSeekBar"
+        android:layout_alignParentEnd="true"
+        android:textColor="@color/colorHint"
+        android:textSize="12sp" />
+</RelativeLayout>

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundApp"
-    tools:context="com.application.arenda.MainWorkspace.Activities.ActivityRegistration">
+    tools:context="com.application.arenda.mainWorkspace.activities.ActivityRegistration">
 
     <ScrollView
         android:id="@+id/scrollViewReg"
@@ -57,7 +57,7 @@
 
             <RadioGroup
                 android:id="@+id/radioGroupReg"
-                style="@style/DefaultStyleRadioGroup"
+                style="@style/DefaultStyleRadioGroupHorizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"

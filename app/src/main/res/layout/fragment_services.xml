@@ -4,5 +4,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layoutFragmentServices"
-    tools:context=".MainWorkspace.Fragments.FragmentServices">
+    tools:context=".mainWorkspace.fragments.FragmentServices">
 </androidx.constraintlayout.widget.ConstraintLayout>

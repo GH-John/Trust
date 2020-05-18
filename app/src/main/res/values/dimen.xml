@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="bubble_thumb_height">70dp</dimen>
+    <dimen name="bubble_thumb_width">70dp</dimen>
+    <dimen name="thumb_height">20dp</dimen>
+    <dimen name="thumb_width">20dp</dimen>
+
     <dimen name="paddingTopFromActionBar">60dp</dimen>
     <dimen name="paddingBottomFromBottomNav">80dp</dimen>
 

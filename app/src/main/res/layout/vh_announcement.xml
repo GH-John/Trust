@@ -19,8 +19,8 @@
             android:layout_height="30dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp"
-            android:src="@drawable/ic_user_logo"
-            android:contentDescription="@string/todo" />
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_user_logo" />
 
         <TextView
             android:id="@+id/textUserLogin"
@@ -63,8 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
-            android:minHeight="250dp"
             android:maxHeight="400dp"
+            android:minHeight="250dp"
             android:scaleType="centerCrop"
             android:transitionName="imgProduct" />
     </androidx.cardview.widget.CardView>
@@ -84,6 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:drawableStart="@drawable/ic_star"
             android:drawablePadding="12dp"
             android:gravity="center"
@@ -94,6 +95,7 @@
             style="@style/DefaultStyleTextRegular"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:layout_toEndOf="@+id/textRatingAnnouncement"
             android:drawableStart="@drawable/ic_count_rent"
@@ -107,6 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:contentDescription="@string/todo"
             android:src="@drawable/ic_heart_not_selected" />
     </RelativeLayout>

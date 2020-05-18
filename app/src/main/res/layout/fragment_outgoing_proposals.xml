@@ -3,7 +3,7 @@
     android:id="@+id/layoutOutgoingProposals"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.application.arenda.MainWorkspace.Fragments.Proposals.FragmentOutgoingProposals">
+    tools:context="com.application.arenda.mainWorkspace.fragments.proposals.FragmentOutgoingProposals">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvOutgoingProposals"

@@ -1,86 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layoutActivityMain"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/backgroundApp"
-    tools:context=".MainWorkspace.Activities.ActivityMain">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/sbDrawerMenu"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutActivityMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@color/backgroundApp"
+        tools:context=".mainWorkspace.activities.ActivityMain">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/contentLayout"
+        <androidx.drawerlayout.widget.DrawerLayout
+            android:id="@+id/sbDrawerMenu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/contentLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/containerFragments"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.application.arenda.ui.widgets.actionBar.CustomActionBar
+                    android:id="@+id/customActionBar"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="8dp"
+                    app:cardBackgroundColor="@color/colorWhite"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="3dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.application.arenda.ui.widgets.bottomNavigation.CustomBottomNavigation
+                    android:id="@+id/customBottomNavigation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/sbLeftMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:background="@drawable/sb_left_navigation_background"
+                android:choiceMode="none"
+                android:clickable="true"
+                android:focusable="true"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                android:theme="@style/DefaultNavigationTheme"
+                app:headerLayout="@layout/sb_navigation_header"
+                app:itemIconTint="@color/sb_nav_icon_selector"
+                app:itemShapeAppearanceOverlay="@style/DefaultNavigationShapeOverlay"
+                app:itemShapeFillColor="@color/sb_nav_shape_selector"
+                app:itemTextAppearance="@style/DefaultStyleTextRegular"
+                app:itemTextColor="@color/sb_nav_text_selector"
+                app:menu="@menu/sb_navigation_menu" />
 
             <FrameLayout
-                android:id="@+id/containerFragments"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:id="@+id/sbRightMenuLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:background="@drawable/sb_right_navigation_background">
 
-            <com.application.arenda.UI.Components.ActionBar.CustomActionBar
-                android:id="@+id/customActionBar"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_margin="8dp"
-                app:cardBackgroundColor="@color/colorWhite"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="3dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            </FrameLayout>
 
-            <com.application.arenda.UI.Components.BottomNavigation.CustomBottomNavigation
-                android:id="@+id/customBottomNavigation"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.drawerlayout.widget.DrawerLayout>
 
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/sbLeftMenu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@drawable/sb_left_navigation_background"
-            android:choiceMode="none"
-            android:clickable="true"
-            android:focusable="true"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            android:theme="@style/DefaultNavigationTheme"
-            app:headerLayout="@layout/sb_navigation_header"
-            app:itemIconTint="@color/sb_nav_icon_selector"
-            app:itemShapeAppearanceOverlay="@style/DefaultNavigationShapeOverlay"
-            app:itemShapeFillColor="@color/sb_nav_shape_selector"
-            app:itemTextAppearance="@style/DefaultStyleTextRegular"
-            app:itemTextColor="@color/sb_nav_text_selector"
-            app:menu="@menu/sb_navigation_menu" />
-
-        <FrameLayout
-            android:id="@+id/sbRightMenuLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:background="@drawable/sb_right_navigation_background">
-
-        </FrameLayout>
-
-    </androidx.drawerlayout.widget.DrawerLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

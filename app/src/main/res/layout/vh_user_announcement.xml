@@ -189,13 +189,6 @@
                 </RelativeLayout>
             </androidx.cardview.widget.CardView>
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/itemImgProduct"
-                android:layout_alignTop="@id/itemImgProduct"
-                android:layout_alignEnd="@id/itemImgProduct"
-                android:layout_alignBottom="@id/itemImgProduct"/>
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

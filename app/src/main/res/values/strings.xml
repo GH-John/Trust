@@ -113,7 +113,7 @@
     <string name="text_additional_fields">Дополнительная информация:</string>
     <string name="text_note_photos">Выберите главную фотографию</string>
     <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
-    <string name="text_visible_addresses">Показать адрес(а) в объявлении:</string>
+    <string name="text_visible_addresses">Показать адрес в объявлении:</string>
 
     <string name="short_monday">Пн</string>
     <string name="short_tuesday">Вт</string>
@@ -185,12 +185,30 @@
 
     <string name="calendar_title_year">2020</string>
     <string name="calendar_title_month">Май</string>
-    <string name="calendar_title_day_of_week">Вторник</string>
+
     <string name="error_on_server">Ошибка на сервере</string>
     <string name="title_select_period_rent">Выберите период аренды</string>
     <string name="text_reset">Сбросить</string>
     <string name="text_start_rent">Начало</string>
-    <string name="text_three_dots">...</string>
+    <string name="text_three_dots">…</string>
     <string name="text_end_rent">Конец</string>
     <string name="btn_booking">Забронировать</string>
+    <string name="text_find_near_free_dates">Найти ближайшие свободные даты</string>
+    <string name="textMinTime">Мин. время аренды</string>
+    <string name="text_1Hour">1 час.</string>
+    <string name="text_24Hour">24 час.</string>
+    <string name="textMinDay">Мин. кол. дней аренды</string>
+    <string name="text_1Day">1 дн.</string>
+    <string name="text_31Day">31 дн.</string>
+    <string name="textMaxRentalPeriod">Макс. срок аренды</string>
+    <string name="text_1Month">1 мес.</string>
+    <string name="text_12Months">12 мес.</string>
+    <string name="textTimeIssue">Время выдачи</string>
+    <string name="text_Time_00">00:00</string>
+    <string name="text_Time_23">23:00</string>
+    <string name="textReturnTime">Время возврата</string>
+    <string name="textShortHour">час.</string>
+    <string name="textShortDay">дн.</string>
+    <string name="textShortMonth">мес.</string>
+    <string name="textTimeInflater">:00</string>
 </resources>

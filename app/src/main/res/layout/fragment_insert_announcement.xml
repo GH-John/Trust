@@ -1,11 +1,11 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+ <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layoutAddAnnouncement"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundApp"
-    tools:context=".MainWorkspace.Fragments.FragmentInsertAnnouncement">
+    tools:context=".mainWorkspace.fragments.FragmentInsertAnnouncement">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -59,12 +59,12 @@
                 app:layout_constraintTop_toBottomOf="@id/textAddPhotos"
                 tools:ignore="RtlSymmetry,ScrollViewCount">
 
-                <com.application.arenda.UI.ContainerImg.ContainerSelectedImages
+                <com.application.arenda.ui.widgets.containerImg.ContainerSelectedImages
                     android:id="@+id/containerImg"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                </com.application.arenda.UI.ContainerImg.ContainerSelectedImages>
+                </com.application.arenda.ui.widgets.containerImg.ContainerSelectedImages>
             </HorizontalScrollView>
 
             <TextView
@@ -124,7 +124,7 @@
 
             <TextView
                 android:id="@+id/textHourlyCost"
-                style="@style/DefaultStyleTextRegular"
+                style="@style/DefaultStyleTextBoldRegular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -147,6 +147,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/textHourlyCost"
                 tools:ignore="Autofill" />
 
+            <include
+                android:id="@+id/layoutSeekBars"
+                layout="@layout/seek_bars"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldCostProduct" />
+
             <TextView
                 android:id="@+id/textAffordableInfo"
                 style="@style/DefaultStyleTextBoldRegular"
@@ -158,7 +170,7 @@
                 android:text="@string/text_additional_fields"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fieldCostProduct" />
+                app:layout_constraintTop_toBottomOf="@+id/layoutSeekBars" />
 
             <CheckBox
                 android:id="@+id/checkBoxWithSale"
@@ -181,37 +193,42 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkBoxWithSale" />
 
-            <CheckBox
-                android:id="@+id/checkAddress_1"
-                style="@style/DefaultStyleCheckBox"
+            <RadioGroup
+                android:id="@+id/groupAdress"
+                style="@style/DefaultStyleRadioGroupVertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:checked="false"
-                android:text="@string/text_some_text"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textVisibleAddresses" />
+                app:layout_constraintTop_toBottomOf="@+id/textVisibleAddresses">
 
-            <CheckBox
-                android:id="@+id/checkAddress_2"
-                style="@style/DefaultStyleCheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:checked="false"
-                android:text="@string/text_some_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkAddress_1" />
+                <RadioButton
+                    android:id="@+id/address_1"
+                    style="@style/DefaultStyleRadioBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/text_some_text" />
 
-            <CheckBox
-                android:id="@+id/checkAddress_3"
-                style="@style/DefaultStyleCheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/text_some_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkAddress_2" />
+                <RadioButton
+                    android:id="@+id/address_2"
+                    style="@style/DefaultStyleRadioBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="false"
+                    android:text="@string/text_some_text" />
+
+                <RadioButton
+                    android:id="@+id/address_3"
+                    style="@style/DefaultStyleRadioBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="false"
+                    android:text="@string/text_some_text" />
+            </RadioGroup>
 
             <TextView
                 android:id="@+id/textVisiblePhones"
@@ -222,7 +239,7 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/text_visible_phones"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkAddress_3" />
+                app:layout_constraintTop_toBottomOf="@+id/groupAdress" />
 
             <CheckBox
                 android:id="@+id/checkPhone_1"
@@ -267,17 +284,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/checkPhone_3"
                 tools:visibility="gone" />
 
-            <ProgressBar
-                android:id="@+id/progressBarInsert"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@+id/btnCreateAnnouncement"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:visibility="visible" />
-
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupPhones"
                 android:layout_width="wrap_content"
@@ -290,7 +296,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="fieldDescription,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,checkAddress_1,checkAddress_2,checkAddress_3,textVisibleAddresses,fieldCostProduct,textHourlyCost"
+                app:constraint_referenced_ids="layoutSeekBars, fieldDescription,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,groupAdress,textVisibleAddresses,fieldCostProduct,textHourlyCost"
                 tools:layout_editor_absoluteX="24dp"
                 tools:layout_editor_absoluteY="245dp"
                 tools:visibility="visible" />
@@ -298,4 +304,13 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-</FrameLayout>
+    <ProgressBar
+        android:id="@+id/progressBarInsert"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:visibility="invisible" />
+
+</RelativeLayout>

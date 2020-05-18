@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundApp"
     android:paddingTop="@dimen/paddingTopFromActionBar"
-    tools:context=".MainWorkspace.Fragments.Proposals.FragmentUserProposals">
+    tools:context=".mainWorkspace.fragments.proposals.FragmentUserProposals">
 
     <com.gigamole.navigationtabstrip.NavigationTabStrip
         android:id="@+id/pagerTabLayout"

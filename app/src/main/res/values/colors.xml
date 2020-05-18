@@ -8,6 +8,7 @@
     <color name="colorTransparent">#00FFFFFF</color>
 
     <color name="colorBlue">#299AE2</color>
+    <color name="colorBlueDark">#1E7BB6</color>
 
     <color name="colorItemsAnnouncement">#CCFFFFFF</color>
 
@@ -25,4 +26,5 @@
 
     <color name="colorGray_50">#80E8E8E8</color>
     <color name="colorRed_50">#80E62C2C</color>
+    <color name="colorAccent_50">#803A3A3A</color>
 </resources>

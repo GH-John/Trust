@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/calendarContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="6dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/calendar_btn_previous_month"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="14dp"
+                android:background="@drawable/btn_background_dark"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_arrow_left"
+                app:layout_constraintBottom_toBottomOf="@+id/calendar_title_month"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/calendar_title_year" />
+
+            <ImageButton
+                android:id="@+id/calendar_btn_next_month"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="14dp"
+                android:background="@drawable/btn_background_dark"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ic_arrow_right"
+                app:layout_constraintBottom_toBottomOf="@+id/calendar_title_month"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/calendar_title_year" />
+
+
+            <TextView
+                android:id="@+id/calendar_title_year"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/calendar_title_year"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/calendar_title_month"
+                app:layout_constraintStart_toStartOf="@+id/calendar_title_month"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/calendar_title_month"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/calendar_title_year"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="@string/calendar_title_month"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toStartOf="@+id/calendar_btn_next_month"
+                app:layout_constraintStart_toEndOf="@+id/calendar_btn_previous_month"
+                app:layout_constraintTop_toBottomOf="@+id/calendar_title_year" />
+
+            <com.application.arenda.ui.widgets.calendarView.Calendar
+                android:id="@+id/rentCalendar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/calendar_title_month" />
+
+            <TextView
+                android:id="@+id/textMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rentCalendar" />
+
+            <TextView
+                android:id="@+id/textFindNearFreeDates"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:drawableEnd="@drawable/ic_arrow_right"
+                android:text="@string/text_find_near_free_dates"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textMessage" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/titleContainerStartRent"
+                android:layout_width="120dp"
+                android:layout_height="150dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textFindNearFreeDates">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/calendarTitleStartRent"
+                        style="@style/DefaultStyleTextBoldRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_start_rent" />
+
+                    <TextView
+                        android:id="@+id/calendarDateStartRent"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/calendarTitleStartRent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:text="@string/text_three_dots" />
+
+                    <TextView
+                        android:id="@+id/calendarTimeStartRent"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/calendarDateStartRent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:text="@string/text_three_dots" />
+
+                    <RadioButton
+                        android:id="@+id/calendarStartDateSelectorRent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:checked="true"
+                        android:gravity="bottom" />
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:id="@+id/calendarDateIconContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="@+id/titleContainerStartRent"
+                app:layout_constraintEnd_toStartOf="@+id/titleContainerEndRent"
+                app:layout_constraintStart_toEndOf="@+id/titleContainerStartRent"
+                app:layout_constraintTop_toTopOf="@+id/titleContainerStartRent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/ic_item_calendar" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/ic_item_clock" />
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/titleContainerEndRent"
+                android:layout_width="120dp"
+                android:layout_height="150dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textFindNearFreeDates">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/calendarTitleEndRent"
+                        style="@style/DefaultStyleTextBoldRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="@string/text_end_rent" />
+
+                    <TextView
+                        android:id="@+id/calendarDateEndRent"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/calendarTitleEndRent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:text="@string/text_three_dots" />
+
+                    <TextView
+                        android:id="@+id/calendarTimeEndRent"
+                        style="@style/DefaultStyleTextRegular"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/calendarDateEndRent"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:text="@string/text_three_dots" />
+
+                    <RadioButton
+                        android:id="@+id/calendarEndDateSelectorRent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:checked="false"
+                        android:gravity="bottom" />
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/calendarBtnNowDay"
+                style="@style/DefaultStylePrimaryBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/calendar_btn_now"
+                android:text="@string/text_today"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleContainerStartRent" />
+
+            <Button
+                android:id="@+id/calendarBtnReset"
+                style="@style/DefaultStyleSecondaryBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/calendar_btn_reset"
+                android:text="@string/text_reset"
+                android:textColor="@color/colorWhite"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleContainerEndRent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundApp"
-    tools:context="com.application.arenda.MainWorkspace.Fragments.FragmentViewAnnouncement">
+    tools:context="com.application.arenda.mainWorkspace.fragments.FragmentViewAnnouncement">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -22,7 +22,7 @@
             android:paddingBottom="@dimen/paddingBottomFromBottomNav"
             tools:visibility="visible">
 
-            <com.application.arenda.UI.Components.ViewPager.PictureViewer
+            <com.application.arenda.ui.widgets.viewPager.PictureViewer
                 android:id="@+id/imgViewPager"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
@@ -30,13 +30,11 @@
                 android:clipToPadding="false"
                 android:foregroundGravity="center"
                 android:overScrollMode="never"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-            </com.application.arenda.UI.Components.ViewPager.PictureViewer>
+            </com.application.arenda.ui.widgets.viewPager.PictureViewer>
 
             <ImageButton
                 android:id="@+id/btnInsertToFavorite"
@@ -342,7 +340,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/itemUserCard" />
 
-            <com.application.arenda.UI.Components.CalendarView.CalendarDateTimeRange
+            <com.application.arenda.ui.widgets.calendarView.CalendarRentPeriod
                 android:id="@+id/bookingCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -350,19 +348,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titleSelectPeriodRent" />
 
-            <com.application.arenda.UI.HorizontalList.HorizontalList
+            <com.application.arenda.ui.widgets.horizontalList.HorizontalList
                 android:id="@+id/landLordAnnouncements"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/bookingCalendar"
                 app:titleSeeAll="@string/text_title_announcements_landlord" />
 
-            <com.application.arenda.UI.HorizontalList.HorizontalList
+            <com.application.arenda.ui.widgets.horizontalList.HorizontalList
                 android:id="@+id/similarAnnouncements"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/landLordAnnouncements"
                 app:titleSeeAll="@string/text_title_announcements_similar" />
 

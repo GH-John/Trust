@@ -4,6 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layoutUserFavorites"
-    tools:context=".MainWorkspace.Fragments.FragmentUserFavorites">
+    tools:context=".mainWorkspace.fragments.FragmentUserFavorites">
 
 </androidx.constraintlayout.widget.ConstraintLayout>

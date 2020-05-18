@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.application.arenda.ui.widgets.seekBar.CustomSeekBar
+        android:id="@+id/seekbarMinTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:maxValueTitle="@string/text_24Hour"
+        app:seekMaxValue="24"
+        app:minValueTitle="@string/text_1Hour"
+        app:seekMinValue="1"
+        app:seekBarTitle="@string/textMinTime"
+        app:seekCornerRadius="10"
+        app:seekDataType="2"
+        app:seekMode="single"
+        app:steps="1" />
+
+    <com.application.arenda.ui.widgets.seekBar.CustomSeekBar
+        android:id="@+id/seekbarMinDay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:maxValueTitle="@string/text_31Day"
+        app:seekMaxValue="31"
+        app:minValueTitle="@string/text_1Day"
+        app:seekMinValue="1"
+        app:seekBarTitle="@string/textMinDay"
+        app:seekCornerRadius="10"
+        app:seekDataType="2"
+        app:seekMode="single"
+        app:steps="1" />
+
+    <com.application.arenda.ui.widgets.seekBar.CustomSeekBar
+        android:id="@+id/seekbarMaxRentalPeriod"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:maxValueTitle="@string/text_12Months"
+        app:seekMaxValue="12"
+        app:minValueTitle="@string/text_1Month"
+        app:seekMinValue="1"
+        app:seekBarTitle="@string/textMaxRentalPeriod"
+        app:seekCornerRadius="10"
+        app:seekDataType="2"
+        app:seekMode="single"
+        app:steps="1" />
+
+    <com.application.arenda.ui.widgets.seekBar.CustomSeekBar
+        android:id="@+id/seekbarTimeIssue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:maxValueTitle="@string/text_Time_23"
+        app:seekMaxValue="23"
+        app:minValueTitle="@string/text_Time_00"
+        app:seekMinValue="0"
+        app:seekBarTitle="@string/textTimeIssue"
+        app:seekCornerRadius="10"
+        app:seekDataType="2"
+        app:seekMode="range"
+        app:steps="1" />
+
+    <com.application.arenda.ui.widgets.seekBar.CustomSeekBar
+        android:id="@+id/seekbarTimeReturn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:maxValueTitle="@string/text_Time_23"
+        app:seekMaxValue="23"
+        app:minValueTitle="@string/text_Time_00"
+        app:seekMinValue="0"
+        app:seekBarTitle="@string/textReturnTime"
+        app:seekCornerRadius="10"
+        app:seekDataType="2"
+        app:seekMode="range"
+        app:steps="1" />
+</LinearLayout>
