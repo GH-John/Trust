@@ -13,11 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.entities.announcements.ApiAnnouncement;
+import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
 import com.application.arenda.entities.announcements.categories.CategoriesAdapter;
 import com.application.arenda.entities.announcements.categories.EventSendID;
 import com.application.arenda.entities.announcements.categories.SubcategoriesAdapter;
-import com.application.arenda.entities.announcements.OnApiListener;
+import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.models.ModelSubcategory;
 import com.application.arenda.entities.utils.retrofit.CodeHandler;

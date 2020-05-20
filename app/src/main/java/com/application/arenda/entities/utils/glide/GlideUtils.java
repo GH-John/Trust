@@ -24,10 +24,10 @@ import timber.log.Timber;
 public class GlideUtils {
     private static RequestOptions defaultRequestOptions = new RequestOptions()
             .format(DecodeFormat.PREFER_ARGB_8888)
-            .placeholder(R.color.colorPlaceHolderPicture)
+//            .placeholder(R.color.colorPlaceHolderPicture)
             .error(R.drawable.ic_none)
-            .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-            .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+            .override(800, 800)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .timeout(50000);
 
     private static DrawableCrossFadeFactory defaultFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
@@ -38,12 +38,6 @@ public class GlideUtils {
             Glide.with(context)
                     .load(uri)
                     .into(imageView);
-
-//            GlideToVectorYou
-//                    .init()
-//                    .with(context)
-//                    .setPlaceHolder(R.color.colorPlaceHolderPicture, R.drawable.ic_none)
-//                    .load(uri, imageView);
         } else {
             throw new NullPointerException("GlideUtils.loadVector contains in parameters null");
         }
@@ -56,13 +50,14 @@ public class GlideUtils {
                 RequestOptions options = defaultOptions().clone();
                 options.circleCrop();
                 options.priority(Priority.NORMAL);
+                options.override(50, 50);
                 options.placeholder(R.drawable.ic_user_logo);
                 options.error(R.drawable.ic_user_logo);
 
                 Glide.with(context)
                         .load(uri)
-                        .thumbnail(0.5f)
                         .apply(options)
+                        .thumbnail(0.5f)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
             } else {
@@ -78,8 +73,8 @@ public class GlideUtils {
             if (context != null && imageView != null) {
                 Glide.with(context)
                         .load(drawable)
-                        .thumbnail(0.35f)
                         .apply(defaultOptions())
+                        .thumbnail(0.35f)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
             } else {
@@ -95,8 +90,8 @@ public class GlideUtils {
             if (context != null && imageView != null) {
                 Glide.with(context)
                         .load(uri)
-                        .thumbnail(0.35f)
                         .apply(defaultOptions())
+                        .thumbnail(0.35f)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
             } else {
@@ -116,8 +111,8 @@ public class GlideUtils {
 
                 Glide.with(context)
                         .load(uri)
-                        .thumbnail(0.35f)
                         .apply(options)
+                        .thumbnail(0.35f)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
             } else {
@@ -137,8 +132,8 @@ public class GlideUtils {
 
                 Glide.with(context)
                         .load(uri)
-                        .thumbnail(0.35f)
                         .apply(options)
+                        .thumbnail(0.35f)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
             } else {
@@ -158,8 +153,8 @@ public class GlideUtils {
 
                 Glide.with(context)
                         .load(uri)
-                        .thumbnail(0.35f)
                         .apply(options)
+                        .thumbnail(0.35f)
                         .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
                         .into(imageView);
             } else {
@@ -175,8 +170,8 @@ public class GlideUtils {
             if (context != null && requestOptions != null && factory != null && uri != null && imageView != null) {
                 Glide.with(context)
                         .load(uri)
-                        .thumbnail(0.35f)
                         .apply(requestOptions)
+                        .thumbnail(0.35f)
                         .transition(DrawableTransitionOptions.withCrossFade(factory))
                         .into(imageView);
             } else {
@@ -192,8 +187,8 @@ public class GlideUtils {
             if (context != null && requestOptions != null && factory != null && listener != null && uri != null && imageView != null) {
                 Glide.with(context)
                         .load(uri)
-                        .thumbnail(0.35f)
                         .apply(requestOptions)
+                        .thumbnail(0.35f)
                         .listener(listener)
                         .transition(DrawableTransitionOptions.withCrossFade(factory))
                         .into(imageView);

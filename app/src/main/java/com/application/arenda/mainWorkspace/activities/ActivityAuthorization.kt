@@ -7,14 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.application.arenda.R
 import com.application.arenda.databinding.ActivityAuthorizationBinding
-import com.application.arenda.entities.authentication.ApiAuthentication
+import com.application.arenda.entities.serverApi.auth.ApiAuthentication
 import com.application.arenda.entities.utils.Utils
 import com.application.arenda.entities.utils.retrofit.CodeHandler
 import com.application.arenda.entities.utils.retrofit.CodeHandler.*
-import com.application.arenda.ui.ComponentBackground
-import com.application.arenda.ui.SetDrawableImageViews
-import com.application.arenda.ui.style.SetBtnStyle
-import com.application.arenda.ui.style.SetFieldStyle
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -36,19 +32,7 @@ class ActivityAuthorization : AppCompatActivity() {
 
         api = ApiAuthentication.getInstance()
 
-        initStyles()
         initListeners()
-    }
-
-    private fun initStyles() {
-        SetDrawableImageViews.setStyle(ComponentBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 3f, 3f, 0f, 20f, 20f, 0f), bindingUtil.imagePinAuth)
-        SetFieldStyle.setEditTextBackground(ComponentBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), bindingUtil.fieldEmailAuth, bindingUtil.fieldPassAuth)
-        SetBtnStyle.setStyle(ComponentBackground(this, R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), bindingUtil.btnRegAuth)
-        SetBtnStyle.setStyle(ComponentBackground(this, R.color.colorAccent,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), bindingUtil.btnSignAuth)
     }
 
     private fun initListeners() {
@@ -68,8 +52,6 @@ class ActivityAuthorization : AppCompatActivity() {
                             }
 
                             override fun onSuccess(code: CodeHandler) {
-                                Timber.tag("Authorize").d(code.name)
-
                                 when (code) {
                                     SUCCESS -> {
                                         bindingUtil.progressBarAuth.visibility = View.GONE

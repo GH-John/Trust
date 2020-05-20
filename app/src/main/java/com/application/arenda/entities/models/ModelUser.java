@@ -10,9 +10,9 @@ import com.google.gson.annotations.SerializedName;
 @Entity(tableName = "users")
 public class ModelUser implements IModel {
     @PrimaryKey
-    @ColumnInfo(index = true)
+    @ColumnInfo(index = true, name = "idUser")
     @SerializedName("idUser")
-    private long idUser = 0;
+    private long ID = 0;
 
     @SerializedName("token")
     private String token = "";
@@ -70,14 +70,6 @@ public class ModelUser implements IModel {
 
     @Expose(deserialize = false, serialize = false)
     private boolean isCurrent;
-
-    public long getIdUser() {
-        return idUser;
-    }
-
-    public void setIdUser(long idUser) {
-        this.idUser = idUser;
-    }
 
     public String getCreated() {
         return created;
@@ -233,11 +225,11 @@ public class ModelUser implements IModel {
 
     @Override
     public long getID() {
-        return idUser;
+        return ID;
     }
 
     @Override
     public void setID(long id) {
-        this.idUser = id;
+        this.ID = id;
     }
 }

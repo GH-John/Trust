@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SortedList;
 
-import com.application.arenda.entities.recyclerView.ScrollCallBack;
 import com.application.arenda.R;
+import com.application.arenda.entities.recyclerView.ScrollCallBack;
 import com.application.arenda.ui.widgets.calendarView.CalendarLayoutManager;
 import com.application.arenda.ui.widgets.calendarView.CalendarScrollListener;
 import com.application.arenda.ui.widgets.calendarView.DayController;
@@ -297,8 +297,8 @@ public class CalendarAdapter extends RecyclerView.Adapter<VisibleMonthVH> {
     @SuppressLint("CheckResult")
     public void replaceEvents(List<ModelEvent> modelEvents) {
         Single.just(generateGroupedEvents(modelEvents))
-                .subscribeOn(Schedulers.computation())
-                .observeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> Timber.tag("Generated_group_events").d(String.valueOf(aBoolean)),
                         throwable -> {
                             if (monthCallBack != null)

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,25 +21,22 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.entities.announcements.ApiAnnouncement;
-import com.application.arenda.entities.announcements.IApiAnnouncement;
+import com.application.arenda.R;
 import com.application.arenda.entities.announcements.categories.EventSendID;
 import com.application.arenda.entities.models.ModelInsertAnnouncement;
 import com.application.arenda.entities.room.LocalCacheManager;
+import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
+import com.application.arenda.entities.serverApi.announcement.IApiAnnouncement;
 import com.application.arenda.entities.utils.DecimalDigitsInputFilter;
 import com.application.arenda.entities.utils.Utils;
-import com.application.arenda.R;
-import com.application.arenda.ui.ComponentBackground;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments;
-import com.application.arenda.ui.widgets.seekBar.CustomSeekBar;
-import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
-import com.application.arenda.ui.widgets.sideBar.SideBar;
 import com.application.arenda.ui.widgets.containerImg.ContainerFiller;
 import com.application.arenda.ui.widgets.containerImg.ContainerSelectedImages;
 import com.application.arenda.ui.widgets.containerImg.galery.AdapterGalery;
-import com.application.arenda.ui.style.SetBtnStyle;
-import com.application.arenda.ui.style.SetFieldStyle;
+import com.application.arenda.ui.widgets.seekBar.CustomSeekBar;
+import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
+import com.application.arenda.ui.widgets.sideBar.SideBar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -118,6 +116,18 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     @BindView(R.id.fieldCostProduct)
     EditText fieldCostProduct;
 
+    @BindView(R.id.checkBoxWithSale)
+    CheckBox checkBoxWithSale;
+
+    @BindView(R.id.checkPhone_1)
+    CheckBox checkPhone_1;
+
+    @BindView(R.id.checkPhone_2)
+    CheckBox checkPhone_2;
+
+    @BindView(R.id.checkPhone_3)
+    CheckBox checkPhone_3;
+
     @BindView(R.id.seekbarMinTime)
     CustomSeekBar seekbarMinTime;
 
@@ -142,7 +152,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     private String userToken = null;
     private LocalCacheManager cacheManager;
-    private ModelInsertAnnouncement announcement = new ModelInsertAnnouncement();
+    private ModelInsertAnnouncement model = new ModelInsertAnnouncement();
 
     private ContainerFragments containerFragments;
 
@@ -171,15 +181,14 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
         unbinder = ButterKnife.bind(this, view);
 
-        initComponents();
-        initStyles();
+        init();
         initListeners();
 
         return view;
     }
 
     @SuppressLint("CheckResult")
-    private void initComponents() {
+    private void init() {
         api = ApiAnnouncement.getInstance();
         cacheManager = LocalCacheManager.getInstance(getContext());
 
@@ -210,31 +219,19 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                 .setOnlyAlertOnce(true);
     }
 
-    private void initStyles() {
-        SetBtnStyle.setStyle(new ComponentBackground(getContext(), R.color.colorAccent,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), btnCreateAnnouncement);
-        SetBtnStyle.setStyle(new ComponentBackground(getContext(), R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), btnSelectCategory);
-
-        SetFieldStyle.setEditTextBackground(new ComponentBackground(getContext(), R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), fieldProductName, fieldCostProduct);
-        SetFieldStyle.setEditTextBackground(new ComponentBackground(getContext(), R.color.colorWhite,
-                R.color.shadowColor, 6f, 0f, 3f, 20f), fieldProductDescription);
-    }
-
     private void initListeners() {
         seekbarMinTime.setOnSeekbarChangeListener(value -> {
-            seekbarMinTime.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.textShortHour));
+            seekbarMinTime.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_hour));
             minTime = value.intValue();
         });
 
         seekbarMinDay.setOnSeekbarChangeListener(value -> {
-            seekbarMinDay.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.textShortDay));
+            seekbarMinDay.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_day));
             minDay = value.intValue();
         });
 
         seekbarMaxRentalPeriod.setOnSeekbarChangeListener(value -> {
-            seekbarMaxRentalPeriod.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.textShortMonth));
+            seekbarMaxRentalPeriod.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_month));
             maxRentalPeriod = value.intValue();
         });
 
@@ -242,9 +239,9 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                     seekbarTimeIssue
                             .setTextProgressSeekBar(
                                     minValue.intValue() +
-                                            getContext().getResources().getString(R.string.textTimeInflater) + " - " +
+                                            getContext().getResources().getString(R.string.text_time_inflater) + " - " +
                                             maxValue.intValue() +
-                                            getContext().getResources().getString(R.string.textTimeInflater)
+                                            getContext().getResources().getString(R.string.text_time_inflater)
                             );
 
                     timeOfIssueWith = LocalTime.of(minValue.intValue(), 0);
@@ -256,9 +253,9 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                     seekbarTimeReturn
                             .setTextProgressSeekBar(
                                     minValue.intValue() +
-                                            getContext().getResources().getString(R.string.textTimeInflater) + " - " +
+                                            getContext().getResources().getString(R.string.text_time_inflater) + " - " +
                                             maxValue.intValue() +
-                                            getContext().getResources().getString(R.string.textTimeInflater)
+                                            getContext().getResources().getString(R.string.text_time_inflater)
                             );
 
                     returnTimeWith = LocalTime.of(minValue.intValue(), 0);
@@ -273,24 +270,35 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
         btnCreateAnnouncement.setOnClickListener(v -> {
             if (containerFiller.getSize() > 0 &&
                     !Utils.fieldIsEmpty(getContext(), fieldProductName, fieldProductDescription, fieldCostProduct)) {
-                announcement.setUrisBitmap(new ArrayList<>(containerFiller.getUris()));
-                announcement.setMainUriBitmap(containerFiller.getLastSelected());
+                model.setUrisBitmap(new ArrayList<>(containerFiller.getUris()));
+                model.setMainUriBitmap(containerFiller.getLastSelected());
 
-                announcement.setName(fieldProductName.getText().toString());
-                announcement.setIdSubcategory(selectedSubcategory);
-                announcement.setDescription(fieldProductDescription.getText().toString());
+                model.setName(fieldProductName.getText().toString());
+                model.setIdSubcategory(selectedSubcategory);
+                model.setDescription(fieldProductDescription.getText().toString());
 
-                announcement.setCostToBYN(Float.parseFloat(fieldCostProduct.getText().toString()));
-                announcement.setCostToUSD(0f);
-                announcement.setCostToEUR(0f);
+                model.setCostToUSD(Float.parseFloat(fieldCostProduct.getText().toString()));
 
-                announcement.setAddress("адрес");
+                model.setAddress("адрес");
 
-                announcement.setPhone_1("+375(29)659-50-73");
-                announcement.setPhone_2("+375(29)681-37-83");
-                announcement.setPhone_3("+375(44)702-04-50");
+                model.setPhone_1(checkPhone_1.isChecked() ? checkPhone_1.getText().toString() : "");
+                model.setPhone_2(checkPhone_2.isChecked() ? checkPhone_2.getText().toString() : "");
+                model.setPhone_3(checkPhone_3.isChecked() ? checkPhone_3.getText().toString() : "");
 
-                insertAnnouncement(announcement);
+                model.setMinTime(minTime);
+                model.setMinDay(minDay);
+
+                model.setMaxRentalPeriod(maxRentalPeriod);
+
+                model.setTimeOfIssueWith(timeOfIssueWith);
+                model.setTimeOfIssueBy(timeOfIssueBy);
+
+                model.setReturnTimeWith(returnTimeWith);
+                model.setReturnTimeBy(returnTimeBy);
+
+                model.setWithSale(checkBoxWithSale.isChecked());
+
+                insertAnnouncement(model);
             }
         });
     }

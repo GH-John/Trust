@@ -1,11 +1,15 @@
 package com.application.arenda.entities.models;
 
+import android.net.Uri;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
+
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,9 +18,9 @@ import java.util.List;
 public class ModelAnnouncement implements IModel {
 
     @PrimaryKey
-    @ColumnInfo(index = true)
+    @ColumnInfo(index = true, name = "idAnnouncement")
     @SerializedName("idAnnouncement")
-    private long idAnnouncement = 0;
+    private long ID = 0;
 
     @SerializedName("idUser")
     private long idUser = 0;
@@ -46,13 +50,13 @@ public class ModelAnnouncement implements IModel {
     private int countFavorites = 0;
 
     @SerializedName("announcementCreated")
-    private String announcementCreated;
+    private LocalDateTime announcementCreated;
 
     @SerializedName("announcementUpdated")
-    private String announcementUpdated;
+    private LocalDateTime announcementUpdated;
 
     @SerializedName("userLogo")
-    private String userLogo;
+    private Uri userAvatar;
 
     @SerializedName("login")
     private String login = "";
@@ -61,7 +65,7 @@ public class ModelAnnouncement implements IModel {
     private float userRating = 0;
 
     @SerializedName("userCreated")
-    private String userCreated;
+    private LocalDateTime userCreated;
 
     @SerializedName("countAnnouncementsUser")
     private int countAnnouncementsUser = 0;
@@ -69,14 +73,8 @@ public class ModelAnnouncement implements IModel {
     @SerializedName("isFavorite")
     private boolean isFavorite = false;
 
-    @SerializedName("costToBYN")
-    private float costToBYN = 0.0f;
-
     @SerializedName("costToUSD")
     private float costToUSD = 0.0f;
-
-    @SerializedName("costToEUR")
-    private float costToEUR = 0.0f;
 
     @SerializedName("address")
     private String address = "";
@@ -91,16 +89,31 @@ public class ModelAnnouncement implements IModel {
     private String phone_3 = "";
 
     @SerializedName("pictures")
-    @Ignore
     private List<ModelPicture> pictures = new ArrayList<>();
 
-    public long getIdAnnouncement() {
-        return idAnnouncement;
-    }
+    @SerializedName("minTime")
+    private int minTime = 1;
 
-    public void setIdAnnouncement(long idAnnouncement) {
-        this.idAnnouncement = idAnnouncement;
-    }
+    @SerializedName("minDay")
+    private int minDay = 1;
+
+    @SerializedName("maxRentalPeriod")
+    private int maxRentalPeriod = 1;
+
+    @SerializedName("timeOfIssueWith")
+    private LocalTime timeOfIssueWith;
+
+    @SerializedName("timeOfIssueBy")
+    private LocalTime timeOfIssueBy;
+
+    @SerializedName("returnTimeWith")
+    private LocalTime returnTimeWith;
+
+    @SerializedName("returnTimeBy")
+    private LocalTime returnTimeBy;
+
+    @SerializedName("withSale")
+    private boolean withSale = false;
 
     public long getIdSubcategory() {
         return idSubcategory;
@@ -110,19 +123,19 @@ public class ModelAnnouncement implements IModel {
         this.idSubcategory = idSubcategory;
     }
 
-    public String getUserCreated() {
+    public LocalDateTime getUserCreated() {
         return userCreated;
     }
 
-    public void setUserCreated(String userCreated) {
+    public void setUserCreated(LocalDateTime userCreated) {
         this.userCreated = userCreated;
     }
 
-    public String getAnnouncementUpdated() {
+    public LocalDateTime getAnnouncementUpdated() {
         return announcementUpdated;
     }
 
-    public void setAnnouncementUpdated(String announcementUpdated) {
+    public void setAnnouncementUpdated(LocalDateTime announcementUpdated) {
         this.announcementUpdated = announcementUpdated;
     }
 
@@ -206,12 +219,12 @@ public class ModelAnnouncement implements IModel {
         this.countReviews = countReviews;
     }
 
-    public String getUserLogo() {
-        return userLogo;
+    public Uri getUserAvatar() {
+        return userAvatar;
     }
 
-    public void setUserLogo(String userLogo) {
-        this.userLogo = userLogo;
+    public void setUserAvatar(Uri userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
     public String getLogin() {
@@ -254,11 +267,11 @@ public class ModelAnnouncement implements IModel {
         this.countRent = countRent;
     }
 
-    public String getAnnouncementCreated() {
+    public LocalDateTime getAnnouncementCreated() {
         return announcementCreated;
     }
 
-    public void setAnnouncementCreated(String announcementCreated) {
+    public void setAnnouncementCreated(LocalDateTime announcementCreated) {
         this.announcementCreated = announcementCreated;
     }
 
@@ -270,28 +283,12 @@ public class ModelAnnouncement implements IModel {
         this.idUser = idUser;
     }
 
-    public float getCostToBYN() {
-        return costToBYN;
-    }
-
-    public void setCostToBYN(float costToBYN) {
-        this.costToBYN = costToBYN;
-    }
-
     public float getCostToUSD() {
         return costToUSD;
     }
 
     public void setCostToUSD(float costToUSD) {
         this.costToUSD = costToUSD;
-    }
-
-    public float getCostToEUR() {
-        return costToEUR;
-    }
-
-    public void setCostToEUR(float costToEUR) {
-        this.costToEUR = costToEUR;
     }
 
     public String getAddress() {
@@ -302,13 +299,77 @@ public class ModelAnnouncement implements IModel {
         this.address = address;
     }
 
+    public int getMinTime() {
+        return minTime;
+    }
+
+    public void setMinTime(int minTime) {
+        this.minTime = minTime;
+    }
+
+    public int getMinDay() {
+        return minDay;
+    }
+
+    public void setMinDay(int minDay) {
+        this.minDay = minDay;
+    }
+
+    public int getMaxRentalPeriod() {
+        return maxRentalPeriod;
+    }
+
+    public void setMaxRentalPeriod(int maxRentalPeriod) {
+        this.maxRentalPeriod = maxRentalPeriod;
+    }
+
+    public LocalTime getTimeOfIssueWith() {
+        return timeOfIssueWith;
+    }
+
+    public void setTimeOfIssueWith(LocalTime timeOfIssueWith) {
+        this.timeOfIssueWith = timeOfIssueWith;
+    }
+
+    public LocalTime getTimeOfIssueBy() {
+        return timeOfIssueBy;
+    }
+
+    public void setTimeOfIssueBy(LocalTime timeOfIssueBy) {
+        this.timeOfIssueBy = timeOfIssueBy;
+    }
+
+    public LocalTime getReturnTimeWith() {
+        return returnTimeWith;
+    }
+
+    public void setReturnTimeWith(LocalTime returnTimeWith) {
+        this.returnTimeWith = returnTimeWith;
+    }
+
+    public LocalTime getReturnTimeBy() {
+        return returnTimeBy;
+    }
+
+    public void setReturnTimeBy(LocalTime returnTimeBy) {
+        this.returnTimeBy = returnTimeBy;
+    }
+
+    public boolean isWithSale() {
+        return withSale;
+    }
+
+    public void setWithSale(boolean withSale) {
+        this.withSale = withSale;
+    }
+
     @Override
     public long getID() {
-        return idAnnouncement;
+        return ID;
     }
 
     @Override
     public void setID(long id) {
-        idAnnouncement = id;
+        ID = id;
     }
 }

@@ -35,7 +35,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "int", "APP_DB_VERSION", "1"
+            buildConfigField "int", "APP_DB_VERSION", "2"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
 
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
@@ -52,6 +52,7 @@ android {
             buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPictures.php\""
             buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
             buildConfigField "String", "URL_INSERT_VIEWER", "\"php/insert/InsertViewer.php\""
+            buildConfigField "String", "URL_INSERT_RENTAL", "\"php/insert/rental/InsertRent.php\""
 
             buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""
@@ -66,7 +67,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "int", "APP_DB_VERSION", "1"
+            buildConfigField "int", "APP_DB_VERSION", "2"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
 
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
@@ -83,6 +84,7 @@ android {
             buildConfigField "String", "URL_INSERT_PHOTO", "\"php/insert/InsertPictures.php\""
             buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
             buildConfigField "String", "URL_INSERT_VIEWER", "\"php/insert/InsertViewer.php\""
+            buildConfigField "String", "URL_INSERT_RENTAL", "\"php/insert/rental/InsertRent.php\""
 
             buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""

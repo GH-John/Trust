@@ -2,6 +2,7 @@ package com.application.arenda.ui.widgets.containerImg.customViews;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -9,8 +10,9 @@ import android.widget.RadioButton;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.R;
+import com.application.arenda.entities.utils.Utils;
+import com.application.arenda.entities.utils.glide.GlideUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +52,18 @@ public class CustomViewImg extends ConstraintLayout {
                 itemImg.setImageBitmap(bitmap);
             return true;
         } catch (IllegalArgumentException e) {
+            Timber.e(e);
+            Utils.messageOutput(getContext(), getContext().getString(R.string.error_please_choose_correct_img));
+        }
+
+        return false;
+    }
+
+    public boolean setImage(Uri uri) {
+        try {
+            GlideUtils.loadImage(getContext(), uri, itemImg);
+            return true;
+        } catch (Throwable e) {
             Timber.e(e);
             Utils.messageOutput(getContext(), getContext().getString(R.string.error_please_choose_correct_img));
         }

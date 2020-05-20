@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/itemUserLogo"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="@dimen/user_avatar_width"
+            android:layout_height="@dimen/user_avatar_height"
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp"
             android:contentDescription="@string/todo"
@@ -30,9 +30,9 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="12dp"
             android:layout_toEndOf="@+id/itemUserLogo"
-            android:text="@string/hint_login"
             android:textSize="12sp"
-            tools:ignore="RelativeOverlap" />
+            tools:ignore="RelativeOverlap"
+            tools:text="@string/hint_login" />
 
         <ImageButton
             android:id="@+id/itemAnnouncementMore"
@@ -63,8 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/todo"
-            android:maxHeight="400dp"
-            android:minHeight="250dp"
+            android:maxHeight="@dimen/max_picture_height"
+            android:minHeight="@dimen/min_picture_height"
             android:scaleType="centerCrop"
             android:transitionName="imgProduct" />
     </androidx.cardview.widget.CardView>
@@ -88,7 +88,7 @@
             android:drawableStart="@drawable/ic_star"
             android:drawablePadding="12dp"
             android:gravity="center"
-            android:text="@string/text_rate_announcement" />
+            tools:text="@string/text_rate_announcement" />
 
         <TextView
             android:id="@+id/textCountRent"
@@ -101,8 +101,8 @@
             android:drawableStart="@drawable/ic_count_rent"
             android:drawablePadding="12dp"
             android:gravity="center"
-            android:text="@string/text_count_rent"
-            tools:ignore="RelativeOverlap" />
+            tools:ignore="RelativeOverlap"
+            tools:text="@string/text_count_rent" />
 
         <ImageView
             android:id="@+id/imgHeart"
@@ -134,8 +134,8 @@
             android:layout_weight="1"
             android:gravity="start"
             android:maxLines="3"
-            android:text="@string/text_name_announcement"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="@string/text_name_announcement" />
 
         <TextView
             android:id="@+id/textCostProduct"
@@ -146,8 +146,8 @@
             android:layout_weight="1"
             android:gravity="end"
             android:maxLines="2"
-            android:text="@string/text_cost_announcement"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            tools:text="@string/text_cost_announcement" />
 
     </LinearLayout>
 
@@ -160,10 +160,10 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
-        android:text="@string/text_view_reviews"
         android:textColor="@color/colorHint"
         android:textSize="12sp"
         android:visibility="gone"
+        tools:text="@string/text_view_reviews"
         tools:visibility="visible" />
 
     <LinearLayout
@@ -183,10 +183,10 @@
             android:layout_gravity="start|center_vertical"
             android:layout_weight="0.4"
             android:gravity="start"
-            android:text="@string/text_placement_date_announcement"
             android:textColor="@color/colorHint"
-            android:textSize="8sp"
-            tools:ignore="SmallSp" />
+            android:textSize="10sp"
+            tools:ignore="SmallSp"
+            tools:text="@string/text_placement_date_announcement" />
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -213,9 +213,9 @@
                 android:layout_centerVertical="true"
                 android:gravity="center|right"
                 android:maxLines="2"
-                android:text="@string/text_lacation_announcement"
                 android:textSize="12sp"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                tools:text="@string/text_lacation_announcement" />
         </RelativeLayout>
 
     </LinearLayout>

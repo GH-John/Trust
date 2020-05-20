@@ -32,14 +32,14 @@ import static androidx.room.ForeignKey.CASCADE;
 public class ModelPicture implements IModel {
     @PrimaryKey(autoGenerate = true)
     @SerializedName("idPicture")
-    private long idPicture;
+    private long ID;
 
     @ColumnInfo(index = true)
     @SerializedName("idAnnouncement")
     private long idAnnouncement = 0;
 
     @SerializedName("picture")
-    private String picture;
+    private Uri uri;
 
     @SerializedName("isMainPicture")
     private boolean isMainPicture = false;
@@ -74,7 +74,7 @@ public class ModelPicture implements IModel {
                         List<Uri> uris = new ArrayList<>();
 
                         for (ModelPicture picture : pictures) {
-                            uris.add(Uri.parse(picture.getPicture()));
+                            uris.add(picture.getUri());
                         }
 
                         emitter.onSuccess(uris);
@@ -91,20 +91,12 @@ public class ModelPicture implements IModel {
     public static Single<Uri> getMainPicture(List<ModelPicture> collection) {
         return Single.create(emitter -> {
             for (ModelPicture picture : collection) {
-                if(picture.isMainPicture) {
-                    emitter.onSuccess(Uri.parse(picture.getPicture()));
+                if (picture.isMainPicture) {
+                    emitter.onSuccess(picture.getUri());
                     break;
                 }
             }
         });
-    }
-
-    public long getIdPicture() {
-        return idPicture;
-    }
-
-    public void setIdPicture(long idPicture) {
-        this.idPicture = idPicture;
     }
 
     public long getIdAnnouncement() {
@@ -115,12 +107,12 @@ public class ModelPicture implements IModel {
         this.idAnnouncement = idAnnouncement;
     }
 
-    public String getPicture() {
-        return picture;
+    public Uri getUri() {
+        return uri;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setUri(Uri uri) {
+        this.uri = uri;
     }
 
     public boolean isMainPicture() {
@@ -133,12 +125,12 @@ public class ModelPicture implements IModel {
 
     @Override
     public long getID() {
-        return idPicture;
+        return ID;
     }
 
     @Override
     public void setID(long id) {
-        idPicture = id;
+        ID = id;
     }
 
     @NonNull
@@ -146,7 +138,7 @@ public class ModelPicture implements IModel {
     public String toString() {
         return "ModelPicture{" +
                 "idAnnouncement=" + idAnnouncement +
-                ", picture='" + picture + '\'' +
+                ", picture='" + uri + '\'' +
                 ", isMainPicture=" + isMainPicture +
                 '}';
     }

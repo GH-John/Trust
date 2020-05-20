@@ -1,4 +1,4 @@
-package com.application.arenda.ui;
+package com.application.arenda.entities.utils;
 
 import android.content.res.Resources;
 

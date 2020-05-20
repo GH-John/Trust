@@ -50,12 +50,13 @@
         <item name="android:textSize">14sp</item>
         <item name="android:paddingLeft">20dp</item>
         <item name="android:paddingRight">20dp</item>
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_height">43dp</item>
         <item name="android:layout_marginEnd">24dp</item>
         <item name="android:layout_marginStart">24dp</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textColorHint">@color/colorHint</item>
-        <item name="android:backgroundTint">@color/colorTransparent</item>
+        <item name="android:background">@drawable/field_background</item>
+        <item name="android:elevation">2dp</item>
         <item name="android:fontFamily">@font/gotham_office_regular</item>
     </style>
 
@@ -64,6 +65,12 @@
         <item name="android:layout_marginEnd">24dp</item>
         <item name="android:layout_marginStart">24dp</item>
     </style>
+
+    <style name="DefaultStyleBtn.Small">
+        <item name="android:textSize">12sp</item>
+        <item name="android:height">10dp</item>
+    </style>
+
 
     <style name="DefaultStyleBtn">
         <item name="android:textSize">14sp</item>

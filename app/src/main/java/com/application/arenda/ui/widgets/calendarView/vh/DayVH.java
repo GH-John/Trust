@@ -32,12 +32,13 @@ public class DayVH extends FrameLayout implements DayController {
 
     private LocalDate mainDate, selectedDayStart, selectedDayEnd, date, toDay;
 
-    private ModelVisibleMonths months;
+    private ModelVisibleMonths modelMonths;
+    private ModelDayItem modelDay;
+
     private boolean isSelected;
     private boolean isDayIncludeToCurrentMonth;
     private boolean isCurrentDayOfMonth;
     private boolean isDayIncludeToPeriodStartToEnd = false;
-    private DayItemOnClickListener dayItemOnClickListener;
 
     public DayVH(Context context) {
         super(context);
@@ -56,7 +57,7 @@ public class DayVH extends FrameLayout implements DayController {
     public void onBind(ModelDayItem modelDayItem, ModelVisibleMonths months, LocalDate selectedDayStart, LocalDate selectedDayEnd) {
         date = modelDayItem.getDate();
 
-        this.months = months;
+        this.modelMonths = months;
         this.selectedDayStart = selectedDayStart;
         this.selectedDayEnd = selectedDayEnd;
 
@@ -77,8 +78,7 @@ public class DayVH extends FrameLayout implements DayController {
             modelDayItem.setEvents(dayEvents);
         }
 
-        if (dayItemOnClickListener != null)
-            setOnClickListener(v -> dayItemOnClickListener.onClick(modelDayItem, months, DayVH.this));
+        modelDay = modelDayItem;
 
         if (dayEvents.size() > 0) {
 
@@ -182,7 +182,11 @@ public class DayVH extends FrameLayout implements DayController {
     }
 
     public ModelVisibleMonths getModelVisibleMonths() {
-        return months;
+        return modelMonths;
+    }
+
+    public ModelDayItem getModelDay() {
+        return modelDay;
     }
 
     public boolean isCurrentDayOfMonth() {
@@ -258,7 +262,7 @@ public class DayVH extends FrameLayout implements DayController {
         if (listener == null)
             return;
 
-        dayItemOnClickListener = listener;
+        setOnClickListener(v -> listener.onClick(modelDay, modelMonths, DayVH.this));
     }
 
     public boolean isSelected() {

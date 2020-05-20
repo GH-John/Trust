@@ -12,9 +12,9 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.application.arenda.R;
 import com.application.arenda.entities.models.ModelPeriodRent;
 import com.application.arenda.entities.utils.Utils;
-import com.application.arenda.R;
 import com.application.arenda.ui.widgets.calendarView.adapters.CalendarAdapter;
 import com.application.arenda.ui.widgets.calendarView.models.ModelEvent;
 import com.application.arenda.ui.widgets.calendarView.models.ModelVisibleMonths;
@@ -85,6 +85,8 @@ public class CalendarRentPeriod extends FrameLayout {
     private LocalDate dateStart, dateEnd;
     private LocalTime timeStart, timeEnd;
 
+    private OnSelectRange rangeListener;
+
     public CalendarRentPeriod(Context context) {
         super(context);
         init(context, null);
@@ -139,14 +141,11 @@ public class CalendarRentPeriod extends FrameLayout {
 
             @Override
             public void getSelectedDate(LocalDate date, List<ModelEvent> events, DayController controller) {
-                if (calendarStartDateSelectorRent.isChecked()) {
+                if (calendarStartDateSelectorRent.isChecked())
                     setStartPeriodDate(date);
-                    dateStart = date;
-
-                } else {
+                else
                     setEndPeriodDate(date);
-                    dateEnd = date;
-                }
+
 
                 checkPeriodRent();
                 showTimePicker();
@@ -233,6 +232,11 @@ public class CalendarRentPeriod extends FrameLayout {
     }
 
     private void setStartPeriodDate(LocalDate date) {
+        dateStart = date;
+
+        if (rangeListener != null)
+            rangeListener.selectOnDateStart(dateStart);
+
         calendarDateStartRent.setText(date.format(DateTimeFormatter.ofPattern(Utils.DatePattern.dd_MM_yyyy.getPattern())));
     }
 
@@ -241,10 +245,18 @@ public class CalendarRentPeriod extends FrameLayout {
         timeStart = Utils.convertToLocalTime(hour, minute);
         Timber.tag("TimeStart").d(timeStart.toString());
 
+        if (rangeListener != null)
+            rangeListener.selectOnTimeStart(timeStart);
+
         calendarTimeStartRent.setText(Utils.convertTimeTo_24H_or_12h(timeStart, DateFormat.is24HourFormat(getContext())));
     }
 
     private void setEndPeriodDate(LocalDate date) {
+        dateEnd = date;
+
+        if (rangeListener != null)
+            rangeListener.selectOnDateEnd(dateEnd);
+
         calendarDateEndRent.setText(date.format(DateTimeFormatter.ofPattern(Utils.DatePattern.dd_MM_yyyy.getPattern())));
     }
 
@@ -253,20 +265,55 @@ public class CalendarRentPeriod extends FrameLayout {
         timeEnd = Utils.convertToLocalTime(hour, minute);
         Timber.tag("TimeEnd").d(timeEnd.toString());
 
+        if (rangeListener != null)
+            rangeListener.selectOnTimeEnd(timeEnd);
+
         calendarTimeEndRent.setText(Utils.convertTimeTo_24H_or_12h(timeEnd, DateFormat.is24HourFormat(getContext())));
     }
 
     private void resetStartPeriod() {
+        dateStart = null;
+        timeStart = null;
+
+        if (rangeListener != null)
+            rangeListener.selectOnDateStart(dateStart);
+
+        if (rangeListener != null)
+            rangeListener.selectOnTimeStart(timeStart);
+
         calendarDateStartRent.setText(getResources().getString(R.string.text_three_dots));
         calendarTimeStartRent.setText(getResources().getString(R.string.text_three_dots));
     }
 
     private void resetEndPeriod() {
+        dateEnd = null;
+        timeEnd = null;
+
+        if (rangeListener != null)
+            rangeListener.selectOnDateEnd(dateEnd);
+
+        if (rangeListener != null)
+            rangeListener.selectOnTimeEnd(timeEnd);
+
         calendarDateEndRent.setText(getResources().getString(R.string.text_three_dots));
         calendarTimeEndRent.setText(getResources().getString(R.string.text_three_dots));
     }
 
     public void replaceEvents(List<ModelEvent> modelEvents) {
         calendar.replaceEvents(modelEvents);
+    }
+
+    public void setRangeListener(OnSelectRange rangeListener) {
+        this.rangeListener = rangeListener;
+    }
+
+    public interface OnSelectRange {
+        void selectOnDateStart(LocalDate date);
+
+        void selectOnTimeStart(LocalTime time);
+
+        void selectOnDateEnd(LocalDate date);
+
+        void selectOnTimeEnd(LocalTime time);
     }
 }

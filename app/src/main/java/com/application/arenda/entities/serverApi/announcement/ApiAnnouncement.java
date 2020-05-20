@@ -1,4 +1,4 @@
-package com.application.arenda.entities.announcements;
+package com.application.arenda.entities.serverApi.announcement;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,11 +12,13 @@ import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.models.ModelInsertAnnouncement;
 import com.application.arenda.entities.models.ModelPeriodRent;
 import com.application.arenda.entities.models.ModelSubcategory;
+import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.utils.FileUtils;
 import com.application.arenda.entities.utils.retrofit.ApiClient;
+import com.application.arenda.entities.utils.retrofit.ApiHandler;
 import com.application.arenda.entities.utils.retrofit.CodeHandler;
 import com.application.arenda.entities.utils.retrofit.RetrofitUtils;
-import com.application.arenda.entities.utils.retrofit.ServerHandler;
+import com.application.arenda.entities.utils.retrofit.ServerResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -191,86 +193,92 @@ public final class ApiAnnouncement {
         });
     }
 
+    @SuppressLint("CheckResult")
     public synchronized Observable<IApiAnnouncement.AnnouncementCodes> insertAnnouncement(Context context, String token, ModelInsertAnnouncement announcement) {
-        return Observable.create(emitter -> {
-            List<Uri> uris = announcement.getUrisBitmap();
-            List<MultipartBody.Part> partList = new ArrayList<>();
+        List<Uri> uris = announcement.getUrisBitmap();
+        List<MultipartBody.Part> partList = new ArrayList<>();
 
-            for (int i = 0; i < uris.size(); i++) {
-                partList.add(RetrofitUtils.createFilePart(context, "picture_" + i, uris.get(i)));
-            }
+        for (int i = 0; i < uris.size(); i++) {
+            partList.add(RetrofitUtils.createFilePart(context, "picture_" + i, uris.get(i)));
+        }
 
-            api.insertAnnouncement(
-                    token,
-                    announcement.getIdSubcategory(),
+        return Observable.create(emitter -> api
+                .insertAnnouncement(
+                        token,
+                        announcement.getIdSubcategory(),
 
-                    announcement.getName(),
-                    announcement.getDescription(),
+                        announcement.getName(),
+                        announcement.getDescription(),
 
-                    announcement.getCostToBYN(),
-                    announcement.getCostToUSD(),
-                    announcement.getCostToEUR(),
+                        announcement.getCostToUSD(),
 
-                    announcement.getAddress(),
+                        announcement.getAddress(),
 
-                    announcement.getPhone_1(),
+                        announcement.getPhone_1(),
 
-                    announcement.getPhone_2(),
+                        announcement.getPhone_2(),
 
-                    announcement.getPhone_3()
+                        announcement.getPhone_3(),
+                        announcement.getMinTime(),
+                        announcement.getMinDay(),
+                        announcement.getMaxRentalPeriod(),
+                        announcement.getTimeOfIssueWith().toString(),
+                        announcement.getTimeOfIssueBy().toString(),
+                        announcement.getReturnTimeWith().toString(),
+                        announcement.getReturnTimeBy().toString(),
+                        announcement.isWithSale()
 
-            ).enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                    if (response.isSuccessful()) {
-                        try {
-                            String res = response.body().string();
+                ).enqueue(new Callback<ResponseBody>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                        if (response.isSuccessful()) {
+                            try {
+                                String res = response.body().string();
 
-                            if (res != null) {
-                                JSONObject object = new JSONObject(res);
+                                if (res != null) {
+                                    JSONObject object = new JSONObject(res);
 
-                                String message = object.getString("response");
+                                    String message = object.getString("response");
 
-                                if (IApiAnnouncement.AnnouncementCodes.valueOf(message) == IApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENT_ADDED) {
+                                    if (IApiAnnouncement.AnnouncementCodes.valueOf(message) == IApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENT_ADDED) {
 
-                                    emitter.onNext(IApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENT_ADDED);
+                                        emitter.onNext(IApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENT_ADDED);
 
-                                    insertPictures(object.getString("idAnnouncement"), FileUtils.getFileName(context, announcement.getMainUri()), partList, new OnApiListener() {
-                                        @Override
-                                        public void onComplete(@NonNull CodeHandler code) {
+                                        insertPictures(object.getString("idAnnouncement"), FileUtils.getFileName(context, announcement.getMainUri()), partList, new OnApiListener() {
+                                            @Override
+                                            public void onComplete(@NonNull CodeHandler code) {
 //                                        emitter.onNext(code);
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onFailure(@NonNull Throwable t) {
-                                            emitter.onError(t);
-                                        }
-                                    });
+                                            @Override
+                                            public void onFailure(@NonNull Throwable t) {
+                                                emitter.onError(t);
+                                            }
+                                        });
+                                    } else {
+                                        emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
+                                    }
                                 } else {
                                     emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
                                 }
-                            } else {
-                                emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
+                            } catch (JSONException | IOException e) {
+                                Timber.e(e);
+                                emitter.onError(e);
+                            } finally {
+                                emitter.onComplete();
                             }
-                        } catch (JSONException | IOException e) {
-                            Timber.e(e);
-                            emitter.onError(e);
-                        } finally {
-                            emitter.onComplete();
+                        } else {
+                            emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
+
+                            Timber.tag("ErrorInsertAnnouncement").e(response.message());
                         }
-                    } else {
-                        emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-
-                        Timber.tag("ErrorInsertAnnouncement").e(response.message());
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    emitter.onError(t);
-                }
-            });
-        });
+                    @Override
+                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                        emitter.onError(t);
+                    }
+                }));
     }
 
     public synchronized Single<List<ModelAnnouncement>> loadAnnouncements(Context context, String token, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
@@ -280,17 +288,17 @@ public final class ApiAnnouncement {
                         lastID,
                         limitItemsInPage,
                         query)
-                        .enqueue(new Callback<ServerHandler<List<ModelAnnouncement>>>() {
+                        .enqueue(new Callback<ServerResponse<List<ModelAnnouncement>>>() {
                             @Override
-                            public void onResponse(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Response<ServerHandler<List<ModelAnnouncement>>> response) {
-                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Response<ServerResponse<List<ModelAnnouncement>>> response) {
+                                if (response.isSuccessful()) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
                                 } else if (response.code() >= 200 && response.code() <= 300) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
@@ -299,7 +307,7 @@ public final class ApiAnnouncement {
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
                                 if (t instanceof SocketTimeoutException || t instanceof ConnectException)
                                     if (listener != null)
                                         listener.onComplete(CodeHandler.NETWORK_ERROR);
@@ -319,17 +327,17 @@ public final class ApiAnnouncement {
                         lastID,
                         limitItemsInPage,
                         query)
-                        .enqueue(new Callback<ServerHandler<List<ModelAnnouncement>>>() {
+                        .enqueue(new Callback<ServerResponse<List<ModelAnnouncement>>>() {
                             @Override
-                            public void onResponse(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Response<ServerHandler<List<ModelAnnouncement>>> response) {
-                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Response<ServerResponse<List<ModelAnnouncement>>> response) {
+                                if (response.isSuccessful()) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
                                 } else if (response.code() >= 200 && response.code() <= 300) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
@@ -338,7 +346,7 @@ public final class ApiAnnouncement {
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
                                 if (t instanceof SocketTimeoutException || t instanceof ConnectException)
                                     if (listener != null)
                                         listener.onComplete(CodeHandler.NETWORK_ERROR);
@@ -359,17 +367,17 @@ public final class ApiAnnouncement {
                         lastID,
                         limitItemsInPage,
                         query)
-                        .enqueue(new Callback<ServerHandler<List<ModelAnnouncement>>>() {
+                        .enqueue(new Callback<ServerResponse<List<ModelAnnouncement>>>() {
                             @Override
-                            public void onResponse(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Response<ServerHandler<List<ModelAnnouncement>>> response) {
-                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Response<ServerResponse<List<ModelAnnouncement>>> response) {
+                                if (response.isSuccessful()) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
                                 } else if (response.code() >= 200 && response.code() <= 300) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
@@ -378,7 +386,7 @@ public final class ApiAnnouncement {
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
                                 if (t instanceof SocketTimeoutException || t instanceof ConnectException)
                                     if (listener != null)
                                         listener.onComplete(CodeHandler.NETWORK_ERROR);
@@ -399,17 +407,17 @@ public final class ApiAnnouncement {
                         idAnnouncement,
                         limitItemsInPage,
                         query)
-                        .enqueue(new Callback<ServerHandler<List<ModelAnnouncement>>>() {
+                        .enqueue(new Callback<ServerResponse<List<ModelAnnouncement>>>() {
                             @Override
-                            public void onResponse(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Response<ServerHandler<List<ModelAnnouncement>>> response) {
-                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Response<ServerResponse<List<ModelAnnouncement>>> response) {
+                                if (response.isSuccessful()) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
                                 } else if (response.code() >= 200 && response.code() <= 300) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
@@ -418,7 +426,7 @@ public final class ApiAnnouncement {
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<ServerHandler<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelAnnouncement>>> call, @NonNull Throwable t) {
                                 if (t instanceof SocketTimeoutException || t instanceof ConnectException)
                                     if (listener != null)
                                         listener.onComplete(CodeHandler.NETWORK_ERROR);
@@ -563,21 +571,38 @@ public final class ApiAnnouncement {
                 }));
     }
 
+    public synchronized Single<ApiHandler> insertRental(String token, long idAnnouncement, String rentalStart, String rentalEnd) {
+        return Single.create(emitter -> api.insertRental(token, idAnnouncement, rentalStart, rentalEnd)
+                .enqueue(new Callback<ApiHandler>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ApiHandler> call, @NonNull Response<ApiHandler> response) {
+                        if (response.isSuccessful()) {
+                            emitter.onSuccess(response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ApiHandler> call, @NonNull Throwable t) {
+                        emitter.onError(t);
+                    }
+                }));
+    }
+
     public Single<List<ModelPeriodRent>> loadPeriodRentAnnouncement(Context context, long idAnnouncement, OnApiListener listener) {
         return Single.create(emitter ->
                 api.loadPeriodRentAnnouncement(
                         idAnnouncement)
-                        .enqueue(new Callback<ServerHandler<List<ModelPeriodRent>>>() {
+                        .enqueue(new Callback<ServerResponse<List<ModelPeriodRent>>>() {
                             @Override
-                            public void onResponse(@NonNull Call<ServerHandler<List<ModelPeriodRent>>> call, @NonNull Response<ServerHandler<List<ModelPeriodRent>>> response) {
-                                if (response.isSuccessful() && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Response<ServerResponse<List<ModelPeriodRent>>> response) {
+                                if (response.isSuccessful()) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
                                 } else if (response.code() >= 200 && response.code() <= 300) {
                                     if (listener != null)
-                                        listener.onComplete(CodeHandler.get(response.body().getCode()));
+                                        listener.onComplete(response.body().getHandler());
 
                                     Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
@@ -586,7 +611,7 @@ public final class ApiAnnouncement {
                             }
 
                             @Override
-                            public void onFailure(@NonNull Call<ServerHandler<List<ModelPeriodRent>>> call, @NonNull Throwable t) {
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Throwable t) {
                                 if (t instanceof SocketTimeoutException || t instanceof ConnectException)
                                     if (listener != null)
                                         listener.onComplete(CodeHandler.NETWORK_ERROR);

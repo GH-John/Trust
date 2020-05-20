@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.DisplayMetrics;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -120,10 +119,27 @@ public class Utils {
         return dateTime.format(DateTimeFormatter.ofPattern(pattern.getPattern()));
     }
 
+    public static String getFormatingDate(Context context, LocalDateTime dateTime, DatePattern pattern) {
+        return dateTime.format(DateTimeFormatter.ofPattern(pattern.getPattern()));
+    }
+
     public static String getFormatingDate(Context context, String date) {
         LocalDate today = LocalDate.now();
 
         LocalDateTime dateTime = LocalDateTime.parse(date, DateTimeFormatter.ofPattern(DatePattern.yyyy_MM_dd_HH_mm_ss.getPattern()));
+
+        if (today.getDayOfYear() - dateTime.getDayOfYear() == 0)
+            return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.HH_mm.getPattern()));
+
+        if (today.getDayOfYear() - dateTime.getDayOfYear() == 1)
+            return context.getString(R.string.text_yesterday) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.HH_mm.getPattern()));
+
+
+        return dateTime.getDayOfMonth() + " " + getMonthOfYear(context, dateTime.getMonth(), false) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.HH_mm.getPattern()));
+    }
+
+    public static String getFormatingDate(Context context, LocalDateTime dateTime) {
+        LocalDate today = LocalDate.now();
 
         if (today.getDayOfYear() - dateTime.getDayOfYear() == 0)
             return context.getString(R.string.text_today) + ", " + dateTime.format(DateTimeFormatter.ofPattern(DatePattern.HH_mm.getPattern()));
@@ -388,14 +404,6 @@ public class Utils {
         }
 
         return false;
-    }
-
-    public static float DpToPx(Context context, float dp) {
-        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-    }
-
-    public static float PxToDp(Context context, float px) {
-        return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
     }
 
     public enum DatePattern {

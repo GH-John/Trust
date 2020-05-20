@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d8b7a5bfb88ad41a5da1fe974de296cc",
+    "identityHash": "16a4a32ff96d349ea26da141f8d881b9",
     "entities": [
       {
         "tableName": "users",
@@ -149,7 +149,7 @@
       },
       {
         "tableName": "announcements",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idAnnouncement` INTEGER NOT NULL, `idUser` INTEGER NOT NULL, `idSubcategory` INTEGER NOT NULL, `name` TEXT, `description` TEXT, `announcementRating` REAL NOT NULL, `countRent` INTEGER NOT NULL, `countReviews` INTEGER NOT NULL, `countViewers` INTEGER NOT NULL, `countFavorites` INTEGER NOT NULL, `announcementCreated` TEXT, `announcementUpdated` TEXT, `userLogo` TEXT, `login` TEXT, `userRating` REAL NOT NULL, `userCreated` TEXT, `countAnnouncementsUser` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `costToBYN` REAL NOT NULL, `costToUSD` REAL NOT NULL, `costToEUR` REAL NOT NULL, `address` TEXT, `phone_1` TEXT, `phone_2` TEXT, `phone_3` TEXT, PRIMARY KEY(`idAnnouncement`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idAnnouncement` INTEGER NOT NULL, `idUser` INTEGER NOT NULL, `idSubcategory` INTEGER NOT NULL, `name` TEXT, `description` TEXT, `announcementRating` REAL NOT NULL, `countRent` INTEGER NOT NULL, `countReviews` INTEGER NOT NULL, `countViewers` INTEGER NOT NULL, `countFavorites` INTEGER NOT NULL, `announcementCreated` TEXT, `announcementUpdated` TEXT, `userAvatar` TEXT, `login` TEXT, `userRating` REAL NOT NULL, `userCreated` TEXT, `countAnnouncementsUser` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `costToUSD` REAL NOT NULL, `address` TEXT, `phone_1` TEXT, `phone_2` TEXT, `phone_3` TEXT, `pictures` TEXT, `minTime` INTEGER NOT NULL, `minDay` INTEGER NOT NULL, `maxRentalPeriod` INTEGER NOT NULL, `timeOfIssueWith` TEXT, `timeOfIssueBy` TEXT, `returnTimeWith` TEXT, `returnTimeBy` TEXT, `withSale` INTEGER NOT NULL, PRIMARY KEY(`idAnnouncement`))",
         "fields": [
           {
             "fieldPath": "idAnnouncement",
@@ -224,8 +224,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "userLogo",
-            "columnName": "userLogo",
+            "fieldPath": "userAvatar",
+            "columnName": "userAvatar",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -260,20 +260,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "costToBYN",
-            "columnName": "costToBYN",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
             "fieldPath": "costToUSD",
             "columnName": "costToUSD",
-            "affinity": "REAL",
-            "notNull": true
-          },
-          {
-            "fieldPath": "costToEUR",
-            "columnName": "costToEUR",
             "affinity": "REAL",
             "notNull": true
           },
@@ -300,6 +288,60 @@
             "columnName": "phone_3",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "pictures",
+            "columnName": "pictures",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minTime",
+            "columnName": "minTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minDay",
+            "columnName": "minDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxRentalPeriod",
+            "columnName": "maxRentalPeriod",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeOfIssueWith",
+            "columnName": "timeOfIssueWith",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timeOfIssueBy",
+            "columnName": "timeOfIssueBy",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "returnTimeWith",
+            "columnName": "returnTimeWith",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "returnTimeBy",
+            "columnName": "returnTimeBy",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "withSale",
+            "columnName": "withSale",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -322,7 +364,7 @@
       },
       {
         "tableName": "pictures",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idPicture` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idAnnouncement` INTEGER NOT NULL, `picture` TEXT, `isMainPicture` INTEGER NOT NULL, FOREIGN KEY(`idAnnouncement`) REFERENCES `announcements`(`idAnnouncement`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idPicture` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idAnnouncement` INTEGER NOT NULL, `uri` TEXT, `isMainPicture` INTEGER NOT NULL, FOREIGN KEY(`idAnnouncement`) REFERENCES `announcements`(`idAnnouncement`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "idPicture",
@@ -337,8 +379,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "picture",
-            "columnName": "picture",
+            "fieldPath": "uri",
+            "columnName": "uri",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -383,7 +425,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd8b7a5bfb88ad41a5da1fe974de296cc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '16a4a32ff96d349ea26da141f8d881b9')"
     ]
   }
 }

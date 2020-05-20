@@ -18,6 +18,7 @@
             android:id="@+id/viewAnnouncementContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:paddingTop="@dimen/paddingTopFromActionBar"
             android:paddingBottom="@dimen/paddingBottomFromBottomNav"
             tools:visibility="visible">
@@ -25,7 +26,7 @@
             <com.application.arenda.ui.widgets.viewPager.PictureViewer
                 android:id="@+id/imgViewPager"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="@dimen/min_picture_height"
                 android:layout_marginTop="16dp"
                 android:clipToPadding="false"
                 android:foregroundGravity="center"
@@ -69,12 +70,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/text_some_text"
                 android:textColor="@color/colorHint"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textPublished"
                 app:layout_constraintStart_toEndOf="@+id/textPublished"
-                app:layout_constraintTop_toTopOf="@+id/textPublished" />
+                app:layout_constraintTop_toTopOf="@+id/textPublished"
+                tools:text="@string/text_some_text" />
 
             <TextView
                 android:id="@+id/textNameProduct"
@@ -83,9 +84,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/text_some_text"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPublished" />
+                app:layout_constraintTop_toBottomOf="@+id/textPublished"
+                tools:text="@string/text_some_text" />
 
             <TextView
                 android:id="@+id/textCostProduct"
@@ -93,9 +94,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:text="@string/text_cost_announcement"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/itemLocation" />
+                app:layout_constraintTop_toTopOf="@+id/itemLocation"
+                tools:text="@string/text_cost_announcement" />
 
             <TextView
                 android:id="@+id/itemLocation"
@@ -106,96 +107,20 @@
                 android:layout_marginEnd="24dp"
                 android:drawableLeft="@drawable/ic_location"
                 android:drawablePadding="12dp"
-                android:text="@string/text_address"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textNameProduct"
-                tools:ignore="RtlHardcoded" />
+                tools:ignore="RtlHardcoded"
+                tools:text="@string/text_address" />
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+            <include
+                android:id="@+id/cardViewInfo"
+                layout="@layout/announcement_info"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                app:cardElevation="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/itemLocation">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="14dp"
-                    android:paddingBottom="14dp">
-
-                    <TextView
-                        android:id="@+id/textRate"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginTop="0dp"
-                        android:text="@string/text_rate" />
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textRate"
-                        android:layout_alignStart="@+id/textRate"
-                        android:layout_alignEnd="@+id/textRate"
-                        android:layout_marginTop="12dp">
-
-                        <TextView
-                            android:id="@+id/textRating"
-                            style="@style/DefaultStyleTextRegular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:drawableLeft="@drawable/ic_star"
-                            android:drawablePadding="12dp"
-                            android:gravity="center"
-                            android:text="@string/text_rate_announcement"
-                            tools:ignore="RtlHardcoded" />
-
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/textRent"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginTop="0dp"
-                        android:layout_marginEnd="24dp"
-                        android:text="@string/text_rent"
-                        tools:ignore="RelativeOverlap" />
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textRent"
-                        android:layout_alignStart="@+id/textRent"
-                        android:layout_alignEnd="@+id/textRent"
-                        android:layout_marginTop="12dp">
-
-
-                        <TextView
-                            android:id="@+id/textCountRent"
-                            style="@style/DefaultStyleTextRegular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:drawableLeft="@drawable/ic_count_rent"
-                            android:drawablePadding="12dp"
-                            android:gravity="center"
-                            android:text="@string/text_rate_announcement"
-                            tools:ignore="RtlHardcoded" />
-                    </FrameLayout>
-                </RelativeLayout>
-
-            </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toBottomOf="@+id/itemLocation" />
 
             <TextView
                 android:id="@+id/textDescription"
@@ -207,7 +132,7 @@
                 android:text="@string/textDescription"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView" />
+                app:layout_constraintTop_toBottomOf="@+id/cardViewInfo" />
 
             <TextView
                 android:id="@+id/textDescriptionProduct"
@@ -217,116 +142,23 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="24dp"
-                android:text="@string/text_some_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/textDescription"
+                tools:text="@string/text_some_text" />
 
-            <androidx.cardview.widget.CardView
+            <include
                 android:id="@+id/itemUserCard"
+                layout="@layout/about_user_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="24dp"
-                android:elevation="2dp"
-                app:cardCornerRadius="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textDescriptionProduct">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp">
-
-                    <ImageView
-                        android:id="@+id/userCardLogo"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:contentDescription="@string/todo"
-                        android:src="@drawable/ic_item_user_logo" />
-
-                    <TextView
-                        android:id="@+id/userCardLogin"
-                        style="@style/DefaultStyleTextBoldRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_toEndOf="@id/userCardLogo"
-                        android:text="@string/hint_login" />
-
-                    <TextView
-                        android:id="@+id/userCardRating"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/userCardLogin"
-                        android:layout_marginStart="12dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_toEndOf="@id/userCardLogo"
-                        android:drawableStart="@drawable/ic_star"
-                        android:drawablePadding="8dp"
-                        android:gravity="center"
-                        android:text="@string/text_rate"
-                        android:textSize="12sp" />
-
-                    <LinearLayout
-                        android:id="@+id/titlePlacedAds"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/userCardLogo"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="24dp">
-
-                        <TextView
-                            style="@style/DefaultStyleTextBoldRegular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_placed_ads" />
-
-                        <TextView
-                            android:id="@+id/userCardCountAnnouncements"
-                            style="@style/DefaultStyleTextBoldRegular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
-                            android:text="@string/text_some_number" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/titlePlacedAds"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginTop="16dp">
-
-                        <TextView
-                            style="@style/DefaultStyleTextRegular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_authorization_user"
-                            android:textColor="@color/colorHint"
-                            android:textSize="12sp"
-                            tools:ignore="SmallSp" />
-
-                        <TextView
-                            android:id="@+id/userCardUserCreated"
-                            style="@style/DefaultStyleTextRegular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:text="@string/text_placement_date_announcement"
-                            android:textColor="@color/colorHint"
-                            android:textSize="12sp"
-                            tools:ignore="SmallSp" />
-                    </LinearLayout>
-
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toBottomOf="@+id/textDescriptionProduct" />
 
             <TextView
                 android:id="@+id/titleSelectPeriodRent"
@@ -348,25 +180,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titleSelectPeriodRent" />
 
-            <com.application.arenda.ui.widgets.horizontalList.HorizontalList
-                android:id="@+id/landLordAnnouncements"
+            <include
+                layout="@layout/landlord_similar_announcements"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bookingCalendar"
-                app:titleSeeAll="@string/text_title_announcements_landlord" />
-
-            <com.application.arenda.ui.widgets.horizontalList.HorizontalList
-                android:id="@+id/similarAnnouncements"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/landLordAnnouncements"
-                app:titleSeeAll="@string/text_title_announcements_similar" />
+                app:layout_constraintTop_toBottomOf="@+id/bookingCalendar" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
@@ -385,6 +206,6 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/scrollView"
         android:layout_margin="16dp"
-        android:text="@string/btn_booking" />
+        tools:text="@string/btn_booking" />
 
 </RelativeLayout>

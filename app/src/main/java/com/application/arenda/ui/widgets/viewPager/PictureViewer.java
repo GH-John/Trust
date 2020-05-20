@@ -10,9 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
 public class PictureViewer extends ViewPager {
-    private int baseElevation = 0;
-    private int raisingElevation = 1;
-    private float smallerScale = 0.8f;
+    private float smallerScale = 0.9f;
 
     public PictureViewer(@NonNull Context context) {
         super(context);
@@ -26,13 +24,13 @@ public class PictureViewer extends ViewPager {
 
     private void transform_viewPager() {
         Resources r = getResources();
-        int partialWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, r.getDisplayMetrics());
-        int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, r.getDisplayMetrics());
+        int partialWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, r.getDisplayMetrics());
+        int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, r.getDisplayMetrics());
 
-        int viewPagerPadding = partialWidth + pageMargin;
+        int viewPagerPadding = partialWidth + pageMargin + 10;
         setPageMargin(pageMargin);
-        setPadding(viewPagerPadding, 0, viewPagerPadding, 0);
+        setPadding(viewPagerPadding, viewPagerPadding / 2, viewPagerPadding, viewPagerPadding / 2);
 
-        setPageTransformer(false, new CardsPagerTransformerBasic(baseElevation, raisingElevation, smallerScale));
+        setPageTransformer(false, new CardsPagerTransformerBasic(smallerScale));
     }
 }

@@ -1,0 +1,431 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "353fb2e6aadf4b254083b8dd9da0cfe3",
+    "entities": [
+      {
+        "tableName": "users",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idUser` INTEGER NOT NULL, `token` TEXT, `name` TEXT, `lastName` TEXT, `login` TEXT, `email` TEXT, `userLogo` TEXT, `address_1` TEXT, `address_2` TEXT, `address_3` TEXT, `phone_1` TEXT, `phone_2` TEXT, `phone_3` TEXT, `accountType` TEXT, `balance` REAL NOT NULL, `rating` REAL NOT NULL, `statusUser` TEXT, `created` TEXT, `updated` TEXT, `isCurrent` INTEGER NOT NULL, PRIMARY KEY(`idUser`))",
+        "fields": [
+          {
+            "fieldPath": "ID",
+            "columnName": "idUser",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastName",
+            "columnName": "lastName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "login",
+            "columnName": "login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userLogo",
+            "columnName": "userLogo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address_1",
+            "columnName": "address_1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address_2",
+            "columnName": "address_2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address_3",
+            "columnName": "address_3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "phone_1",
+            "columnName": "phone_1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "phone_2",
+            "columnName": "phone_2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "phone_3",
+            "columnName": "phone_3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "accountType",
+            "columnName": "accountType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "balance",
+            "columnName": "balance",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rating",
+            "columnName": "rating",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statusUser",
+            "columnName": "statusUser",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "created",
+            "columnName": "created",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "updated",
+            "columnName": "updated",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isCurrent",
+            "columnName": "isCurrent",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "idUser"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_users_idUser",
+            "unique": false,
+            "columnNames": [
+              "idUser"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_users_idUser` ON `${TABLE_NAME}` (`idUser`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "announcements",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idAnnouncement` INTEGER NOT NULL, `idUser` INTEGER NOT NULL, `idSubcategory` INTEGER NOT NULL, `name` TEXT, `description` TEXT, `announcementRating` REAL NOT NULL, `countRent` INTEGER NOT NULL, `countReviews` INTEGER NOT NULL, `countViewers` INTEGER NOT NULL, `countFavorites` INTEGER NOT NULL, `announcementCreated` TEXT, `announcementUpdated` TEXT, `userAvatar` TEXT, `login` TEXT, `userRating` REAL NOT NULL, `userCreated` TEXT, `countAnnouncementsUser` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `costToUSD` REAL NOT NULL, `address` TEXT, `phone_1` TEXT, `phone_2` TEXT, `phone_3` TEXT, `pictures` TEXT, `minTime` INTEGER NOT NULL, `minDay` INTEGER NOT NULL, `maxRentalPeriod` INTEGER NOT NULL, `timeOfIssueWith` TEXT, `timeOfIssueBy` TEXT, `returnTimeWith` TEXT, `returnTimeBy` TEXT, `withSale` INTEGER NOT NULL, PRIMARY KEY(`idAnnouncement`))",
+        "fields": [
+          {
+            "fieldPath": "ID",
+            "columnName": "idAnnouncement",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idUser",
+            "columnName": "idUser",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idSubcategory",
+            "columnName": "idSubcategory",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "announcementRating",
+            "columnName": "announcementRating",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countRent",
+            "columnName": "countRent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countReviews",
+            "columnName": "countReviews",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countViewers",
+            "columnName": "countViewers",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "countFavorites",
+            "columnName": "countFavorites",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "announcementCreated",
+            "columnName": "announcementCreated",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "announcementUpdated",
+            "columnName": "announcementUpdated",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userAvatar",
+            "columnName": "userAvatar",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "login",
+            "columnName": "login",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "userRating",
+            "columnName": "userRating",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userCreated",
+            "columnName": "userCreated",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "countAnnouncementsUser",
+            "columnName": "countAnnouncementsUser",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "costToUSD",
+            "columnName": "costToUSD",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "phone_1",
+            "columnName": "phone_1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "phone_2",
+            "columnName": "phone_2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "phone_3",
+            "columnName": "phone_3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pictures",
+            "columnName": "pictures",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minTime",
+            "columnName": "minTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minDay",
+            "columnName": "minDay",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxRentalPeriod",
+            "columnName": "maxRentalPeriod",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timeOfIssueWith",
+            "columnName": "timeOfIssueWith",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timeOfIssueBy",
+            "columnName": "timeOfIssueBy",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "returnTimeWith",
+            "columnName": "returnTimeWith",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "returnTimeBy",
+            "columnName": "returnTimeBy",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "withSale",
+            "columnName": "withSale",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "idAnnouncement"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_announcements_idAnnouncement",
+            "unique": false,
+            "columnNames": [
+              "idAnnouncement"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_announcements_idAnnouncement` ON `${TABLE_NAME}` (`idAnnouncement`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "pictures",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `idAnnouncement` INTEGER NOT NULL, `uri` TEXT, `isMainPicture` INTEGER NOT NULL, FOREIGN KEY(`idAnnouncement`) REFERENCES `announcements`(`idAnnouncement`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "ID",
+            "columnName": "ID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idAnnouncement",
+            "columnName": "idAnnouncement",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uri",
+            "columnName": "uri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isMainPicture",
+            "columnName": "isMainPicture",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "ID"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_pictures_idAnnouncement",
+            "unique": false,
+            "columnNames": [
+              "idAnnouncement"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pictures_idAnnouncement` ON `${TABLE_NAME}` (`idAnnouncement`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "announcements",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "idAnnouncement"
+            ],
+            "referencedColumns": [
+              "idAnnouncement"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '353fb2e6aadf4b254083b8dd9da0cfe3')"
+    ]
+  }
+}

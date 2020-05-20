@@ -1,10 +1,11 @@
-package com.application.arenda.entities.announcements;
+package com.application.arenda.entities.serverApi.announcement;
 
 import com.application.arenda.BuildConfig;
 import com.application.arenda.entities.models.ModelAnnouncement;
-import com.application.arenda.entities.models.ModelPicture;
 import com.application.arenda.entities.models.ModelPeriodRent;
-import com.application.arenda.entities.utils.retrofit.ServerHandler;
+import com.application.arenda.entities.models.ModelPicture;
+import com.application.arenda.entities.utils.retrofit.ApiHandler;
+import com.application.arenda.entities.utils.retrofit.ServerResponse;
 
 import java.util.List;
 
@@ -30,14 +31,12 @@ public interface IApiAnnouncement {
     @POST(BuildConfig.URL_INSERT_ANNOUNCEMENT)
     Call<ResponseBody> insertAnnouncement(
             @Field("token") String token,
-            @Field("idSubcategory") int idSubcategory,
+            @Field("idSubcategory") long idSubcategory,
 
             @Field("name") String name,
             @Field("description") String description,
 
-            @Field("costToBYN") float costToBYN,
             @Field("costToUSD") float costToUSD,
-            @Field("costToEUR") float costToEUR,
 
             @Field("address") String address,
 
@@ -45,7 +44,21 @@ public interface IApiAnnouncement {
 
             @Field("phone_2") String phone_2,
 
-            @Field("phone_3") String phone_3
+            @Field("phone_3") String phone_3,
+
+            @Field("minTime") int minTime,
+
+            @Field("minDay") int minDay,
+
+            @Field("maxRentalPeriod") int maxRentalPeriod,
+
+            @Field("timeOfIssueWith") String timeOfIssueWith,
+            @Field("timeOfIssueBy") String timeOfIssueBy,
+
+            @Field("returnTimeWith") String returnTimeWith,
+            @Field("returnTimeBy") String returnTimeBy,
+
+            @Field("withSale") boolean withSale
     );
 
     @Multipart
@@ -58,7 +71,7 @@ public interface IApiAnnouncement {
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
-    Call<ServerHandler<List<ModelAnnouncement>>> loadAnnouncements(
+    Call<ServerResponse<List<ModelAnnouncement>>> loadAnnouncements(
             @Field("token") String token,
             @Field("idAnnouncement") long lastIdAnnouncement,
             @Field("limitItemsInPage") int limitItemsInPage,
@@ -67,7 +80,7 @@ public interface IApiAnnouncement {
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_USER_ANNOUNCEMENT)
-    Call<ServerHandler<List<ModelAnnouncement>>> loadUserAnnouncements(
+    Call<ServerResponse<List<ModelAnnouncement>>> loadUserAnnouncements(
             @Field("token") String token,
             @Field("idAnnouncement") long lastIdAnnouncement,
             @Field("limitItemsInPage") int limitItemsInPage,
@@ -76,7 +89,7 @@ public interface IApiAnnouncement {
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_LAND_LORD_ANNOUNCEMENT)
-    Call<ServerHandler<List<ModelAnnouncement>>> loadLandLordAnnouncements(
+    Call<ServerResponse<List<ModelAnnouncement>>> loadLandLordAnnouncements(
             @Field("token") String token,
             @Field("idLandLord") long idLandLord,
             @Field("idAnnouncement") long lastIdAnnouncement,
@@ -86,7 +99,7 @@ public interface IApiAnnouncement {
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_SIMILAR_ANNOUNCEMENT)
-    Call<ServerHandler<List<ModelAnnouncement>>> loadSimilarAnnouncements(
+    Call<ServerResponse<List<ModelAnnouncement>>> loadSimilarAnnouncements(
             @Field("token") String userToken,
             @Field("idSubcategory") long idSubcategory,
             @Field("idAnnouncement") long lastIdAnnouncement,
@@ -96,7 +109,7 @@ public interface IApiAnnouncement {
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_PERIOD_RENT_ANNOUNCEMENT)
-    Call<ServerHandler<List<ModelPeriodRent>>> loadPeriodRentAnnouncement(
+    Call<ServerResponse<List<ModelPeriodRent>>> loadPeriodRentAnnouncement(
             @Field("idAnnouncement") long idAnnouncement
     );
 
@@ -111,6 +124,13 @@ public interface IApiAnnouncement {
     @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_VIEWER)
     Call<ResponseBody> insertViewer(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_INSERT_RENTAL)
+    Call<ApiHandler> insertRental(@Field("token") String token,
+                                  @Field("idAnnouncement") long idAnnouncement,
+                                  @Field("rentalStart") String rentalStart,
+                                  @Field("rentalEnd") String rentalEnd);
 
     enum AnnouncementCodes {
         SUCCESS_CATEGORIES_LOADED,

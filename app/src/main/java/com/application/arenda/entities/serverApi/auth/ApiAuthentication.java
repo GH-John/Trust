@@ -1,4 +1,4 @@
-package com.application.arenda.entities.authentication;
+package com.application.arenda.entities.serverApi.auth;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,7 +12,7 @@ import com.application.arenda.entities.user.AccountType;
 import com.application.arenda.entities.utils.retrofit.ApiClient;
 import com.application.arenda.entities.utils.retrofit.CodeHandler;
 import com.application.arenda.entities.utils.retrofit.RetrofitUtils;
-import com.application.arenda.entities.utils.retrofit.ServerHandler;
+import com.application.arenda.entities.utils.retrofit.ServerResponse;
 
 import io.reactivex.Single;
 import io.reactivex.SingleEmitter;
@@ -41,10 +41,10 @@ public final class ApiAuthentication {
         return instance;
     }
 
-    private synchronized void authentication(@NonNull Context context, @NonNull Response<ServerHandler<ModelUser>> response, SingleEmitter<CodeHandler> emitter) {
+    private synchronized void authentication(@NonNull Context context, @NonNull Response<ServerResponse<ModelUser>> response, SingleEmitter<CodeHandler> emitter) {
         try {
             if (response.isSuccessful()) {
-                if (response.body() != null && CodeHandler.SUCCESS.getCode() == response.body().getCode()) {
+                if (response.body() != null) {
                     LocalCacheManager.getInstance(context)
                             .users()
                             .changeCurrentUser(response.body().getResponse())
@@ -53,7 +53,7 @@ public final class ApiAuthentication {
                             .subscribe(new ResourceCompletableObserver() {
                                 @Override
                                 public void onComplete() {
-                                    emitter.onSuccess(CodeHandler.get(response.body().getCode()));
+                                    emitter.onSuccess(response.body().getHandler());
                                 }
 
                                 @Override
@@ -62,7 +62,7 @@ public final class ApiAuthentication {
                                 }
                             });
                 } else {
-                    emitter.onSuccess(CodeHandler.get(response.body().getCode()));
+                    emitter.onSuccess(response.body().getHandler());
                 }
             } else {
                 Timber.tag("AuthenticationError").e(response.code() + " - " + response.message());
@@ -73,7 +73,7 @@ public final class ApiAuthentication {
     }
 
     public Single<CodeHandler> registration(@NonNull Context context,
-                                            @NonNull Uri userLogo,
+                                            Uri userLogo,
                                             @NonNull String name,
                                             @NonNull String lastName,
                                             @NonNull String login,
@@ -90,14 +90,14 @@ public final class ApiAuthentication {
                 RetrofitUtils.createPartFromString(password),
                 RetrofitUtils.createPartFromString(phone),
                 RetrofitUtils.createPartFromString(accountType.getType()))
-                .enqueue(new Callback<ServerHandler<ModelUser>>() {
+                .enqueue(new Callback<ServerResponse<ModelUser>>() {
                     @Override
-                    public void onResponse(@NonNull Call<ServerHandler<ModelUser>> call, @NonNull Response<ServerHandler<ModelUser>> response) {
+                    public void onResponse(@NonNull Call<ServerResponse<ModelUser>> call, @NonNull Response<ServerResponse<ModelUser>> response) {
                         authentication(context, response, emitter);
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<ServerHandler<ModelUser>> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<ServerResponse<ModelUser>> call, @NonNull Throwable t) {
                         emitter.onError(t);
 
                         Timber.e(t);
@@ -109,14 +109,14 @@ public final class ApiAuthentication {
                                              @NonNull String email,
                                              @NonNull String password) {
         return Single.create(emitter -> api.authorization(email, password)
-                .enqueue(new Callback<ServerHandler<ModelUser>>() {
+                .enqueue(new Callback<ServerResponse<ModelUser>>() {
                     @Override
-                    public void onResponse(@NonNull Call<ServerHandler<ModelUser>> call, @NonNull Response<ServerHandler<ModelUser>> response) {
+                    public void onResponse(@NonNull Call<ServerResponse<ModelUser>> call, @NonNull Response<ServerResponse<ModelUser>> response) {
                         authentication(context, response, emitter);
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<ServerHandler<ModelUser>> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<ServerResponse<ModelUser>> call, @NonNull Throwable t) {
                         emitter.onError(t);
 
                         Timber.e(t);

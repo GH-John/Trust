@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/textRate"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/text_rate"
+            app:layout_constraintEnd_toStartOf="@+id/textRent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textRate"
+            app:layout_constraintStart_toStartOf="@+id/textRate">
+
+            <TextView
+                android:id="@+id/textRating"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_star"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:text="@string/text_rate_announcement"
+                tools:ignore="RtlHardcoded" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textRent"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="@string/text_rent"
+            app:layout_constraintEnd_toStartOf="@+id/textWithSale"
+            app:layout_constraintStart_toEndOf="@+id/textRate"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RelativeOverlap" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textRent"
+            android:layout_alignStart="@+id/textRent"
+            android:layout_alignEnd="@+id/textRent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textRent"
+            app:layout_constraintStart_toStartOf="@+id/textRent"
+            app:layout_constraintTop_toBottomOf="@+id/textRent">
+
+            <TextView
+                android:id="@+id/textCountRent"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_count_rent"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:text="@string/text_rate_announcement"
+                tools:ignore="RtlHardcoded" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/textWithSale"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/text_with_sale"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textRent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RelativeOverlap" />
+
+        <ImageView
+            android:id="@+id/iconWithSale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textWithSale"
+            android:layout_alignStart="@+id/textWithSale"
+            android:layout_alignEnd="@+id/textWithSale"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_item_uncheck"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/textWithSale"
+            app:layout_constraintStart_toStartOf="@+id/textWithSale" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

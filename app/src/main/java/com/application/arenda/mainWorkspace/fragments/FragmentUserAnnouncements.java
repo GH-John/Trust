@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.application.arenda.entities.announcements.ApiAnnouncement;
+import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
 import com.application.arenda.entities.announcements.loadingAnnouncements.UserAnnouncements.UserAnnouncementsAdapter;
-import com.application.arenda.entities.announcements.OnApiListener;
+import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelUser;
 import com.application.arenda.entities.recyclerView.RVOnScrollListener;
@@ -33,7 +33,7 @@ import com.application.arenda.R;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
 import com.application.arenda.ui.widgets.sideBar.SideBar;
-import com.application.arenda.ui.DisplayUtils;
+import com.application.arenda.entities.utils.DisplayUtils;
 
 import java.util.List;
 

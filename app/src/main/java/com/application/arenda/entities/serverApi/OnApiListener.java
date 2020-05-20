@@ -1,4 +1,4 @@
-package com.application.arenda.entities.announcements;
+package com.application.arenda.entities.serverApi;
 
 import androidx.annotation.NonNull;
 

@@ -28,10 +28,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.application.arenda.entities.announcements.ApiAnnouncement;
+import com.application.arenda.R;
 import com.application.arenda.entities.announcements.loadingAnnouncements.ViewAnnouncement.LandLord_Similar_AnnouncementsAdapter;
 import com.application.arenda.entities.announcements.loadingAnnouncements.ViewAnnouncement.LandLord_Similar_AnnouncementsVH;
-import com.application.arenda.entities.announcements.OnApiListener;
 import com.application.arenda.entities.announcements.viewAnnouncement.AdapterViewPager;
 import com.application.arenda.entities.announcements.viewAnnouncement.ModelViewPager;
 import com.application.arenda.entities.models.ModelAnnouncement;
@@ -39,22 +38,28 @@ import com.application.arenda.entities.models.ModelPicture;
 import com.application.arenda.entities.models.SharedViewModels;
 import com.application.arenda.entities.recyclerView.OnItemClick;
 import com.application.arenda.entities.room.LocalCacheManager;
+import com.application.arenda.entities.serverApi.OnApiListener;
+import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
+import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.entities.utils.glide.GlideUtils;
 import com.application.arenda.entities.utils.retrofit.CodeHandler;
-import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.mainWorkspace.activities.ActivityViewImages;
-import com.application.arenda.R;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.calendarView.CalendarRentPeriod;
+import com.application.arenda.ui.widgets.calendarView.CalendarRentPeriod.OnSelectRange;
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments;
-import com.application.arenda.ui.widgets.viewPager.PictureViewer;
 import com.application.arenda.ui.widgets.horizontalList.HorizontalList;
+import com.application.arenda.ui.widgets.viewPager.PictureViewer;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +115,10 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     @Nullable
     @BindView(R.id.userCardLogo)
     ImageView userCardLogo;
+
+    @Nullable
+    @BindView(R.id.iconWithSale)
+    ImageView iconWithSale;
 
     @Nullable
     @BindView(R.id.userCardLogin)
@@ -201,6 +210,9 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private SharedViewModels sharedViewModels;
 
     private ContainerFragments containerFragments;
+
+    private LocalDate dateStart, dateEnd;
+    private LocalTime timeStart, timeEnd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -359,6 +371,48 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         btnBooking.setOnClickListener(v -> {
             if (scrollView.getScrollY() != bookingCalendar.getY()) {
                 scrollView.post(() -> scrollView.smoothScrollTo(0, (int) bookingCalendar.getY()));
+            } else {
+                if (dateStart != null && timeStart != null && dateEnd != null && timeEnd != null) {
+                    disposable.add(api.insertRental(userToken, sharedViewModels.getSelectedAnnouncement().getValue().getID(),
+                            LocalDateTime.of(dateStart, timeStart).toString(),
+                            LocalDateTime.of(dateEnd, timeEnd).toString())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(apiHandler -> {
+                                switch (apiHandler.getHandler()) {
+                                    case SUCCESS:
+                                        Utils.messageOutput(getContext(), getResources().getString(R.string.text_booking_success));
+                                    case USER_NOT_FOUND:
+                                        Utils.messageOutput(getContext(), getResources().getString(R.string.error_user_not_found));
+                                    default:
+                                        Utils.messageOutput(getContext(), getResources().getString(R.string.unknown_error));
+                                }
+                            }, Timber::e));
+                } else {
+                    Utils.messageOutput(getContext(), getResources().getString(R.string.select_period_rental));
+                }
+            }
+        });
+
+        bookingCalendar.setRangeListener(new OnSelectRange() {
+            @Override
+            public void selectOnDateStart(LocalDate date) {
+                dateStart = date;
+            }
+
+            @Override
+            public void selectOnTimeStart(LocalTime time) {
+                timeStart = time;
+            }
+
+            @Override
+            public void selectOnDateEnd(LocalDate date) {
+                dateEnd = date;
+            }
+
+            @Override
+            public void selectOnTimeEnd(LocalTime time) {
+                timeEnd = time;
             }
         });
     }
@@ -395,8 +449,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         textPlacementDate.setText(Utils.getFormatingDate(getContext(), announcement.getAnnouncementCreated()));
         textNameProduct.setText(announcement.getName());
 
-        //будет браться стоимость в зависимости от настроек по умолчанию
-        textCostProduct.setText(announcement.getCostToBYN() + " руб./ч.");
+        textCostProduct.setText(announcement.getCostToUSD() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_hour));
 
         textAddress.setText(announcement.getAddress());
         textRating.setText(String.valueOf(announcement.getAnnouncementRating()));
@@ -404,7 +457,10 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         textDescriptionProduct.setText(announcement.getDescription());
 
-        GlideUtils.loadAvatar(getContext(), Uri.parse(announcement.getUserLogo()), userCardLogo);
+        GlideUtils.loadAvatar(getContext(), announcement.getUserAvatar(), userCardLogo);
+
+        iconWithSale.setImageResource(announcement.isWithSale() ? R.drawable.ic_item_check : R.drawable.ic_item_uncheck);
+
         userCardLogin.setText(announcement.getLogin());
         userCardRating.setText(String.valueOf(announcement.getUserRating()));
         userCardCountAnnouncements.setText(String.valueOf(announcement.getCountAnnouncementsUser()));

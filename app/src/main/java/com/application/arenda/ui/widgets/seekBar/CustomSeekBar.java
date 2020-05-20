@@ -11,8 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.R;
+import com.application.arenda.entities.utils.DisplayUtils;
 import com.application.arenda.ui.widgets.seekBar.interfaces.OnRangeSeekbarChangeListener;
 import com.application.arenda.ui.widgets.seekBar.interfaces.OnSeekbarChangeListener;
 
@@ -97,7 +97,7 @@ public class CustomSeekBar extends FrameLayout {
 
     private void initUI() {
         params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, (int) Utils.DpToPx(getContext(), 6f), 0, 0);
+        params.setMargins(0, DisplayUtils.dpToPx(6), 0, 0);
         params.addRule(RelativeLayout.BELOW, textProgressSeekBar.getId());
 
         textTitleBar.setText(titleBar);

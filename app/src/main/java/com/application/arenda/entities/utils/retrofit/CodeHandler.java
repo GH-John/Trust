@@ -30,13 +30,9 @@ public enum CodeHandler {
         this.code = code;
     }
 
-    public int getCode() {
-        return code;
-    }
-
     public static CodeHandler get(int code) {
-        switch (code){
-            case  2000:
+        switch (code) {
+            case 2000:
                 return SUCCESS;
             case 2001:
                 return UNSUCCESS;
@@ -64,5 +60,9 @@ public enum CodeHandler {
         }
 
         return UNKNOW_ERROR;
+    }
+
+    public int getCode() {
+        return code;
     }
 }

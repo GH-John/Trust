@@ -9,10 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.application.arenda.entities.systemPreview.AdapterSystemPreview;
 import com.application.arenda.R;
-import com.application.arenda.ui.ComponentBackground;
-import com.application.arenda.ui.style.SetBtnStyle;
+import com.application.arenda.entities.systemPreview.AdapterSystemPreview;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +30,6 @@ public class ActivityPreview extends AppCompatActivity {
     ViewPager previewViewPager;
 
     private AdapterSystemPreview adapterSystemPreview;
-    private ComponentBackground componentBackground;
     private ViewPager.OnPageChangeListener pageListener;
 
     @Override
@@ -41,18 +38,10 @@ public class ActivityPreview extends AppCompatActivity {
         setContentView(R.layout.activity_preview);
         ButterKnife.bind(this);
 
-        initializationStyles();
-        initializationListeners();
+        initListeners();
     }
 
-    private void initializationStyles() {
-        componentBackground = new ComponentBackground(this, R.color.colorAccent,
-                R.color.shadowColor, 6f, 0f, 3f, 20f);
-
-        SetBtnStyle.setStyle(componentBackground, btnSkip);
-    }
-
-    private void initializationListeners() {
+    private void initListeners() {
         btnSkip.setOnClickListener(v -> startActivity(new Intent(ActivityPreview.this, ActivityAuthorization.class)));
 
         pageListener = new ViewPager.OnPageChangeListener() {

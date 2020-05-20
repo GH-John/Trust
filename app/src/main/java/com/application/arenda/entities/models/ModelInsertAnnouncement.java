@@ -2,19 +2,19 @@ package com.application.arenda.entities.models;
 
 import android.net.Uri;
 
+import org.threeten.bp.LocalTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModelInsertAnnouncement implements IModel {
+    private long ID = 0;
+    private int idSubcategory = 0;
+
     private String name = "";
     private String description = "";
 
-    private int idSubcategory = 0;
-    private long idAnnouncement = 0;
-
-    private float costToBYN = 0.0f;
     private float costToUSD = 0.0f;
-    private float costToEUR = 0.0f;
 
     private Uri mainUriBitmap;
     private List<Uri> urisBitmap = new ArrayList<>();
@@ -24,6 +24,18 @@ public class ModelInsertAnnouncement implements IModel {
     private String phone_1 = "";
     private String phone_2 = "";
     private String phone_3 = "";
+
+    private int minTime = 1;
+    private int minDay = 1;
+    private int maxRentalPeriod = 1;
+
+    private LocalTime timeOfIssueWith;
+    private LocalTime timeOfIssueBy;
+
+    private LocalTime returnTimeWith;
+    private LocalTime returnTimeBy;
+
+    private boolean withSale = false;
 
     public String getName() {
         return name;
@@ -49,28 +61,12 @@ public class ModelInsertAnnouncement implements IModel {
         this.idSubcategory = idSubcategory;
     }
 
-    public float getCostToBYN() {
-        return costToBYN;
-    }
-
-    public void setCostToBYN(float costToBYN) {
-        this.costToBYN = costToBYN;
-    }
-
     public float getCostToUSD() {
         return costToUSD;
     }
 
     public void setCostToUSD(float costToUSD) {
         this.costToUSD = costToUSD;
-    }
-
-    public float getCostToEUR() {
-        return costToEUR;
-    }
-
-    public void setCostToEUR(float costToEUR) {
-        this.costToEUR = costToEUR;
     }
 
     public List<Uri> getUrisBitmap() {
@@ -121,13 +117,77 @@ public class ModelInsertAnnouncement implements IModel {
         this.phone_3 = phone_3;
     }
 
+    public int getMinTime() {
+        return minTime;
+    }
+
+    public void setMinTime(int minTime) {
+        this.minTime = minTime;
+    }
+
+    public int getMinDay() {
+        return minDay;
+    }
+
+    public void setMinDay(int minDay) {
+        this.minDay = minDay;
+    }
+
+    public int getMaxRentalPeriod() {
+        return maxRentalPeriod;
+    }
+
+    public void setMaxRentalPeriod(int maxRentalPeriod) {
+        this.maxRentalPeriod = maxRentalPeriod;
+    }
+
+    public LocalTime getTimeOfIssueWith() {
+        return timeOfIssueWith;
+    }
+
+    public void setTimeOfIssueWith(LocalTime timeOfIssueWith) {
+        this.timeOfIssueWith = timeOfIssueWith;
+    }
+
+    public LocalTime getTimeOfIssueBy() {
+        return timeOfIssueBy;
+    }
+
+    public void setTimeOfIssueBy(LocalTime timeOfIssueBy) {
+        this.timeOfIssueBy = timeOfIssueBy;
+    }
+
+    public LocalTime getReturnTimeWith() {
+        return returnTimeWith;
+    }
+
+    public void setReturnTimeWith(LocalTime returnTimeWith) {
+        this.returnTimeWith = returnTimeWith;
+    }
+
+    public LocalTime getReturnTimeBy() {
+        return returnTimeBy;
+    }
+
+    public void setReturnTimeBy(LocalTime returnTimeBy) {
+        this.returnTimeBy = returnTimeBy;
+    }
+
+    public boolean isWithSale() {
+        return withSale;
+    }
+
+    public void setWithSale(boolean withSale) {
+        this.withSale = withSale;
+    }
+
     @Override
     public long getID() {
-        return idAnnouncement;
+        return ID;
     }
 
     @Override
     public void setID(long id) {
-        idAnnouncement = id;
+        ID = id;
     }
 }
