@@ -1,5 +1,7 @@
 package com.application.arenda.entities.recyclerView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.entities.models.IModel;

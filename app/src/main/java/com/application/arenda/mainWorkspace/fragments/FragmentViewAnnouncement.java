@@ -29,8 +29,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.application.arenda.R;
-import com.application.arenda.entities.announcements.loadingAnnouncements.ViewAnnouncement.LandLord_Similar_AnnouncementsAdapter;
-import com.application.arenda.entities.announcements.loadingAnnouncements.ViewAnnouncement.LandLord_Similar_AnnouncementsVH;
+import com.application.arenda.entities.announcements.loadingAnnouncements.view.LandLord_Similar_AnnouncementsAdapter;
+import com.application.arenda.entities.announcements.loadingAnnouncements.view.LandLord_Similar_AnnouncementsVH;
 import com.application.arenda.entities.announcements.viewAnnouncement.AdapterViewPager;
 import com.application.arenda.entities.announcements.viewAnnouncement.ModelViewPager;
 import com.application.arenda.entities.models.ModelAnnouncement;
@@ -73,7 +73,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.ResourceSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
@@ -220,7 +219,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         View view = inflater.inflate(R.layout.fragment_view_announcement, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        api = ApiAnnouncement.getInstance();
+        api = ApiAnnouncement.getInstance(getContext());
 
         initComponents();
 
@@ -382,14 +381,17 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                                 switch (apiHandler.getHandler()) {
                                     case SUCCESS:
                                         Utils.messageOutput(getContext(), getResources().getString(R.string.text_booking_success));
+                                        break;
                                     case USER_NOT_FOUND:
                                         Utils.messageOutput(getContext(), getResources().getString(R.string.error_user_not_found));
+                                        break;
                                     default:
                                         Utils.messageOutput(getContext(), getResources().getString(R.string.unknown_error));
+                                        break;
                                 }
                             }, Timber::e));
                 } else {
-                    Utils.messageOutput(getContext(), getResources().getString(R.string.select_period_rental));
+                    Utils.messageOutput(getContext(), getResources().getString(R.string.text_select_period_rental));
                 }
             }
         });
@@ -487,27 +489,19 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     private void setViewerAnnouncement(long idAnnouncement) {
-        api.insertViewer(userToken, idAnnouncement, null)
+        disposable.add(api.insertViewer(userToken, idAnnouncement, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableCompletableObserver() {
-                    @Override
-                    public void onComplete() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                    }
-                });
+                .subscribe(handler -> {
+                }, Timber::e));
     }
 
     @SuppressLint("CheckResult")
     private void loadPeriodRentAnnouncement(long idAnnouncement) {
-        api.loadPeriodRentAnnouncement(getContext(), idAnnouncement, null)
+        disposable.add(api.loadPeriodRentAnnouncement(idAnnouncement, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((modelPeriodRents) -> bookingCalendar.replaceEvents(new ArrayList<>(modelPeriodRents)), Timber::e);
+                .subscribe((modelPeriodRents) -> bookingCalendar.replaceEvents(new ArrayList<>(modelPeriodRents)), Timber::e));
     }
 
     private void initLandLordAnnouncements(long idLandLord) {
@@ -515,7 +509,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         landLordAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
 
-        api.loadLandLordAnnouncements(getContext(), userToken, idLandLord, 0, 10, null, null)
+        api.loadLandLordAnnouncements(userToken, idLandLord, 0, 10, null, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<ModelAnnouncement>>() {
@@ -551,7 +545,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         similarAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
 
-        api.loadSimilarAnnouncements(getContext(), userToken, idSubcategory, idAnnouncement, 10, null, null)
+        api.loadSimilarAnnouncements(userToken, idSubcategory, idAnnouncement, 10, null, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<ModelAnnouncement>>() {

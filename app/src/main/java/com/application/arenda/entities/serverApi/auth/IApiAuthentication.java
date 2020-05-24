@@ -30,20 +30,4 @@ public interface IApiAuthentication {
     Call<ServerResponse<ModelUser>> authorization(
             @Field("email_login") String email_login,
             @Field("password") String password);
-
-    enum StatusAuthentication {
-        USER_SUCCESS_REGISTERED,
-        USER_UNSUCCESS_REGISTERED,
-        USER_WITH_LOGIN_EXISTS,
-        USER_EXISTS,
-
-        USER_LOGGED,
-        WRONG_PASSWORD,
-        WRONG_EMAIL_LOGIN,
-        WRONG_TOKEN,
-
-        NETWORK_ERROR,
-        NOT_CONNECT_TO_DB,
-        UNKNOW_ERROR
-    }
 }

@@ -27,10 +27,11 @@
                 android:id="@+id/categoryIcon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
+                android:scaleType="centerCrop"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/ic_none"
+                tools:src="@android:mipmap/sym_def_app_icon"
                 tools:ignore="RtlHardcoded" />
 
             <TextView

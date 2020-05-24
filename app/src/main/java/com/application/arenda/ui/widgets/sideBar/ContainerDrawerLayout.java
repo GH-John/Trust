@@ -92,7 +92,7 @@ public final class ContainerDrawerLayout implements SideBar,
         itemSettings = headerNavigation.findViewById(R.id.itemSettings);
         itemUserName = headerNavigation.findViewById(R.id.itemUserName);
         itemUserLogin = headerNavigation.findViewById(R.id.itemUserLogin);
-        itemUserLogo = headerNavigation.findViewById(R.id.itemUserLogo);
+        itemUserLogo = headerNavigation.findViewById(R.id.itemUserAvatar);
 
         containerFragments = ContainerFragments.getInstance(activity);
 
@@ -200,7 +200,7 @@ public final class ContainerDrawerLayout implements SideBar,
                 containerFragments.open(FragmentUserAnnouncements.getInstance());
                 return true;
             case R.id.item_proposals:
-                containerFragments.open(FragmentUserProposals.getInstance());
+                containerFragments.open(FragmentUserProposals.Companion.getInstance());
                 return true;
             case R.id.item_statistics:
                 containerFragments.open(FragmentUserStatistics.getInstance());

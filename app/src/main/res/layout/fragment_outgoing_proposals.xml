@@ -5,9 +5,17 @@
     android:layout_height="match_parent"
     tools:context="com.application.arenda.mainWorkspace.fragments.proposals.FragmentOutgoingProposals">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvOutgoingProposals"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/paddingBottomFromBottomNav" />
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOutgoingProposals"
+            style="@style/DefaultStyleRecyclerView.PaddingBottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </FrameLayout>

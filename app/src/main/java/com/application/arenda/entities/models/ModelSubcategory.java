@@ -1,19 +1,23 @@
 package com.application.arenda.entities.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.google.gson.annotations.SerializedName;
+
+@Entity(tableName = "subcategories")
 public class ModelSubcategory implements IModel {
-    private long id;
+    @PrimaryKey
+    @ColumnInfo(name = "idSubcategory")
+    @SerializedName("idSubcategory")
+    private long ID;
 
+    @SerializedName("idCategory")
     private long idCategory;
+
+    @SerializedName("name")
     private String name;
-
-    public ModelSubcategory() {
-    }
-
-    public ModelSubcategory(long id, long idCategory, String name) {
-        this.id = id;
-        this.idCategory = idCategory;
-        this.name = name;
-    }
 
     public long getIdCategory() {
         return idCategory;
@@ -33,11 +37,11 @@ public class ModelSubcategory implements IModel {
 
     @Override
     public void setID(long id) {
-        this.id = id;
+        this.ID = id;
     }
 
     @Override
     public long getID() {
-        return id;
+        return ID;
     }
 }

@@ -12,14 +12,14 @@ import com.application.arenda.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
 
 import timber.log.Timber;
+
+import static com.bumptech.glide.load.engine.DiskCacheStrategy.ALL;
 
 public class GlideUtils {
     private static RequestOptions defaultRequestOptions = new RequestOptions()
@@ -27,7 +27,7 @@ public class GlideUtils {
 //            .placeholder(R.color.colorPlaceHolderPicture)
             .error(R.drawable.ic_none)
             .override(800, 800)
-            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .diskCacheStrategy(ALL)
             .timeout(50000);
 
     private static DrawableCrossFadeFactory defaultFactory = new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
@@ -50,7 +50,7 @@ public class GlideUtils {
                 RequestOptions options = defaultOptions().clone();
                 options.circleCrop();
                 options.priority(Priority.NORMAL);
-                options.override(50, 50);
+                options.override(150, 150);
                 options.placeholder(R.drawable.ic_user_logo);
                 options.error(R.drawable.ic_user_logo);
 

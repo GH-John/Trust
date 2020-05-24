@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
-import com.application.arenda.entities.announcements.loadingAnnouncements.AllAnnouncements.AllAnnouncementsAdapter;
-import com.application.arenda.entities.announcements.loadingAnnouncements.AllAnnouncements.AllAnnouncementsVH;
+import com.application.arenda.entities.announcements.loadingAnnouncements.all.AllAnnouncementsAdapter;
+import com.application.arenda.entities.announcements.loadingAnnouncements.all.AllAnnouncementsVH;
 import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelUser;
@@ -99,7 +99,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
     }
 
     private void init() {
-        api = ApiAnnouncement.getInstance();
+        api = ApiAnnouncement.getInstance(getContext());
         cacheManager = LocalCacheManager.getInstance(getContext());
 
         rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
@@ -293,7 +293,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
         if (!allAnnouncementsAdapter.isLoading()) {
             allAnnouncementsAdapter.setLoading(true);
 
-            api.loadLandLordAnnouncements(getContext(), userToken, idLandLord, lastId, 10, query, listenerLoadAnnouncement)
+            api.loadLandLordAnnouncements(userToken, idLandLord, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(rewrite ? singleLoaderWithRewriteAnnouncements : singleLoaderWithoutRewriteAnnouncements);

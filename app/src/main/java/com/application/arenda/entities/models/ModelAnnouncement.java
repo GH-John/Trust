@@ -71,7 +71,7 @@ public class ModelAnnouncement implements IModel {
     private int countAnnouncementsUser = 0;
 
     @SerializedName("isFavorite")
-    private boolean isFavorite = false;
+    private Boolean isFavorite = false;
 
     @SerializedName("costToUSD")
     private float costToUSD = 0.0f;
@@ -113,7 +113,7 @@ public class ModelAnnouncement implements IModel {
     private LocalTime returnTimeBy;
 
     @SerializedName("withSale")
-    private boolean withSale = false;
+    private Boolean withSale = false;
 
     public long getIdSubcategory() {
         return idSubcategory;
@@ -235,11 +235,11 @@ public class ModelAnnouncement implements IModel {
         this.login = login;
     }
 
-    public boolean isFavorite() {
+    public Boolean isFavorite() {
         return isFavorite;
     }
 
-    public void setFavorite(boolean favorite) {
+    public void setFavorite(Boolean favorite) {
         isFavorite = favorite;
     }
 
@@ -355,11 +355,11 @@ public class ModelAnnouncement implements IModel {
         this.returnTimeBy = returnTimeBy;
     }
 
-    public boolean isWithSale() {
+    public Boolean isWithSale() {
         return withSale;
     }
 
-    public void setWithSale(boolean withSale) {
+    public void setWithSale(Boolean withSale) {
         this.withSale = withSale;
     }
 

@@ -3,7 +3,7 @@
     <dimen name="calendarSizeTime">12sp</dimen>
     <dimen name="default_corners">10dp</dimen>
 
-    <dimen name="height_proposal">230dp</dimen>
+    <dimen name="height_proposal">180dp</dimen>
 
     <dimen name="radius_panel_proposal">10dp</dimen>
 
@@ -19,4 +19,8 @@
     <dimen name="sizeBtnActionBar">40dp</dimen>
     <dimen name="sizeBtnBottomNavigation">40dp</dimen>
     <dimen name="btn_corners_radius">10dp</dimen>
+    <dimen name="size_indicator_proposals">16dp</dimen>
+    <dimen name="height_outgoing_proposal">180dp</dimen>
+    <dimen name="height_picture_proposal">180dp</dimen>
+    <dimen name="size_indicator_tab_proposal">8dp</dimen>
 </resources>

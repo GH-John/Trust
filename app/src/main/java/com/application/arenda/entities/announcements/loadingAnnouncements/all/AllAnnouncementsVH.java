@@ -1,4 +1,4 @@
-package com.application.arenda.entities.announcements.loadingAnnouncements.AllAnnouncements;
+package com.application.arenda.entities.announcements.loadingAnnouncements.all;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 public class AllAnnouncementsVH extends BaseViewHolder {
 
     @Nullable
-    @BindView(R.id.itemUserLogo)
+    @BindView(R.id.itemUserAvatar)
     ImageView itemUserLogo;
 
     @Nullable

@@ -362,10 +362,10 @@ public class Utils {
         return false;
     }
 
-    public static boolean fieldIsEmpty(@NonNull Context context, @NonNull EditText... fields) {
+    public static boolean fieldIsEmpty(@NonNull Context context, @NonNull TextView... fields) {
         int countEmpty = 0;
         if (fields.length > 0) {
-            for (EditText field : fields) {
+            for (TextView field : fields) {
                 if (field != null && field.getText().toString().isEmpty()) {
                     field.setError(context.getResources().getString(R.string.error_empty_field));
                     countEmpty++;
@@ -409,6 +409,7 @@ public class Utils {
     public enum DatePattern {
         yyyy_MM_dd("yyyy-MM-dd"),
         dd_MM_yyyy("dd.MM.yyyy"),
+        dd_MM_yy("dd.MM.yy"),
         yyyy_MM_dd_HH_mm_ss("yyyy-MM-dd HH:mm:ss"),
         yyyy_MM_dd_hh_mm_ss("yyyy-MM-dd hh:mm:ss aa"),
         HH_mm("HH:mm"),

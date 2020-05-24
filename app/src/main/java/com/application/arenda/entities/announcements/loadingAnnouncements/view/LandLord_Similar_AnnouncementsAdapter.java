@@ -1,4 +1,4 @@
-package com.application.arenda.entities.announcements.loadingAnnouncements.ViewAnnouncement;
+package com.application.arenda.entities.announcements.loadingAnnouncements.view;
 
 import android.view.ViewGroup;
 

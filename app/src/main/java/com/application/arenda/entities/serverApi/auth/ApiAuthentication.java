@@ -30,13 +30,13 @@ public final class ApiAuthentication {
 
     private IApiAuthentication api;
 
-    private ApiAuthentication() {
-        api = ApiClient.getApi().create(IApiAuthentication.class);
+    private ApiAuthentication(Context context) {
+        api = ApiClient.getApi(context).create(IApiAuthentication.class);
     }
 
-    public static ApiAuthentication getInstance() {
+    public static ApiAuthentication getInstance(Context context) {
         if (instance == null)
-            instance = new ApiAuthentication();
+            instance = new ApiAuthentication(context);
 
         return instance;
     }

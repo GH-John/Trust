@@ -1,6 +1,5 @@
 package com.application.arenda.entities.announcements.categories;
 
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.application.arenda.R;
 import com.application.arenda.entities.models.IModel;
 import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.recyclerView.BaseViewHolder;
 import com.application.arenda.entities.utils.glide.GlideUtils;
-import com.application.arenda.R;
 import com.github.florent37.expansionpanel.ExpansionLayout;
 
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +37,6 @@ public class CategoriesVH extends BaseViewHolder {
     @Nullable
     @BindView(R.id.categoryExpansionLayout)
     ExpansionLayout categoryExpansionLayout;
-
 
     private ModelCategory modelCategory;
 
@@ -65,7 +63,7 @@ public class CategoriesVH extends BaseViewHolder {
 
         categoryTitle.setText(modelCategory.getName());
 
-        GlideUtils.loadVector(itemView.getContext(), Uri.parse(modelCategory.getIconUri()), categoryIcon);
+        GlideUtils.loadVector(itemView.getContext(), modelCategory.getIconUri(), categoryIcon);
     }
 
     @Nullable

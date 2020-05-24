@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +28,6 @@ import com.application.arenda.entities.announcements.categories.EventSendID;
 import com.application.arenda.entities.models.ModelInsertAnnouncement;
 import com.application.arenda.entities.room.LocalCacheManager;
 import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
-import com.application.arenda.entities.serverApi.announcement.IApiAnnouncement;
 import com.application.arenda.entities.utils.DecimalDigitsInputFilter;
 import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
@@ -37,6 +38,7 @@ import com.application.arenda.ui.widgets.containerImg.galery.AdapterGalery;
 import com.application.arenda.ui.widgets.seekBar.CustomSeekBar;
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
 import com.application.arenda.ui.widgets.sideBar.SideBar;
+import com.google.android.material.textfield.TextInputEditText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,10 +49,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -106,15 +106,18 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     @Nullable
     @BindView(R.id.fieldProductName)
-    EditText fieldProductName;
+    TextInputEditText fieldProductName;
 
     @Nullable
     @BindView(R.id.fieldDescription)
-    EditText fieldProductDescription;
+    TextInputEditText fieldProductDescription;
 
     @Nullable
     @BindView(R.id.fieldCostProduct)
     EditText fieldCostProduct;
+
+    @BindView(R.id.groupAdress)
+    RadioGroup groupAdress;
 
     @BindView(R.id.checkBoxWithSale)
     CheckBox checkBoxWithSale;
@@ -156,12 +159,13 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     private ContainerFragments containerFragments;
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     private int selectedSubcategory = -1;
 
     private int minTime, minDay, maxRentalPeriod;
     private LocalTime timeOfIssueWith, timeOfIssueBy, returnTimeWith, returnTimeBy;
+    private String selectedAddress = "";
 
     private FragmentInsertAnnouncement() {
         notificationCompatLoadImage = new NotificationCompat.Builder(getContext(), CHANNEL_LOADING_IMAGES_CODE);
@@ -189,10 +193,10 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     @SuppressLint("CheckResult")
     private void init() {
-        api = ApiAnnouncement.getInstance();
+        api = ApiAnnouncement.getInstance(getContext());
         cacheManager = LocalCacheManager.getInstance(getContext());
 
-        cacheManager.users()
+        disposable.add(cacheManager.users()
                 .getActiveUser()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(modelUsers -> {
@@ -200,7 +204,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                         userToken = modelUsers.get(0).getToken();
                     else
                         userToken = null;
-                });
+                }));
 
         containerFragments = ContainerFragments.getInstance(getContext());
 
@@ -220,6 +224,8 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     }
 
     private void initListeners() {
+        groupAdress.setOnCheckedChangeListener((group, checkedId) -> selectedAddress = ((RadioButton) getView().findViewById(checkedId)).getText().toString());
+
         seekbarMinTime.setOnSeekbarChangeListener(value -> {
             seekbarMinTime.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_hour));
             minTime = value.intValue();
@@ -279,7 +285,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
                 model.setCostToUSD(Float.parseFloat(fieldCostProduct.getText().toString()));
 
-                model.setAddress("адрес");
+                model.setAddress(selectedAddress);
 
                 model.setPhone_1(checkPhone_1.isChecked() ? checkPhone_1.getText().toString() : "");
                 model.setPhone_2(checkPhone_2.isChecked() ? checkPhone_2.getText().toString() : "");
@@ -305,54 +311,39 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     @SuppressLint("CheckResult")
     public void insertAnnouncement(@NonNull ModelInsertAnnouncement announcement) {
-        if (announcement != null && userToken != null) {
+        if (userToken == null) {
+            Utils.messageOutput(getContext(), getResources().getString(R.string.warning_login_required));
+            return;
+        }
 
-            api.insertAnnouncement(getContext(), userToken, announcement)
+        if (announcement != null) {
+            disposable.add(api.insertAnnouncement(getContext(), userToken, announcement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<IApiAnnouncement.AnnouncementCodes>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            compositeDisposable.add(d);
+                    .subscribe(handler -> {
+                        switch (handler.getHandler()) {
+                            case SUCCESS:
+                                resetComponents();
+                                Utils.messageOutput(getContext(), getString(R.string.success_announcement_added));
+                                break;
+
+                            case USER_NOT_FOUND:
+                                Utils.messageOutput(getContext(), getString(R.string.error_user_not_found));
+                                break;
+
+                            case NETWORK_ERROR:
+                                Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
+                                break;
+
+                            case PHP_INI_NOT_LOADED:
+                                Timber.tag("Error on server").e("php ini not loaded");
+
+                            case UNSUCCESS:
+                            case UNKNOW_ERROR:
+                                Utils.messageOutput(getContext(), getString(R.string.unknown_error));
+                                break;
                         }
-
-                        @Override
-                        public void onNext(IApiAnnouncement.AnnouncementCodes announcementCodes) {
-                            switch (announcementCodes) {
-                                case SUCCESS_ANNOUNCEMENT_ADDED:
-                                case SUCCESS_PICTURES_ADDED:
-                                    resetComponents();
-                                    Utils.messageOutput(getContext(), getString(R.string.success_announcement_added));
-                                    break;
-
-                                case USER_NOT_FOUND:
-                                    Utils.messageOutput(getContext(), getString(R.string.error_user_not_found));
-                                    break;
-
-                                case NETWORK_ERROR:
-                                    Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
-                                    break;
-
-                                case PHP_INI_NOT_LOADED:
-                                    Timber.tag("Error on server").e(IApiAnnouncement.AnnouncementCodes.PHP_INI_NOT_LOADED.name());
-
-                                case UNSUCCESS_ANNOUNCEMENT_ADDED:
-                                case UNKNOW_ERROR:
-                                    Utils.messageOutput(getContext(), getString(R.string.unknown_error));
-                                    break;
-                            }
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e(e);
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
+                    }, Timber::e));
         }
     }
 
@@ -437,7 +428,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
         super.onStop();
 
         EventBus.getDefault().unregister(this);
-        compositeDisposable.clear();
+        disposable.clear();
     }
 
     @Override

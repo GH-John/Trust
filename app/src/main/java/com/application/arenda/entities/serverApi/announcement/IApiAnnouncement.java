@@ -2,8 +2,10 @@ package com.application.arenda.entities.serverApi.announcement;
 
 import com.application.arenda.BuildConfig;
 import com.application.arenda.entities.models.ModelAnnouncement;
+import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.models.ModelPeriodRent;
-import com.application.arenda.entities.models.ModelPicture;
+import com.application.arenda.entities.models.ModelProposal;
+import com.application.arenda.entities.models.ModelSubcategory;
 import com.application.arenda.entities.utils.retrofit.ApiHandler;
 import com.application.arenda.entities.utils.retrofit.ServerResponse;
 
@@ -21,53 +23,49 @@ import retrofit2.http.Part;
 
 public interface IApiAnnouncement {
     @POST(BuildConfig.URL_LOAD_CATEGORY)
-    Call<ResponseBody> getCategories();
+    Call<ServerResponse<List<ModelCategory>>> loadCategories();
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOAD_SUBCATEGORY)
-    Call<ResponseBody> getSubcategories(@Field("idCategory") long idCategory);
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_INSERT_ANNOUNCEMENT)
-    Call<ResponseBody> insertAnnouncement(
-            @Field("token") String token,
-            @Field("idSubcategory") long idSubcategory,
-
-            @Field("name") String name,
-            @Field("description") String description,
-
-            @Field("costToUSD") float costToUSD,
-
-            @Field("address") String address,
-
-            @Field("phone_1") String phone_1,
-
-            @Field("phone_2") String phone_2,
-
-            @Field("phone_3") String phone_3,
-
-            @Field("minTime") int minTime,
-
-            @Field("minDay") int minDay,
-
-            @Field("maxRentalPeriod") int maxRentalPeriod,
-
-            @Field("timeOfIssueWith") String timeOfIssueWith,
-            @Field("timeOfIssueBy") String timeOfIssueBy,
-
-            @Field("returnTimeWith") String returnTimeWith,
-            @Field("returnTimeBy") String returnTimeBy,
-
-            @Field("withSale") boolean withSale
-    );
+    Call<ServerResponse<List<ModelSubcategory>>> loadSubcategories(@Field("idCategory") long idCategory);
 
     @Multipart
-    @POST(BuildConfig.URL_INSERT_PHOTO)
-    Call<ResponseBody> insertPictures(
-            @Part("idAnnouncement") RequestBody idAnnouncement,
+    @POST(BuildConfig.URL_INSERT_ANNOUNCEMENT)
+    Call<ApiHandler> insertAnnouncement(
+            @Part("token") RequestBody token,
+            @Part("idSubcategory") RequestBody idSubcategory,
+
+            @Part("name") RequestBody name,
+            @Part("description") RequestBody description,
+
+            @Part("costToUSD") RequestBody costToUSD,
+
+            @Part("address") RequestBody address,
+
+            @Part("phone_1") RequestBody phone_1,
+
+            @Part("phone_2") RequestBody phone_2,
+
+            @Part("phone_3") RequestBody phone_3,
+
+            @Part("minTime") RequestBody minTime,
+
+            @Part("minDay") RequestBody minDay,
+
+            @Part("maxRentalPeriod") RequestBody maxRentalPeriod,
+
+            @Part("timeOfIssueWith") RequestBody timeOfIssueWith,
+            @Part("timeOfIssueBy") RequestBody timeOfIssueBy,
+
+            @Part("returnTimeWith") RequestBody returnTimeWith,
+            @Part("returnTimeBy") RequestBody returnTimeBy,
+
+            @Part("withSale") RequestBody withSale,
+
             @Part("nameMainPicture") RequestBody nameMainPicture,
             @Part List<MultipartBody.Part> pictures,
-            @Part("countPictures") int countPictures);
+            @Part("countPictures") RequestBody countPictures
+    );
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_ALL_ANNOUNCEMENT)
@@ -109,13 +107,7 @@ public interface IApiAnnouncement {
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_PERIOD_RENT_ANNOUNCEMENT)
-    Call<ServerResponse<List<ModelPeriodRent>>> loadPeriodRentAnnouncement(
-            @Field("idAnnouncement") long idAnnouncement
-    );
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_LOADING_PICTURES)
-    Call<List<ModelPicture>> loadPictures(@Field("idAnnouncement") long idAnnouncement);
+    Call<ServerResponse<List<ModelPeriodRent>>> loadPeriodRentAnnouncement(@Field("idAnnouncement") long idAnnouncement);
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_TO_FAVORITE)
@@ -123,7 +115,7 @@ public interface IApiAnnouncement {
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_VIEWER)
-    Call<ResponseBody> insertViewer(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
+    Call<ApiHandler> insertViewer(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_RENTAL)
@@ -132,42 +124,31 @@ public interface IApiAnnouncement {
                                   @Field("rentalStart") String rentalStart,
                                   @Field("rentalEnd") String rentalEnd);
 
-    enum AnnouncementCodes {
-        SUCCESS_CATEGORIES_LOADED,
-        UNSUCCESS_CATEGORIES_LOADED,
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_INCOMING_PROPOSALS)
+    Call<ServerResponse<List<ModelProposal>>> loadIncomingProposals(
+            @Field("token") String userToken,
+            @Field("idRent") long idRent,
+            @Field("limitItemsInPage") int limitItemsInPage);
 
-        SUCCESS_SUBCATEGORIES_LOADED,
-        UNSUCCESS_SUBCATEGORIES_LOADED,
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_OUTGOING_PROPOSALS)
+    Call<ServerResponse<List<ModelProposal>>> loadOutgoingProposals(
+            @Field("token") String userToken,
+            @Field("idRent") long idRent,
+            @Field("limitItemsInPage") int limitItemsInPage);
 
-        SUCCESS_ANNOUNCEMENT_ADDED,
-        UNSUCCESS_ANNOUNCEMENT_ADDED,
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_ACTIVE_PROPOSALS)
+    Call<ServerResponse<List<ModelProposal>>> loadActiveProposals(
+            @Field("token") String userToken,
+            @Field("idRent") long idRent,
+            @Field("limitItemsInPage") int limitItemsInPage);
 
-        SUCCESS_ANNOUNCEMENTS_LOADED,
-        UNSUCCESS_ANNOUNCEMENTS_LOADED,
-
-        SUCCESS_ANNOUNCEMENT_LOADED,
-        UNSUCCESS_ANNOUNCEMENT_LOADED,
-
-        SUCCESS_PICTURES_ADDED,
-        UNSUCCESS_PICTURES_ADDED,
-
-        SUCCESS_PICTURES_LOADED,
-        UNSUCCESS_PICTURES_LOADED,
-
-        SUCCESS_ADD_TO_FAVORITE,
-        UNSUCCESS_ADD_TO_FAVORITE,
-
-        SUCCESS_REMOVE_FROM_FAVORITE,
-        UNSUCCESS_REMOVE_FROM_FAVORITE,
-
-        USER_NOT_FOUND,
-        UNSUCCESS_LOAD_MAIN_PICTURE,
-
-        PHP_INI_NOT_LOADED,
-
-        NONE_REZULT,
-        NETWORK_ERROR,
-        NOT_CONNECT_TO_DB,
-        UNKNOW_ERROR
-    }
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_HISTORY_PROPOSALS)
+    Call<ServerResponse<List<ModelProposal>>> loadHistoryProposals(
+            @Field("token") String userToken,
+            @Field("idRent") long idRent,
+            @Field("limitItemsInPage") int limitItemsInPage);
 }

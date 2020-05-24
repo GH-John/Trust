@@ -8,38 +8,27 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
+import com.application.arenda.R;
 import com.application.arenda.entities.announcements.categories.CategoriesAdapter;
 import com.application.arenda.entities.announcements.categories.EventSendID;
 import com.application.arenda.entities.announcements.categories.SubcategoriesAdapter;
-import com.application.arenda.entities.serverApi.OnApiListener;
-import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.models.ModelSubcategory;
-import com.application.arenda.entities.utils.retrofit.CodeHandler;
-import com.application.arenda.entities.utils.Utils;
-import com.application.arenda.R;
+import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments;
 
 import org.greenrobot.eventbus.EventBus;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -57,13 +46,13 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
     private Unbinder unbinder;
 
-    private ApiAnnouncement apiAnnouncement;
+    private ApiAnnouncement api;
     private CategoriesAdapter categoriesAdapter;
-    private CompositeDisposable compositeDisposable;
+    private CompositeDisposable disposable;
 
 
     private FragmentSelectCategory() {
-        compositeDisposable = new CompositeDisposable();
+        disposable = new CompositeDisposable();
     }
 
     public static FragmentSelectCategory getInstance() {
@@ -89,111 +78,54 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
     private void initComponents() {
         categoriesAdapter = new CategoriesAdapter();
-        apiAnnouncement = ApiAnnouncement.getInstance();
+        api = ApiAnnouncement.getInstance(getContext());
 
         rvCategories.setHasFixedSize(true);
         rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
     }
 
     private void initListeners() {
-        OnApiListener announcementListener = new OnApiListener() {
-            @Override
-            public void onComplete(@NonNull CodeHandler code) {
-//                switch (code) {
-//                    case SUCCESS_CATEGORIES_LOADED:
-//                        break;
-//
-//                    case UNSUCCESS_CATEGORIES_LOADED:
-//                    case NOT_CONNECT_TO_DB:
-//                    case NETWORK_ERROR:
-//                    case UNKNOW_ERROR:
-//                        Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
-//                        break;
-//                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Throwable t) {
-                Timber.e(t);
-                if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-                    Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
-                }
-            }
-        };
-
         categoriesAdapter.setOnClickCategory((idCategory, rvItemCategory) -> {
 
             if (rvItemCategory.getAdapter() == null || rvItemCategory.getAdapter().getItemCount() == 0) {
 
-                SubcategoriesAdapter adapter = new SubcategoriesAdapter();
+                SubcategoriesAdapter subcategoriesAdapter = new SubcategoriesAdapter();
 
-                adapter.setItemClick((viewHolder, model) -> {
+                subcategoriesAdapter.setItemClick((viewHolder, model) -> {
                     EventBus.getDefault().post(new EventSendID((int) model.getID(), ((ModelSubcategory) model).getName()));
 
                     ContainerFragments.getInstance(getContext()).popBackStack();
                 });
 
-                apiAnnouncement.getSubcategories(idCategory, announcementListener)
+                disposable.add(api.loadSubcategories(idCategory)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<List<ModelSubcategory>>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                                compositeDisposable.add(d);
-                            }
-
-                            @Override
-                            public void onNext(List<ModelSubcategory> modelSubcategories) {
-                                adapter.addToCollection(modelSubcategories);
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Timber.e(e);
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                rvItemCategory.setLayoutManager(new LinearLayoutManager(rvItemCategory.getContext(), RecyclerView.VERTICAL, false));
-                                rvItemCategory.setAdapter(adapter);
-                            }
-                        });
+                        .subscribe(
+                                subcategories -> {
+                                    subcategoriesAdapter.addToCollection(subcategories);
+                                    rvItemCategory.setLayoutManager(new LinearLayoutManager(rvItemCategory.getContext(), RecyclerView.VERTICAL, false));
+                                    rvItemCategory.setAdapter(subcategoriesAdapter);
+                                }, Timber::e));
             }
         });
     }
 
     private void initAdapters() {
-        apiAnnouncement.getCategories(null)
+        disposable.add(api.loadCategories()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<ModelCategory>>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        compositeDisposable.add(d);
-                    }
-
-                    @Override
-                    public void onNext(List<ModelCategory> modelCategories) {
-                        categoriesAdapter.addToCollection(modelCategories);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
-                        rvCategories.setAdapter(categoriesAdapter);
-                    }
-                });
+                .subscribe(
+                        categories -> {
+                            categoriesAdapter.addToCollection(categories);
+                            rvCategories.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+                            rvCategories.setAdapter(categoriesAdapter);
+                        }, Timber::e));
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        compositeDisposable.clear();
+        disposable.clear();
     }
 
     @Override

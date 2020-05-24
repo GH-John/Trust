@@ -1,19 +1,25 @@
 package com.application.arenda.entities.models;
 
+import android.net.Uri;
+
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.google.gson.annotations.SerializedName;
+
+@Entity(tableName = "category")
 public class ModelCategory implements IModel {
-    private long idCategories = 0;
+    @PrimaryKey
+    @ColumnInfo(name = "idCategory")
+    @SerializedName("idCategory")
+    private long ID = 0;
 
-    private String iconUri;
+    @SerializedName("iconUri")
+    private Uri iconUri;
+
+    @SerializedName("name")
     private String name = "";
-
-    public ModelCategory() {
-    }
-
-    public ModelCategory(long idCategories, String iconUri, String name) {
-        this.idCategories = idCategories;
-        this.iconUri = iconUri;
-        this.name = name;
-    }
 
     public String getName() {
         return name;
@@ -23,21 +29,21 @@ public class ModelCategory implements IModel {
         this.name = name;
     }
 
-    public String getIconUri() {
+    public Uri getIconUri() {
         return iconUri;
     }
 
-    public void setIconUri(String uri) {
-        this.iconUri = uri;
+    public void setIconUri(Uri iconUri) {
+        this.iconUri = iconUri;
     }
 
     @Override
     public long getID() {
-        return idCategories;
+        return ID;
     }
 
     @Override
     public void setID(long id) {
-        this.idCategories = id;
+        this.ID = id;
     }
 }

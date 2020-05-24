@@ -35,7 +35,7 @@ public class ModelInsertAnnouncement implements IModel {
     private LocalTime returnTimeWith;
     private LocalTime returnTimeBy;
 
-    private boolean withSale = false;
+    private Boolean withSale = false;
 
     public String getName() {
         return name;
@@ -173,11 +173,11 @@ public class ModelInsertAnnouncement implements IModel {
         this.returnTimeBy = returnTimeBy;
     }
 
-    public boolean isWithSale() {
+    public Boolean isWithSale() {
         return withSale;
     }
 
-    public void setWithSale(boolean withSale) {
+    public void setWithSale(Boolean withSale) {
         this.withSale = withSale;
     }
 

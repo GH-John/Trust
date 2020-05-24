@@ -1,5 +1,6 @@
 package com.application.arenda.entities.utils.retrofit;
 
+import android.content.Context;
 import android.net.Uri;
 
 import com.application.arenda.BuildConfig;
@@ -27,8 +28,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     private static Retrofit retrofit;
+    private static long CACHE_SIZE = 10 * 1024 * 1024;
 
-    public synchronized static Retrofit getApi() {
+    public synchronized static Retrofit getApi(Context context) {
         if (retrofit == null) {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -45,7 +47,31 @@ public class ApiClient {
             OkHttpClient.Builder client = new OkHttpClient.Builder()
                     .readTimeout(5, TimeUnit.MINUTES)
                     .writeTimeout(5, TimeUnit.MINUTES)
+//                    .cache(new Cache(context.getCacheDir(), CACHE_SIZE))
                     .addInterceptor(chain -> {
+//                        Request request = chain.request();
+//
+//                        if (NetworkCheck.Companion.isOnline(context))
+//                            /*
+//                             *  If there is Internet, get the cache that was stored 5 seconds ago.
+//                             *  If the cache is older than 5 seconds, then discard it,
+//                             *  and indicate an error in fetching the response.
+//                             *  The 'max-age' attribute is responsible for this behavior.
+//                             */
+//                            request.newBuilder().header("Cache-Control", "public, max-age=" + 5).build();
+//                        else
+//                            /*
+//                             *  If there is no Internet, get the cache that was stored 7 days ago.
+//                             *  If the cache is older than 7 days, then discard it,
+//                             *  and indicate an error in fetching the response.
+//                             *  The 'max-stale' attribute is responsible for this behavior.
+//                             *  The 'only-if-cached' attribute indicates to not retrieve new data; fetch the cache only instead.
+//                             */
+//                            request.newBuilder().header("Cache-Control", "public, only-if-cached, max-stale=" + 60 * 60 * 24 * 7).build();
+//
+//
+//                        return chain.proceed(request);
+
                         Request original = chain.request();
                         Request.Builder builder = original.newBuilder()
                                 .method(original.method(), original.body());

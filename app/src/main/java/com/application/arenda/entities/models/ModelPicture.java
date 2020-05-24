@@ -42,7 +42,7 @@ public class ModelPicture implements IModel {
     private Uri uri;
 
     @SerializedName("isMainPicture")
-    private boolean isMainPicture = false;
+    private Boolean isMainPicture = false;
 
     public static Single<List<ModelPicture>> sortByMainPicture(List<ModelPicture> collection) {
         return Single.create(emitter -> {
@@ -115,11 +115,11 @@ public class ModelPicture implements IModel {
         this.uri = uri;
     }
 
-    public boolean isMainPicture() {
+    public Boolean isMainPicture() {
         return isMainPicture;
     }
 
-    public void setMainPicture(boolean mainPicture) {
+    public void setMainPicture(Boolean mainPicture) {
         isMainPicture = mainPicture;
     }
 

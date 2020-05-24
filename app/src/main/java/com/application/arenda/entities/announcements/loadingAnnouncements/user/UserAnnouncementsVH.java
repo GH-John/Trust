@@ -1,4 +1,4 @@
-package com.application.arenda.entities.announcements.loadingAnnouncements.UserAnnouncements;
+package com.application.arenda.entities.announcements.loadingAnnouncements.user;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;

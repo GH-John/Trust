@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:titleSeeAll="@string/text_title_announcements_landlord" />
+        app:titleSeeAll="@string/title_announcements_landlord" />
 
     <com.application.arenda.ui.widgets.horizontalList.HorizontalList
         android:id="@+id/similarAnnouncements"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:titleSeeAll="@string/text_title_announcements_similar" />
+        app:titleSeeAll="@string/title_announcements_similar" />
 </LinearLayout>

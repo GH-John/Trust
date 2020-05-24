@@ -1,196 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/DefaultStyleCardView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="PrivateResource">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="2dp"
-        tools:ignore="PrivateResource">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
+        <ImageView
+            android:id="@+id/itemImgProduct"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="200dp"
+            android:contentDescription="@string/todo"
+            android:scaleType="centerCrop"
+            android:transitionName="imgProduct" />
 
-            <ImageView
-                android:id="@+id/itemImgProduct"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:contentDescription="@string/todo"
-                android:scaleType="centerCrop"
-                android:transitionName="imgProduct" />
+        <FrameLayout
+            android:id="@+id/frameIndent"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_alignBottom="@id/itemImgProduct">
 
-            <FrameLayout
-                android:id="@+id/frameIndent"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:layout_alignBottom="@id/itemImgProduct">
+        </FrameLayout>
 
-            </FrameLayout>
+        <FrameLayout
+            android:id="@+id/framePlacementDate"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignStart="@id/itemImgProduct"
+            android:layout_alignTop="@id/itemImgProduct"
+            android:background="@drawable/item_date">
 
-            <FrameLayout
-                android:id="@+id/framePlacementDate"
+            <TextView
+                android:id="@+id/textPlacementDate"
+                style="@style/DefaultStyleTextRegular"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_alignStart="@id/itemImgProduct"
-                android:layout_alignTop="@id/itemImgProduct"
-                android:background="@drawable/item_date">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textSize="12sp"
+                tools:text="@string/text_placement_date_announcement" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/framePlacementDate"
+            android:layout_alignBottom="@+id/itemImgProduct">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/item_status"
+                android:paddingStart="6dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="18dp"
+                tools:ignore="UselessParent">
 
                 <TextView
-                    android:id="@+id/textPlacementDate"
+                    android:id="@+id/textCountViewers"
                     style="@style/DefaultStyleTextRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    tools:text="@string/text_placement_date_announcement" />
-            </FrameLayout>
+                    android:drawableLeft="@drawable/ic_eye"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:textSize="12sp"
+                    tools:ignore="RtlHardcoded"
+                    tools:text="@string/text_some_text" />
 
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/framePlacementDate"
-                android:layout_alignBottom="@+id/itemImgProduct">
-
-                <RelativeLayout
+                <TextView
+                    android:id="@+id/textCountFavorites"
+                    style="@style/DefaultStyleTextRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:background="@drawable/item_status"
-                    android:paddingStart="6dp"
-                    android:paddingTop="18dp"
-                    android:paddingEnd="12dp"
-                    android:paddingBottom="18dp"
-                    tools:ignore="UselessParent">
+                    android:layout_below="@+id/textCountViewers"
+                    android:layout_marginTop="12dp"
+                    android:drawableLeft="@drawable/ic_heart"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:textSize="12sp"
+                    tools:ignore="RtlHardcoded"
+                    tools:text="@string/text_some_text" />
 
-                    <TextView
-                        android:id="@+id/textCountViewers"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/ic_eye"
-                        android:drawablePadding="12dp"
-                        android:gravity="center_vertical"
-                        tools:text="@string/text_some_text"
-                        tools:ignore="RtlHardcoded" />
+                <TextView
+                    android:id="@+id/textRatingAnnouncement"
+                    style="@style/DefaultStyleTextRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textCountFavorites"
+                    android:layout_marginTop="12dp"
+                    android:drawableLeft="@drawable/ic_star"
+                    android:drawablePadding="12dp"
+                    android:gravity="center_vertical"
+                    android:textSize="12sp"
+                    tools:ignore="RtlHardcoded"
+                    tools:text="@string/text_some_text" />
 
-                    <TextView
-                        android:id="@+id/textCountFavorites"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textCountViewers"
-                        android:layout_marginTop="12dp"
-                        android:drawableLeft="@drawable/ic_heart"
-                        android:drawablePadding="12dp"
-                        android:gravity="center_vertical"
-                        tools:text="@string/text_some_text"
-                        tools:ignore="RtlHardcoded" />
+            </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/textRatingAnnouncement"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/textCountFavorites"
-                        android:layout_marginTop="12dp"
-                        android:drawableLeft="@drawable/ic_star"
-                        android:drawablePadding="12dp"
-                        android:gravity="center_vertical"
-                        tools:text="@string/text_some_text"
-                        tools:ignore="RtlHardcoded" />
+        </FrameLayout>
 
-                </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/frameIndent"
+            android:background="@drawable/panel_announcement"
+            android:padding="8dp">
 
+            <TextView
+                android:id="@+id/textNameProduct"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="24dp"
+                android:layout_toStartOf="@id/textCostProduct"
+                android:maxLines="3"
+                tools:text="@string/text_name_announcement" />
+
+            <TextView
+                android:id="@+id/textCostProduct"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                tools:text="@string/text_cost_announcement" />
+
+            <FrameLayout
+                android:id="@+id/frameLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textNameProduct"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="16dp"
+                android:layout_toEndOf="@id/textCountRent">
+
+                <TextView
+                    android:id="@+id/itemLocation"
+                    style="@style/DefaultStyleTextRegular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="12dp"
+                    android:gravity="center|right"
+                    android:maxLines="2"
+                    android:textSize="12sp"
+                    tools:ignore="RtlHardcoded"
+                    tools:text="@string/text_lacation_announcement" />
             </FrameLayout>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
+
+            <TextView
+                android:id="@+id/textCountRent"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/frameIndent"
-                android:background="@color/colorWhite"
-                app:cardCornerRadius="10dp"
-                tools:ignore="PrivateResource">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:id="@+id/textNameProduct"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginEnd="24dp"
-                        android:layout_toStartOf="@id/textCostProduct"
-                        android:maxLines="3"
-                        tools:text="@string/text_name_announcement"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/textCostProduct"
-                        style="@style/DefaultStyleTextBoldRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        tools:text="@string/text_cost_announcement"
-                        android:textSize="16sp" />
-
-                    <FrameLayout
-                        android:id="@+id/frameLocation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/textNameProduct"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_toEndOf="@id/textCountRent">
-
-                        <TextView
-                            android:id="@+id/itemLocation"
-                            style="@style/DefaultStyleTextRegular"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:drawableStart="@drawable/ic_location"
-                            android:drawablePadding="12dp"
-                            android:gravity="center|right"
-                            android:maxLines="2"
-                            tools:text="@string/text_lacation_announcement"
-                            tools:ignore="RtlHardcoded" />
-                    </FrameLayout>
-
-
-                    <TextView
-                        android:id="@+id/textCountRent"
-                        style="@style/DefaultStyleTextRegular"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignTop="@+id/frameLocation"
-                        android:layout_alignBottom="@id/frameLocation"
-                        android:layout_alignParentStart="true"
-                        android:layout_marginStart="8dp"
-                        android:drawableStart="@drawable/ic_count_rent"
-                        android:drawablePadding="12dp"
-                        android:gravity="center_vertical|center_horizontal"
-                        tools:text="@string/text_count_rent" />
-
-                </RelativeLayout>
-            </androidx.cardview.widget.CardView>
+                android:layout_alignTop="@+id/frameLocation"
+                android:layout_alignBottom="@id/frameLocation"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_count_rent"
+                android:drawablePadding="12dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:textSize="12sp"
+                tools:text="@string/text_count_rent" />
 
         </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </RelativeLayout>
 
-</FrameLayout>
+</androidx.cardview.widget.CardView>

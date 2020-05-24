@@ -30,7 +30,7 @@ class ActivityAuthorization : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         bindingUtil = DataBindingUtil.setContentView(this, R.layout.activity_authorization)
 
-        api = ApiAuthentication.getInstance()
+        api = ApiAuthentication.getInstance(this)
 
         initListeners()
     }

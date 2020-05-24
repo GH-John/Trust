@@ -96,7 +96,7 @@ public class CustomBottomNavigation extends ConstraintLayout implements BottomNa
                 .open(FragmentInsertAnnouncement.getInstance()));
 
         itemUserProposals.setOnClickListener(v -> containerFragments
-                .open(FragmentUserProposals.getInstance()));
+                .open(FragmentUserProposals.Companion.getInstance()));
 
         itemUserStatistics.setOnClickListener(v -> containerFragments
                 .open(FragmentUserStatistics.getInstance()));

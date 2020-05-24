@@ -10,6 +10,7 @@
     </string-array>
 
     <string name="error_empty_field">Пустое поле</string>
+    <string name="error_on_server">Ошибка на сервере</string>
     <string name="error_wrong_password">Неверный пароль</string>
     <string name="error_select_category">Выберите категорию</string>
     <string name="error_confirm_password">Пароли не совпадают</string>
@@ -23,6 +24,7 @@
     <string name="error_user_exists">Пользователь с такой почтой уже существует</string>
     <string name="error_please_choose_correct_img">Не верный формат изображения</string>
     <string name="error_adding_photos">Ошибка: не удалось добавить изображения\n</string>
+    <string name="error_user_login_exists">Пользоваель с таким логином уже существует</string>
     <string name="error_adding_announcement">Ошибка: не удалось добавить объявление\n</string>
     <string name="error_insert_to_favorite">Ошибка: не удалось добавить в избранное/n</string>
     <string name="error_fail_load_categories">Ошибка: не удалось загрузить категории\n</string>
@@ -33,6 +35,8 @@
     <string name="error_send_photo_to_server">Ошибка: не удалось отправить изображения на сервер</string>
     <string name="error_check_internet_connect">Проверьте интернет соединение и повторите попытку</string>
     <string name="unknown_error">Неизвестная ошибка</string>
+
+    <string name="warning_login_required">Требуется авторизация</string>
 
     <string name="success_photos_loaded">Изображения загружены</string>
     <string name="success_announcement_added">Объявление создано</string>
@@ -60,10 +64,14 @@
     <string name="itemList_prohibited">Запрещенные товары и услуги</string>
 
     <string name="btn_sign">Войти</string>
+    <string name="btn_logout">Выйти</string>
     <string name="btn_select">Выбрать</string>
     <string name="btn_skip">Пропустить</string>
     <string name="btn_reconnect">Повторить</string>
+    <string name="btn_booking">Забронировать</string>
+    <string name="btn_text_accept_proposal">Принять</string>
     <string name="btn_registration_auth">Регистрация</string>
+    <string name="btn_text_reject_proposal">Отклонить</string>
     <string name="btn_text_sign_google">Войти через Google</string>
     <string name="btn_registration_reg">Зарегистрироваться</string>
     <string name="btn_confirm_phone_validation">Подтвердить</string>
@@ -84,6 +92,7 @@
     <string name="hint_product_name">Название</string>
     <string name="hint_get_code">Получить код</string>
     <string name="hint_user_last_name">Фамилия</string>
+    <string name="hint_email_login">Email/Логин</string>
     <string name="hint_phone">+375(__)___-__-__</string>
     <string name="hint_product_description">Описание</string>
     <string name="hint_confirm_password">Подтвердите пароль</string>
@@ -109,11 +118,45 @@
     <string name="text_select_category">Выберите категорию</string>
     <string name="text_lacation_announcement">Местоположение</string>
     <string name="text_name_announcement">Название объявления</string>
+    <string name="text_note_photos">Выберите главную фотографию</string>
     <string name="text_placement_date_announcement">Сегодня, 13:21</string>
     <string name="text_additional_fields">Дополнительная информация:</string>
-    <string name="text_note_photos">Выберите главную фотографию</string>
-    <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
     <string name="text_visible_addresses">Показать адрес в объявлении:</string>
+    <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
+    <string name="text_reset">Сбросить</string>
+    <string name="text_start_rent">С</string>
+    <string name="text_three_dots">…</string>
+    <string name="text_end_rent">По</string>
+    <string name="text_find_near_free_dates">Найти ближайшие свободные даты</string>
+    <string name="text_min_time">Мин. время аренды</string>
+    <string name="text_1Hour">1 час.</string>
+    <string name="text_24Hour">24 час.</string>
+    <string name="text_min_day">Мин. кол. дней аренды</string>
+    <string name="text_1Day">1 дн.</string>
+    <string name="text_31Day">31 дн.</string>
+    <string name="text_max_rental_period">Макс. срок аренды</string>
+    <string name="text_1Month">1 мес.</string>
+    <string name="text_12Months">12 мес.</string>
+    <string name="text_time_issue">Время выдачи</string>
+    <string name="text_Time_00">00:00</string>
+    <string name="text_Time_23">23:00</string>
+    <string name="text_return_time">Время возврата</string>
+    <string name="text_short_hour">час.</string>
+    <string name="text_short_day">дн.</string>
+    <string name="text_short_month">мес.</string>
+    <string name="text_time_inflater">:00</string>
+    <string name="text_cost_usd_in_hour">$/ч.</string>
+    <string name="text_with_sale">Возможно с продажей</string>
+    <string name="text_booking_success">Бронирование успешно</string>
+    <string name="text_select_period_rental">Выберите период аренды</string>
+    <string name="text_select_picture">Выберите изображение</string>
+    <string name="text_view_reviews">Показать отзывы</string>
+    <string name="text_camera">Камера</string>
+    <string name="text_galery">Галерея</string>
+    <string name="text_placed_ads">Разместил объявлений:</string>
+    <string name="text_authorization_user">На площадке с</string>
+    <string name="text_updated">Обновлен:</string>
+    <string name="text_some_number">34</string>
 
     <string name="short_monday">Пн</string>
     <string name="short_tuesday">Вт</string>
@@ -159,6 +202,16 @@
 
     <string name="title_pager_incoming_proposals">Входящие</string>
     <string name="title_pager_outgoing_proposals">Исходящие</string>
+    <string name="title_pager_active_proposals">Активные</string>
+    <string name="title_pager_history_proposals">История</string>
+
+    <string name="title_horizantal_list">Заголовок</string>
+    <string name="title_announcements_landlord">Объявления арендодателя</string>
+    <string name="title_announcements_similar">Похожие объявления</string>
+    <string name="title_select_period_rent">Выберите период аренды</string>
+
+    <string name="calendar_title_year">2020</string>
+    <string name="calendar_title_month">Май</string>
 
     <string name="dialog_phone_number_title">Доступные телефоны</string>
     <string name="dialog_phone_number_not_found">Нет доступных номеров</string>
@@ -167,53 +220,7 @@
     <string name="notification_title_insert_announcement">Загрузка объявления</string>
 
     <string name="instruction_send_to_email">Инструкция по восстановлению отправлена на почту</string>
-    <string name="error_user_login_exists">Пользоваель с таким логином уже существует</string>
-    <string name="text_select_picture">Выберите изображение</string>
-    <string name="text_view_reviews">Показать отзывы</string>
-    <string name="text_camera">Камера</string>
-    <string name="text_galery">Галерея</string>
-    <string name="btn_logout">Выйти</string>
-    <string name="hint_email_login">Email/Логин</string>
-    <string name="text_placed_ads">Разместил объявлений:</string>
-    <string name="text_authorization_user">На площадке с</string>
-    <string name="warning_login_required">Требуется авторизация</string>
-    <string name="text_updated">Обновлен:</string>
-    <string name="text_some_number">34</string>
-    <string name="title_horizantal_list">Заголовок</string>
-    <string name="text_title_announcements_landlord">Объявления арендодателя</string>
-    <string name="text_title_announcements_similar">Похожие объявления</string>
 
-    <string name="calendar_title_year">2020</string>
-    <string name="calendar_title_month">Май</string>
-
-    <string name="error_on_server">Ошибка на сервере</string>
-    <string name="title_select_period_rent">Выберите период аренды</string>
-    <string name="text_reset">Сбросить</string>
-    <string name="text_start_rent">Начало</string>
-    <string name="text_three_dots">…</string>
-    <string name="text_end_rent">Конец</string>
-    <string name="btn_booking">Забронировать</string>
-    <string name="text_find_near_free_dates">Найти ближайшие свободные даты</string>
-    <string name="text_min_time">Мин. время аренды</string>
-    <string name="text_1Hour">1 час.</string>
-    <string name="text_24Hour">24 час.</string>
-    <string name="text_min_day">Мин. кол. дней аренды</string>
-    <string name="text_1Day">1 дн.</string>
-    <string name="text_31Day">31 дн.</string>
-    <string name="text_max_rental_period">Макс. срок аренды</string>
-    <string name="text_1Month">1 мес.</string>
-    <string name="text_12Months">12 мес.</string>
-    <string name="text_time_issue">Время выдачи</string>
-    <string name="text_Time_00">00:00</string>
-    <string name="text_Time_23">23:00</string>
-    <string name="text_return_time">Время возврата</string>
-    <string name="text_short_hour">час.</string>
-    <string name="text_short_day">дн.</string>
-    <string name="text_short_month">мес.</string>
-    <string name="text_time_inflater">:00</string>
-    <string name="text_cost_usd_in_hour">$/ч.</string>
-    <string name="text_with_sale">Возможно с продажей</string>
-    <string name="text_booking_success">Бронирование успешно</string>
-    <string name="select_period_rental">Выберите период аренды</string>
-    <string name="btn_text_accept_proposal">Принять</string>
+    <string name="some_date">11.01.20</string>
+    <string name="btn_text_finish_proposal">Завершить</string>
 </resources>

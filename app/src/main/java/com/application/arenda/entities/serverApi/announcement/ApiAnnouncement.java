@@ -6,11 +6,11 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.BuildConfig;
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.models.ModelInsertAnnouncement;
 import com.application.arenda.entities.models.ModelPeriodRent;
+import com.application.arenda.entities.models.ModelProposal;
 import com.application.arenda.entities.models.ModelSubcategory;
 import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.utils.FileUtils;
@@ -21,18 +21,14 @@ import com.application.arenda.entities.utils.retrofit.RetrofitUtils;
 import com.application.arenda.entities.utils.retrofit.ServerResponse;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
@@ -46,242 +42,62 @@ public final class ApiAnnouncement {
     private static ApiAnnouncement instance;
     private static IApiAnnouncement api;
 
-    private ApiAnnouncement() {
-        api = ApiClient.getApi().create(IApiAnnouncement.class);
+    private ApiAnnouncement(Context context) {
+        api = ApiClient.getApi(context).create(IApiAnnouncement.class);
     }
 
-    public static ApiAnnouncement getInstance() {
+    public static ApiAnnouncement getInstance(Context context) {
         if (instance == null)
-            instance = new ApiAnnouncement();
+            instance = new ApiAnnouncement(context);
         return instance;
     }
 
     @NonNull
-    public synchronized Observable<List<ModelCategory>> getCategories(OnApiListener announcementListener) {
-        return Observable.create(observableEmitter -> {
-            List<ModelCategory> categoryList = new ArrayList<>();
-
-            api.getCategories()
-                    .enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(@NonNull Call<ResponseBody> call,
-                                               @NonNull Response<ResponseBody> response) {
-                            try {
-                                String res = response.body().string();
-
-                                if (res != null) {
-                                    JSONObject object = new JSONObject(res);
-
-                                    String message = object.getString("response");
-
-                                    if (IApiAnnouncement.AnnouncementCodes.valueOf(message) == IApiAnnouncement.AnnouncementCodes.SUCCESS_CATEGORIES_LOADED) {
-
-                                        JSONArray categories = object.getJSONArray("categories");
-
-                                        JSONObject model;
-
-                                        for (int i = 0; i < categories.length(); i++) {
-                                            model = categories.getJSONObject(i);
-
-                                            categoryList.add(new ModelCategory(Long.parseLong(model.getString("idCategory")),
-
-                                                    //--> delete for release version
-
-                                                    BuildConfig.BASE_URL +
-
-                                                            //<--
-
-                                                            model.getString("iconUri"), model.getString("name").trim()));
-                                        }
-
-                                        Collections.sort(categoryList, (o1, o2) -> o2.getName().length() - o1.getName().length());
-
-                                        observableEmitter.onNext(categoryList);
-
-//                                        if (announcementListener != null)
-//                                            announcementListener.onComplete(IApiAnnouncement.AnnouncementCodes.valueOf(message));
-                                    }
-                                } else {
-//                                    if (announcementListener != null)
-//                                        announcementListener.onComplete(IApiAnnouncement.AnnouncementCodes.NETWORK_ERROR);
-                                }
-                            } catch (JSONException | IOException e) {
-                                Timber.e(e);
-
-                                if (announcementListener != null)
-                                    announcementListener.onFailure(e);
-
-                                observableEmitter.onError(e);
-                            } finally {
-                                observableEmitter.onComplete();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                            if (announcementListener != null)
-                                announcementListener.onFailure(t);
-
-                            observableEmitter.onError(t);
-                        }
-                    });
-        });
-    }
-
-    @NonNull
-    public synchronized Observable<List<ModelSubcategory>> getSubcategories(long idCategory, OnApiListener listener) {
-        return Observable.create(observableEmitter -> {
-            List<ModelSubcategory> subcategoryList = new ArrayList<>();
-
-            api.getSubcategories(idCategory).enqueue(new Callback<ResponseBody>() {
-                @Override
-                public void onResponse(@NonNull Call<ResponseBody> call,
-                                       @NonNull Response<ResponseBody> response) {
-                    try {
-                        String res = response.body().string();
-
-                        if (res != null) {
-                            JSONObject object = new JSONObject(res);
-
-                            String message = object.getString("response");
-
-                            if (IApiAnnouncement.AnnouncementCodes.valueOf(message) == IApiAnnouncement.AnnouncementCodes.SUCCESS_SUBCATEGORIES_LOADED) {
-
-                                JSONArray subcategories = object.getJSONArray("subcategories");
-
-                                JSONObject model;
-
-                                for (int i = 0; i < subcategories.length(); i++) {
-                                    model = subcategories.getJSONObject(i);
-
-                                    subcategoryList.add(new ModelSubcategory(Long.parseLong(model.getString("idSubcategory")),
-                                            idCategory, model.getString("name").trim()));
-                                }
-
-                                Collections.sort(subcategoryList, (o1, o2) -> o2.getName().length() - o1.getName().length());
-
-                                observableEmitter.onNext(subcategoryList);
-
-//                                if (listener != null)
-//                                    listener.onComplete(IApiAnnouncement.AnnouncementCodes.valueOf(message));
-                            }
-                        } else {
-//                            if (listener != null)
-//                                listener.onComplete(IApiAnnouncement.AnnouncementCodes.NETWORK_ERROR);
-                        }
-                    } catch (JSONException | IOException e) {
-                        Timber.e(e);
-                        if (listener != null)
-                            listener.onFailure(e);
-
-                        observableEmitter.onError(e);
-
-                        observableEmitter.onError(e);
-                    } finally {
-                        observableEmitter.onComplete();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                    if (listener != null)
-                        listener.onFailure(t);
-
-                    observableEmitter.onError(t);
-                }
-            });
-        });
-    }
-
-    @SuppressLint("CheckResult")
-    public synchronized Observable<IApiAnnouncement.AnnouncementCodes> insertAnnouncement(Context context, String token, ModelInsertAnnouncement announcement) {
-        List<Uri> uris = announcement.getUrisBitmap();
-        List<MultipartBody.Part> partList = new ArrayList<>();
-
-        for (int i = 0; i < uris.size(); i++) {
-            partList.add(RetrofitUtils.createFilePart(context, "picture_" + i, uris.get(i)));
-        }
-
-        return Observable.create(emitter -> api
-                .insertAnnouncement(
-                        token,
-                        announcement.getIdSubcategory(),
-
-                        announcement.getName(),
-                        announcement.getDescription(),
-
-                        announcement.getCostToUSD(),
-
-                        announcement.getAddress(),
-
-                        announcement.getPhone_1(),
-
-                        announcement.getPhone_2(),
-
-                        announcement.getPhone_3(),
-                        announcement.getMinTime(),
-                        announcement.getMinDay(),
-                        announcement.getMaxRentalPeriod(),
-                        announcement.getTimeOfIssueWith().toString(),
-                        announcement.getTimeOfIssueBy().toString(),
-                        announcement.getReturnTimeWith().toString(),
-                        announcement.getReturnTimeBy().toString(),
-                        announcement.isWithSale()
-
-                ).enqueue(new Callback<ResponseBody>() {
+    public synchronized Single<List<ModelCategory>> loadCategories() {
+        return Single.create(emitter -> api.loadCategories()
+                .enqueue(new Callback<ServerResponse<List<ModelCategory>>>() {
                     @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    public void onResponse(@NonNull Call<ServerResponse<List<ModelCategory>>> call,
+                                           @NonNull Response<ServerResponse<List<ModelCategory>>> response) {
                         if (response.isSuccessful()) {
-                            try {
-                                String res = response.body().string();
-
-                                if (res != null) {
-                                    JSONObject object = new JSONObject(res);
-
-                                    String message = object.getString("response");
-
-                                    if (IApiAnnouncement.AnnouncementCodes.valueOf(message) == IApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENT_ADDED) {
-
-                                        emitter.onNext(IApiAnnouncement.AnnouncementCodes.SUCCESS_ANNOUNCEMENT_ADDED);
-
-                                        insertPictures(object.getString("idAnnouncement"), FileUtils.getFileName(context, announcement.getMainUri()), partList, new OnApiListener() {
-                                            @Override
-                                            public void onComplete(@NonNull CodeHandler code) {
-//                                        emitter.onNext(code);
-                                            }
-
-                                            @Override
-                                            public void onFailure(@NonNull Throwable t) {
-                                                emitter.onError(t);
-                                            }
-                                        });
-                                    } else {
-                                        emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-                                    }
-                                } else {
-                                    emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-                                }
-                            } catch (JSONException | IOException e) {
-                                Timber.e(e);
-                                emitter.onError(e);
-                            } finally {
-                                emitter.onComplete();
-                            }
+                            emitter.onSuccess(response.body().getResponse());
                         } else {
-                            emitter.onNext(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-
-                            Timber.tag("ErrorInsertAnnouncement").e(response.message());
+                            emitter.onSuccess(Collections.emptyList());
+                            Timber.tag("LoadingError").e(response.code() + " - " + response.message());
                         }
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<ServerResponse<List<ModelCategory>>> call, @NonNull Throwable t) {
                         emitter.onError(t);
                     }
                 }));
     }
 
-    public synchronized Single<List<ModelAnnouncement>> loadAnnouncements(Context context, String token, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
+    @NonNull
+    public synchronized Single<List<ModelSubcategory>> loadSubcategories(long idCategory) {
+        return Single.create(emitter -> api.loadSubcategories(idCategory)
+                .enqueue(new Callback<ServerResponse<List<ModelSubcategory>>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<ServerResponse<List<ModelSubcategory>>> call,
+                                           @NonNull Response<ServerResponse<List<ModelSubcategory>>> response) {
+                        if (response.isSuccessful()) {
+                            emitter.onSuccess(response.body().getResponse());
+                        } else {
+                            emitter.onSuccess(Collections.emptyList());
+                            Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ServerResponse<List<ModelSubcategory>>> call, @NonNull Throwable t) {
+                        emitter.onError(t);
+                    }
+                }));
+    }
+
+
+    public synchronized Single<List<ModelAnnouncement>> loadAnnouncements(String token, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
         return Single.create(emitter ->
                 api.loadAnnouncements(
                         token,
@@ -296,11 +112,6 @@ public final class ApiAnnouncement {
                                         listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
-                                } else if (response.code() >= 200 && response.code() <= 300) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
                                     Timber.tag("LoadingError").e(response.code() + " - " + response.message());
                                 }
@@ -320,7 +131,7 @@ public final class ApiAnnouncement {
                         }));
     }
 
-    public synchronized Single<List<ModelAnnouncement>> loadUserAnnouncements(Context context, String token, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
+    public synchronized Single<List<ModelAnnouncement>> loadUserAnnouncements(String token, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
         return Single.create(emitter ->
                 api.loadUserAnnouncements(
                         token,
@@ -335,11 +146,6 @@ public final class ApiAnnouncement {
                                         listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
-                                } else if (response.code() >= 200 && response.code() <= 300) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
                                     Timber.tag("LoadingError").e(response.code() + " - " + response.message());
                                 }
@@ -359,7 +165,7 @@ public final class ApiAnnouncement {
                         }));
     }
 
-    public synchronized Single<List<ModelAnnouncement>> loadLandLordAnnouncements(Context context, String token, long idLandLord, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
+    public synchronized Single<List<ModelAnnouncement>> loadLandLordAnnouncements(String token, long idLandLord, long lastID, int limitItemsInPage, String query, OnApiListener listener) {
         return Single.create(emitter ->
                 api.loadLandLordAnnouncements(
                         token,
@@ -375,11 +181,6 @@ public final class ApiAnnouncement {
                                         listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
-                                } else if (response.code() >= 200 && response.code() <= 300) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
                                     Timber.tag("LoadingError").e(response.code() + " - " + response.message());
                                 }
@@ -399,7 +200,7 @@ public final class ApiAnnouncement {
                         }));
     }
 
-    public Single<List<ModelAnnouncement>> loadSimilarAnnouncements(Context context, String userToken, long idSubcategory, long idAnnouncement, int limitItemsInPage, String query, OnApiListener listener) {
+    public Single<List<ModelAnnouncement>> loadSimilarAnnouncements(String userToken, long idSubcategory, long idAnnouncement, int limitItemsInPage, String query, OnApiListener listener) {
         return Single.create(emitter ->
                 api.loadSimilarAnnouncements(
                         userToken,
@@ -415,11 +216,6 @@ public final class ApiAnnouncement {
                                         listener.onComplete(response.body().getHandler());
 
                                     emitter.onSuccess(response.body().getResponse());
-                                } else if (response.code() >= 200 && response.code() <= 300) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    Timber.tag("LoadingError").e(response.body().getError());
                                 } else {
                                     Timber.tag("LoadingError").e(response.code() + " - " + response.message());
                                 }
@@ -437,6 +233,224 @@ public final class ApiAnnouncement {
                                 emitter.onError(t);
                             }
                         }));
+    }
+
+    public Single<List<ModelPeriodRent>> loadPeriodRentAnnouncement(long idAnnouncement, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadPeriodRentAnnouncement(
+                        idAnnouncement)
+                        .enqueue(new Callback<ServerResponse<List<ModelPeriodRent>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Response<ServerResponse<List<ModelPeriodRent>>> response) {
+                                if (response.isSuccessful()) {
+                                    if (listener != null)
+                                        listener.onComplete(response.body().getHandler());
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
+
+    public Single<List<ModelProposal>> loadIncomingProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadIncomingProposals(
+                        userToken,
+                        idRent,
+                        limitItemsInPage)
+                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
+                                if (response.isSuccessful()) {
+                                    if (listener != null)
+                                        listener.onComplete(response.body().getHandler());
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
+    public Single<List<ModelProposal>> loadOutgoingProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadOutgoingProposals(
+                        userToken,
+                        idRent,
+                        limitItemsInPage)
+                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
+                                if (response.isSuccessful()) {
+                                    if (listener != null)
+                                        listener.onComplete(response.body().getHandler());
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
+    public Single<List<ModelProposal>> loadActiveProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadActiveProposals(
+                        userToken,
+                        idRent,
+                        limitItemsInPage)
+                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
+                                if (response.isSuccessful()) {
+                                    if (listener != null)
+                                        listener.onComplete(response.body().getHandler());
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
+    public Single<List<ModelProposal>> loadHistoryProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadHistoryProposals(
+                        userToken,
+                        idRent,
+                        limitItemsInPage)
+                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
+                                if (response.isSuccessful()) {
+                                    if (listener != null)
+                                        listener.onComplete(response.body().getHandler());
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
+    }
+
+
+    @SuppressLint("CheckResult")
+    public synchronized Single<ApiHandler> insertAnnouncement(Context context, String token, ModelInsertAnnouncement announcement) {
+        List<Uri> uris = announcement.getUrisBitmap();
+        List<MultipartBody.Part> partList = new ArrayList<>();
+
+        for (int i = 0; i < uris.size(); i++) {
+            partList.add(RetrofitUtils.createFilePart(context, "picture_" + i, uris.get(i)));
+        }
+
+        return Single.create(emitter -> api.insertAnnouncement(
+                RetrofitUtils.createPartFromString(token),
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.getIdSubcategory())),
+
+                RetrofitUtils.createPartFromString(announcement.getName()),
+                RetrofitUtils.createPartFromString(announcement.getDescription()),
+
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.getCostToUSD())),
+
+                RetrofitUtils.createPartFromString(announcement.getAddress()),
+
+                RetrofitUtils.createPartFromString(announcement.getPhone_1()),
+                RetrofitUtils.createPartFromString(announcement.getPhone_2()),
+                RetrofitUtils.createPartFromString(announcement.getPhone_3()),
+
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.getMinTime())),
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.getMinDay())),
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.getMaxRentalPeriod())),
+
+                RetrofitUtils.createPartFromString(announcement.getTimeOfIssueWith().toString()),
+                RetrofitUtils.createPartFromString(announcement.getTimeOfIssueBy().toString()),
+
+                RetrofitUtils.createPartFromString(announcement.getReturnTimeWith().toString()),
+                RetrofitUtils.createPartFromString(announcement.getReturnTimeBy().toString()),
+
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.isWithSale())),
+
+                RetrofitUtils.createPartFromString(FileUtils.getFileName(context, announcement.getMainUri())),
+                partList,
+                RetrofitUtils.createPartFromString(String.valueOf(partList.size()))
+        ).enqueue(new Callback<ApiHandler>() {
+            @Override
+            public void onResponse(@NonNull Call<ApiHandler> call, @NonNull Response<ApiHandler> response) {
+                if (response.isSuccessful()) {
+                    emitter.onSuccess(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ApiHandler> call, @NonNull Throwable t) {
+                emitter.onError(t);
+            }
+        }));
     }
 
     public synchronized Single<Boolean> insertToFavorite(String token, long idAnnouncement, OnApiListener listener) {
@@ -488,85 +502,20 @@ public final class ApiAnnouncement {
                 }));
     }
 
-    private synchronized void insertPictures(String idAnnouncement, String mainUri, List<MultipartBody.Part> partList, OnApiListener listener) {
-        api.insertPictures(RetrofitUtils.createPartFromString(idAnnouncement), RetrofitUtils.createPartFromString(mainUri), partList, partList.size())
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                        try {
-                            String res = response.body().string();
-
-                            if (res != null) {
-
-                                JSONObject object = new JSONObject(res);
-
-                                String message = object.getString("code");
-
-                                if (IApiAnnouncement.AnnouncementCodes.valueOf(message) == IApiAnnouncement.AnnouncementCodes.SUCCESS_PICTURES_ADDED) {
-//                                    listener.onComplete(IApiAnnouncement.AnnouncementCodes.SUCCESS_PICTURES_ADDED);
-                                } else {
-//                                    listener.onComplete(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-                                }
-                            } else {
-//                                listener.onComplete(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-                            }
-                        } catch (JSONException | IOException e) {
-                            Timber.e(e);
-//                            listener.onComplete(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                        Timber.e(t);
-//                        listener.onComplete(IApiAnnouncement.AnnouncementCodes.UNKNOW_ERROR);
-                    }
-                });
-    }
-
-    public synchronized Completable insertViewer(String token, long idAnnouncement, OnApiListener listener) {
-        return Completable.create(emitter -> api
+    public synchronized Single<ApiHandler> insertViewer(String token, long idAnnouncement, OnApiListener listener) {
+        return Single.create(emitter -> api
                 .insertViewer(token, idAnnouncement)
-                .enqueue(new Callback<ResponseBody>() {
+                .enqueue(new Callback<ApiHandler>() {
                     @Override
-                    public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    public void onResponse(@NonNull Call<ApiHandler> call, @NonNull Response<ApiHandler> response) {
                         if (response.isSuccessful()) {
-                            try {
-                                String res = response.body().string();
-
-                                if (res != null) {
-                                    JSONObject object = new JSONObject(res);
-
-                                    int code = object.getInt("code");
-
-                                    if (CodeHandler.SUCCESS.getCode() == code) {
-                                        emitter.onComplete();
-                                    }
-
-                                    if (listener != null)
-                                        listener.onComplete(CodeHandler.get(code));
-                                }
-                            } catch (Throwable throwable) {
-                                emitter.onError(throwable);
-                            }
-                        } else {
-                            emitter.onComplete();
-
-                            if (listener != null)
-                                listener.onComplete(CodeHandler.UNKNOW_ERROR);
-
-                            Timber.tag("ErrorInsertToFavorite").e(response.message());
+                            emitter.onSuccess(response.body());
                         }
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<ApiHandler> call, @NonNull Throwable t) {
                         emitter.onError(t);
-
-                        if (listener != null)
-                            listener.onFailure(t);
-
-                        Timber.e(t);
                     }
                 }));
     }
@@ -586,41 +535,5 @@ public final class ApiAnnouncement {
                         emitter.onError(t);
                     }
                 }));
-    }
-
-    public Single<List<ModelPeriodRent>> loadPeriodRentAnnouncement(Context context, long idAnnouncement, OnApiListener listener) {
-        return Single.create(emitter ->
-                api.loadPeriodRentAnnouncement(
-                        idAnnouncement)
-                        .enqueue(new Callback<ServerResponse<List<ModelPeriodRent>>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Response<ServerResponse<List<ModelPeriodRent>>> response) {
-                                if (response.isSuccessful()) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    emitter.onSuccess(response.body().getResponse());
-                                } else if (response.code() >= 200 && response.code() <= 300) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    Timber.tag("LoadingError").e(response.body().getError());
-                                } else {
-                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Throwable t) {
-                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
-                                    if (listener != null)
-                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
-
-
-                                if (listener != null)
-                                    listener.onFailure(t);
-                                emitter.onError(t);
-                            }
-                        }));
     }
 }

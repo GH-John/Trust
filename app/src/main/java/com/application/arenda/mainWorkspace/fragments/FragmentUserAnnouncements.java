@@ -15,25 +15,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
-import com.application.arenda.entities.announcements.loadingAnnouncements.UserAnnouncements.UserAnnouncementsAdapter;
-import com.application.arenda.entities.serverApi.OnApiListener;
+import com.application.arenda.R;
+import com.application.arenda.entities.announcements.loadingAnnouncements.user.UserAnnouncementsAdapter;
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelUser;
 import com.application.arenda.entities.recyclerView.RVOnScrollListener;
 import com.application.arenda.entities.room.LocalCacheManager;
-import com.application.arenda.entities.utils.retrofit.CodeHandler;
+import com.application.arenda.entities.serverApi.OnApiListener;
+import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
+import com.application.arenda.entities.utils.DisplayUtils;
 import com.application.arenda.entities.utils.Utils;
-import com.application.arenda.R;
+import com.application.arenda.entities.utils.retrofit.CodeHandler;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
 import com.application.arenda.ui.widgets.sideBar.SideBar;
-import com.application.arenda.entities.utils.DisplayUtils;
 
 import java.util.List;
 
@@ -116,7 +115,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     }
 
     private void init() {
-        api = ApiAnnouncement.getInstance();
+        api = ApiAnnouncement.getInstance(getContext());
         cacheManager = LocalCacheManager.getInstance(getContext());
         rvLayoutManager = new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false);
 
@@ -155,6 +154,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
                     case HTTP_NOT_FOUND:
                     case NETWORK_ERROR: {
                         Utils.messageOutput(getContext(), getResources().getString(R.string.error_check_internet_connect));
+                        break;
                     }
 
                     case NONE_REZULT: {
@@ -252,14 +252,10 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     private void initAdapters() {
         recyclerView.setLayoutManager(rvLayoutManager);
 
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setItemViewCacheSize(50);
-        recyclerView.setDrawingCacheEnabled(true);
-        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
         recyclerView.setHasFixedSize(true);
 
         rvOnScrollListener = new RVOnScrollListener(rvLayoutManager);
-//        recyclerView.setOnFlingListener(new RVOnFlingListener(recyclerView));
 
         recyclerView.addOnScrollListener(rvOnScrollListener);
 
@@ -299,7 +295,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
         if (!userAnnouncementsAdapter.isLoading()) {
             userAnnouncementsAdapter.setLoading(true);
 
-            api.loadUserAnnouncements(getContext(), userToken, lastId, 10, query, listenerLoadAnnouncement)
+            api.loadUserAnnouncements(userToken, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .cache()

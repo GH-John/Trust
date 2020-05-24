@@ -66,7 +66,7 @@ class ActivityRegistration : AppCompatActivity() {
 
     private fun init() {
         cacheManager = LocalCacheManager.getInstance(this)
-        api = ApiAuthentication.getInstance()
+        api = ApiAuthentication.getInstance(this)
         Utils.setPhoneMask(resources.getString(R.string.hint_phone), bindingUtil.fieldPhoneReg)
     }
 

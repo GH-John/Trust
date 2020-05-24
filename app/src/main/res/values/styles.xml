@@ -16,6 +16,44 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="DefaultStyleRecyclerView">
+        <item name="android:clipToPadding">false</item>
+        <item name="android:overScrollMode">never</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="DefaultStyleRecyclerView.PaddingTopBottom">
+        <item name="android:paddingTop">@dimen/paddingTopFromActionBar</item>
+        <item name="android:paddingBottom">@dimen/paddingBottomFromBottomNav</item>
+    </style>
+
+    <style name="DefaultStyleRecyclerView.PaddingTop">
+        <item name="android:paddingTop">@dimen/paddingTopFromActionBar</item>
+    </style>
+
+    <style name="DefaultStyleRecyclerView.PaddingBottom">
+        <item name="android:paddingBottom">@dimen/paddingBottomFromBottomNav</item>
+    </style>
+
+    <style name="DefaultTabLayout" parent="Widget.Design.TabLayout">
+        <item name="android:layout_height">@dimen/height_tab_layout</item>
+        <item name="tabInlineLabel">true</item>
+        <item name="tabMode">scrollable</item>
+        <item name="tabGravity">fill</item>
+        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabTextAppearance">@style/DefaultTabTextAppearance</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="DefaultTabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="tabTextColor">@color/colorAccent</item>
+        <item name="textSize">14sp</item>
+        <item name="fontFamily">@font/gotham_office_regular</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
     <style name="DefaultNavigationTheme">
         <item name="android:colorControlHighlight">@color/backgroundItem</item>
     </style>
@@ -45,12 +83,41 @@
         <item name="android:textColor">@color/colorText</item>
     </style>
 
+    <style name="DefaultStyleTextInputLayout">
+        <item name="android:ems">10</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:layout_height">@dimen/field_height</item>
+        <item name="android:layout_marginEnd">24dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:textColorHint">@color/colorHint</item>
+        <item name="android:background">@drawable/field_background</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:fontFamily">@font/gotham_office_regular</item>
+    </style>
+
+    <style name="DefaultStyleTextInputEditText">
+        <item name="android:ems">10</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:background">@color/colorTransparent</item>
+        <item name="android:textColorHint">@color/colorHint</item>
+        <item name="android:backgroundTint">@color/colorTransparent</item>
+        <item name="android:fontFamily">@font/gotham_office_regular</item>
+    </style>
+
     <style name="DefaultStyleField">
         <item name="android:ems">10</item>
         <item name="android:textSize">14sp</item>
         <item name="android:paddingLeft">20dp</item>
         <item name="android:paddingRight">20dp</item>
-        <item name="android:layout_height">43dp</item>
+        <item name="android:layout_height">@dimen/field_height</item>
         <item name="android:layout_marginEnd">24dp</item>
         <item name="android:layout_marginStart">24dp</item>
         <item name="android:textColor">@color/colorText</item>
@@ -58,6 +125,12 @@
         <item name="android:background">@drawable/field_background</item>
         <item name="android:elevation">2dp</item>
         <item name="android:fontFamily">@font/gotham_office_regular</item>
+    </style>
+
+    <style name="DefaultStyleTextInputEditText.Multiline">
+        <item name="android:minHeight">@dimen/min_multiline_field_height</item>
+        <item name="android:gravity">start|top</item>
+        <item name="android:inputType">textMultiLine</item>
     </style>
 
     <style name="DefaultStyleImageView">
@@ -101,7 +174,7 @@
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Body1</item>
     </style>
 
-    <style name="DefaultStyleBtnActionBar">
+    <style name="DefaultStyleImageBtn">
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:background">@drawable/btn_background_dark</item>
@@ -139,4 +212,13 @@
         <item name="android:fontFamily">@font/gotham_office_regular</item>
     </style>
 
+    <style name="DefaultStyleCardView">
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">10dp</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+
+    <dimen name="field_height">43dp</dimen>
+    <dimen name="min_multiline_field_height">70dp</dimen>
+    <dimen name="height_tab_layout">30dp</dimen>
 </resources>
