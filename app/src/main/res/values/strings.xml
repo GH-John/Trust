@@ -69,8 +69,13 @@
     <string name="btn_skip">Пропустить</string>
     <string name="btn_reconnect">Повторить</string>
     <string name="btn_booking">Забронировать</string>
+    <string name="btn_text_message">Сообщения</string>
+    <string name="btn_text_following">Подписаться</string>
+    <string name="btn_insert_phone">Добавить номер</string>
     <string name="btn_text_accept_proposal">Принять</string>
+    <string name="btn_insert_address">Добавить адрес</string>
     <string name="btn_registration_auth">Регистрация</string>
+    <string name="btn_text_finish_proposal">Завершить</string>
     <string name="btn_text_reject_proposal">Отклонить</string>
     <string name="btn_text_sign_google">Войти через Google</string>
     <string name="btn_registration_reg">Зарегистрироваться</string>
@@ -89,6 +94,7 @@
     <string name="hint_password">Пароль</string>
     <string name="hint_cost_product">0.00</string>
     <string name="hint_field_search">Поиск</string>
+    <string name="hint_address">Город, улица</string>
     <string name="hint_product_name">Название</string>
     <string name="hint_get_code">Получить код</string>
     <string name="hint_user_last_name">Фамилия</string>
@@ -121,8 +127,8 @@
     <string name="text_note_photos">Выберите главную фотографию</string>
     <string name="text_placement_date_announcement">Сегодня, 13:21</string>
     <string name="text_additional_fields">Дополнительная информация:</string>
+    <string name="text_visible_phones">Показать номера в объявлении:</string>
     <string name="text_visible_addresses">Показать адрес в объявлении:</string>
-    <string name="text_visible_phones">Показать телефон(ы) в объявлении:</string>
     <string name="text_reset">Сбросить</string>
     <string name="text_start_rent">С</string>
     <string name="text_three_dots">…</string>
@@ -157,6 +163,16 @@
     <string name="text_authorization_user">На площадке с</string>
     <string name="text_updated">Обновлен:</string>
     <string name="text_some_number">34</string>
+    <string name="text_daily_cost">Дневная стоимость</string>
+    <string name="text_user_following">Подписки</string>
+    <string name="text_add_comment">Добавить комментарий…</string>
+    <string name="text_user_followers">Подписчики</string>
+    <string name="text_count_user_announcements">Объявлений</string>
+    <string name="text_view_all_comments">Посмотреть все комментарии</string>
+    <string name="text_save">Сохранить</string>
+    <string name="text_without_address">Без адреса</string>
+    <string name="text_message">Сообщение</string>
+    <string name="text_online">online</string>
 
     <string name="short_monday">Пн</string>
     <string name="short_tuesday">Вт</string>
@@ -210,6 +226,9 @@
     <string name="title_announcements_similar">Похожие объявления</string>
     <string name="title_select_period_rent">Выберите период аренды</string>
 
+    <string name="title_add_phone">Добавьте номера телефонов</string>
+    <string name="title_add_address">Добавьте адреса</string>
+
     <string name="calendar_title_year">2020</string>
     <string name="calendar_title_month">Май</string>
 
@@ -222,5 +241,4 @@
     <string name="instruction_send_to_email">Инструкция по восстановлению отправлена на почту</string>
 
     <string name="some_date">11.01.20</string>
-    <string name="btn_text_finish_proposal">Завершить</string>
 </resources>

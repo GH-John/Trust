@@ -18,11 +18,11 @@ import com.application.arenda.entities.models.SharedViewModels
 import com.application.arenda.entities.recyclerView.RVOnScrollListener
 import com.application.arenda.entities.room.LocalCacheManager
 import com.application.arenda.entities.serverApi.OnApiListener
-import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement
+import com.application.arenda.entities.serverApi.client.CodeHandler
+import com.application.arenda.entities.serverApi.client.CodeHandler.*
+import com.application.arenda.entities.serverApi.proposal.ApiProposal
 import com.application.arenda.entities.utils.DisplayUtils
 import com.application.arenda.entities.utils.Utils
-import com.application.arenda.entities.utils.retrofit.CodeHandler
-import com.application.arenda.entities.utils.retrofit.CodeHandler.*
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -32,7 +32,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class FragmentHistoryProposals private constructor() : Fragment() {
-    private var api: ApiAnnouncement? = null
+    private var api: ApiProposal? = null
     private var cacheManager: LocalCacheManager? = null
 
     private var rvLayoutManager: LinearLayoutManager? = null
@@ -65,7 +65,7 @@ class FragmentHistoryProposals private constructor() : Fragment() {
     }
 
     private fun init() {
-        api = ApiAnnouncement.getInstance(context)
+        api = ApiProposal.getInstance(context)
 
         cacheManager = LocalCacheManager.getInstance(context)
 
@@ -109,9 +109,9 @@ class FragmentHistoryProposals private constructor() : Fragment() {
                     UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
                     }
-                    NONE_REZULT -> {
-                        Utils.messageOutput(context, "Нет объявлений")
-                    }
+//                    NONE_REZULT -> {
+//                        Utils.messageOutput(context, "Нет объявлений")
+//                    }
                 }
             }
 
@@ -121,10 +121,11 @@ class FragmentHistoryProposals private constructor() : Fragment() {
         }
 
         consumerUserToken = Consumer { modelUsers: List<ModelUser> ->
-            if (modelUsers.isNotEmpty()) {
-                userToken = modelUsers[0].token
-                refreshLayout()
-            } else userToken = null
+            userToken = if (modelUsers.isNotEmpty())
+                modelUsers[0].token
+            else null
+
+            refreshLayout()
         }
 
         cacheManager!!.users()

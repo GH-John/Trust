@@ -26,7 +26,7 @@ import com.application.arenda.entities.models.SharedViewModels;
 import com.application.arenda.entities.recyclerView.OnItemClick;
 import com.application.arenda.entities.recyclerView.RVOnScrollListener;
 import com.application.arenda.entities.room.LocalCacheManager;
-import com.application.arenda.entities.utils.retrofit.CodeHandler;
+import com.application.arenda.entities.serverApi.client.CodeHandler;
 import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.R;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;

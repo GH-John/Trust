@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +27,7 @@ import com.application.arenda.mainWorkspace.fragments.FragmentRegulations;
 import com.application.arenda.mainWorkspace.fragments.FragmentServices;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserAnnouncements;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserFavorites;
+import com.application.arenda.mainWorkspace.fragments.FragmentUserProfile;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserStatistics;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserWallet;
 import com.application.arenda.mainWorkspace.fragments.proposals.FragmentUserProposals;
@@ -61,7 +61,7 @@ public final class ContainerDrawerLayout implements SideBar,
 
     private ImageButton itemSettings;
 
-    private ImageView itemUserLogo;
+    private ImageView itemUserAvatar;
 
     private ContainerFragments containerFragments;
 
@@ -89,10 +89,10 @@ public final class ContainerDrawerLayout implements SideBar,
 
         itemLogout = headerNavigation.findViewById(R.id.itemLogout);
         itemSignIn = headerNavigation.findViewById(R.id.itemSignIn);
-        itemSettings = headerNavigation.findViewById(R.id.itemSettings);
+        itemSettings = headerNavigation.findViewById(R.id.itemBtnSettings);
         itemUserName = headerNavigation.findViewById(R.id.itemUserName);
         itemUserLogin = headerNavigation.findViewById(R.id.itemUserLogin);
-        itemUserLogo = headerNavigation.findViewById(R.id.itemUserAvatar);
+        itemUserAvatar = headerNavigation.findViewById(R.id.itemUserAvatar);
 
         containerFragments = ContainerFragments.getInstance(activity);
 
@@ -112,21 +112,21 @@ public final class ContainerDrawerLayout implements SideBar,
 
                         itemUserName.setText(user.getLastName() + " " + user.getName());
                         itemUserLogin.setText(user.getLogin());
-                        GlideUtils.loadAvatar(context, Uri.parse(user.getUserLogo()), itemUserLogo);
+                        GlideUtils.loadAvatar(context, user.getAvatar(), itemUserAvatar);
 
                         itemSignIn.setVisibility(View.GONE);
 
                         itemLogout.setVisibility(View.VISIBLE);
                         itemUserName.setVisibility(View.VISIBLE);
                         itemUserLogin.setVisibility(View.VISIBLE);
-                        itemUserLogo.setVisibility(View.VISIBLE);
+                        itemUserAvatar.setVisibility(View.VISIBLE);
                     } else {
                         itemSignIn.setVisibility(View.VISIBLE);
 
                         itemLogout.setVisibility(View.GONE);
                         itemUserName.setVisibility(View.GONE);
                         itemUserLogin.setVisibility(View.GONE);
-                        itemUserLogo.setVisibility(View.GONE);
+                        itemUserAvatar.setVisibility(View.GONE);
                     }
                 });
     }
@@ -137,6 +137,12 @@ public final class ContainerDrawerLayout implements SideBar,
         itemSignIn.setOnClickListener(this::openActivityAuthorization);
 
         itemLogout.setOnClickListener(this::logoutUser);
+
+        itemUserAvatar.setOnClickListener(v -> openProfile());
+    }
+
+    private void openProfile() {
+        containerFragments.open(FragmentUserProfile.Companion.getInstance());
     }
 
     private void openActivityAuthorization(View view) {

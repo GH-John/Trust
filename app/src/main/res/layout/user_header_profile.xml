@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/layoutSelectUserLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/itemUserAvatar"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_item_user_logo" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="bottom|end"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/ic_item_plus" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/userName"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/layoutSelectUserLogo"
+        app:layout_constraintStart_toEndOf="@+id/layoutSelectUserLogo"
+        app:layout_constraintTop_toTopOf="@+id/layoutSelectUserLogo"
+        tools:text="@tools:sample/lorem" />
+
+    <TextView
+        android:id="@+id/userLogin"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/colorHint"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="@+id/userName"
+        app:layout_constraintTop_toBottomOf="@+id/userName"
+        tools:text="@tools:sample/lorem" />
+
+    <ImageButton
+        android:id="@+id/itemBtnSettings"
+        style="@style/DefaultStyleImageBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/ic_item_settings"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/title1"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="@string/text_count_user_announcements"
+        app:layout_constraintEnd_toStartOf="@+id/title2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSelectUserLogo" />
+
+    <TextView
+        android:id="@+id/countAnnouncementsUser"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/title1"
+        app:layout_constraintEnd_toEndOf="@+id/title1"
+        app:layout_constraintStart_toStartOf="@+id/title1"
+        tools:text="@string/text_some_number" />
+
+    <TextView
+        android:id="@+id/title2"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_user_followers"
+        app:layout_constraintEnd_toStartOf="@+id/title3"
+        app:layout_constraintStart_toEndOf="@+id/title1"
+        app:layout_constraintTop_toTopOf="@+id/title1" />
+
+    <TextView
+        android:id="@+id/countUserFollowers"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/title2"
+        app:layout_constraintEnd_toEndOf="@+id/title2"
+        app:layout_constraintStart_toStartOf="@+id/title2"
+        tools:text="@string/text_some_number" />
+
+    <TextView
+        android:id="@+id/title3"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_user_following"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/title2"
+        app:layout_constraintTop_toTopOf="@+id/title1" />
+
+    <TextView
+        android:id="@+id/countUserFollowing"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/title3"
+        app:layout_constraintEnd_toEndOf="@+id/title3"
+        app:layout_constraintStart_toStartOf="@+id/title3"
+        tools:text="@string/text_some_number" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

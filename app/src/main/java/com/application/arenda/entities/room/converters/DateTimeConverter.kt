@@ -8,7 +8,7 @@ import org.threeten.bp.LocalTime
 class DateTimeConverter {
     @TypeConverter
     fun fromTime(time: LocalTime): String {
-        return time.toString()
+        return time.toString() ?: ""
     }
 
     @TypeConverter
@@ -18,7 +18,7 @@ class DateTimeConverter {
 
     @TypeConverter
     fun fromDate(date: LocalDate): String {
-        return date.toString()
+        return date.toString() ?: ""
     }
 
     @TypeConverter

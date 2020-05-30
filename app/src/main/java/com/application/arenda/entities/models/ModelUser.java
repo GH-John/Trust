@@ -1,11 +1,15 @@
 package com.application.arenda.entities.models;
 
+import android.net.Uri;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import org.threeten.bp.LocalDateTime;
 
 @Entity(tableName = "users")
 public class ModelUser implements IModel {
@@ -30,7 +34,7 @@ public class ModelUser implements IModel {
     private String email = "";
 
     @SerializedName("userLogo")
-    private String userLogo = "";
+    private Uri avatar;
 
     @SerializedName("address_1")
     private String address_1 = "";
@@ -62,28 +66,40 @@ public class ModelUser implements IModel {
     @SerializedName("statusUser")
     private String statusUser = "";
 
+    @SerializedName("countAnnouncementsUser")
+    private int countAnnouncementsUser = 0;
+
+    @SerializedName("countAllViewers")
+    private int countAllViewers = 0;
+
+    @SerializedName("countFollowers")
+    private int countFollowers = 0;
+
+    @SerializedName("countFollowing")
+    private int countFollowing = 0;
+
     @SerializedName("created")
-    private String created;
+    private LocalDateTime created;
 
     @SerializedName("updated")
-    private String updated;
+    private LocalDateTime updated;
 
     @Expose(deserialize = false, serialize = false)
-    private boolean isCurrent;
+    private boolean isCurrent = false;
 
-    public String getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(String created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
-    public String getUpdated() {
+    public LocalDateTime getUpdated() {
         return updated;
     }
 
-    public void setUpdated(String updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 
@@ -191,12 +207,12 @@ public class ModelUser implements IModel {
         this.email = email;
     }
 
-    public String getUserLogo() {
-        return userLogo;
+    public Uri getAvatar() {
+        return avatar;
     }
 
-    public void setUserLogo(String userLogo) {
-        this.userLogo = userLogo;
+    public void setAvatar(Uri avatar) {
+        this.avatar = avatar;
     }
 
     public String getAccountType() {
@@ -221,6 +237,38 @@ public class ModelUser implements IModel {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public int getCountAnnouncementsUser() {
+        return countAnnouncementsUser;
+    }
+
+    public void setCountAnnouncementsUser(int countAnnouncementsUser) {
+        this.countAnnouncementsUser = countAnnouncementsUser;
+    }
+
+    public int getCountAllViewers() {
+        return countAllViewers;
+    }
+
+    public void setCountAllViewers(int countAllViewers) {
+        this.countAllViewers = countAllViewers;
+    }
+
+    public int getCountFollowers() {
+        return countFollowers;
+    }
+
+    public void setCountFollowers(int countFollowers) {
+        this.countFollowers = countFollowers;
+    }
+
+    public int getCountFollowing() {
+        return countFollowing;
+    }
+
+    public void setCountFollowing(int countFollowing) {
+        this.countFollowing = countFollowing;
     }
 
     @Override

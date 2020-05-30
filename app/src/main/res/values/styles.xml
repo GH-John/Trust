@@ -29,6 +29,17 @@
         <item name="android:paddingBottom">@dimen/paddingBottomFromBottomNav</item>
     </style>
 
+    <style name="DefaultPaddingTopBottomLayout">
+        <item name="android:paddingTop">@dimen/paddingTopFromActionBar</item>
+        <item name="android:paddingBottom">@dimen/paddingBottomFromBottomNav</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
+    <style name="DefaultPaddingTopLayout">
+        <item name="android:paddingTop">@dimen/paddingTopFromActionBar</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
     <style name="DefaultStyleRecyclerView.PaddingTop">
         <item name="android:paddingTop">@dimen/paddingTopFromActionBar</item>
     </style>
@@ -116,10 +127,10 @@
         <item name="android:ems">10</item>
         <item name="android:textSize">14sp</item>
         <item name="android:paddingLeft">20dp</item>
-        <item name="android:paddingRight">20dp</item>
-        <item name="android:layout_height">@dimen/field_height</item>
         <item name="android:layout_marginEnd">24dp</item>
         <item name="android:layout_marginStart">24dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:layout_height">@dimen/field_height</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:textColorHint">@color/colorHint</item>
         <item name="android:background">@drawable/field_background</item>
@@ -141,7 +152,7 @@
 
     <style name="DefaultStyleBtn.Small">
         <item name="android:textSize">12sp</item>
-        <item name="android:height">10dp</item>
+        <item name="android:layout_height">30dp</item>
     </style>
 
 

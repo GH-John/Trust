@@ -86,7 +86,7 @@ public class LandLord_Similar_AnnouncementsVH extends BaseViewHolder {
         textNameProduct.setText(model.getName());
         textCountRent.setText(String.valueOf(model.getCountRent()));
 
-        textCostProduct.setText(model.getCostToUSD() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        textCostProduct.setText(model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
 
         setActiveHeart(model.isFavorite());
     }

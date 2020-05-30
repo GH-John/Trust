@@ -13,15 +13,14 @@ import android.provider.MediaStore
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import androidx.databinding.DataBindingUtil
 import com.application.arenda.BuildConfig
 import com.application.arenda.R
 import com.application.arenda.databinding.ActivityRegistrationBinding
-import com.application.arenda.entities.serverApi.auth.ApiAuthentication
+import com.application.arenda.entities.models.AccountType
 import com.application.arenda.entities.room.LocalCacheManager
-import com.application.arenda.entities.user.AccountType
+import com.application.arenda.entities.serverApi.client.CodeHandler
+import com.application.arenda.entities.serverApi.user.ApiUser
 import com.application.arenda.entities.utils.Utils
-import com.application.arenda.entities.utils.retrofit.CodeHandler
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -46,14 +45,15 @@ import java.util.*
 
 class ActivityRegistration : AppCompatActivity() {
     private var currentUriUserLogo: Uri? = null
-    private var api: ApiAuthentication? = null
+    private var api: ApiUser? = null
     private var cacheManager: LocalCacheManager? = null
     private val disposable = CompositeDisposable()
-    private lateinit var bindingUtil: ActivityRegistrationBinding
+    private lateinit var bind: ActivityRegistrationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        bindingUtil = DataBindingUtil.setContentView(this, R.layout.activity_registration)
+        bind = ActivityRegistrationBinding.inflate(layoutInflater)
+        setContentView(bind.root)
 
         init()
         initListeners()
@@ -66,36 +66,39 @@ class ActivityRegistration : AppCompatActivity() {
 
     private fun init() {
         cacheManager = LocalCacheManager.getInstance(this)
-        api = ApiAuthentication.getInstance(this)
-        Utils.setPhoneMask(resources.getString(R.string.hint_phone), bindingUtil.fieldPhoneReg)
+        api = ApiUser.getInstance(this)
+        Utils.setPhoneMask(resources.getString(R.string.hint_phone), bind.fieldPhoneReg)
     }
 
     private fun initListeners() {
-        bindingUtil.layoutSelectUserLogo.setOnClickListener { openAlertDialogChoosePicture() }
+        bind.layoutSelectUserLogo.setOnClickListener { openAlertDialogChoosePicture() }
 
-        bindingUtil.btnReg.setOnClickListener {
+        bind.btnReg.setOnClickListener {
             if (!Utils.fieldIsEmpty(applicationContext,
-                            bindingUtil.fieldNameReg,
-                            bindingUtil.fieldLastNameReg,
-                            bindingUtil.fieldLoginReg,
-                            bindingUtil.fieldEmailReg,
-                            bindingUtil.fieldPhoneReg,
-                            bindingUtil.fieldPassReg) &&
-                    Utils.isEmail(applicationContext, bindingUtil.fieldEmailReg) &&
+                            bind.fieldNameReg,
+                            bind.fieldLastNameReg,
+                            bind.fieldLoginReg,
+                            bind.fieldEmailReg,
+                            bind.fieldPhoneReg,
+                            bind.fieldAddressReg,
+                            bind.fieldPassReg,
+                            bind.fieldConfirmPassReg) &&
+                    Utils.isEmail(applicationContext, bind.fieldEmailReg) &&
                     Utils.textIsAlphabet(applicationContext,
-                            bindingUtil.fieldNameReg,
-                            bindingUtil.fieldLastNameReg) &&
-                    !Utils.isWeakPassword(applicationContext, bindingUtil.fieldPassReg) &&
-                    Utils.isConfirmPassword(applicationContext, bindingUtil.fieldPassReg, bindingUtil.fieldConfirmPassReg)) {
-                bindingUtil.progressBarReg.visibility = View.VISIBLE
+                            bind.fieldNameReg,
+                            bind.fieldLastNameReg) &&
+                    !Utils.isWeakPassword(applicationContext, bind.fieldPassReg) &&
+                    Utils.isConfirmPassword(applicationContext, bind.fieldPassReg, bind.fieldConfirmPassReg)) {
+                bind.progressBarReg.visibility = View.VISIBLE
                 api!!.registration(this,
                         currentUriUserLogo,
-                        bindingUtil.fieldNameReg.text.toString().trim { it <= ' ' },
-                        bindingUtil.fieldLastNameReg.text.toString().trim { it <= ' ' },
-                        bindingUtil.fieldLoginReg.text.toString().trim { it <= ' ' },
-                        bindingUtil.fieldEmailReg.text.toString().trim { it <= ' ' },
-                        bindingUtil.fieldPassReg.text.toString().trim { it <= ' ' },
-                        bindingUtil.fieldPhoneReg.text.toString().trim { it <= ' ' },
+                        bind.fieldNameReg.text.toString().trim { it <= ' ' },
+                        bind.fieldLastNameReg.text.toString().trim { it <= ' ' },
+                        bind.fieldLoginReg.text.toString().trim { it <= ' ' },
+                        bind.fieldEmailReg.text.toString().trim { it <= ' ' },
+                        bind.fieldPassReg.text.toString().trim { it <= ' ' },
+                        bind.fieldPhoneReg.text.toString().trim { it <= ' ' },
+                        bind.fieldAddressReg.text.toString().trim { it <= ' ' },
                         accountType)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -107,24 +110,24 @@ class ActivityRegistration : AppCompatActivity() {
                             override fun onSuccess(code: CodeHandler) {
                                 when (code) {
                                     CodeHandler.SUCCESS -> {
-                                        bindingUtil.progressBarReg.visibility = View.INVISIBLE
+                                        bind.progressBarReg.visibility = View.INVISIBLE
                                         onBackPressed()
                                         finish()
                                     }
                                     CodeHandler.USER_WITH_LOGIN_EXISTS -> {
-                                        bindingUtil.progressBarReg.visibility = View.INVISIBLE
-                                        bindingUtil.fieldLoginReg.error = getString(R.string.error_user_login_exists)
+                                        bind.progressBarReg.visibility = View.INVISIBLE
+                                        bind.fieldLoginReg.error = getString(R.string.error_user_login_exists)
                                     }
                                     CodeHandler.USER_EXISTS -> {
-                                        bindingUtil.progressBarReg.visibility = View.INVISIBLE
-                                        bindingUtil.fieldEmailReg.error = getString(R.string.error_user_exists)
+                                        bind.progressBarReg.visibility = View.INVISIBLE
+                                        bind.fieldEmailReg.error = getString(R.string.error_user_exists)
                                     }
                                     CodeHandler.UNSUCCESS, CodeHandler.UNKNOW_ERROR, CodeHandler.NOT_CONNECT_TO_DB -> {
-                                        bindingUtil.progressBarReg.visibility = View.INVISIBLE
+                                        bind.progressBarReg.visibility = View.INVISIBLE
                                         Utils.messageOutput(this@ActivityRegistration, getString(R.string.error_check_internet_connect))
                                     }
                                     else -> {
-                                        bindingUtil.progressBarReg.visibility = View.INVISIBLE
+                                        bind.progressBarReg.visibility = View.INVISIBLE
                                         Utils.messageOutput(this@ActivityRegistration, getString(R.string.unknown_error))
                                     }
                                 }
@@ -132,7 +135,7 @@ class ActivityRegistration : AppCompatActivity() {
 
                             override fun onError(e: Throwable) {
                                 Timber.e(e)
-                                bindingUtil.progressBarReg.visibility = View.INVISIBLE
+                                bind.progressBarReg.visibility = View.INVISIBLE
                                 if (e is SocketTimeoutException || e is ConnectException) {
                                     Utils.messageOutput(this@ActivityRegistration, getString(R.string.error_check_internet_connect))
                                 }
@@ -215,7 +218,7 @@ class ActivityRegistration : AppCompatActivity() {
 
     private val accountType: AccountType
         get() {
-            when (bindingUtil.radioGroupReg.checkedRadioButtonId) {
+            when (bind.radioGroupReg.checkedRadioButtonId) {
                 R.id.radioBtnPrivatePerson -> return AccountType.PRIVATE_PERSON
                 R.id.radioBtnBusiness -> return AccountType.BUSINESS_PERSON
             }
@@ -238,7 +241,7 @@ class ActivityRegistration : AppCompatActivity() {
             val result = CropImage.getActivityResult(data)
             if (resultCode == Activity.RESULT_OK) {
                 currentUriUserLogo = result.uri
-                bindingUtil.itemSelectUserLogo.setImageURI(result.uri)
+                bind.itemUserAvatar.setImageURI(result.uri)
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Timber.e(result.error)
             }

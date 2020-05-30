@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import com.application.arenda.R;
-import com.application.arenda.entities.systemPreview.AdapterSystemPreview;
+import com.application.arenda.ui.systemPreview.AdapterSystemPreview;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

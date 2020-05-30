@@ -14,6 +14,7 @@ import com.application.arenda.entities.models.ModelPicture;
 import com.application.arenda.entities.models.ModelProposal;
 import com.application.arenda.entities.models.ModelSubcategory;
 import com.application.arenda.entities.models.ModelUser;
+import com.application.arenda.entities.room.converters.CurrencyConverter;
 import com.application.arenda.entities.room.converters.DateTimeConverter;
 import com.application.arenda.entities.room.converters.PicturesConverter;
 import com.application.arenda.entities.room.converters.UriConverter;
@@ -25,7 +26,7 @@ import timber.log.Timber;
 
 @Database(entities = {ModelUser.class, ModelAnnouncement.class, ModelPicture.class, ModelProposal.class, ModelCategory.class, ModelSubcategory.class},
         version = BuildConfig.APP_DB_VERSION)
-@TypeConverters({UriConverter.class, PicturesConverter.class, DateTimeConverter.class})
+@TypeConverters({UriConverter.class, PicturesConverter.class, DateTimeConverter.class, CurrencyConverter.class})
 public abstract class AppDB extends RoomDatabase {
     private static AppDB instance;
 

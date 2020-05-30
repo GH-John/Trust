@@ -39,14 +39,14 @@
         tools:ignore="RtlHardcoded" />
 
     <ImageButton
-        android:id="@+id/itemSettings"
+        android:id="@+id/itemBtnSettings"
         android:layout_width="@dimen/sizeBtnActionBar"
         android:layout_height="@dimen/sizeBtnActionBar"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/btn_background_dark"
         android:contentDescription="@string/todo"
-        android:src="@drawable/sb_item_settings"
+        android:src="@drawable/ic_item_settings"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -77,7 +77,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/itemUserAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/itemSettings"
+        app:layout_constraintTop_toBottomOf="@+id/itemBtnSettings"
         tools:ignore="RtlCompat"
         tools:visibility="visible" />
 

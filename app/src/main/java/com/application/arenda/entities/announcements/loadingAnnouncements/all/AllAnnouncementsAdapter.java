@@ -12,6 +12,7 @@ public class AllAnnouncementsAdapter extends BaseAdapter<ModelAnnouncement, AllA
 
     private OnItemClick itemViewClick;
     private OnItemClick itemHeartClick;
+    private OnItemClick itemUserAvatarClick;
 
     public void setItemViewClick(OnItemClick itemClick) {
         this.itemViewClick = itemClick;
@@ -19,6 +20,10 @@ public class AllAnnouncementsAdapter extends BaseAdapter<ModelAnnouncement, AllA
 
     public void setItemHeartClick(OnItemClick itemHeartClick) {
         this.itemHeartClick = itemHeartClick;
+    }
+
+    public void setItemUserAvatarClick(OnItemClick itemUserAvatarClick) {
+        this.itemUserAvatarClick = itemUserAvatarClick;
     }
 
     @NonNull
@@ -36,5 +41,8 @@ public class AllAnnouncementsAdapter extends BaseAdapter<ModelAnnouncement, AllA
 
         if (itemHeartClick != null)
             holder.setOnItemHeartClick(itemHeartClick);
+
+        if (itemUserAvatarClick != null)
+            holder.setItemUserAvatarClick(itemUserAvatarClick);
     }
 }

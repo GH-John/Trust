@@ -9,16 +9,14 @@ import androidx.annotation.NonNull;
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.models.ModelInsertAnnouncement;
-import com.application.arenda.entities.models.ModelPeriodRent;
-import com.application.arenda.entities.models.ModelProposal;
 import com.application.arenda.entities.models.ModelSubcategory;
 import com.application.arenda.entities.serverApi.OnApiListener;
+import com.application.arenda.entities.serverApi.client.ApiClient;
+import com.application.arenda.entities.serverApi.client.ApiHandler;
+import com.application.arenda.entities.serverApi.client.CodeHandler;
+import com.application.arenda.entities.serverApi.client.ServerResponse;
 import com.application.arenda.entities.utils.FileUtils;
-import com.application.arenda.entities.utils.retrofit.ApiClient;
-import com.application.arenda.entities.utils.retrofit.ApiHandler;
-import com.application.arenda.entities.utils.retrofit.CodeHandler;
 import com.application.arenda.entities.utils.retrofit.RetrofitUtils;
-import com.application.arenda.entities.utils.retrofit.ServerResponse;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -235,169 +233,6 @@ public final class ApiAnnouncement {
                         }));
     }
 
-    public Single<List<ModelPeriodRent>> loadPeriodRentAnnouncement(long idAnnouncement, OnApiListener listener) {
-        return Single.create(emitter ->
-                api.loadPeriodRentAnnouncement(
-                        idAnnouncement)
-                        .enqueue(new Callback<ServerResponse<List<ModelPeriodRent>>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Response<ServerResponse<List<ModelPeriodRent>>> response) {
-                                if (response.isSuccessful()) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    emitter.onSuccess(response.body().getResponse());
-                                } else {
-                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<ServerResponse<List<ModelPeriodRent>>> call, @NonNull Throwable t) {
-                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
-                                    if (listener != null)
-                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
-
-
-                                if (listener != null)
-                                    listener.onFailure(t);
-                                emitter.onError(t);
-                            }
-                        }));
-    }
-
-
-    public Single<List<ModelProposal>> loadIncomingProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
-        return Single.create(emitter ->
-                api.loadIncomingProposals(
-                        userToken,
-                        idRent,
-                        limitItemsInPage)
-                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
-                                if (response.isSuccessful()) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    emitter.onSuccess(response.body().getResponse());
-                                } else {
-                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
-                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
-                                    if (listener != null)
-                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
-
-                                if (listener != null)
-                                    listener.onFailure(t);
-                                emitter.onError(t);
-                            }
-                        }));
-    }
-
-    public Single<List<ModelProposal>> loadOutgoingProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
-        return Single.create(emitter ->
-                api.loadOutgoingProposals(
-                        userToken,
-                        idRent,
-                        limitItemsInPage)
-                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
-                                if (response.isSuccessful()) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    emitter.onSuccess(response.body().getResponse());
-                                } else {
-                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
-                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
-                                    if (listener != null)
-                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
-
-
-                                if (listener != null)
-                                    listener.onFailure(t);
-                                emitter.onError(t);
-                            }
-                        }));
-    }
-
-    public Single<List<ModelProposal>> loadActiveProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
-        return Single.create(emitter ->
-                api.loadActiveProposals(
-                        userToken,
-                        idRent,
-                        limitItemsInPage)
-                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
-                                if (response.isSuccessful()) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    emitter.onSuccess(response.body().getResponse());
-                                } else {
-                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
-                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
-                                    if (listener != null)
-                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
-
-
-                                if (listener != null)
-                                    listener.onFailure(t);
-                                emitter.onError(t);
-                            }
-                        }));
-    }
-
-    public Single<List<ModelProposal>> loadHistoryProposal(String userToken, long idRent, int limitItemsInPage, OnApiListener listener) {
-        return Single.create(emitter ->
-                api.loadHistoryProposals(
-                        userToken,
-                        idRent,
-                        limitItemsInPage)
-                        .enqueue(new Callback<ServerResponse<List<ModelProposal>>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Response<ServerResponse<List<ModelProposal>>> response) {
-                                if (response.isSuccessful()) {
-                                    if (listener != null)
-                                        listener.onComplete(response.body().getHandler());
-
-                                    emitter.onSuccess(response.body().getResponse());
-                                } else {
-                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(@NonNull Call<ServerResponse<List<ModelProposal>>> call, @NonNull Throwable t) {
-                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
-                                    if (listener != null)
-                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
-
-
-                                if (listener != null)
-                                    listener.onFailure(t);
-                                emitter.onError(t);
-                            }
-                        }));
-    }
-
 
     @SuppressLint("CheckResult")
     public synchronized Single<ApiHandler> insertAnnouncement(Context context, String token, ModelInsertAnnouncement announcement) {
@@ -415,7 +250,11 @@ public final class ApiAnnouncement {
                 RetrofitUtils.createPartFromString(announcement.getName()),
                 RetrofitUtils.createPartFromString(announcement.getDescription()),
 
-                RetrofitUtils.createPartFromString(String.valueOf(announcement.getCostToUSD())),
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.getHourlyCost())),
+                RetrofitUtils.createPartFromString(announcement.getHourlyCurrency().getCurrency()),
+
+                RetrofitUtils.createPartFromString(String.valueOf(announcement.getDailyCost())),
+                RetrofitUtils.createPartFromString(announcement.getDailyCurrency().getCurrency()),
 
                 RetrofitUtils.createPartFromString(announcement.getAddress()),
 
@@ -505,23 +344,6 @@ public final class ApiAnnouncement {
     public synchronized Single<ApiHandler> insertViewer(String token, long idAnnouncement, OnApiListener listener) {
         return Single.create(emitter -> api
                 .insertViewer(token, idAnnouncement)
-                .enqueue(new Callback<ApiHandler>() {
-                    @Override
-                    public void onResponse(@NonNull Call<ApiHandler> call, @NonNull Response<ApiHandler> response) {
-                        if (response.isSuccessful()) {
-                            emitter.onSuccess(response.body());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<ApiHandler> call, @NonNull Throwable t) {
-                        emitter.onError(t);
-                    }
-                }));
-    }
-
-    public synchronized Single<ApiHandler> insertRental(String token, long idAnnouncement, String rentalStart, String rentalEnd) {
-        return Single.create(emitter -> api.insertRental(token, idAnnouncement, rentalStart, rentalEnd)
                 .enqueue(new Callback<ApiHandler>() {
                     @Override
                     public void onResponse(@NonNull Call<ApiHandler> call, @NonNull Response<ApiHandler> response) {

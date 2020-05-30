@@ -1,7 +1,5 @@
 package com.application.arenda.entities.recyclerView;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.entities.models.IModel;
@@ -11,6 +9,7 @@ import java.util.List;
 
 public abstract class BaseAdapter<M extends IModel, V extends BaseViewHolder> extends RecyclerView.Adapter<V> implements RVAdapter<M> {
     private boolean isLoading = false;
+    private int position = -1;
 
     private List<M> collection = new ArrayList<>();
 
@@ -65,6 +64,15 @@ public abstract class BaseAdapter<M extends IModel, V extends BaseViewHolder> ex
     public void removeFromCollection(int position) {
         if (position > -1) {
             this.collection.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
+
+    @Override
+    public void removeFromCollection(M model) {
+        position = collection.indexOf(model);
+        if (position > -1) {
+            collection.remove(model);
             notifyItemRemoved(position);
         }
     }

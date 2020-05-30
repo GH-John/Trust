@@ -99,10 +99,9 @@
                     style="@style/DefaultStyleTextInputEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLength="70"
                     android:hint="@string/hint_product_name"
                     android:inputType="textPersonName"
-                    android:minHeight="@dimen/field_height"
+                    android:maxLength="70"
                     tools:ignore="Autofill,LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -161,17 +160,40 @@
                 app:layout_constraintTop_toBottomOf="@+id/layoutCounter2" />
 
             <EditText
-                android:id="@+id/fieldCostProduct"
+                android:id="@+id/fieldHourlyCost"
                 style="@style/DefaultStyleField"
                 android:layout_width="0dp"
                 android:layout_marginTop="16dp"
                 android:drawableEnd="@drawable/ic_usd"
-                android:ems="10"
                 android:hint="@string/hint_cost_product"
                 android:inputType="numberDecimal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textHourlyCost"
+                tools:ignore="Autofill" />
+
+            <TextView
+                android:id="@+id/textDailyCost"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/text_daily_cost"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/fieldHourlyCost" />
+
+            <EditText
+                android:id="@+id/fieldDailyCost"
+                style="@style/DefaultStyleField"
+                android:layout_width="0dp"
+                android:layout_marginTop="16dp"
+                android:drawableEnd="@drawable/ic_usd"
+                android:hint="@string/hint_cost_product"
+                android:inputType="numberDecimal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textDailyCost"
                 tools:ignore="Autofill" />
 
             <include
@@ -184,7 +206,7 @@
                 android:layout_marginEnd="24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/fieldCostProduct" />
+                app:layout_constraintTop_toBottomOf="@+id/fieldDailyCost" />
 
             <TextView
                 android:id="@+id/textAffordableInfo"
@@ -223,7 +245,7 @@
             <RadioGroup
                 android:id="@+id/groupAdress"
                 style="@style/DefaultStyleRadioGroupVertical"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -231,12 +253,21 @@
                 app:layout_constraintTop_toBottomOf="@+id/textVisibleAddresses">
 
                 <RadioButton
-                    android:id="@+id/address_1"
+                    android:id="@+id/withoutAddress"
                     style="@style/DefaultStyleRadioBtn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/text_some_text" />
+                    android:text="@string/text_without_address" />
+
+                <RadioButton
+                    android:id="@+id/address_1"
+                    style="@style/DefaultStyleRadioBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="false"
+                    tools:text="@string/text_some_text" />
 
                 <RadioButton
                     android:id="@+id/address_2"
@@ -245,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:checked="false"
-                    android:text="@string/text_some_text" />
+                    tools:text="@string/text_some_text" />
 
                 <RadioButton
                     android:id="@+id/address_3"
@@ -254,8 +285,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:checked="false"
-                    android:text="@string/text_some_text" />
+                    tools:text="@string/text_some_text" />
             </RadioGroup>
+
+            <Button
+                android:id="@+id/btnInsertAddress"
+                style="@style/DefaultStyleBtn.Small"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_white"
+                android:text="@string/btn_insert_address"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/groupAdress" />
 
             <TextView
                 android:id="@+id/textVisiblePhones"
@@ -266,64 +308,75 @@
                 android:layout_marginTop="24dp"
                 android:text="@string/text_visible_phones"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/groupAdress" />
+                app:layout_constraintTop_toBottomOf="@+id/btnInsertAddress" />
 
-            <CheckBox
-                android:id="@+id/checkPhone_1"
-                style="@style/DefaultStyleCheckBox"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:id="@+id/groupPhones"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_marginTop="16dp"
-                android:text="@string/hint_phone"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textVisiblePhones" />
+                app:layout_constraintTop_toBottomOf="@+id/textVisiblePhones">
 
-            <CheckBox
-                android:id="@+id/checkPhone_2"
-                style="@style/DefaultStyleCheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/hint_phone"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkPhone_1" />
+                <CheckBox
+                    android:id="@+id/checkPhone_1"
+                    style="@style/DefaultStyleCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/hint_phone" />
 
-            <CheckBox
-                android:id="@+id/checkPhone_3"
-                style="@style/DefaultStyleCheckBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/hint_phone"
+                <CheckBox
+                    android:id="@+id/checkPhone_2"
+                    style="@style/DefaultStyleCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/hint_phone" />
+
+                <CheckBox
+                    android:id="@+id/checkPhone_3"
+                    style="@style/DefaultStyleCheckBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/hint_phone" />
+            </LinearLayout>
+
+
+            <Button
+                android:id="@+id/btnInsertPhone"
+                style="@style/DefaultStyleBtn.Small"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_white"
+                android:text="@string/btn_insert_phone"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkPhone_2" />
+                app:layout_constraintTop_toBottomOf="@+id/groupPhones" />
 
             <Button
                 android:id="@+id/btnCreateAnnouncement"
                 style="@style/DefaultStylePrimaryBtn"
-                android:layout_width="220dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="40dp"
+                android:layout_marginEnd="16dp"
                 android:text="@string/btn_create_announcement"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkPhone_3"
+                app:layout_constraintTop_toBottomOf="@+id/btnInsertPhone"
                 tools:visibility="gone" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupPhones"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:constraint_referenced_ids="checkPhone_1,checkPhone_2,checkPhone_3" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupAdditionalFields"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="layoutSeekBars, layoutCounter2,textAffordableInfo,checkBoxWithSale,checkPhone_1,checkPhone_2,checkPhone_3,btnCreateAnnouncement,textVisiblePhones,groupAdress,textVisibleAddresses,fieldCostProduct,textHourlyCost"
+                app:constraint_referenced_ids="btnInsertPhone, btnInsertAddress, layoutSeekBars, layoutCounter2,textAffordableInfo,checkBoxWithSale,groupPhones,btnCreateAnnouncement,textVisiblePhones,groupAdress,textVisibleAddresses,fieldHourlyCost,textHourlyCost,fieldDailyCost, textDailyCost"
                 tools:layout_editor_absoluteX="24dp"
                 tools:layout_editor_absoluteY="245dp"
                 tools:visibility="visible" />

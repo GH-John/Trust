@@ -6,8 +6,8 @@ import com.application.arenda.entities.models.ModelCategory;
 import com.application.arenda.entities.models.ModelPeriodRent;
 import com.application.arenda.entities.models.ModelProposal;
 import com.application.arenda.entities.models.ModelSubcategory;
-import com.application.arenda.entities.utils.retrofit.ApiHandler;
-import com.application.arenda.entities.utils.retrofit.ServerResponse;
+import com.application.arenda.entities.serverApi.client.ApiHandler;
+import com.application.arenda.entities.serverApi.client.ServerResponse;
 
 import java.util.List;
 
@@ -38,7 +38,11 @@ public interface IApiAnnouncement {
             @Part("name") RequestBody name,
             @Part("description") RequestBody description,
 
-            @Part("costToUSD") RequestBody costToUSD,
+            @Part("hourlyCost") RequestBody hourlyCost,
+            @Part("hourlyCurrency") RequestBody hourlyCurrency,
+
+            @Part("dailyCost") RequestBody dailyCost,
+            @Part("dailyCurrency") RequestBody dailyCurrency,
 
             @Part("address") RequestBody address,
 
@@ -106,49 +110,10 @@ public interface IApiAnnouncement {
     );
 
     @FormUrlEncoded
-    @POST(BuildConfig.URL_LOADING_PERIOD_RENT_ANNOUNCEMENT)
-    Call<ServerResponse<List<ModelPeriodRent>>> loadPeriodRentAnnouncement(@Field("idAnnouncement") long idAnnouncement);
-
-    @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_TO_FAVORITE)
     Call<ResponseBody> insertToFavorite(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_INSERT_VIEWER)
     Call<ApiHandler> insertViewer(@Field("token") String token, @Field("idAnnouncement") long idAnnouncement);
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_INSERT_RENTAL)
-    Call<ApiHandler> insertRental(@Field("token") String token,
-                                  @Field("idAnnouncement") long idAnnouncement,
-                                  @Field("rentalStart") String rentalStart,
-                                  @Field("rentalEnd") String rentalEnd);
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_LOADING_INCOMING_PROPOSALS)
-    Call<ServerResponse<List<ModelProposal>>> loadIncomingProposals(
-            @Field("token") String userToken,
-            @Field("idRent") long idRent,
-            @Field("limitItemsInPage") int limitItemsInPage);
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_LOADING_OUTGOING_PROPOSALS)
-    Call<ServerResponse<List<ModelProposal>>> loadOutgoingProposals(
-            @Field("token") String userToken,
-            @Field("idRent") long idRent,
-            @Field("limitItemsInPage") int limitItemsInPage);
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_LOADING_ACTIVE_PROPOSALS)
-    Call<ServerResponse<List<ModelProposal>>> loadActiveProposals(
-            @Field("token") String userToken,
-            @Field("idRent") long idRent,
-            @Field("limitItemsInPage") int limitItemsInPage);
-
-    @FormUrlEncoded
-    @POST(BuildConfig.URL_LOADING_HISTORY_PROPOSALS)
-    Call<ServerResponse<List<ModelProposal>>> loadHistoryProposals(
-            @Field("token") String userToken,
-            @Field("idRent") long idRent,
-            @Field("limitItemsInPage") int limitItemsInPage);
 }

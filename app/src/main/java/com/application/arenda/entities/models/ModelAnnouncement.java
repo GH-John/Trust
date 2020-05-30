@@ -73,8 +73,17 @@ public class ModelAnnouncement implements IModel {
     @SerializedName("isFavorite")
     private Boolean isFavorite = false;
 
-    @SerializedName("costToUSD")
-    private float costToUSD = 0.0f;
+    @SerializedName("hourlyCost")
+    private float hourlyCost = 0.0f;
+
+    @SerializedName("hourlyCurrency")
+    private Currency hourlyCurrency;
+
+    @SerializedName("dailyCost")
+    private float dailyCost = 0.0f;
+
+    @SerializedName("dailyCurrency")
+    private Currency dailyCurrency;
 
     @SerializedName("address")
     private String address = "";
@@ -283,12 +292,12 @@ public class ModelAnnouncement implements IModel {
         this.idUser = idUser;
     }
 
-    public float getCostToUSD() {
-        return costToUSD;
+    public float getHourlyCost() {
+        return hourlyCost;
     }
 
-    public void setCostToUSD(float costToUSD) {
-        this.costToUSD = costToUSD;
+    public void setHourlyCost(float hourlyCost) {
+        this.hourlyCost = hourlyCost;
     }
 
     public String getAddress() {
@@ -361,6 +370,30 @@ public class ModelAnnouncement implements IModel {
 
     public void setWithSale(Boolean withSale) {
         this.withSale = withSale;
+    }
+
+    public Currency getHourlyCurrency() {
+        return hourlyCurrency;
+    }
+
+    public void setHourlyCurrency(Currency hourlyCurrency) {
+        this.hourlyCurrency = hourlyCurrency;
+    }
+
+    public float getDailyCost() {
+        return dailyCost;
+    }
+
+    public void setDailyCost(float dailyCost) {
+        this.dailyCost = dailyCost;
+    }
+
+    public Currency getDailyCurrency() {
+        return dailyCurrency;
+    }
+
+    public void setDailyCurrency(Currency dailyCurrency) {
+        this.dailyCurrency = dailyCurrency;
     }
 
     @Override

@@ -29,9 +29,9 @@ import com.application.arenda.entities.recyclerView.RVOnScrollListener;
 import com.application.arenda.entities.room.LocalCacheManager;
 import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
+import com.application.arenda.entities.serverApi.client.CodeHandler;
 import com.application.arenda.entities.utils.DisplayUtils;
 import com.application.arenda.entities.utils.Utils;
-import com.application.arenda.entities.utils.retrofit.CodeHandler;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments;
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
@@ -74,7 +74,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
     private LinearLayoutManager rvLayoutManager;
     private RVOnScrollListener rvOnScrollListener;
-    private AllAnnouncementsAdapter allAnnouncementsAdapter;
+    private AllAnnouncementsAdapter rvAdapter;
 
     private ApiAnnouncement api;
 
@@ -174,10 +174,10 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                         break;
                     }
 
-                    case NONE_REZULT: {
-                        Utils.messageOutput(getContext(), "Нет объявлений");
-                        break;
-                    }
+//                    case NONE_REZULT: {
+//                        Utils.messageOutput(getContext(), "Нет объявлений");
+//                        break;
+//                    }
                 }
             }
 
@@ -188,13 +188,12 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         };
 
         consumerUserToken = modelUsers -> {
-            if (modelUsers.size() > 0) {
+            if (modelUsers.size() > 0)
                 userToken = modelUsers.get(0).getToken();
-
-                refreshLayout();
-            }
             else
                 userToken = null;
+
+            refreshLayout();
         };
 
         cacheManager
@@ -212,7 +211,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                allAnnouncementsAdapter.rewriteCollection(collection);
+                rvAdapter.rewriteCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -221,7 +220,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                allAnnouncementsAdapter.setLoading(false);
+                rvAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
@@ -234,7 +233,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                allAnnouncementsAdapter.addToCollection(collection);
+                rvAdapter.addToCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -243,7 +242,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                allAnnouncementsAdapter.setLoading(false);
+                rvAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
@@ -260,18 +259,18 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
         recyclerView.addOnScrollListener(rvOnScrollListener);
 
-        allAnnouncementsAdapter = new AllAnnouncementsAdapter();
+        rvAdapter = new AllAnnouncementsAdapter();
 
-        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
+        rvOnScrollListener.setRVAdapter(rvAdapter);
 
-        allAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> {
+        rvAdapter.setItemViewClick((viewHolder, model) -> {
 
             sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
 
             containerFragments.open(new FragmentViewAnnouncement());
         });
 
-        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) ->
+        rvAdapter.setItemHeartClick((viewHolder, model) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -292,7 +291,12 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                             }
                         }));
 
-        recyclerView.setAdapter(allAnnouncementsAdapter);
+        rvAdapter.setItemUserAvatarClick((viewHolder, model) -> {
+            sharedViewModels.selectUser(((ModelAnnouncement) model).getIdUser());
+            containerFragments.open(FragmentViewerUserProfile.Companion.getInstance());
+        });
+
+        recyclerView.setAdapter(rvAdapter);
     }
 
     private void initStyles() {
@@ -315,12 +319,12 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     private void setLoadMoreForSearchAnnouncement() {
-        rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID));
+        rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID, false));
     }
 
     private synchronized void addAnnouncementsToCollection(long lastId, String query, boolean rewrite) {
-        if (!allAnnouncementsAdapter.isLoading()) {
-            allAnnouncementsAdapter.setLoading(true);
+        if (!rvAdapter.isLoading()) {
+            rvAdapter.setLoading(true);
 
             api.loadAnnouncements(userToken, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
@@ -337,10 +341,8 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
     }
 
     @SuppressLint("CheckResult")
-    public void searchAnnouncements(String query, long lastId) {
-        swipeRefreshLayout.setRefreshing(true);
-
-        addAnnouncementsToCollection(lastId, query, true);
+    public void searchAnnouncements(String query, long lastId, boolean rewrite) {
+        addAnnouncementsToCollection(lastId, query, rewrite);
     }
 
     @Override
@@ -401,7 +403,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
                 if (!searchQuery.isEmpty()) {
                     itemHeaderName.setText(searchQuery);
-                    searchAnnouncements(searchQuery, 0);
+                    searchAnnouncements(searchQuery, 0, true);
 
                     setLoadMoreForSearchAnnouncement();
                 } else {

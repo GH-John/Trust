@@ -11,6 +11,7 @@ import com.application.arenda.entities.recyclerView.OnItemClick;
 public class InProposalAdapter extends BaseAdapter<ModelProposal, InProposalVH> {
     private OnItemClick btnAcceptListener;
     private OnItemClick btnSendMessageListener;
+    private OnItemClick itemUserAvatarListener;
 
     @NonNull
     @Override
@@ -24,6 +25,7 @@ public class InProposalAdapter extends BaseAdapter<ModelProposal, InProposalVH> 
 
         holder.setBtnAcceptListener(btnAcceptListener);
         holder.setBtnSendMessageListener(btnSendMessageListener);
+        holder.setItemUserAvatarListener(itemUserAvatarListener);
     }
 
     public void setBtnAcceptListener(OnItemClick btnAcceptListener) {
@@ -32,5 +34,9 @@ public class InProposalAdapter extends BaseAdapter<ModelProposal, InProposalVH> 
 
     public void setBtnSendMessageListener(OnItemClick btnSendMessageListener) {
         this.btnSendMessageListener = btnSendMessageListener;
+    }
+
+    public void setItemUserAvatarListener(OnItemClick itemUserAvatarListener) {
+        this.itemUserAvatarListener = itemUserAvatarListener;
     }
 }

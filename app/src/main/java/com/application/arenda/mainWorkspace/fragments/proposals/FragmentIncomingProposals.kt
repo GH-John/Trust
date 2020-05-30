@@ -12,17 +12,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentIncomingProposalsBinding
 import com.application.arenda.entities.announcements.proposalsAnnouncement.incoming.InProposalAdapter
+import com.application.arenda.entities.models.ModelAnnouncement
 import com.application.arenda.entities.models.ModelProposal
 import com.application.arenda.entities.models.ModelUser
 import com.application.arenda.entities.models.SharedViewModels
 import com.application.arenda.entities.recyclerView.RVOnScrollListener
 import com.application.arenda.entities.room.LocalCacheManager
 import com.application.arenda.entities.serverApi.OnApiListener
-import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement
+import com.application.arenda.entities.serverApi.client.CodeHandler
+import com.application.arenda.entities.serverApi.client.CodeHandler.*
+import com.application.arenda.entities.serverApi.proposal.ApiProposal
 import com.application.arenda.entities.utils.DisplayUtils
 import com.application.arenda.entities.utils.Utils
-import com.application.arenda.entities.utils.retrofit.CodeHandler
-import com.application.arenda.entities.utils.retrofit.CodeHandler.*
+import com.application.arenda.mainWorkspace.fragments.FragmentViewerUserProfile
+import com.application.arenda.ui.widgets.containerFragments.ContainerFragments
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -32,7 +35,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
 class FragmentIncomingProposals private constructor() : Fragment() {
-    private var api: ApiAnnouncement? = null
+    private var api: ApiProposal? = null
     private var cacheManager: LocalCacheManager? = null
 
     private var rvLayoutManager: LinearLayoutManager? = null
@@ -52,6 +55,7 @@ class FragmentIncomingProposals private constructor() : Fragment() {
     private var proposalAdapter: InProposalAdapter = InProposalAdapter()
 
     private var disposable = CompositeDisposable()
+    private var containerFragments: ContainerFragments? = null
 
     private lateinit var bind: FragmentIncomingProposalsBinding
 
@@ -65,13 +69,15 @@ class FragmentIncomingProposals private constructor() : Fragment() {
     }
 
     private fun init() {
-        api = ApiAnnouncement.getInstance(context)
+        api = ApiProposal.getInstance(context)
 
         cacheManager = LocalCacheManager.getInstance(context)
 
         rvLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         sharedViewModels = ViewModelProvider(requireActivity()).get(SharedViewModels::class.java)
+
+        containerFragments = ContainerFragments.getInstance(context)
 
         initInterfaces()
         initAdapters()
@@ -109,9 +115,9 @@ class FragmentIncomingProposals private constructor() : Fragment() {
                     UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
                     }
-                    NONE_REZULT -> {
-                        Utils.messageOutput(context, "Нет объявлений")
-                    }
+//                    NONE_REZULT -> {
+//                        Utils.messageOutput(context, "Нет объявлений")
+//                    }
                 }
             }
 
@@ -121,10 +127,11 @@ class FragmentIncomingProposals private constructor() : Fragment() {
         }
 
         consumerUserToken = Consumer { modelUsers: List<ModelUser> ->
-            if (modelUsers.isNotEmpty()) {
-                userToken = modelUsers[0].token
-                refreshLayout()
-            } else userToken = null
+            userToken = if (modelUsers.isNotEmpty())
+                modelUsers[0].token
+            else null
+
+            refreshLayout()
         }
 
         cacheManager!!.users()
@@ -175,8 +182,15 @@ class FragmentIncomingProposals private constructor() : Fragment() {
         rvOnScrollListener = RVOnScrollListener(rvLayoutManager)
 
         bind.rvIncomingProposals.addOnScrollListener(rvOnScrollListener!!)
-        rvOnScrollListener!!.setRVAdapter(proposalAdapter)
 
+        proposalAdapter.setItemUserAvatarListener { _, model ->
+            run {
+                sharedViewModels!!.selectUser((model as ModelProposal).idUser)
+                containerFragments!!.open(FragmentViewerUserProfile.instance!!)
+            }
+        }
+
+        rvOnScrollListener!!.setRVAdapter(proposalAdapter)
 
         bind.rvIncomingProposals.adapter = proposalAdapter
     }

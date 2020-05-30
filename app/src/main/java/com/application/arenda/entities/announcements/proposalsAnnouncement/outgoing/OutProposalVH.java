@@ -112,4 +112,11 @@ public class OutProposalVH extends BaseViewHolder {
 
         btnSendMessage.setOnClickListener(v -> itemClick.onClick(this, proposal));
     }
+
+    public void setItemUserAvatarListener(OnItemClick itemClick) {
+        if (itemClick == null)
+            return;
+
+        itemUserAvatar.setOnClickListener(v -> itemClick.onClick(this, proposal));
+    }
 }

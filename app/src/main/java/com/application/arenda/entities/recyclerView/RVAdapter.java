@@ -17,6 +17,8 @@ public interface RVAdapter<M extends IModel> {
 
     void removeFromCollection(int position);
 
+    void removeFromCollection(M model);
+
     void rewriteCollection(List<M> collection);
 
     M getItem(int position);

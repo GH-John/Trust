@@ -26,7 +26,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     @Nullable
     @BindView(R.id.itemUserAvatar)
-    ImageView itemUserLogo;
+    ImageView itemUserAvatar;
 
     @Nullable
     @BindView(R.id.textUserLogin)
@@ -94,6 +94,9 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     @Override
     public void onBind(IModel model, int position) {
+        if (model == null)
+            return;
+
         this.model = (ModelAnnouncement) model;
         this.position = position;
 
@@ -104,7 +107,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
     private void bind() {
         GlideUtils.loadImage(itemView.getContext(), model.getPictures().get(0).getUri(), itemImgProduct);
 
-        GlideUtils.loadAvatar(itemView.getContext(), model.getUserAvatar(), itemUserLogo);
+        GlideUtils.loadAvatar(itemView.getContext(), model.getUserAvatar(), itemUserAvatar);
 
         if (model.getCountReviews() > 0) {
             itemViewReviews.setText(itemViewReviews.getText().toString() + " (" + model.getCountReviews() + ")");
@@ -118,10 +121,15 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
         textNameProduct.setText(model.getName());
 
-        textCostProduct.setText(model.getCostToUSD() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        textCostProduct.setText(model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
 
         textCountRent.setText(String.valueOf(model.getCountRent()));
-        itemLocation.setText(model.getAddress());
+
+        if (model.getAddress().isEmpty()) {
+            itemLocation.setVisibility(View.GONE);
+        } else {
+            itemLocation.setText(model.getAddress());
+        }
 
         setActiveHeart(model.isFavorite());
     }
@@ -134,9 +142,9 @@ public class AllAnnouncementsVH extends BaseViewHolder {
         }
     }
 
-    public void setItemUserLogoClick(OnItemClick itemClick) {
+    public void setItemUserAvatarClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemUserLogo.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemUserAvatar.setOnClickListener(v -> itemClick.onClick(this, model));
         } else {
             throw new NullPointerException("Model not initialized");
         }

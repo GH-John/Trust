@@ -14,7 +14,11 @@ public class ModelInsertAnnouncement implements IModel {
     private String name = "";
     private String description = "";
 
-    private float costToUSD = 0.0f;
+    private float hourlyCost = 0.0f;
+    private Currency hourlyCurrency;
+
+    private float dailyCost = 0.0f;
+    private Currency dailyCurrency;
 
     private Uri mainUriBitmap;
     private List<Uri> urisBitmap = new ArrayList<>();
@@ -45,6 +49,14 @@ public class ModelInsertAnnouncement implements IModel {
         this.name = name;
     }
 
+    public Currency getHourlyCurrency() {
+        return hourlyCurrency;
+    }
+
+    public void setHourlyCurrency(Currency hourlyCurrency) {
+        this.hourlyCurrency = hourlyCurrency;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -61,12 +73,28 @@ public class ModelInsertAnnouncement implements IModel {
         this.idSubcategory = idSubcategory;
     }
 
-    public float getCostToUSD() {
-        return costToUSD;
+    public float getDailyCost() {
+        return dailyCost;
     }
 
-    public void setCostToUSD(float costToUSD) {
-        this.costToUSD = costToUSD;
+    public void setDailyCost(float dailyCost) {
+        this.dailyCost = dailyCost;
+    }
+
+    public Currency getDailyCurrency() {
+        return dailyCurrency;
+    }
+
+    public void setDailyCurrency(Currency dailyCurrency) {
+        this.dailyCurrency = dailyCurrency;
+    }
+
+    public float getHourlyCost() {
+        return hourlyCost;
+    }
+
+    public void setHourlyCost(float hourlyCost) {
+        this.hourlyCost = hourlyCost;
     }
 
     public List<Uri> getUrisBitmap() {

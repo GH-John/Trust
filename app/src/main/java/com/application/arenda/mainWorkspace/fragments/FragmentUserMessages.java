@@ -6,16 +6,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.application.arenda.R;
+import com.application.arenda.databinding.FragmentUserMessagesBinding;
 
 public class FragmentUserMessages extends Fragment {
+    private FragmentUserMessagesBinding bind;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_user_messages, container, false);
-        return view;
+        bind = FragmentUserMessagesBinding.inflate(inflater);
+
+        return bind.getRoot();
     }
 }

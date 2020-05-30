@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:padding="6dp">
+
+    <TextView
+        android:id="@+id/title1"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_add_address"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/editFirstAddress"
+        style="@style/DefaultStyleField"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hint_address"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@+id/title1"
+        tools:ignore="Autofill" />
+
+    <EditText
+        android:id="@+id/editSecondAddress"
+        style="@style/DefaultStyleField"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hint_address"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@+id/editFirstAddress"
+        tools:ignore="Autofill" />
+
+    <EditText
+        android:id="@+id/editThirdAddress"
+        style="@style/DefaultStyleField"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hint_address"
+        android:inputType="text"
+        app:layout_constraintTop_toBottomOf="@+id/editSecondAddress"
+        tools:ignore="Autofill" />
+
+    <TextView
+        android:id="@+id/title2"
+        style="@style/DefaultStyleTextBoldRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/title_add_phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editThirdAddress" />
+
+    <EditText
+        android:id="@+id/editFirstPhone"
+        style="@style/DefaultStyleField"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hint_phone"
+        android:inputType="phone"
+        app:layout_constraintTop_toBottomOf="@+id/title2"
+        tools:ignore="Autofill" />
+
+    <EditText
+        android:id="@+id/editSecondPhone"
+        style="@style/DefaultStyleField"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hint_phone"
+        android:inputType="phone"
+        app:layout_constraintTop_toBottomOf="@+id/editFirstPhone"
+        tools:ignore="Autofill" />
+
+    <EditText
+        android:id="@+id/editThirdPhone"
+        style="@style/DefaultStyleField"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:hint="@string/hint_phone"
+        android:inputType="phone"
+        app:layout_constraintTop_toBottomOf="@+id/editSecondPhone"
+        tools:ignore="Autofill" />
+</androidx.constraintlayout.widget.ConstraintLayout>

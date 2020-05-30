@@ -40,9 +40,10 @@ import com.application.arenda.entities.recyclerView.OnItemClick;
 import com.application.arenda.entities.room.LocalCacheManager;
 import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
+import com.application.arenda.entities.serverApi.client.CodeHandler;
+import com.application.arenda.entities.serverApi.proposal.ApiProposal;
 import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.entities.utils.glide.GlideUtils;
-import com.application.arenda.entities.utils.retrofit.CodeHandler;
 import com.application.arenda.mainWorkspace.activities.ActivityViewImages;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.calendarView.CalendarRentPeriod;
@@ -112,8 +113,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     TextView textPlacementDate;
 
     @Nullable
-    @BindView(R.id.userCardLogo)
-    ImageView userCardLogo;
+    @BindView(R.id.userCardAvatar)
+    ImageView userCardAvatar;
 
     @Nullable
     @BindView(R.id.iconWithSale)
@@ -183,7 +184,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     private AdapterViewPager adapterViewPager;
     private ViewPager.OnPageChangeListener pageListener;
 
-    private ApiAnnouncement api;
+    private ApiProposal apiProposal;
+    private ApiAnnouncement apiAnnouncement;
     private String userToken = null;
 
     private LocalCacheManager cacheManager;
@@ -219,7 +221,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         View view = inflater.inflate(R.layout.fragment_view_announcement, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        api = ApiAnnouncement.getInstance(getContext());
+        apiProposal = ApiProposal.getInstance(getContext());
+        apiAnnouncement = ApiAnnouncement.getInstance(getContext());
 
         initComponents();
 
@@ -335,7 +338,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         };
 
         landLordSimilarItemHeartClick = (viewHolder, model) ->
-                api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
+                apiAnnouncement.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new SingleObserver<Boolean>() {
@@ -372,7 +375,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
                 scrollView.post(() -> scrollView.smoothScrollTo(0, (int) bookingCalendar.getY()));
             } else {
                 if (dateStart != null && timeStart != null && dateEnd != null && timeEnd != null) {
-                    disposable.add(api.insertRental(userToken, sharedViewModels.getSelectedAnnouncement().getValue().getID(),
+                    disposable.add(apiProposal.insertProposal(userToken, sharedViewModels.getSelectedAnnouncement().getValue().getID(),
                             LocalDateTime.of(dateStart, timeStart).toString(),
                             LocalDateTime.of(dateEnd, timeEnd).toString())
                             .subscribeOn(Schedulers.io())
@@ -451,15 +454,24 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         textPlacementDate.setText(Utils.getFormatingDate(getContext(), announcement.getAnnouncementCreated()));
         textNameProduct.setText(announcement.getName());
 
-        textCostProduct.setText(announcement.getCostToUSD() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        textCostProduct.setText(announcement.getHourlyCost() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_hour));
 
-        textAddress.setText(announcement.getAddress());
+        if (announcement.getAddress().isEmpty())
+            textAddress.setVisibility(View.GONE);
+        else
+            textAddress.setText(announcement.getAddress());
+
         textRating.setText(String.valueOf(announcement.getAnnouncementRating()));
         textCountRent.setText(String.valueOf(announcement.getCountRent()));
 
         textDescriptionProduct.setText(announcement.getDescription());
 
-        GlideUtils.loadAvatar(getContext(), announcement.getUserAvatar(), userCardLogo);
+        GlideUtils.loadAvatar(getContext(), announcement.getUserAvatar(), userCardAvatar);
+
+        sharedViewModels.selectUser(announcement.getIdUser());
+
+        userCardAvatar.setOnClickListener(v -> containerFragments
+                .open(FragmentViewerUserProfile.Companion.getInstance()));
 
         iconWithSale.setImageResource(announcement.isWithSale() ? R.drawable.ic_item_check : R.drawable.ic_item_uncheck);
 
@@ -489,7 +501,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     private void setViewerAnnouncement(long idAnnouncement) {
-        disposable.add(api.insertViewer(userToken, idAnnouncement, null)
+        disposable.add(apiAnnouncement.insertViewer(userToken, idAnnouncement, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(handler -> {
@@ -498,7 +510,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
     @SuppressLint("CheckResult")
     private void loadPeriodRentAnnouncement(long idAnnouncement) {
-        disposable.add(api.loadPeriodRentAnnouncement(idAnnouncement, null)
+        disposable.add(apiProposal.loadPeriodRentAnnouncement(idAnnouncement, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((modelPeriodRents) -> bookingCalendar.replaceEvents(new ArrayList<>(modelPeriodRents)), Timber::e));
@@ -509,7 +521,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         landLordAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
 
-        api.loadLandLordAnnouncements(userToken, idLandLord, 0, 10, null, null)
+        apiAnnouncement.loadLandLordAnnouncements(userToken, idLandLord, 0, 10, null, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<ModelAnnouncement>>() {
@@ -545,7 +557,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         similarAnnouncementsAdapter.setItemHeartClick(landLordSimilarItemHeartClick);
 
-        api.loadSimilarAnnouncements(userToken, idSubcategory, idAnnouncement, 10, null, null)
+        apiAnnouncement.loadSimilarAnnouncements(userToken, idSubcategory, idAnnouncement, 10, null, null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<List<ModelAnnouncement>>() {
@@ -589,7 +601,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     public void onClickFavorite(long idAnnouncement) {
-        api.insertToFavorite(userToken, idAnnouncement, listenerFavoriteInsert)
+        apiAnnouncement.insertToFavorite(userToken, idAnnouncement, listenerFavoriteInsert)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriberFavoriteClick);

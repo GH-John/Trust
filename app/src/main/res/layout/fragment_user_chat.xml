@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".mainWorkspace.fragments.FragmentUserChat">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        style="@style/DefaultStyleRecyclerView.PaddingTopBottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <androidx.cardview.widget.CardView
+        style="@style/DefaultStyleCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp">
+
+            <EditText
+                android:id="@+id/chatMessage"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorTransparent"
+                android:hint="@string/text_message"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:textColor="@color/default_text_color"
+                android:textColorHint="@color/colorHint"
+                android:textSize="14sp"
+                tools:ignore="LabelFor" />
+
+            <ImageButton
+                android:id="@+id/btnSendMessage"
+                style="@style/DefaultStyleImageBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/ab_item_send_message_black" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

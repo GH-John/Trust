@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ab_item_more_black" />
+        app:srcCompat="@drawable/ic_item_more_black" />
 
     <ImageButton
         android:id="@+id/itemMessage"

@@ -7,25 +7,21 @@ import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.Group;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.application.arenda.R;
+import com.application.arenda.databinding.FragmentInsertAnnouncementBinding;
 import com.application.arenda.entities.announcements.categories.EventSendID;
+import com.application.arenda.entities.models.Currency;
 import com.application.arenda.entities.models.ModelInsertAnnouncement;
+import com.application.arenda.entities.models.ModelUser;
 import com.application.arenda.entities.room.LocalCacheManager;
 import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
 import com.application.arenda.entities.utils.DecimalDigitsInputFilter;
@@ -33,12 +29,9 @@ import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments;
 import com.application.arenda.ui.widgets.containerImg.ContainerFiller;
-import com.application.arenda.ui.widgets.containerImg.ContainerSelectedImages;
 import com.application.arenda.ui.widgets.containerImg.galery.AdapterGalery;
-import com.application.arenda.ui.widgets.seekBar.CustomSeekBar;
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
 import com.application.arenda.ui.widgets.sideBar.SideBar;
-import com.google.android.material.textfield.TextInputEditText;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -46,9 +39,6 @@ import org.threeten.bp.LocalTime;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -63,93 +53,13 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     private final String CHANNEL_LOADING_ANNOUNCEMENT_CODE = "939";
 
     private final NotificationCompat.Builder notificationCompatLoadImage;
+    private ImageView itemBurgerMenu;
 
-    @Nullable
-    @BindView(R.id.groupPhones)
-    Group groupPhones;
-
-    @Nullable
-    @BindView(R.id.itemBurgerMenu)
-    ImageView itemBurgerMenu;
-
-    @Nullable
-    @BindView(R.id.categoryTitle)
-    TextView categoryTitle;
-
-    @Nullable
-    @BindView(R.id.categoryHeaderIndicator)
-    ImageView categoryHeaderIndicator;
-
-    @Nullable
-    @BindView(R.id.rvCategories)
-    RecyclerView rvCategories;
-
-    @Nullable
-    @BindView(R.id.groupAdditionalFields)
-    Group groupAdditionalFields;
-
-    @Nullable
-    @BindView(R.id.textLimitAddPhotos)
-    TextView textLimitAddPhotos;
-
-    @Nullable
-    @BindView(R.id.btnCreateAnnouncement)
-    Button btnCreateAnnouncement;
-
-    @Nullable
-    @BindView(R.id.btnSelectCategory)
-    Button btnSelectCategory;
-
-    @Nullable
-    @BindView(R.id.containerImg)
-    ContainerSelectedImages containerSelectedImages;
-
-    @Nullable
-    @BindView(R.id.fieldProductName)
-    TextInputEditText fieldProductName;
-
-    @Nullable
-    @BindView(R.id.fieldDescription)
-    TextInputEditText fieldProductDescription;
-
-    @Nullable
-    @BindView(R.id.fieldCostProduct)
-    EditText fieldCostProduct;
-
-    @BindView(R.id.groupAdress)
-    RadioGroup groupAdress;
-
-    @BindView(R.id.checkBoxWithSale)
-    CheckBox checkBoxWithSale;
-
-    @BindView(R.id.checkPhone_1)
-    CheckBox checkPhone_1;
-
-    @BindView(R.id.checkPhone_2)
-    CheckBox checkPhone_2;
-
-    @BindView(R.id.checkPhone_3)
-    CheckBox checkPhone_3;
-
-    @BindView(R.id.seekbarMinTime)
-    CustomSeekBar seekbarMinTime;
-
-    @BindView(R.id.seekbarMinDay)
-    CustomSeekBar seekbarMinDay;
-
-    @BindView(R.id.seekbarMaxRentalPeriod)
-    CustomSeekBar seekbarMaxRentalPeriod;
-
-    @BindView(R.id.seekbarTimeIssue)
-    CustomSeekBar seekbarTimeIssue;
-
-    @BindView(R.id.seekbarTimeReturn)
-    CustomSeekBar seekbarTimeReturn;
+    private FragmentInsertAnnouncementBinding bind;
 
     private NotificationManagerCompat notificationManager;
 
     private SideBar sideBar;
-    private Unbinder unbinder;
     private ApiAnnouncement api;
     private ContainerFiller containerFiller = new ContainerFiller();
 
@@ -179,16 +89,13 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_insert_announcement, container, false);
-
-        unbinder = ButterKnife.bind(this, view);
+        bind = FragmentInsertAnnouncementBinding.inflate(inflater);
 
         init();
         initListeners();
-
-        return view;
+        return bind.getRoot();
     }
 
     @SuppressLint("CheckResult")
@@ -200,18 +107,28 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                 .getActiveUser()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(modelUsers -> {
-                    if (modelUsers.size() > 0)
+                    if (modelUsers.size() > 0) {
                         userToken = modelUsers.get(0).getToken();
-                    else
+
+                        inflateAddresses(modelUsers.get(0));
+
+                        inflatePhones(modelUsers.get(0));
+
+                    } else {
                         userToken = null;
+
+                        inflateAddresses(null);
+
+                        inflatePhones(null);
+                    }
                 }));
 
         containerFragments = ContainerFragments.getInstance(getContext());
 
-        containerSelectedImages.setAdapterGalery(this);
-        containerSelectedImages.setInstanceCounter(textLimitAddPhotos);
+        bind.containerImg.setAdapterGalery(this);
+        bind.containerImg.setInstanceCounter(bind.textLimitAddPhotos);
 
-        containerFiller.setContainer(containerSelectedImages);
+        containerFiller.setContainer(bind.containerImg);
 
         notificationManager = NotificationManagerCompat.from(getContext());
 
@@ -223,26 +140,128 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                 .setOnlyAlertOnce(true);
     }
 
-    private void initListeners() {
-        groupAdress.setOnCheckedChangeListener((group, checkedId) -> selectedAddress = ((RadioButton) getView().findViewById(checkedId)).getText().toString());
+    private void inflatePhones(ModelUser user) {
+        if (user == null) {
+            bind.checkPhone1.setVisibility(View.GONE);
+            bind.checkPhone2.setVisibility(View.GONE);
+            bind.checkPhone3.setVisibility(View.GONE);
 
-        seekbarMinTime.setOnSeekbarChangeListener(value -> {
-            seekbarMinTime.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_hour));
+            bind.btnInsertPhone.setVisibility(View.VISIBLE);
+
+            bind.btnInsertPhone.setOnClickListener(v -> Utils.messageOutput(getContext(), getContext()
+                    .getResources().getString(R.string.warning_login_required)));
+
+            return;
+        }
+
+        if (user.getPhone_1() != null && !user.getPhone_1().isEmpty()) {
+            bind.checkPhone1.setText(user.getPhone_1());
+            bind.checkPhone1.setVisibility(View.VISIBLE);
+        } else {
+            bind.checkPhone1.setVisibility(View.GONE);
+        }
+
+        if (user.getPhone_2() != null && !user.getPhone_2().isEmpty()) {
+            bind.checkPhone2.setText(user.getPhone_2());
+            bind.checkPhone2.setVisibility(View.VISIBLE);
+        } else {
+            bind.checkPhone2.setVisibility(View.GONE);
+        }
+
+        if (user.getPhone_3() != null && !user.getPhone_3().isEmpty()) {
+            bind.checkPhone3.setText(user.getPhone_3());
+            bind.checkPhone3.setVisibility(View.VISIBLE);
+        } else {
+            bind.checkPhone3.setVisibility(View.GONE);
+        }
+
+        if (bind.checkPhone1.getVisibility() == View.VISIBLE &&
+                bind.checkPhone2.getVisibility() == View.VISIBLE &&
+                bind.checkPhone3.getVisibility() == View.VISIBLE) {
+            bind.btnInsertPhone.setVisibility(View.GONE);
+        } else {
+            bind.btnInsertPhone.setVisibility(View.VISIBLE);
+        }
+
+        bind.btnInsertPhone.setOnClickListener(v -> containerFragments
+                .open(FragmentUserProfile.Companion.getInstance()));
+    }
+
+    private void inflateAddresses(ModelUser user) {
+        bind.withoutAddress.setChecked(true);
+
+        if (user == null) {
+            bind.address1.setVisibility(View.GONE);
+            bind.address2.setVisibility(View.GONE);
+            bind.address3.setVisibility(View.GONE);
+
+            bind.btnInsertAddress.setVisibility(View.VISIBLE);
+
+            bind.btnInsertAddress.setOnClickListener(v -> Utils.messageOutput(getContext(), getContext()
+                    .getResources().getString(R.string.warning_login_required)));
+
+            return;
+        }
+
+        if (user.getAddress_1() != null && !user.getAddress_1().isEmpty()) {
+            bind.address1.setText(user.getAddress_1());
+            bind.address1.setVisibility(View.VISIBLE);
+        } else {
+            bind.address1.setVisibility(View.GONE);
+        }
+
+        if (user.getAddress_2() != null && !user.getAddress_2().isEmpty()) {
+            bind.address2.setText(user.getAddress_2());
+            bind.address2.setVisibility(View.VISIBLE);
+        } else {
+            bind.address2.setVisibility(View.GONE);
+        }
+
+        if (user.getAddress_3() != null && !user.getAddress_3().isEmpty()) {
+            bind.address3.setText(user.getAddress_3());
+            bind.address3.setVisibility(View.VISIBLE);
+        } else {
+            bind.address3.setVisibility(View.GONE);
+        }
+
+        if (bind.address1.getVisibility() == View.VISIBLE &&
+                bind.address2.getVisibility() == View.VISIBLE &&
+                bind.address3.getVisibility() == View.VISIBLE) {
+            bind.btnInsertAddress.setVisibility(View.GONE);
+        } else {
+            bind.btnInsertAddress.setVisibility(View.VISIBLE);
+        }
+
+        bind.btnInsertAddress.setOnClickListener(v -> containerFragments
+                .open(FragmentUserProfile.Companion.getInstance()));
+    }
+
+    private void initListeners() {
+        bind.groupAdress.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId != R.id.withoutAddress)
+                selectedAddress = ((RadioButton) getView().findViewById(checkedId)).getText().toString();
+            else {
+                selectedAddress = "";
+            }
+        });
+
+        bind.layoutSeekBars.seekbarMinTime.setOnSeekbarChangeListener(value -> {
+            bind.layoutSeekBars.seekbarMinTime.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_hour));
             minTime = value.intValue();
         });
 
-        seekbarMinDay.setOnSeekbarChangeListener(value -> {
-            seekbarMinDay.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_day));
+        bind.layoutSeekBars.seekbarMinDay.setOnSeekbarChangeListener(value -> {
+            bind.layoutSeekBars.seekbarMinDay.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_day));
             minDay = value.intValue();
         });
 
-        seekbarMaxRentalPeriod.setOnSeekbarChangeListener(value -> {
-            seekbarMaxRentalPeriod.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_month));
+        bind.layoutSeekBars.seekbarMaxRentalPeriod.setOnSeekbarChangeListener(value -> {
+            bind.layoutSeekBars.seekbarMaxRentalPeriod.setTextProgressSeekBar(value.intValue() + " " + getContext().getResources().getString(R.string.text_short_month));
             maxRentalPeriod = value.intValue();
         });
 
-        seekbarTimeIssue.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
-                    seekbarTimeIssue
+        bind.layoutSeekBars.seekbarTimeIssue.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
+                    bind.layoutSeekBars.seekbarTimeIssue
                             .setTextProgressSeekBar(
                                     minValue.intValue() +
                                             getContext().getResources().getString(R.string.text_time_inflater) + " - " +
@@ -255,8 +274,8 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                 }
         );
 
-        seekbarTimeReturn.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
-                    seekbarTimeReturn
+        bind.layoutSeekBars.seekbarTimeReturn.setOnRangeSeekbarChangeListener((minValue, maxValue) -> {
+                    bind.layoutSeekBars.seekbarTimeReturn
                             .setTextProgressSeekBar(
                                     minValue.intValue() +
                                             getContext().getResources().getString(R.string.text_time_inflater) + " - " +
@@ -269,27 +288,32 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                 }
         );
 
-        fieldCostProduct.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
+        bind.fieldHourlyCost.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
+        bind.fieldDailyCost.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
 
-        btnSelectCategory.setOnClickListener(v -> containerFragments.open(FragmentSelectCategory.getInstance()));
+        bind.btnSelectCategory.setOnClickListener(v -> containerFragments.open(FragmentSelectCategory.getInstance()));
 
-        btnCreateAnnouncement.setOnClickListener(v -> {
+        bind.btnCreateAnnouncement.setOnClickListener(v -> {
             if (containerFiller.getSize() > 0 &&
-                    !Utils.fieldIsEmpty(getContext(), fieldProductName, fieldProductDescription, fieldCostProduct)) {
+                    !Utils.fieldIsEmpty(getContext(), bind.fieldProductName, bind.fieldDescription, bind.fieldHourlyCost, bind.fieldDailyCost)) {
                 model.setUrisBitmap(new ArrayList<>(containerFiller.getUris()));
                 model.setMainUriBitmap(containerFiller.getLastSelected());
 
-                model.setName(fieldProductName.getText().toString());
+                model.setName(bind.fieldProductName.getText().toString());
                 model.setIdSubcategory(selectedSubcategory);
-                model.setDescription(fieldProductDescription.getText().toString());
+                model.setDescription(bind.fieldDescription.getText().toString());
 
-                model.setCostToUSD(Float.parseFloat(fieldCostProduct.getText().toString()));
+                model.setHourlyCost(Float.parseFloat(bind.fieldHourlyCost.getText().toString()));
+                model.setHourlyCurrency(Currency.USD);
+
+                model.setDailyCost(Float.parseFloat(bind.fieldDailyCost.getText().toString()));
+                model.setDailyCurrency(Currency.USD);
 
                 model.setAddress(selectedAddress);
 
-                model.setPhone_1(checkPhone_1.isChecked() ? checkPhone_1.getText().toString() : "");
-                model.setPhone_2(checkPhone_2.isChecked() ? checkPhone_2.getText().toString() : "");
-                model.setPhone_3(checkPhone_3.isChecked() ? checkPhone_3.getText().toString() : "");
+                model.setPhone_1(bind.checkPhone1.isChecked() ? bind.checkPhone1.getText().toString() : "");
+                model.setPhone_2(bind.checkPhone2.isChecked() ? bind.checkPhone2.getText().toString() : "");
+                model.setPhone_3(bind.checkPhone3.isChecked() ? bind.checkPhone3.getText().toString() : "");
 
                 model.setMinTime(minTime);
                 model.setMinDay(minDay);
@@ -302,7 +326,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                 model.setReturnTimeWith(returnTimeWith);
                 model.setReturnTimeBy(returnTimeBy);
 
-                model.setWithSale(checkBoxWithSale.isChecked());
+                model.setWithSale(bind.checkBoxWithSale.isChecked());
 
                 insertAnnouncement(model);
             }
@@ -316,6 +340,8 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
             return;
         }
 
+        bind.progressBarInsert.setVisibility(View.VISIBLE);
+
         if (announcement != null) {
             disposable.add(api.insertAnnouncement(getContext(), userToken, announcement)
                     .subscribeOn(Schedulers.io())
@@ -325,22 +351,29 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
                             case SUCCESS:
                                 resetComponents();
                                 Utils.messageOutput(getContext(), getString(R.string.success_announcement_added));
+
+                                bind.progressBarInsert.setVisibility(View.GONE);
                                 break;
 
                             case USER_NOT_FOUND:
                                 Utils.messageOutput(getContext(), getString(R.string.error_user_not_found));
+                                bind.progressBarInsert.setVisibility(View.GONE);
                                 break;
 
                             case NETWORK_ERROR:
                                 Utils.messageOutput(getContext(), getString(R.string.error_check_internet_connect));
+                                bind.progressBarInsert.setVisibility(View.GONE);
                                 break;
 
                             case PHP_INI_NOT_LOADED:
                                 Timber.tag("Error on server").e("php ini not loaded");
+                                bind.progressBarInsert.setVisibility(View.GONE);
+                                break;
 
                             case UNSUCCESS:
                             case UNKNOW_ERROR:
                                 Utils.messageOutput(getContext(), getString(R.string.unknown_error));
+                                bind.progressBarInsert.setVisibility(View.GONE);
                                 break;
                         }
                     }, Timber::e));
@@ -349,21 +382,22 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
     private void resetComponents() {
         Utils.getHandler().post(() -> {
-            containerSelectedImages.clearContainer();
+            bind.containerImg.clearContainer();
 
-            fieldProductName.getText().clear();
-            fieldProductDescription.getText().clear();
-            fieldCostProduct.getText().clear();
+            bind.fieldProductName.getText().clear();
+            bind.fieldDescription.getText().clear();
+            bind.fieldHourlyCost.getText().clear();
+            bind.fieldDailyCost.getText().clear();
 
-            btnSelectCategory.setText(R.string.text_select_category);
+            bind.btnSelectCategory.setText(R.string.text_select_category);
 
             setVisibleAdditionalFields(false);
         });
     }
 
     public void setVisibleAdditionalFields(boolean b) {
-        if (!b) groupAdditionalFields.setVisibility(View.GONE);
-        else groupAdditionalFields.setVisibility(View.VISIBLE);
+        if (!b) bind.groupAdditionalFields.setVisibility(View.GONE);
+        else bind.groupAdditionalFields.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -410,7 +444,7 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
     public void setSelectedSubcategory(EventSendID sendID) {
         if (sendID != null) {
             selectedSubcategory = sendID.getIdSubcategory();
-            btnSelectCategory.setText(sendID.getName());
+            bind.btnSelectCategory.setText(sendID.getName());
 
             setVisibleAdditionalFields(true);
         }
@@ -429,11 +463,5 @@ public final class FragmentInsertAnnouncement extends Fragment implements ItemSi
 
         EventBus.getDefault().unregister(this);
         disposable.clear();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
     }
 }

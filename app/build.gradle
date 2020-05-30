@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: "kotlin-kapt"
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
@@ -20,12 +21,9 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
-    }
-
-    viewBinding {
-        enabled = true
+    buildFeatures {
+        dataBinding = true
+        viewBinding = true
     }
 
     compileOptions {
@@ -39,34 +37,49 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "int", "APP_DB_VERSION", "2"
+            buildConfigField "String", "NOTIFICATION_CHANNEL_ID", "\"KJSf89sdfhjksd89vlO4IBHfd9fgLKJNgkHdgGghhF8Sdfg7SdglsDnmIsdjfhkv2bjhg43j\""
+
+            buildConfigField "int", "APP_DB_VERSION", "3"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
+
+            buildConfigField "String", "URL_WEB_SOCKET", "\"ws://192.168.1.7:8080\""
 
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
 
-            buildConfigField "String", "URL_REGISTRATION", "\"php/authentication/RegistrationUser.php\""
-            buildConfigField "String", "URL_AUTHORIZATION", "\"php/authentication/AuthorizationUser.php\""
+            buildConfigField "String", "URL_REGISTRATION", "\"php/user/auth/register/RegistrationUser.php\""
+            buildConfigField "String", "URL_AUTHORIZATION", "\"php/user/auth/AuthorizationUser.php\""
 
-            buildConfigField "String", "URL_LOAD_CATEGORY", "\"php/load/categories/LoadCategory.php\""
-            buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/load/subcategories/LoadSubcategory.php\""
+            buildConfigField "String", "URL_USER_FOLLOWING", "\"php/user/follow/FollowingToUser.php\""
+            buildConfigField "String", "URL_USER_LOAD_OWN_PROFILE", "\"php/user/loadPofile/own/LoadOwnProfile.php\""
+            buildConfigField "String", "URL_USER_LOAD_PROFILE_TO_VIEW", "\"php/user/loadPofile/toView/LoadViewProfile.php\""
+            buildConfigField "String", "URL_USER_UPDATE_PROFILE", "\"php/user/update/profile/UpdateProfile.php\""
 
-            buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/announcement/InsertAnnouncement.php\""
-            buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
-            buildConfigField "String", "URL_INSERT_VIEWER", "\"php/insert/InsertViewer.php\""
-            buildConfigField "String", "URL_INSERT_RENTAL", "\"php/insert/rental/InsertRent.php\""
+            buildConfigField "String", "URL_LOAD_CATEGORY", "\"php/categories/LoadCategory.php\""
+            buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/subcategories/LoadSubcategory.php\""
 
-            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/load/announcements/landLord/LoadingLandLordAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/load/announcements/similar/LoadingSimilarAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/load/rentPeriod/LoadingPeriodRentAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/announcements/insert/InsertAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/announcements/favorites/insert/InsertFavoriteAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_VIEWER", "\"php/announcements/insert/viewer/InsertViewer.php\""
 
-            //load proposals
-            buildConfigField "String", "URL_LOADING_ACTIVE_PROPOSALS", "\"php/load/proposals/active/LoadingActiveProposals.php\""
-            buildConfigField "String", "URL_LOADING_HISTORY_PROPOSALS", "\"php/load/proposals/history/LoadingHistoryProposals.php\""
-            buildConfigField "String", "URL_LOADING_INCOMING_PROPOSALS", "\"php/load/proposals/incoming/LoadingIncomingProposals.php\""
-            buildConfigField "String", "URL_LOADING_OUTGOING_PROPOSALS", "\"php/load/proposals/outgoing/LoadingOutgoingProposals.php\""
+            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/announcements/all/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/announcements/user/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/announcements/landLord/LoadingLandLordAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/announcements/similar/LoadingSimilarAnnouncements.php\""
+
+            buildConfigField "String", "URL_INSERT_PROPOSAL", "\"php/proposals/insert/InsertProposal.php\""
+
+            buildConfigField "String", "URL_LOADING_ACTIVE_PROPOSALS", "\"php/proposals/active/LoadingActiveProposals.php\""
+            buildConfigField "String", "URL_LOADING_HISTORY_PROPOSALS", "\"php/proposals/history/LoadingHistoryProposals.php\""
+            buildConfigField "String", "URL_LOADING_INCOMING_PROPOSALS", "\"php/proposals/incoming/LoadingIncomingProposals.php\""
+            buildConfigField "String", "URL_LOADING_OUTGOING_PROPOSALS", "\"php/proposals/outgoing/LoadingOutgoingProposals.php\""
+            buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/proposals/active/loadPeriods/LoadingPeriodRentAnnouncement.php\""
+
+            buildConfigField "String", "URL_REJECT_INCOMING_PROPOSAL", "\"php/proposals/incoming/reject/RejectIncomingProposal.php\""
+            buildConfigField "String", "URL_REJECT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/reject/RejectOutgoingProposal.php\""
+
+            buildConfigField "String", "URL_ACCEPT_INCOMING_PROPOSAL", "\"php/proposals/incoming/accept/AcceptIncomingProposal.php\""
+            buildConfigField "String", "URL_EDIT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/edit/EditProposal.php\""
         }
 
         release {
@@ -74,34 +87,49 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-            buildConfigField "int", "APP_DB_VERSION", "2"
+            buildConfigField "String", "NOTIFICATION_CHANNEL_ID", "\"KJSf89sdfhjksd89vlO4IBHfd9fgLKJNgkHdgGghhF8Sdfg7SdglsDnmIsdjfhkv2bjhg43j\""
+
+            buildConfigField "int", "APP_DB_VERSION", "3"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
+
+            buildConfigField "String", "URL_WEB_SOCKET", "\"ws://192.168.1.7:8080\""
 
             buildConfigField "String", "BASE_URL", "\"http://192.168.43.241/AndroidConnectWithServer/\""
 //            buildConfigField "String", "BASE_URL", "\"http://192.168.43.242/AndroidConnectWithServer/\""
 
-            buildConfigField "String", "URL_REGISTRATION", "\"php/authentication/RegistrationUser.php\""
-            buildConfigField "String", "URL_AUTHORIZATION", "\"php/authentication/AuthorizationUser.php\""
+            buildConfigField "String", "URL_REGISTRATION", "\"php/user/auth/register/RegistrationUser.php\""
+            buildConfigField "String", "URL_AUTHORIZATION", "\"php/user/auth/AuthorizationUser.php\""
 
-            buildConfigField "String", "URL_LOAD_CATEGORY", "\"php/load/categories/LoadCategory.php\""
-            buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/load/subcategories/LoadSubcategory.php\""
+            buildConfigField "String", "URL_USER_FOLLOWING", "\"php/user/follow/FollowingToUser.php\""
+            buildConfigField "String", "URL_USER_LOAD_OWN_PROFILE", "\"php/user/loadPofile/own/LoadOwnProfile.php\""
+            buildConfigField "String", "URL_USER_LOAD_PROFILE_TO_VIEW", "\"php/user/loadPofile/toView/LoadViewProfile.php\""
+            buildConfigField "String", "URL_USER_UPDATE_PROFILE", "\"php/user/update/profile/UpdateProfile.php\""
 
-            buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/insert/announcement/InsertAnnouncement.php\""
-            buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/insert/InsertFavoriteAnnouncement.php\""
-            buildConfigField "String", "URL_INSERT_VIEWER", "\"php/insert/InsertViewer.php\""
-            buildConfigField "String", "URL_INSERT_RENTAL", "\"php/insert/rental/InsertRent.php\""
+            buildConfigField "String", "URL_LOAD_CATEGORY", "\"php/categories/LoadCategory.php\""
+            buildConfigField "String", "URL_LOAD_SUBCATEGORY", "\"php/subcategories/LoadSubcategory.php\""
 
-            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/load/announcements/all/LoadingAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/load/announcements/user/LoadingUserAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/load/announcements/landLord/LoadingLandLordAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/load/announcements/similar/LoadingSimilarAnnouncements.php\""
-            buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/load/rentPeriod/LoadingPeriodRentAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_ANNOUNCEMENT", "\"php/announcements/insert/InsertAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_TO_FAVORITE", "\"php/announcements/favorites/insert/InsertFavoriteAnnouncement.php\""
+            buildConfigField "String", "URL_INSERT_VIEWER", "\"php/announcements/insert/viewer/InsertViewer.php\""
 
-            //load proposals
-            buildConfigField "String", "URL_LOADING_ACTIVE_PROPOSALS", "\"php/load/proposals/active/LoadingActiveProposals.php\""
-            buildConfigField "String", "URL_LOADING_HISTORY_PROPOSALS", "\"php/load/proposals/history/LoadingHistoryProposals.php\""
-            buildConfigField "String", "URL_LOADING_INCOMING_PROPOSALS", "\"php/load/proposals/incoming/LoadingIncomingProposals.php\""
-            buildConfigField "String", "URL_LOADING_OUTGOING_PROPOSALS", "\"php/load/proposals/outgoing/LoadingOutgoingProposals.php\""
+            buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/announcements/all/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/announcements/user/LoadingUserAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/announcements/landLord/LoadingLandLordAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/announcements/similar/LoadingSimilarAnnouncements.php\""
+
+            buildConfigField "String", "URL_INSERT_PROPOSAL", "\"php/proposals/insert/InsertProposal.php\""
+
+            buildConfigField "String", "URL_LOADING_ACTIVE_PROPOSALS", "\"php/proposals/active/LoadingActiveProposals.php\""
+            buildConfigField "String", "URL_LOADING_HISTORY_PROPOSALS", "\"php/proposals/history/LoadingHistoryProposals.php\""
+            buildConfigField "String", "URL_LOADING_INCOMING_PROPOSALS", "\"php/proposals/incoming/LoadingIncomingProposals.php\""
+            buildConfigField "String", "URL_LOADING_OUTGOING_PROPOSALS", "\"php/proposals/outgoing/LoadingOutgoingProposals.php\""
+            buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/proposals/active/loadPeriods/LoadingPeriodRentAnnouncement.php\""
+
+            buildConfigField "String", "URL_REJECT_INCOMING_PROPOSAL", "\"php/proposals/incoming/reject/RejectIncomingProposal.php\""
+            buildConfigField "String", "URL_REJECT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/reject/RejectOutgoingProposal.php\""
+
+            buildConfigField "String", "URL_ACCEPT_INCOMING_PROPOSAL", "\"php/proposals/incoming/accept/AcceptIncomingProposal.php\""
+            buildConfigField "String", "URL_EDIT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/edit/EditProposal.php\""
         }
     }
 }
@@ -178,4 +206,9 @@ dependencies {
     //kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     kapt "com.android.databinding:compiler:$gradle_version"
+
+    //firebase
+    implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    implementation 'com.google.firebase:firebase-messaging:20.2.0'
+    implementation 'com.google.firebase:firebase-core:17.4.2'
 }

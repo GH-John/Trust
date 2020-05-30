@@ -113,6 +113,11 @@ public abstract class DaoUser implements BaseDao<ModelUser> {
     }
 
     private synchronized void insertUser(ModelUser newUser, CompletableEmitter emitter) {
+        if (newUser == null) {
+            emitter.onError(new NullPointerException("ModelUser is null"));
+            return;
+        }
+
         newUser.setCurrent(true);
 
         insertToRoom(newUser)

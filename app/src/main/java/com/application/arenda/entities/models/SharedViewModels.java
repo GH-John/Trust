@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel;
 import java.util.List;
 
 public class SharedViewModels extends ViewModel {
+    private final MutableLiveData<Long> selectedUser = new MutableLiveData<>();
+
     private final MutableLiveData<ModelAnnouncement> selectedAnnouncement = new MutableLiveData<>();
     private final MutableLiveData<List<ModelAnnouncement>> collectionAnnouncements = new MutableLiveData<>();
 
@@ -15,6 +17,14 @@ public class SharedViewModels extends ViewModel {
 
     private final MutableLiveData<ModelAnnouncement> selectedSimilarAnnouncement = new MutableLiveData<>();
     private final MutableLiveData<List<ModelAnnouncement>> collectionSimilarAnnouncements = new MutableLiveData<>();
+
+    public void selectUser(long idUser) {
+        selectedUser.postValue(idUser);
+    }
+
+    public LiveData<Long> getSelectedUser() {
+        return selectedUser;
+    }
 
     public void selectAnnouncement(ModelAnnouncement model) {
         selectedAnnouncement.postValue(model);

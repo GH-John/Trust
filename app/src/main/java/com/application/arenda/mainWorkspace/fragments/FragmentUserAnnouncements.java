@@ -27,9 +27,9 @@ import com.application.arenda.entities.recyclerView.RVOnScrollListener;
 import com.application.arenda.entities.room.LocalCacheManager;
 import com.application.arenda.entities.serverApi.OnApiListener;
 import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement;
+import com.application.arenda.entities.serverApi.client.CodeHandler;
 import com.application.arenda.entities.utils.DisplayUtils;
 import com.application.arenda.entities.utils.Utils;
-import com.application.arenda.entities.utils.retrofit.CodeHandler;
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar;
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar;
 import com.application.arenda.ui.widgets.sideBar.SideBar;
@@ -135,6 +135,8 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
                 userToken = modelUsers.get(0).getToken();
             else
                 userToken = null;
+
+            refreshLayout();
         };
 
         cacheManager
@@ -157,10 +159,10 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
                         break;
                     }
 
-                    case NONE_REZULT: {
-                        Utils.messageOutput(getContext(), "Нет объявлений");
-                        break;
-                    }
+//                    case NONE_REZULT: {
+//                        Utils.messageOutput(getContext(), "Нет объявлений");
+//                        break;
+//                    }
                 }
             }
 
@@ -288,7 +290,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     }
 
     private void setLoadMoreForSearchAnnouncement() {
-        rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID));
+        rvOnScrollListener.setOnLoadMoreData(lastID -> searchAnnouncements(searchQuery, lastID, false));
     }
 
     private synchronized void addAnnouncementsToCollection(long lastId, String query, boolean rewrite) {
@@ -311,10 +313,8 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
     }
 
     @SuppressLint("CheckResult")
-    public void searchAnnouncements(String query, long lastId) {
-        swipeRefreshLayout.setRefreshing(true);
-
-        addAnnouncementsToCollection(lastId, query, true);
+    public void searchAnnouncements(String query, long lastId, boolean rewrite) {
+        addAnnouncementsToCollection(lastId, query, rewrite);
     }
 
     @Override
@@ -375,7 +375,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
 
                 if (!searchQuery.isEmpty()) {
                     itemHeaderName.setText(searchQuery);
-                    searchAnnouncements(searchQuery, 0);
+                    searchAnnouncements(searchQuery, 0, true);
 
                     setLoadMoreForSearchAnnouncement();
                 } else {
