@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/DefaultStyleCardView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/message_margin_from_side"
+    app:cardBackgroundColor="@color/colorBlue">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp">
+
+        <TextView
+            android:id="@+id/messageFromUser"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="end"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp"
+            tools:ignore="RelativeOverlap"
+            tools:text="Send" />
+
+        <TextView
+            android:id="@+id/timeFromUser"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/messageFromUser"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/colorWhite"
+            android:textSize="12sp"
+            tools:text="Now, 14:09" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

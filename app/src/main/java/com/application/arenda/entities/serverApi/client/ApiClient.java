@@ -19,8 +19,11 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 
+import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
@@ -32,9 +35,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     private static Retrofit mainApi;
-    private static WebSocket webSocket;
-    private static WebSocketListener socketListener;
-    private static OkHttpClient httpClient = new OkHttpClient();
+
+    private static Socket socket;
 
     private static long CACHE_SIZE = 10 * 1024 * 1024;
     private static Gson gson = new GsonBuilder()
@@ -101,18 +103,18 @@ public class ApiClient {
         return mainApi;
     }
 
-    public static WebSocket getWebSocketApi(WebSocketListener listener) {
-        if (socketListener == null || !socketListener.equals(listener)) {
-            socketListener = listener;
-            webSocket = httpClient.newWebSocket(getWebSocketRequest(), listener);
+    public static Socket getWebSocketApi() {
+        if (socket == null) {
+            IO.Options opts = new IO.Options();
+            opts.forceNew = true;
+//            opts.query = "auth_token=" + authToken;
+            try {
+                socket = IO.socket(BuildConfig.URL_CHAT_SOCKET, opts);
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
         }
 
-        return webSocket;
-    }
-
-    private static Request getWebSocketRequest() {
-        return new Request.Builder()
-                .url(BuildConfig.URL_WEB_SOCKET)
-                .build();
+        return socket;
     }
 }

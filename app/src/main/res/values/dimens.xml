@@ -23,4 +23,6 @@
     <dimen name="height_outgoing_proposal">180dp</dimen>
     <dimen name="height_picture_proposal">180dp</dimen>
     <dimen name="size_indicator_tab_proposal">8dp</dimen>
+    <dimen name="message_margin_from_side">42dp</dimen>
+    <dimen name="chat_message_corner_radius">6dp</dimen>
 </resources>

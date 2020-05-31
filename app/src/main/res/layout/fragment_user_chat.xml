@@ -7,7 +7,7 @@
     tools:context=".mainWorkspace.fragments.FragmentUserChat">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/rvUserChat"
         style="@style/DefaultStyleRecyclerView.PaddingTopBottom"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -15,7 +15,7 @@
     <androidx.cardview.widget.CardView
         style="@style/DefaultStyleCardView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_margin="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,7 +23,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="6dp"
