@@ -26,8 +26,6 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -50,6 +48,10 @@ public class ApiClient {
             .create();
 
     private static HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
+
+    public synchronized static Gson getGson() {
+        return gson;
+    }
 
     public synchronized static Retrofit getApi(Context context) {
         if (mainApi == null) {
@@ -105,11 +107,12 @@ public class ApiClient {
 
     public static Socket getWebSocketApi() {
         if (socket == null) {
-            IO.Options opts = new IO.Options();
-            opts.forceNew = true;
+//            IO.Options opts = new IO.Options();
+//            opts.forceNew = true;
 //            opts.query = "auth_token=" + authToken;
             try {
-                socket = IO.socket(BuildConfig.URL_CHAT_SOCKET, opts);
+//                socket = IO.socket(BuildConfig.URL_CHAT_SOCKET, opts);
+                socket = IO.socket(BuildConfig.URL_CHAT_SOCKET);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }

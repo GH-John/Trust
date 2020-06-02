@@ -705,7 +705,9 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             } else
                 Utils.messageOutput(getContext(), getContext().getResources().getString(R.string.dialog_phone_number_not_found));
         });
-        itemMessage.setOnClickListener(v -> Utils.messageOutput(getContext(), "message"));
+        itemMessage.setOnClickListener(v -> {
+            containerFragments.open(new FragmentUserChat());
+        });
         itemMore.setOnClickListener(v -> Utils.messageOutput(getContext(), "more"));
     }
 

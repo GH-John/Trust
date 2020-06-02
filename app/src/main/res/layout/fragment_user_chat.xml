@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundApp"
     tools:context=".mainWorkspace.fragments.FragmentUserChat">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -15,8 +16,9 @@
     <androidx.cardview.widget.CardView
         style="@style/DefaultStyleCardView"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:layout_margin="6dp"
+        android:minHeight="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -24,8 +26,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:layout_gravity="center"
             android:paddingStart="6dp"
             android:paddingEnd="6dp">
 
@@ -37,18 +39,19 @@
                 android:layout_weight="1"
                 android:backgroundTint="@color/colorTransparent"
                 android:hint="@string/text_message"
-                android:importantForAutofill="no"
-                android:inputType="text"
+                android:maxHeight="100dp"
                 android:textColor="@color/default_text_color"
                 android:textColorHint="@color/colorHint"
                 android:textSize="14sp"
-                tools:ignore="LabelFor" />
+                tools:ignore="Autofill,LabelFor" />
 
             <ImageButton
                 android:id="@+id/btnSendMessage"
                 style="@style/DefaultStyleImageBtn"
                 android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
                 android:contentDescription="@string/todo"
                 android:src="@drawable/ab_item_send_message_black" />
         </LinearLayout>

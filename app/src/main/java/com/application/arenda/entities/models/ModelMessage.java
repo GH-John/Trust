@@ -1,21 +1,44 @@
 package com.application.arenda.entities.models;
 
+import com.application.arenda.entities.serverApi.client.CodeHandler;
+
 public class ModelMessage implements IModel {
     private int type;
+    private CodeHandler codeHandler;
     private String message;
-    private String userName;
-    private String roomName;
+    private String error;
 
     private long ID;
 
     public ModelMessage() {
     }
 
-    public ModelMessage(int type, String message, String userName, String roomName) {
+    public ModelMessage(int type, String message) {
         this.type = type;
         this.message = message;
-        this.userName = userName;
-        this.roomName = roomName;
+    }
+
+    public ModelMessage(int type, CodeHandler codeHandler, String message, String error) {
+        this.type = type;
+        this.codeHandler = codeHandler;
+        this.message = message;
+        this.error = error;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public CodeHandler getCodeHandler() {
+        return codeHandler;
+    }
+
+    public void setCodeHandler(CodeHandler codeHandler) {
+        this.codeHandler = codeHandler;
     }
 
     public int getType() {
@@ -32,22 +55,6 @@ public class ModelMessage implements IModel {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getRoomName() {
-        return roomName;
-    }
-
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
     }
 
     @Override
@@ -90,5 +97,16 @@ public class ModelMessage implements IModel {
         public int getType() {
             return type;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ModelMessage{" +
+                "type=" + type +
+                ", codeHandler=" + codeHandler +
+                ", message='" + message + '\'' +
+                ", error='" + error + '\'' +
+                ", ID=" + ID +
+                '}';
     }
 }

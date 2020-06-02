@@ -6,29 +6,35 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.application.arenda.R;
 import com.application.arenda.entities.models.IModel;
 import com.application.arenda.entities.models.ModelMessage;
 import com.application.arenda.entities.models.ModelMessage.Type;
 import com.application.arenda.entities.recyclerView.BaseViewHolder;
+import com.application.arenda.entities.utils.Utils;
 
-import org.threeten.bp.LocalTime;
+import org.threeten.bp.LocalDateTime;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MessageVH extends BaseViewHolder {
 
+    @Nullable
     @BindView(R.id.messageFromUser)
     TextView messageFrom;
 
+    @Nullable
     @BindView(R.id.messageToUser)
     TextView messageTo;
 
+    @Nullable
     @BindView(R.id.timeToUser)
     TextView timeTo;
 
+    @Nullable
     @BindView(R.id.timeFromUser)
     TextView timeFrom;
 
@@ -62,10 +68,10 @@ public class MessageVH extends BaseViewHolder {
 
         if (isMine(type)) {
             messageFrom.setText(message.getMessage());
-            timeFrom.setText(LocalTime.now().toString());
+            timeFrom.setText(Utils.getFormatingDate(itemView.getContext(), LocalDateTime.now()));
         } else {
             messageTo.setText(message.getMessage());
-            timeTo.setText(LocalTime.now().toString());
+            timeTo.setText(Utils.getFormatingDate(itemView.getContext(), LocalDateTime.now()));
         }
     }
 }
