@@ -210,7 +210,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
             }
         };
 
-        landLordItemClick = (viewHolder, model) -> {
+        landLordItemClick = (viewHolder, model, position) -> {
 
             sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
 
@@ -240,7 +240,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
 
         allAnnouncementsAdapter.setItemViewClick(landLordItemClick);
 
-        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model) ->
+        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model, position) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

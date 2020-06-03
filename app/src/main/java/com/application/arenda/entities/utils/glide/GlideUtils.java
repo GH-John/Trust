@@ -68,6 +68,31 @@ public class GlideUtils {
         }
     }
 
+    @SuppressLint("CheckResult")
+    public static void loadAvatar(Context context, Uri uri, ImageView imageView, int width, int height) {
+        try {
+            if (context != null && imageView != null) {
+                RequestOptions options = defaultOptions().clone();
+                options.circleCrop();
+                options.priority(Priority.NORMAL);
+                options.override(width, height);
+                options.placeholder(R.drawable.ic_user_logo);
+                options.error(R.drawable.ic_user_logo);
+
+                Glide.with(context)
+                        .load(uri)
+                        .apply(options)
+                        .thumbnail(0.5f)
+                        .transition(DrawableTransitionOptions.withCrossFade(defaultFactory()))
+                        .into(imageView);
+            } else {
+                throw new NullPointerException("GlideUtils.loadImage contains in parameters null");
+            }
+        } catch (Throwable throwable) {
+            Timber.e(throwable);
+        }
+    }
+
     public static void loadImage(Context context, @DrawableRes int drawable, ImageView imageView) {
         try {
             if (context != null && imageView != null) {

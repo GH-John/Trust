@@ -1,17 +1,19 @@
 package com.application.arenda.mainWorkspace.fragments
 
-import android.app.ActionBar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.application.arenda.BuildConfig
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentUserChatBinding
 import com.application.arenda.entities.chat.MessageAdapter
@@ -19,11 +21,16 @@ import com.application.arenda.entities.models.ModelMessage
 import com.application.arenda.entities.models.ModelUser
 import com.application.arenda.entities.models.SharedViewModels
 import com.application.arenda.entities.room.LocalCacheManager
-import com.application.arenda.entities.serverApi.chat.ConnectToRoom
-import com.application.arenda.entities.serverApi.chat.ResponseConnect
-import com.application.arenda.entities.serverApi.chat.SendMessage
+import com.application.arenda.entities.serverApi.chat.*
+import com.application.arenda.entities.serverApi.chat.TypeMessage.CHAT_MINE
+import com.application.arenda.entities.serverApi.chat.TypeMessage.CHAT_PARTNER
 import com.application.arenda.entities.serverApi.client.ApiClient
+import com.application.arenda.entities.serverApi.client.CodeHandler.FAILED_CREATE_ROOM
+import com.application.arenda.entities.serverApi.client.CodeHandler.USER_NOT_FOUND
 import com.application.arenda.entities.utils.Utils
+import com.application.arenda.ui.widgets.actionBar.AdapterActionBar
+import com.application.arenda.ui.widgets.containerFragments.ContainerFragments
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Consumer
@@ -33,11 +40,18 @@ import io.socket.client.Socket
 import io.socket.emitter.Emitter
 import timber.log.Timber
 
-class FragmentUserChat : Fragment() {
+class FragmentUserChat : Fragment(), AdapterActionBar {
     private var bind: FragmentUserChatBinding? = null
     private var socket: Socket? = null
     private var messageAdapter: MessageAdapter? = null
 
+    private var itemBtnBack: ImageButton? = null
+    private var userChatAvatar: ImageView? = null
+    private var userChatLogin: TextView? = null
+    private var userChatStatus: TextView? = null
+    private var itemMore: ImageButton? = null
+
+    private var containerFragments: ContainerFragments? = null
     private var consumerUserProfile: Consumer<List<ModelUser>>? = null
     private var cacheManager: LocalCacheManager? = null
     private var sharedViewModels: SharedViewModels? = null
@@ -50,6 +64,7 @@ class FragmentUserChat : Fragment() {
     private var disposable = CompositeDisposable()
 
     private var isTyping = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         bind = FragmentUserChatBinding.inflate(inflater)
@@ -64,30 +79,17 @@ class FragmentUserChat : Fragment() {
         originalInputMode = activity?.window?.attributes?.softInputMode
     }
 
-    private fun restorInputMode(){
-
-    }
-
     private fun setNeedInputMode(mode: Int) {
         activity?.window?.setSoftInputMode(mode)
     }
 
     private fun init() {
-//        var message = ModelMessage(1, CodeHandler.UNKNOW_ERROR, "message", null)
-//        var json = ApiClient.getGson().toJson(message)
-
-//        var json = "{'ID':0,'codeHandler':'-2000','message':'message','type':1}";
-//
-//        var model = ApiClient.getGson().fromJson(json, ModelMessage::class.java)
-//
-//        Timber.d("JSON convert : %s", model)
-
-
+        containerFragments = ContainerFragments.getInstance(context)
         messageAdapter = MessageAdapter()
         bind!!.rvUserChat.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         bind!!.rvUserChat.adapter = messageAdapter
 //        socket = ApiChat.getSocket()
-        socket = IO.socket("http://192.168.43.241:3000")
+        socket = IO.socket(BuildConfig.URL_CHAT_SOCKET)
         cacheManager = LocalCacheManager.getInstance(context)
         sharedViewModels = ViewModelProvider(requireActivity()).get(SharedViewModels::class.java)
 
@@ -120,26 +122,6 @@ class FragmentUserChat : Fragment() {
         bind!!.btnSendMessage.setOnClickListener { sendMessage() }
     }
 
-    private fun sendMessage() {
-        if (userToken == null) {
-            Utils.messageOutput(context, getString(R.string.warning_login_required))
-            return
-        }
-
-        val message: String = bind!!.chatMessage.text.toString()
-        val sendData = idUser_To?.let { responseConnect?.idRoom?.let { it1 -> SendMessage(userToken, it, it1, message) } }
-        val jsonData = ApiClient.getGson().toJson(sendData)
-        socket?.emit("sendedMessage", jsonData)
-
-        val model = ModelMessage(ModelMessage.Type.CHAT_MINE.type, message)
-
-        bind!!.chatMessage.setText("")
-
-        messageAdapter?.addToCollection(model)
-
-        messageAdapter?.itemCount?.let { bind!!.rvUserChat.smoothScrollToPosition(it) }
-    }
-
     private fun initSocket(userToken: String, idUser_To: Long) {
         try {
             Timber.d("Socket - %s", socket?.id())
@@ -151,9 +133,9 @@ class FragmentUserChat : Fragment() {
         socket?.connect()
         socket?.on(Socket.EVENT_CONNECT, getConnectListener(userToken, idUser_To))
         socket?.on("connected", getOnConnectListener())
-        socket?.on("USER_NOT_FOUND", getUserNotFoundListener())
+        socket?.on("onError", onErrorChat)
 
-//        socket?.on(Socket.EVENT_CONNECT_ERROR, onError)
+        socket?.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
 
 //        socket!!.io().on(Manager.EVENT_TRANSPORT) { args: Array<Any> ->
 //            val transport = args[0] as Transport
@@ -171,7 +153,7 @@ class FragmentUserChat : Fragment() {
     private fun getOnConnectListener(): Emitter.Listener {
         return Emitter.Listener {
             responseConnect = ApiClient.getGson().fromJson(it[0].toString(), ResponseConnect::class.java)
-            Timber.d("Success connected to room %s", responseConnect?.idRoom)
+            Timber.d("Success connected to room %s", responseConnect?.room)
 
             socket?.on("updateChat", onUpdateChat)
             socket?.on("sendMessageError", onSendMessageError)
@@ -179,24 +161,36 @@ class FragmentUserChat : Fragment() {
         }
     }
 
-    private fun getUserNotFoundListener(): Emitter.Listener {
-        return Emitter.Listener {
-            Timber.e("User not found")
-            Utils.messageOutput(context, getString(R.string.warning_login_required))
-        }
-    }
-
     private var onUpdateChat = Emitter.Listener {
-        val message: ModelMessage = ApiClient.getGson().fromJson(it[0].toString(), ModelMessage::class.java)
-        message.type = ModelMessage.Type.CHAT_PARTNER.type
-        messageAdapter?.addToCollection(message)
+
+        val modelChat: ModelMessage = ApiClient.getGson().fromJson(it[0].toString(), ModelMessage::class.java)
+        modelChat.type = CHAT_PARTNER
+
+        Single.just(modelChat)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(Consumer { showMessageToUI(modelChat) })
     }
 
     private var onSendMessageError = Emitter.Listener {
-        val message: ModelMessage = ApiClient.getGson().fromJson(it[0].toString(), ModelMessage::class.java)
+        val message: MessageError = ApiClient.getGson().fromJson(it[0].toString(), MessageError::class.java)
 
         Timber.e("%s - %s", message.codeHandler?.name, message.error)
-        Utils.messageOutput(context, getString(R.string.error_send_message) + " " + message.codeHandler?.name)
+        Utils.messageOutput(context, getString(R.string.error_send_message) + " " + message.codeHandler?.name + " - " + message.error)
+    }
+
+    private var onErrorChat = Emitter.Listener {
+        val error: ChatError = ApiClient.getGson().fromJson(it[0].toString(), ChatError::class.java)
+
+        when (error.codeHandler) {
+            FAILED_CREATE_ROOM -> Utils.messageOutput(context, getString(R.string.error_chat_connect))
+            USER_NOT_FOUND -> Utils.messageOutput(context, getString(R.string.warning_login_required))
+        }
+        Timber.e("%s - %s", error.codeHandler?.name, error.error)
+        Utils.messageOutput(context, getString(R.string.error_send_message) + " " + error.codeHandler?.name)
+    }
+
+    private var onConnectError = Emitter.Listener {
+        Utils.messageOutput(context, getString(R.string.error_chat_connect))
     }
 
 //    private var onUserLeft = Emitter.Listener {
@@ -213,9 +207,33 @@ class FragmentUserChat : Fragment() {
 
 //    private var onNewUser = Emitter.Listener {
 //        val name = it[0] as String //This pass the userName!
-//        val chat = ModelMessage(ModelMessage.Type.USER_JOIN.type, "", name, "testRoom")
+//        val chat = ModelChatMessage(ModelChatMessage.Type.USER_JOIN.type, "", name, "testRoom")
 //        messageAdapter?.addToCollection(chat)
 //    }
+
+    private fun sendMessage() {
+        if (userToken == null) {
+            Utils.messageOutput(context, getString(R.string.warning_login_required))
+            return
+        }
+
+        val message: String = bind!!.chatMessage.text.toString()
+        val sendData = idUser_To?.let { responseConnect?.room?.let { it1 -> SendMessage(userToken, it, it1, message) } }
+        val jsonData = ApiClient.getGson().toJson(sendData)
+        socket?.emit("sendedMessage", jsonData)
+
+        val model = ModelMessage(CHAT_MINE, message)
+
+        bind!!.chatMessage.setText("")
+
+        showMessageToUI(model)
+    }
+
+    private fun showMessageToUI(model: ModelMessage) {
+        messageAdapter?.addToCollection(model)
+
+        messageAdapter?.itemCount?.let { bind!!.rvUserChat.smoothScrollToPosition(it) }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -231,6 +249,25 @@ class FragmentUserChat : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         socket!!.disconnect()
+        socket!!.emit("unsubscribe", responseConnect)
         socket!!.off()
+    }
+
+    override fun initListenersActionBar(viewGroup: ViewGroup?) {
+        itemBtnBack?.setOnClickListener { requireActivity().onBackPressed() }
+        itemMore?.setOnClickListener { Utils.messageOutput(context, "В разработке") }
+        userChatLogin?.setOnClickListener { FragmentViewerUserProfile.instance?.let { it1 -> containerFragments?.open(it1) } }
+    }
+
+    override fun initComponentsActionBar(viewGroup: ViewGroup?) {
+        itemBtnBack = viewGroup?.findViewById(R.id.itemBtnBack)
+        itemMore = viewGroup?.findViewById(R.id.itemMore)
+        userChatAvatar = viewGroup?.findViewById(R.id.userChatAvatar)
+        userChatLogin = viewGroup?.findViewById(R.id.userChatLogin)
+        userChatStatus = viewGroup?.findViewById(R.id.userChatStatus)
+    }
+
+    override fun getIdPatternResource(): Int {
+        return R.layout.ab_pattern_user_chat
     }
 }

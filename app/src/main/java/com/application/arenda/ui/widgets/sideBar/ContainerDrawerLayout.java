@@ -15,10 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.application.arenda.R;
 import com.application.arenda.entities.models.ModelUser;
 import com.application.arenda.entities.room.LocalCacheManager;
-import com.application.arenda.entities.utils.glide.GlideUtils;
 import com.application.arenda.entities.utils.Utils;
+import com.application.arenda.entities.utils.glide.GlideUtils;
 import com.application.arenda.mainWorkspace.activities.ActivityAuthorization;
 import com.application.arenda.mainWorkspace.fragments.FragmentAllAnnouncements;
 import com.application.arenda.mainWorkspace.fragments.FragmentCustomerService;
@@ -26,12 +27,12 @@ import com.application.arenda.mainWorkspace.fragments.FragmentProhibited;
 import com.application.arenda.mainWorkspace.fragments.FragmentRegulations;
 import com.application.arenda.mainWorkspace.fragments.FragmentServices;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserAnnouncements;
-import com.application.arenda.mainWorkspace.fragments.FragmentUserFavorites;
+import com.application.arenda.mainWorkspace.fragments.FragmentUserFavoriteAnnouncements;
+import com.application.arenda.mainWorkspace.fragments.FragmentUserMessages;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserProfile;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserStatistics;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserWallet;
 import com.application.arenda.mainWorkspace.fragments.proposals.FragmentUserProposals;
-import com.application.arenda.R;
 import com.application.arenda.ui.widgets.ComponentManager;
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments;
 import com.google.android.material.navigation.NavigationView;
@@ -112,7 +113,7 @@ public final class ContainerDrawerLayout implements SideBar,
 
                         itemUserName.setText(user.getLastName() + " " + user.getName());
                         itemUserLogin.setText(user.getLogin());
-                        GlideUtils.loadAvatar(context, user.getAvatar(), itemUserAvatar);
+                        GlideUtils.loadAvatar(context, user.getAvatar(), itemUserAvatar, 200, 200);
 
                         itemSignIn.setVisibility(View.GONE);
 
@@ -208,11 +209,14 @@ public final class ContainerDrawerLayout implements SideBar,
             case R.id.item_proposals:
                 containerFragments.open(FragmentUserProposals.Companion.getInstance());
                 return true;
+            case R.id.item_messages:
+                containerFragments.open(FragmentUserMessages.Companion.getInstance());
+                return true;
             case R.id.item_statistics:
                 containerFragments.open(FragmentUserStatistics.getInstance());
                 return true;
             case R.id.item_favorites:
-                containerFragments.open(new FragmentUserFavorites());
+                containerFragments.open(FragmentUserFavoriteAnnouncements.Companion.getInstance());
                 return true;
             case R.id.item_wallet:
                 containerFragments.open(new FragmentUserWallet());

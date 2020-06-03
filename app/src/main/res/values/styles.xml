@@ -229,9 +229,15 @@
         <item name="cardElevation">2dp</item>
     </style>
 
+    <style name="DefaultStyleMessageChat">
+        <item name="cardUseCompatPadding">true</item>
+        <item name="cardCornerRadius">5dp</item>
+        <item name="cardElevation">2dp</item>
+    </style>
+
     <style name="DefaultStyleMessage">
         <item name="cardUseCompatPadding">true</item>
-        <item name="cardCornerRadius">@dimen/chat_message_corner_radius</item>
+        <item name="cardCornerRadius">5dp</item>
         <item name="cardElevation">2dp</item>
     </style>
 

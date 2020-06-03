@@ -265,7 +265,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
         rvOnScrollListener.setRVAdapter(userAnnouncementsAdapter);
         recyclerView.setAdapter(userAnnouncementsAdapter);
 
-        userAnnouncementsAdapter.setItemViewClick((viewHolder, model) -> Utils.messageOutput(getContext(), "click"));
+        userAnnouncementsAdapter.setItemViewClick((viewHolder, model, position) -> Utils.messageOutput(getContext(), "click"));
 
         recyclerView.setAdapter(userAnnouncementsAdapter);
     }

@@ -64,7 +64,7 @@
                 android:id="@+id/viewMargin"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@drawable/panel_proposal"
+                android:background="@drawable/rounding_panel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -225,7 +225,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/ab_item_send_message_black"
+                android:src="@drawable/item_send_message_black"
                 app:layout_constraintBottom_toBottomOf="@+id/btnRejectProposal"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintTop_toTopOf="@+id/btnRejectProposal" />

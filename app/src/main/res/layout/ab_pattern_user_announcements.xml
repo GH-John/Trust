@@ -62,7 +62,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ab_item_filtr_black"
+        app:srcCompat="@drawable/item_parametrs_black"
         tools:visibility="visible" />
 
     <EditText

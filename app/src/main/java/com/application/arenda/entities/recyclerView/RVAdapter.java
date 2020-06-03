@@ -21,6 +21,8 @@ public interface RVAdapter<M extends IModel> {
 
     void rewriteCollection(List<M> collection);
 
+    void clearCollection();
+
     M getItem(int position);
 
     M getLastItem();

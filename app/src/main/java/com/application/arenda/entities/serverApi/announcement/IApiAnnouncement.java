@@ -3,8 +3,7 @@ package com.application.arenda.entities.serverApi.announcement;
 import com.application.arenda.BuildConfig;
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelCategory;
-import com.application.arenda.entities.models.ModelPeriodRent;
-import com.application.arenda.entities.models.ModelProposal;
+import com.application.arenda.entities.models.ModelFavoriteAnnouncement;
 import com.application.arenda.entities.models.ModelSubcategory;
 import com.application.arenda.entities.serverApi.client.ApiHandler;
 import com.application.arenda.entities.serverApi.client.ServerResponse;
@@ -79,6 +78,13 @@ public interface IApiAnnouncement {
             @Field("limitItemsInPage") int limitItemsInPage,
             @Field("query") String query
     );
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_FAVORITE_ANNOUNCEMENTS)
+    Call<ServerResponse<List<ModelFavoriteAnnouncement>>> loadFavoriteAnnouncements(
+            @Field("token") String token,
+            @Field("idFavorite") long lastID,
+            @Field("limitItemsInPage") int limitItemsInPage);
 
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_USER_ANNOUNCEMENT)

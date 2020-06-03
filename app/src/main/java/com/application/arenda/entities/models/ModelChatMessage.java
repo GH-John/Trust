@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.threeten.bp.LocalDateTime;
 
-public class ModelMessage implements IModel {
-    @SerializedName("idMessage")
+public class ModelChatMessage implements IModel {
+    @SerializedName("idRoom")
     private long ID;
 
     @Expose(deserialize = false, serialize = false)
@@ -17,10 +17,10 @@ public class ModelMessage implements IModel {
     private LocalDateTime created;
     private LocalDateTime updated;
 
-    public ModelMessage() {
+    public ModelChatMessage() {
     }
 
-    public ModelMessage(TypeMessage type, String message) {
+    public ModelChatMessage(TypeMessage type, String message) {
         this.type = type;
         this.message = message;
     }

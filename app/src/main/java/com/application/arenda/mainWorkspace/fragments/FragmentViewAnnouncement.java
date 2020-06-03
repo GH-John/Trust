@@ -303,7 +303,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             }
         };
 
-        landLordItemClick = (viewHolder, model) -> {
+        landLordItemClick = (viewHolder, model, pos) -> {
             ModelAnnouncement announcement = (ModelAnnouncement) model;
 
             sharedViewModels.selectLandLordAnnouncement(announcement);
@@ -320,7 +320,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             setViewerAnnouncement(announcement.getID());
         };
 
-        similarItemClick = (viewHolder, model) -> {
+        similarItemClick = (viewHolder, model, pos) -> {
             ModelAnnouncement announcement = (ModelAnnouncement) model;
 
             sharedViewModels.selectSimilarAnnouncement(announcement);
@@ -337,7 +337,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             setViewerAnnouncement(announcement.getID());
         };
 
-        landLordSimilarItemHeartClick = (viewHolder, model) ->
+        landLordSimilarItemHeartClick = (viewHolder, model, pos) ->
                 apiAnnouncement.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -444,7 +444,6 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
     @SuppressLint("SetTextI18n")
     private void inflateUI(ModelAnnouncement announcement) {
-
         phoneNumbers.clear();
 
         phoneNumbers.add(announcement.getPhone_1());
@@ -705,9 +704,7 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
             } else
                 Utils.messageOutput(getContext(), getContext().getResources().getString(R.string.dialog_phone_number_not_found));
         });
-        itemMessage.setOnClickListener(v -> {
-            containerFragments.open(new FragmentUserChat());
-        });
+        itemMessage.setOnClickListener(v -> containerFragments.open(new FragmentUserChat()));
         itemMore.setOnClickListener(v -> Utils.messageOutput(getContext(), "more"));
     }
 

@@ -93,7 +93,7 @@ public class LandLord_Similar_AnnouncementsVH extends BaseViewHolder {
 
     public void setOnItemViewClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemView.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemView.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }
@@ -101,7 +101,7 @@ public class LandLord_Similar_AnnouncementsVH extends BaseViewHolder {
 
     public void setOnItemHeartClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            btnInsertToFavorite.setOnClickListener(v -> itemClick.onClick(this, model));
+            btnInsertToFavorite.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/DefaultStyleMessage"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp">
+
+        <ImageView
+            android:id="@+id/userMessageAvatar"
+            android:layout_width="@dimen/user_message_avatar_size"
+            android:layout_height="@dimen/user_message_avatar_size"
+            android:contentDescription="@string/todo"
+            tools:src="@android:mipmap/sym_def_app_icon" />
+
+        <TextView
+            android:id="@+id/userMessageLogin"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/userMessageAvatar"
+            android:layout_toEndOf="@+id/userMessageAvatar"
+            tools:text="@string/hint_login" />
+
+        <TextView
+            android:id="@+id/lastMessage"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/userMessageLogin"
+            android:layout_toEndOf="@+id/userMessageAvatar"
+            android:textColor="@color/colorHint"
+            android:textSize="12sp"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/dateLastMessage"
+            style="@style/DefaultStyleTextRegular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lastMessage"
+            android:layout_alignParentEnd="true"
+            android:textColor="@color/colorHint"
+            android:textSize="12sp"
+            tools:text="@string/some_date" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

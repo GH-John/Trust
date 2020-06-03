@@ -89,6 +89,12 @@ public abstract class BaseAdapter<M extends IModel, V extends BaseViewHolder> ex
         setLoading(false);
     }
 
+    @Override
+    public void clearCollection() {
+        this.collection.clear();
+        notifyDataSetChanged();
+    }
+
     public List<M> getCollection() {
         return collection;
     }

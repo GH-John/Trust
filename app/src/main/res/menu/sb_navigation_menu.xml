@@ -17,6 +17,11 @@
             android:title="@string/itemList_proposals" />
 
         <item
+            android:id="@+id/item_messages"
+            android:icon="@drawable/sb_item_message"
+            android:title="@string/itemList_messages" />
+
+        <item
             android:id="@+id/item_statistics"
             android:icon="@drawable/sb_item_statistics"
             android:title="@string/itemList_statistics" />

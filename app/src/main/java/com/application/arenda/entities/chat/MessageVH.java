@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 import com.application.arenda.R;
 import com.application.arenda.entities.models.IModel;
 import com.application.arenda.entities.models.ModelMessage;
-import com.application.arenda.entities.models.ModelMessage.Type;
 import com.application.arenda.entities.recyclerView.BaseViewHolder;
+import com.application.arenda.entities.serverApi.chat.TypeMessage;
 import com.application.arenda.entities.utils.Utils;
 
 import org.threeten.bp.LocalDateTime;
@@ -54,7 +54,7 @@ public class MessageVH extends BaseViewHolder {
     }
 
     private static boolean isMine(int type) {
-        return Type.get(type) == Type.CHAT_MINE;
+        return TypeMessage.get(type) == TypeMessage.CHAT_MINE;
     }
 
     @Override
@@ -64,6 +64,9 @@ public class MessageVH extends BaseViewHolder {
 
     @Override
     public void onBind(IModel model, int position) {
+        if (model == null)
+            return;
+
         message = (ModelMessage) model;
 
         if (isMine(type)) {

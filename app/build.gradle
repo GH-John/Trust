@@ -39,7 +39,7 @@ android {
 
             buildConfigField "String", "NOTIFICATION_CHANNEL_ID", "\"KJSf89sdfhjksd89vlO4IBHfd9fgLKJNgkHdgGghhF8Sdfg7SdglsDnmIsdjfhkv2bjhg43j\""
 
-            buildConfigField "int", "APP_DB_VERSION", "3"
+            buildConfigField "int", "APP_DB_VERSION", "4"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
 
             buildConfigField "String", "URL_CHAT_SOCKET", "\"http://192.168.43.241:3000\""
@@ -63,6 +63,7 @@ android {
             buildConfigField "String", "URL_INSERT_VIEWER", "\"php/announcements/insert/viewer/InsertViewer.php\""
 
             buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/announcements/all/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_FAVORITE_ANNOUNCEMENTS", "\"php/announcements/favorites/LoadingFavorites.php\""
             buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/announcements/user/LoadingUserAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/announcements/landLord/LoadingLandLordAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/announcements/similar/LoadingSimilarAnnouncements.php\""
@@ -89,7 +90,7 @@ android {
 
             buildConfigField "String", "NOTIFICATION_CHANNEL_ID", "\"KJSf89sdfhjksd89vlO4IBHfd9fgLKJNgkHdgGghhF8Sdfg7SdglsDnmIsdjfhkv2bjhg43j\""
 
-            buildConfigField "int", "APP_DB_VERSION", "3"
+            buildConfigField "int", "APP_DB_VERSION", "4"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
 
             buildConfigField "String", "URL_CHAT_SOCKET", "\"http://192.168.43.241:3000\""
@@ -113,6 +114,7 @@ android {
             buildConfigField "String", "URL_INSERT_VIEWER", "\"php/announcements/insert/viewer/InsertViewer.php\""
 
             buildConfigField "String", "URL_LOADING_ALL_ANNOUNCEMENT", "\"php/announcements/all/LoadingAnnouncements.php\""
+            buildConfigField "String", "URL_LOADING_FAVORITE_ANNOUNCEMENTS", "\"php/announcements/favorites/LoadingFavorites.php\""
             buildConfigField "String", "URL_LOADING_USER_ANNOUNCEMENT", "\"php/announcements/user/LoadingUserAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_LAND_LORD_ANNOUNCEMENT", "\"php/announcements/landLord/LoadingLandLordAnnouncements.php\""
             buildConfigField "String", "URL_LOADING_SIMILAR_ANNOUNCEMENT", "\"php/announcements/similar/LoadingSimilarAnnouncements.php\""

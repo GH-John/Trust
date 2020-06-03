@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/height_proposal"
+    android:layout_height="@dimen/height_favorite_announcement"
     android:layout_marginTop="12dp">
 
     <androidx.cardview.widget.CardView
@@ -70,13 +70,13 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/itemCloseProposal"
+            <ImageButton
+                android:id="@+id/imgHeart"
                 style="@style/DefaultStyleImageBtn"
-                android:layout_width="@dimen/size_indicator_proposals"
-                android:layout_height="@dimen/size_indicator_proposals"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/indicator_incoming_proposals"
+                android:src="@drawable/ic_heart_selected"
                 app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 app:layout_constraintTop_toTopOf="@+id/itemUserAvatar" />
 
@@ -103,132 +103,55 @@
                 tools:text="@string/hint_login" />
 
             <TextView
-                android:id="@+id/textStartRent"
-                style="@style/DefaultStyleTextBoldRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_start_rent"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/dateRentalStart"
-                app:layout_constraintStart_toStartOf="@+id/dateRentalStart" />
-
-            <TextView
-                android:id="@+id/dateRentalStart"
+                android:id="@+id/nameProduct"
                 style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                app:layout_constraintEnd_toStartOf="@+id/imageView"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toTopOf="@+id/imageView"
-                tools:text="@string/some_date" />
-
-            <TextView
-                android:id="@+id/timeRentalStart"
-                style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintStart_toStartOf="@+id/dateRentalStart"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
-                tools:text="@string/text_Time_00" />
-
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginBottom="4dp"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_item_calendar"
-                app:layout_constraintBottom_toTopOf="@+id/guideline3"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="@+id/guideline2" />
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginTop="4dp"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/ic_item_clock"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toTopOf="@+id/guideline3" />
-
-            <TextView
-                android:id="@+id/textEndRent"
-                style="@style/DefaultStyleTextBoldRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_end_rent"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toTopOf="@+id/dateRentalEnd"
-                app:layout_constraintStart_toStartOf="@+id/dateRentalEnd" />
-
-            <TextView
-                android:id="@+id/dateRentalEnd"
-                style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintStart_toEndOf="@+id/imageView"
-                app:layout_constraintTop_toTopOf="@+id/imageView"
-                tools:text="@string/some_date" />
-
-            <TextView
-                android:id="@+id/timeRentalEnd"
-                style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintStart_toEndOf="@+id/imageView2"
-                app:layout_constraintStart_toStartOf="@+id/dateRentalEnd"
-                app:layout_constraintTop_toTopOf="@+id/imageView2"
-                tools:text="@string/text_Time_00" />
-
-
-            <TextView
-                android:id="@+id/proposalCreated"
-                style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:maxLines="3"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                app:layout_constraintTop_toBottomOf="@+id/itemUserAvatar"
+                tools:text="@tools:sample/lorem/random" />
+
+            <TextView
+                android:id="@+id/costProduct"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/placementDate"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                tools:text="@string/text_cost_announcement" />
+
+            <TextView
+                android:id="@+id/userAddress"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:drawableStart="@drawable/ic_location"
+                android:drawablePadding="8dp"
+                android:textSize="10sp"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
+                tools:ignore="SmallSp"
+                tools:text="@tools:sample/lorem" />
+
+            <TextView
+                android:id="@+id/placementDate"
+                style="@style/DefaultStyleTextRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:textColor="@color/colorHint"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/btnFinishProposal"
-                app:layout_constraintStart_toStartOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                app:layout_constraintBottom_toTopOf="@+id/userAddress"
+                app:layout_constraintEnd_toStartOf="@+id/guideline4"
                 tools:ignore="SmallSp"
                 tools:text="@string/some_date" />
-
-            <Button
-                android:id="@+id/btnFinishProposal"
-                style="@style/DefaultStyleBtn.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/btn_red"
-                android:text="@string/btn_text_finish_proposal"
-                android:textColor="@color/colorWhite"
-                app:layout_constraintBottom_toBottomOf="@+id/viewMargin"
-                app:layout_constraintStart_toStartOf="@+id/guideline2" />
-
-            <ImageButton
-                android:id="@+id/btnSendMessage"
-                style="@style/DefaultStyleImageBtn"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:contentDescription="@string/todo"
-                android:src="@drawable/item_send_message_black"
-                app:layout_constraintBottom_toBottomOf="@+id/btnFinishProposal"
-                app:layout_constraintEnd_toStartOf="@+id/guideline4"
-                app:layout_constraintTop_toTopOf="@+id/btnFinishProposal" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

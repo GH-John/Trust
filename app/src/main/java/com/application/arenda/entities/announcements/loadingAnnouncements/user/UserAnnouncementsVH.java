@@ -107,7 +107,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
 
     public void setOnItemViewClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemView.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemView.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }

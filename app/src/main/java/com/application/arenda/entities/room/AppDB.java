@@ -10,6 +10,7 @@ import androidx.room.TypeConverters;
 import com.application.arenda.BuildConfig;
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelCategory;
+import com.application.arenda.entities.models.ModelFavoriteAnnouncement;
 import com.application.arenda.entities.models.ModelPicture;
 import com.application.arenda.entities.models.ModelProposal;
 import com.application.arenda.entities.models.ModelSubcategory;
@@ -24,7 +25,12 @@ import com.application.arenda.entities.room.dao.DaoUser;
 
 import timber.log.Timber;
 
-@Database(entities = {ModelUser.class, ModelAnnouncement.class, ModelPicture.class, ModelProposal.class, ModelCategory.class, ModelSubcategory.class},
+@Database(entities = {
+        ModelUser.class, ModelAnnouncement.class,
+        ModelPicture.class, ModelProposal.class,
+        ModelCategory.class, ModelSubcategory.class,
+        ModelFavoriteAnnouncement.class
+},
         version = BuildConfig.APP_DB_VERSION)
 @TypeConverters({UriConverter.class, PicturesConverter.class, DateTimeConverter.class, CurrencyConverter.class})
 public abstract class AppDB extends RoomDatabase {

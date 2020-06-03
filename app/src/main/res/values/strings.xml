@@ -242,4 +242,8 @@
 
     <string name="some_date">11.01.20</string>
     <string name="error_send_message">Ошибка отправки сообщения</string>
+    <string name="ab_title_messages">Сообщения</string>
+    <string name="ab_title_favorites">Избранные</string>
+    <string name="itemList_messages">Сообщения</string>
+    <string name="error_chat_connect">Не удалось подключиться к чату</string>
 </resources>

@@ -24,6 +24,7 @@ public class SubcategoryVH extends BaseViewHolder {
     TextView subcategoryTitle;
 
     private ModelSubcategory modelSubcategory;
+    private int position;
 
     public SubcategoryVH(@NonNull View itemView) {
         super(itemView);
@@ -44,6 +45,9 @@ public class SubcategoryVH extends BaseViewHolder {
 
     @Override
     public void onBind(IModel model, int position) {
+        if(model == null)
+            return;
+        this.position= position;
         modelSubcategory = (ModelSubcategory) model;
 
         subcategoryTitle.setText(modelSubcategory.getName());
@@ -58,6 +62,6 @@ public class SubcategoryVH extends BaseViewHolder {
     }
 
     public void setOnClickListener(OnItemClick itemClick){
-        itemView.setOnClickListener(v -> itemClick.onClick(SubcategoryVH.this, modelSubcategory));
+        itemView.setOnClickListener(v -> itemClick.onClick(SubcategoryVH.this, modelSubcategory, position));
     }
 }

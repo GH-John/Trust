@@ -1,20 +1,20 @@
 package com.application.arenda.entities.serverApi.chat;
 
 public class ResponseConnect {
-    private long idRoom;
+    private String room;
 
     public ResponseConnect() {
     }
 
-    public ResponseConnect(long idRoom) {
-        this.idRoom = idRoom;
+    public ResponseConnect(String room) {
+        this.room = room;
     }
 
-    public long getIdRoom() {
-        return idRoom;
+    public String getRoom() {
+        return room;
     }
 
-    public void setIdRoom(long idRoom) {
-        this.idRoom = idRoom;
+    public void setRoom(String room) {
+        this.room = room;
     }
 }

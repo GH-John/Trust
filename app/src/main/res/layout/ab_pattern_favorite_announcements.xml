@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:text="@string/ab_title_proposals"
+        android:text="@string/ab_title_favorites"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,15 +30,4 @@
         app:layout_constraintTop_toTopOf="@+id/itemHeaderName"
         app:srcCompat="@drawable/ab_item_burger_menu_black" />
 
-    <ImageButton
-        android:id="@+id/itemShowMessages"
-        android:layout_width="@dimen/sizeBtnActionBar"
-        android:layout_height="@dimen/sizeBtnActionBar"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/btn_background_dark"
-        android:contentDescription="@string/todo"
-        app:layout_constraintBottom_toBottomOf="@+id/itemHeaderName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/itemHeaderName"
-        app:srcCompat="@drawable/item_send_message_black" />
 </androidx.constraintlayout.widget.ConstraintLayout>

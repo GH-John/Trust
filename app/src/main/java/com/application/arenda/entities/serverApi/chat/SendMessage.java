@@ -3,16 +3,16 @@ package com.application.arenda.entities.serverApi.chat;
 public class SendMessage {
     private String userToken;
     private long idUser_To;
-    private long idRoom;
+    private String room;
     private String message;
 
     public SendMessage() {
     }
 
-    public SendMessage(String userToken, long idUser_To, long idRoom, String message) {
+    public SendMessage(String userToken, long idUser_To, String room, String message) {
         this.userToken = userToken;
         this.idUser_To = idUser_To;
-        this.idRoom = idRoom;
+        this.room = room;
         this.message = message;
     }
 
@@ -32,12 +32,12 @@ public class SendMessage {
         this.idUser_To = idUser_To;
     }
 
-    public long getIdRoom() {
-        return idRoom;
+    public String getRoom() {
+        return room;
     }
 
-    public void setIdRoom(long idRoom) {
-        this.idRoom = idRoom;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public String getMessage() {

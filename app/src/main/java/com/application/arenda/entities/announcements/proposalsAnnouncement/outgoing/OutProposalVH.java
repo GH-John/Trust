@@ -62,6 +62,7 @@ public class OutProposalVH extends BaseViewHolder {
     ImageButton btnSendMessage;
 
     private ModelProposal proposal;
+    private int position;
 
     public OutProposalVH(@NonNull View itemView) {
         super(itemView);
@@ -82,7 +83,11 @@ public class OutProposalVH extends BaseViewHolder {
 
     @Override
     public void onBind(IModel model, int position) {
+        if (model == null)
+            return;
         proposal = (ModelProposal) model;
+
+        this.position = position;
 
         loadImage(itemView.getContext(), proposal.getPicture(), itemImgProduct);
         loadAvatar(itemView.getContext(), proposal.getUserAvatar(), itemUserAvatar);
@@ -103,20 +108,20 @@ public class OutProposalVH extends BaseViewHolder {
         if (itemClick == null)
             return;
 
-        btnRejectProposal.setOnClickListener(v -> itemClick.onClick(this, proposal));
+        btnRejectProposal.setOnClickListener(v -> itemClick.onClick(this, proposal, position));
     }
 
     public void setBtnSendMessageListener(OnItemClick itemClick) {
         if (itemClick == null)
             return;
 
-        btnSendMessage.setOnClickListener(v -> itemClick.onClick(this, proposal));
+        btnSendMessage.setOnClickListener(v -> itemClick.onClick(this, proposal, position));
     }
 
     public void setItemUserAvatarListener(OnItemClick itemClick) {
         if (itemClick == null)
             return;
 
-        itemUserAvatar.setOnClickListener(v -> itemClick.onClick(this, proposal));
+        itemUserAvatar.setOnClickListener(v -> itemClick.onClick(this, proposal, position));
     }
 }

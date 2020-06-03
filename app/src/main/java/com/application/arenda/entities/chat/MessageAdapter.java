@@ -4,6 +4,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import com.application.arenda.entities.models.ModelChatMessage;
 import com.application.arenda.entities.models.ModelMessage;
 import com.application.arenda.entities.recyclerView.BaseAdapter;
 
@@ -21,6 +22,6 @@ public class MessageAdapter extends BaseAdapter<ModelMessage, MessageVH> {
 
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).getType();
+        return getItem(position).getType().getCode();
     }
 }

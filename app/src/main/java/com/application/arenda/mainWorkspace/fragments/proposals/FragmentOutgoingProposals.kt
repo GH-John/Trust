@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentOutgoingProposalsBinding
 import com.application.arenda.entities.announcements.proposalsAnnouncement.outgoing.OutProposalAdapter
-import com.application.arenda.entities.models.ModelAnnouncement
 import com.application.arenda.entities.models.ModelProposal
 import com.application.arenda.entities.models.ModelUser
 import com.application.arenda.entities.models.SharedViewModels
@@ -183,7 +182,7 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
         bind.rvOutgoingProposals.addOnScrollListener(rvOnScrollListener!!)
 
-        proposalAdapter.setItemUserAvatarListener { _, model ->
+        proposalAdapter.setItemUserAvatarListener { _, model, _ ->
             run {
                 sharedViewModels!!.selectUser((model as ModelProposal).idUser)
                 containerFragments!!.open(FragmentViewerUserProfile.instance!!)

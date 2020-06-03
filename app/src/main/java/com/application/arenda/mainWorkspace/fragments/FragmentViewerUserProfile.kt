@@ -29,7 +29,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.viewer_user_header_profile.*
 
-class FragmentViewerUserProfile private constructor() : Fragment(), AdapterActionBar {
+open class FragmentViewerUserProfile private constructor() : Fragment(), AdapterActionBar {
     private var abBtnBack: ImageButton? = null
     private var abItemMore: ImageButton? = null
     private var abUserLogin: TextView? = null
@@ -114,7 +114,7 @@ class FragmentViewerUserProfile private constructor() : Fragment(), AdapterActio
 
     @SuppressLint("SetTextI18n")
     private fun setProfile(model: ModelUserProfileToView) {
-        GlideUtils.loadAvatar(context, model.avatar, bind.profileHeader.itemUserAvatar)
+        GlideUtils.loadAvatar(context, model.avatar, bind.profileHeader.itemUserAvatar, 200, 200)
 
         userLogin.text = model.login
         abUserLogin?.text = model.login
@@ -130,7 +130,7 @@ class FragmentViewerUserProfile private constructor() : Fragment(), AdapterActio
         disposable.clear()
     }
 
-    public companion object {
+    companion object {
         private var fragment: FragmentViewerUserProfile? = null
 
         val instance: FragmentViewerUserProfile?

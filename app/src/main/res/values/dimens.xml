@@ -25,4 +25,6 @@
     <dimen name="size_indicator_tab_proposal">8dp</dimen>
     <dimen name="message_margin_from_side">42dp</dimen>
     <dimen name="chat_message_corner_radius">6dp</dimen>
+    <dimen name="user_message_avatar_size">40dp</dimen>
+    <dimen name="height_favorite_announcement">180dp</dimen>
 </resources>

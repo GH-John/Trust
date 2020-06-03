@@ -33,7 +33,7 @@ import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 
-class FragmentUserProfile private constructor() : Fragment(), AdapterActionBar {
+open class FragmentUserProfile private constructor() : Fragment(), AdapterActionBar {
     private var abBtnBack: ImageButton? = null
     private var abBtnSave: TextView? = null
     private var abUserLogin: TextView? = null
@@ -135,7 +135,7 @@ class FragmentUserProfile private constructor() : Fragment(), AdapterActionBar {
 
     @SuppressLint("SetTextI18n")
     private fun setProfile(model: ModelUser) {
-        GlideUtils.loadAvatar(context, model.avatar, bind.profileHeader.itemUserAvatar)
+        GlideUtils.loadAvatar(context, model.avatar, bind.profileHeader.itemUserAvatar, 200, 200)
 
         userLogin.text = model.login
         abUserLogin?.text = model.login

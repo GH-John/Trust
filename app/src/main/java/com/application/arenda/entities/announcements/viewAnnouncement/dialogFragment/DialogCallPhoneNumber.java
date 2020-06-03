@@ -62,7 +62,7 @@ public class DialogCallPhoneNumber extends DialogFragment {
         DialogAdapterRV adapterRV = new DialogAdapterRV();
         adapterRV.addToCollection(collection);
 
-        adapterRV.setOnItemClick((viewHolder, model) -> callPhone((ModelPhoneNumber) model));
+        adapterRV.setOnItemClick((viewHolder, model, position) -> callPhone((ModelPhoneNumber) model));
 
         recyclerView.setAdapter(adapterRV);
         return view;

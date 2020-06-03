@@ -10,7 +10,9 @@ import butterknife.Unbinder
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentUserProposalsBinding
 import com.application.arenda.entities.announcements.proposalsAnnouncement.pager.ProposalsPagerAdapter
+import com.application.arenda.mainWorkspace.fragments.FragmentUserMessages
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar
+import com.application.arenda.ui.widgets.containerFragments.ContainerFragments
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar
 import com.application.arenda.ui.widgets.sideBar.SideBar
 
@@ -21,6 +23,8 @@ class FragmentUserProposals private constructor(): Fragment(), AdapterActionBar,
     private var pagerAdapter: ProposalsPagerAdapter? = null
     private var sideBar: SideBar? = null
     private var itemBurgerMenu: ImageView? = null
+    private var itemShowMessages: ImageView? = null
+    private var containerFragments: ContainerFragments? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,10 +35,11 @@ class FragmentUserProposals private constructor(): Fragment(), AdapterActionBar,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initComponents()
+        init()
     }
 
-    private fun initComponents() {
+    private fun init() {
+        containerFragments = ContainerFragments.getInstance(context)
         pagerAdapter = ProposalsPagerAdapter(requireActivity().supportFragmentManager)
 
         pagerAdapter?.setPagerItem(FragmentIncomingProposals.instance, getString(R.string.title_pager_incoming_proposals))
@@ -55,10 +60,12 @@ class FragmentUserProposals private constructor(): Fragment(), AdapterActionBar,
 
     override fun initComponentsActionBar(viewGroup: ViewGroup) {
         itemBurgerMenu = viewGroup.findViewById(R.id.itemBurgerMenu)
+        itemShowMessages = viewGroup.findViewById(R.id.itemShowMessages)
     }
 
     override fun initListenersActionBar(viewGroup: ViewGroup) {
         itemBurgerMenu?.setOnClickListener { sideBar?.openLeftMenu() }
+        itemShowMessages?.setOnClickListener { FragmentUserMessages.instance?.let { it1 -> containerFragments?.open(it1) } }
     }
 
     override fun setSideBar(sideBar: SideBar) {

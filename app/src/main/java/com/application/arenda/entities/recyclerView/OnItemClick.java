@@ -5,5 +5,5 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.application.arenda.entities.models.IModel;
 
 public interface OnItemClick {
-    void onClick(RecyclerView.ViewHolder viewHolder, IModel model);
+    void onClick(RecyclerView.ViewHolder viewHolder, IModel model, int position);
 }

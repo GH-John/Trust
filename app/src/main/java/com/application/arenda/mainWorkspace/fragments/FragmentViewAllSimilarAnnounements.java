@@ -211,7 +211,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
             }
         };
 
-        similarItemClick = (viewHolder, model) -> {
+        similarItemClick = (viewHolder, model, position) -> {
             sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
 
             containerFragments.open(new FragmentViewAnnouncement());
@@ -240,7 +240,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
 
         similarAnnouncementsAdapter.setItemViewClick(similarItemClick);
 
-        similarAnnouncementsAdapter.setItemHeartClick((viewHolder, model) ->
+        similarAnnouncementsAdapter.setItemHeartClick((viewHolder, model, position) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

@@ -136,9 +136,6 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
         initAdapters();
         initStyles();
         initListeners();
-
-        swipeRefreshLayout.setRefreshing(true);
-        refreshLayout();
     }
 
     @SuppressLint("CheckResult")
@@ -193,6 +190,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
             else
                 userToken = null;
 
+            swipeRefreshLayout.setRefreshing(true);
             refreshLayout();
         };
 
@@ -263,14 +261,14 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
 
         rvOnScrollListener.setRVAdapter(rvAdapter);
 
-        rvAdapter.setItemViewClick((viewHolder, model) -> {
+        rvAdapter.setItemViewClick((viewHolder, model, pos) -> {
 
             sharedViewModels.selectAnnouncement((ModelAnnouncement) model);
 
             containerFragments.open(new FragmentViewAnnouncement());
         });
 
-        rvAdapter.setItemHeartClick((viewHolder, model) ->
+        rvAdapter.setItemHeartClick((viewHolder, model, pos) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -291,7 +289,7 @@ public final class FragmentAllAnnouncements extends Fragment implements AdapterA
                             }
                         }));
 
-        rvAdapter.setItemUserAvatarClick((viewHolder, model) -> {
+        rvAdapter.setItemUserAvatarClick((viewHolder, model, pos) -> {
             sharedViewModels.selectUser(((ModelAnnouncement) model).getIdUser());
             containerFragments.open(FragmentViewerUserProfile.Companion.getInstance());
         });

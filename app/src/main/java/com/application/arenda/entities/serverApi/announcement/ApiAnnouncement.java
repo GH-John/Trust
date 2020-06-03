@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.application.arenda.entities.models.ModelAnnouncement;
 import com.application.arenda.entities.models.ModelCategory;
+import com.application.arenda.entities.models.ModelFavoriteAnnouncement;
 import com.application.arenda.entities.models.ModelInsertAnnouncement;
 import com.application.arenda.entities.models.ModelSubcategory;
 import com.application.arenda.entities.serverApi.OnApiListener;
@@ -18,6 +19,8 @@ import com.application.arenda.entities.serverApi.client.ServerResponse;
 import com.application.arenda.entities.utils.FileUtils;
 import com.application.arenda.entities.utils.retrofit.RetrofitUtils;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -357,5 +360,38 @@ public final class ApiAnnouncement {
                         emitter.onError(t);
                     }
                 }));
+    }
+
+    public synchronized Single<List<ModelFavoriteAnnouncement>> loadFavoriteAnnouncements(String token, long lastID, int limitItemsInPage, OnApiListener listener) {
+        return Single.create(emitter ->
+                api.loadFavoriteAnnouncements(
+                        token,
+                        lastID,
+                        limitItemsInPage)
+                        .enqueue(new Callback<ServerResponse<List<ModelFavoriteAnnouncement>>>() {
+                            @Override
+                            public void onResponse(@NonNull Call<ServerResponse<List<ModelFavoriteAnnouncement>>> call, @NonNull Response<ServerResponse<List<ModelFavoriteAnnouncement>>> response) {
+                                if (response.isSuccessful()) {
+                                    if (listener != null)
+                                        listener.onComplete(response.body().getHandler());
+
+                                    emitter.onSuccess(response.body().getResponse());
+                                } else {
+                                    Timber.tag("LoadingError").e(response.code() + " - " + response.message());
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<ServerResponse<List<ModelFavoriteAnnouncement>>> call, @NonNull Throwable t) {
+                                if (t instanceof SocketTimeoutException || t instanceof ConnectException)
+                                    if (listener != null)
+                                        listener.onComplete(CodeHandler.NETWORK_ERROR);
+
+
+                                if (listener != null)
+                                    listener.onFailure(t);
+                                emitter.onError(t);
+                            }
+                        }));
     }
 }

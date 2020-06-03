@@ -91,7 +91,7 @@ public class FragmentSelectCategory extends Fragment implements AdapterActionBar
 
                 SubcategoriesAdapter subcategoriesAdapter = new SubcategoriesAdapter();
 
-                subcategoriesAdapter.setItemClick((viewHolder, model) -> {
+                subcategoriesAdapter.setItemClick((viewHolder, model, pos) -> {
                     EventBus.getDefault().post(new EventSendID((int) model.getID(), ((ModelSubcategory) model).getName()));
 
                     ContainerFragments.getInstance(getContext()).popBackStack();

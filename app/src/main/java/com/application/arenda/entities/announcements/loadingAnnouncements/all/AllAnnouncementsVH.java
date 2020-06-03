@@ -136,7 +136,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     public void setItemLocationClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemLocation.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemLocation.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }
@@ -144,7 +144,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     public void setItemUserAvatarClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemUserAvatar.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemUserAvatar.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }
@@ -152,7 +152,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     public void setItemAnnouncementMoreClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemAnnouncementMore.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemAnnouncementMore.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }
@@ -160,7 +160,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     public void setItemViewReviewsClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemViewReviews.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemViewReviews.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }
@@ -168,7 +168,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     public void setOnItemViewClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            itemImgProduct.setOnClickListener(v -> itemClick.onClick(this, model));
+            itemImgProduct.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }
@@ -176,7 +176,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
 
     public void setOnItemHeartClick(OnItemClick itemClick) {
         if (model != null && itemClick != null) {
-            imgHeart.setOnClickListener(v -> itemClick.onClick(this, model));
+            imgHeart.setOnClickListener(v -> itemClick.onClick(this, model, position));
         } else {
             throw new NullPointerException("Model not initialized");
         }

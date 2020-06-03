@@ -183,7 +183,7 @@ class FragmentIncomingProposals private constructor() : Fragment() {
 
         bind.rvIncomingProposals.addOnScrollListener(rvOnScrollListener!!)
 
-        proposalAdapter.setItemUserAvatarListener { _, model ->
+        proposalAdapter.setItemUserAvatarListener { _, model, _ ->
             run {
                 sharedViewModels!!.selectUser((model as ModelProposal).idUser)
                 containerFragments!!.open(FragmentViewerUserProfile.instance!!)

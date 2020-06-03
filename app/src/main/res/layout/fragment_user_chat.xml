@@ -53,7 +53,7 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:contentDescription="@string/todo"
-                android:src="@drawable/ab_item_send_message_black" />
+                android:src="@drawable/item_send_message_black" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
