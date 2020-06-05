@@ -10,7 +10,7 @@ import butterknife.Unbinder
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentUserProposalsBinding
 import com.application.arenda.entities.announcements.proposalsAnnouncement.pager.ProposalsPagerAdapter
-import com.application.arenda.mainWorkspace.fragments.FragmentUserMessages
+import com.application.arenda.mainWorkspace.fragments.FragmentUserChats
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments
 import com.application.arenda.ui.widgets.sideBar.ItemSideBar
@@ -65,7 +65,7 @@ class FragmentUserProposals private constructor(): Fragment(), AdapterActionBar,
 
     override fun initListenersActionBar(viewGroup: ViewGroup) {
         itemBurgerMenu?.setOnClickListener { sideBar?.openLeftMenu() }
-        itemShowMessages?.setOnClickListener { FragmentUserMessages.instance?.let { it1 -> containerFragments?.open(it1) } }
+        itemShowMessages?.setOnClickListener { FragmentUserChats.instance?.let { it1 -> containerFragments?.open(it1) } }
     }
 
     override fun setSideBar(sideBar: SideBar) {

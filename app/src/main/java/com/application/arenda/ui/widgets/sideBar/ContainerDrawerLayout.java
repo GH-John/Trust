@@ -22,16 +22,11 @@ import com.application.arenda.entities.utils.Utils;
 import com.application.arenda.entities.utils.glide.GlideUtils;
 import com.application.arenda.mainWorkspace.activities.ActivityAuthorization;
 import com.application.arenda.mainWorkspace.fragments.FragmentAllAnnouncements;
-import com.application.arenda.mainWorkspace.fragments.FragmentCustomerService;
-import com.application.arenda.mainWorkspace.fragments.FragmentProhibited;
-import com.application.arenda.mainWorkspace.fragments.FragmentRegulations;
-import com.application.arenda.mainWorkspace.fragments.FragmentServices;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserAnnouncements;
+import com.application.arenda.mainWorkspace.fragments.FragmentUserChats;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserFavoriteAnnouncements;
-import com.application.arenda.mainWorkspace.fragments.FragmentUserMessages;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserProfile;
 import com.application.arenda.mainWorkspace.fragments.FragmentUserStatistics;
-import com.application.arenda.mainWorkspace.fragments.FragmentUserWallet;
 import com.application.arenda.mainWorkspace.fragments.proposals.FragmentUserProposals;
 import com.application.arenda.ui.widgets.ComponentManager;
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments;
@@ -176,8 +171,12 @@ public final class ContainerDrawerLayout implements SideBar,
             leftMenu.getMenu().getItem(1).setChecked(true);
         } else if (item instanceof FragmentUserProposals) {
             leftMenu.getMenu().getItem(2).setChecked(true);
-        } else if (item instanceof FragmentUserStatistics) {
+        } else if (item instanceof FragmentUserChats) {
             leftMenu.getMenu().getItem(3).setChecked(true);
+        } else if (item instanceof FragmentUserStatistics) {
+            leftMenu.getMenu().getItem(4).setChecked(true);
+        } else if (item instanceof FragmentUserFavoriteAnnouncements) {
+            leftMenu.getMenu().getItem(5).setChecked(true);
         }
     }
 
@@ -210,7 +209,7 @@ public final class ContainerDrawerLayout implements SideBar,
                 containerFragments.open(FragmentUserProposals.Companion.getInstance());
                 return true;
             case R.id.item_messages:
-                containerFragments.open(FragmentUserMessages.Companion.getInstance());
+                containerFragments.open(FragmentUserChats.Companion.getInstance());
                 return true;
             case R.id.item_statistics:
                 containerFragments.open(FragmentUserStatistics.getInstance());
@@ -218,21 +217,21 @@ public final class ContainerDrawerLayout implements SideBar,
             case R.id.item_favorites:
                 containerFragments.open(FragmentUserFavoriteAnnouncements.Companion.getInstance());
                 return true;
-            case R.id.item_wallet:
-                containerFragments.open(new FragmentUserWallet());
-                return true;
-            case R.id.item_services:
-                containerFragments.open(new FragmentServices());
-                return true;
-            case R.id.item_regulations:
-                containerFragments.open(new FragmentRegulations());
-                return true;
-            case R.id.item_customer_service:
-                containerFragments.open(new FragmentCustomerService());
-                return true;
-            case R.id.item_prohibited:
-                containerFragments.open(new FragmentProhibited());
-                return true;
+//            case R.id.item_wallet:
+//                containerFragments.open(new FragmentUserWallet());
+//                return true;
+//            case R.id.item_services:
+//                containerFragments.open(new FragmentServices());
+//                return true;
+//            case R.id.item_regulations:
+//                containerFragments.open(new FragmentRegulations());
+//                return true;
+//            case R.id.item_customer_service:
+//                containerFragments.open(new FragmentCustomerService());
+//                return true;
+//            case R.id.item_prohibited:
+//                containerFragments.open(new FragmentProhibited());
+//                return true;
         }
 
         return false;

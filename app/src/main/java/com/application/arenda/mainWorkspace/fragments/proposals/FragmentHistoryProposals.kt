@@ -77,9 +77,6 @@ class FragmentHistoryProposals private constructor() : Fragment() {
         initAdapters()
         initStyles()
         initListeners()
-
-        bind.swipeRefreshLayout.isRefreshing = true
-        refreshLayout()
     }
 
     @SuppressLint("CheckResult")
@@ -125,6 +122,7 @@ class FragmentHistoryProposals private constructor() : Fragment() {
                 modelUsers[0].token
             else null
 
+            bind.swipeRefreshLayout.isRefreshing = true
             refreshLayout()
         }
 

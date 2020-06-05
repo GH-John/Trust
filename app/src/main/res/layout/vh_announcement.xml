@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:drawableStart="@drawable/ic_star"
+            android:drawableStart="@drawable/ic_rate"
             android:drawablePadding="12dp"
             android:gravity="center"
             tools:text="@string/text_rate_announcement" />

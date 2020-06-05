@@ -246,4 +246,5 @@
     <string name="ab_title_favorites">Избранные</string>
     <string name="itemList_messages">Сообщения</string>
     <string name="error_chat_connect">Не удалось подключиться к чату</string>
+    <string name="error_recipient_not_found">Получатель не найден</string>
 </resources>

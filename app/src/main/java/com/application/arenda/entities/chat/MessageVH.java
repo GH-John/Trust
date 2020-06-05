@@ -71,10 +71,10 @@ public class MessageVH extends BaseViewHolder {
 
         if (isMine(type)) {
             messageFrom.setText(message.getMessage());
-            timeFrom.setText(Utils.getFormatingDate(itemView.getContext(), LocalDateTime.now()));
+            timeFrom.setText(Utils.getFormatingDate(itemView.getContext(), message.getUpdated() == null ? LocalDateTime.now() : message.getUpdated()));
         } else {
             messageTo.setText(message.getMessage());
-            timeTo.setText(Utils.getFormatingDate(itemView.getContext(), LocalDateTime.now()));
+            timeTo.setText(Utils.getFormatingDate(itemView.getContext(), message.getUpdated() == null ? LocalDateTime.now() : message.getUpdated()));
         }
     }
 }

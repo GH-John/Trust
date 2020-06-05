@@ -7,26 +7,13 @@
     android:clipToPadding="false"
     android:padding="6dp">
 
-    <FrameLayout
-        android:id="@+id/layoutSelectUserLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/itemUserAvatar"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_item_user_logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/itemUserAvatar"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:src="@drawable/ic_item_user_logo" />
-
-        <ImageView
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="bottom|end"
-            android:contentDescription="@string/todo"
-            android:src="@drawable/ic_item_plus" />
-    </FrameLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/userName"
@@ -34,9 +21,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/layoutSelectUserLogo"
-        app:layout_constraintStart_toEndOf="@+id/layoutSelectUserLogo"
-        app:layout_constraintTop_toTopOf="@+id/layoutSelectUserLogo"
+        app:layout_constraintBottom_toBottomOf="@+id/itemUserAvatar"
+        app:layout_constraintStart_toEndOf="@+id/itemUserAvatar"
+        app:layout_constraintTop_toTopOf="@+id/itemUserAvatar"
         tools:text="@tools:sample/lorem" />
 
     <TextView
@@ -60,8 +47,8 @@
         android:maxLines="10"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="@+id/userLogin"
-        app:layout_constraintStart_toStartOf="@+id/layoutSelectUserLogo"
-        app:layout_constraintTop_toBottomOf="@+id/layoutSelectUserLogo"
+        app:layout_constraintStart_toStartOf="@+id/itemUserAvatar"
+        app:layout_constraintTop_toBottomOf="@+id/itemUserAvatar"
         tools:text="@tools:sample/lorem/random" />
 
     <TextView

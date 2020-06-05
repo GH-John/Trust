@@ -5,12 +5,14 @@ import android.net.Uri;
 
 import com.application.arenda.BuildConfig;
 import com.application.arenda.entities.models.Currency;
+import com.application.arenda.entities.serverApi.chat.TypeMessage;
 import com.application.arenda.entities.serverApi.client.deserializers.BooleanDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.CodeHandlerDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.CurrencyDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.DateDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.DateTimeDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.TimeDeserializer;
+import com.application.arenda.entities.serverApi.client.deserializers.TypeMessageDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.UriDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -19,11 +21,8 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 
-import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
-import io.socket.client.IO;
-import io.socket.client.Socket;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -32,9 +31,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static Retrofit mainApi;
-
-    private static Socket socket;
+    private static Retrofit apiClient;
 
     private static long CACHE_SIZE = 10 * 1024 * 1024;
     private static Gson gson = new GsonBuilder()
@@ -45,6 +42,7 @@ public class ApiClient {
             .registerTypeAdapter(Boolean.class, new BooleanDeserializer())
             .registerTypeAdapter(CodeHandler.class, new CodeHandlerDeserializer())
             .registerTypeAdapter(Currency.class, new CurrencyDeserializer())
+            .registerTypeAdapter(TypeMessage.class, new TypeMessageDeserializer())
             .create();
 
     private static HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -54,7 +52,7 @@ public class ApiClient {
     }
 
     public synchronized static Retrofit getApi(Context context) {
-        if (mainApi == null) {
+        if (apiClient == null) {
 
             OkHttpClient.Builder client = new OkHttpClient.Builder()
                     .readTimeout(5, TimeUnit.MINUTES)
@@ -94,7 +92,7 @@ public class ApiClient {
                     })
                     .addInterceptor(interceptor);
 
-            mainApi = new Retrofit.Builder()
+            apiClient = new Retrofit.Builder()
                     .baseUrl(BuildConfig.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -102,22 +100,6 @@ public class ApiClient {
                     .build();
         }
 
-        return mainApi;
-    }
-
-    public static Socket getWebSocketApi() {
-        if (socket == null) {
-//            IO.Options opts = new IO.Options();
-//            opts.forceNew = true;
-//            opts.query = "auth_token=" + authToken;
-            try {
-//                socket = IO.socket(BuildConfig.URL_CHAT_SOCKET, opts);
-                socket = IO.socket(BuildConfig.URL_CHAT_SOCKET);
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return socket;
+        return apiClient;
     }
 }

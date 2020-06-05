@@ -20,6 +20,7 @@
         <item name="android:clipToPadding">false</item>
         <item name="android:overScrollMode">never</item>
         <item name="android:paddingStart">16dp</item>
+        <item name="fastScrollEnabled">false</item>
         <item name="android:paddingEnd">16dp</item>
         <item name="android:scrollbars">none</item>
     </style>
@@ -231,7 +232,7 @@
 
     <style name="DefaultStyleMessageChat">
         <item name="cardUseCompatPadding">true</item>
-        <item name="cardCornerRadius">5dp</item>
+        <item name="cardCornerRadius">15dp</item>
         <item name="cardElevation">2dp</item>
     </style>
 

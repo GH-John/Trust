@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -13,36 +14,30 @@
         android:layout_marginStart="@dimen/message_margin_from_side"
         app:cardBackgroundColor="@color/colorBlue">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/messageFromUser"
+            style="@style/DefaultStyleTextRegular"
             android:layout_width="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_margin="6dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/messageFromUser"
-                style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:gravity="start"
-                android:textColor="@color/colorWhite"
-                android:textSize="14sp"
-                tools:ignore="RelativeOverlap"
-                tools:text="Send" />
-
-            <TextView
-                android:id="@+id/timeFromUser"
-                style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="4dp"
-                android:textColor="@color/colorChatHint"
-                android:textSize="12sp"
-                tools:text="Now, 14:09" />
-        </LinearLayout>
+            android:gravity="start"
+            android:textColor="@color/colorWhite"
+            android:textSize="14sp"
+            tools:ignore="RelativeOverlap"
+            tools:text="Send" />
     </androidx.cardview.widget.CardView>
-</FrameLayout>
+    <TextView
+        android:id="@+id/timeFromUser"
+        style="@style/DefaultStyleTextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="6dp"
+        android:textColor="@color/colorHint"
+        android:textSize="12sp"
+        tools:text="Now, 14:09" />
+</LinearLayout>

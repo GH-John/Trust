@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/textCountFavorites"
                     android:layout_marginTop="12dp"
-                    android:drawableLeft="@drawable/ic_star"
+                    android:drawableLeft="@drawable/ic_rate"
                     android:drawablePadding="12dp"
                     android:gravity="center_vertical"
                     android:textSize="12sp"

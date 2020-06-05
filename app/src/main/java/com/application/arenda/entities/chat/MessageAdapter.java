@@ -4,7 +4,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
-import com.application.arenda.entities.models.ModelChatMessage;
 import com.application.arenda.entities.models.ModelMessage;
 import com.application.arenda.entities.recyclerView.BaseAdapter;
 

@@ -124,8 +124,6 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
         initAdapters();
         initStyles();
         initListeners();
-
-        refreshLayout();
     }
 
     @SuppressLint("CheckResult")
@@ -136,6 +134,7 @@ public final class FragmentUserAnnouncements extends Fragment implements Adapter
             else
                 userToken = null;
 
+            swipeRefreshLayout.setRefreshing(true);
             refreshLayout();
         };
 
