@@ -443,47 +443,52 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     }
 
     @SuppressLint("SetTextI18n")
-    private void inflateUI(ModelAnnouncement announcement) {
+    private void inflateUI(ModelAnnouncement model) {
         phoneNumbers.clear();
 
-        phoneNumbers.add(announcement.getPhone_1());
-        phoneNumbers.add(announcement.getPhone_2());
-        phoneNumbers.add(announcement.getPhone_3());
+        if (model.getPhone_1() != null && !model.getPhone_1().isEmpty())
+            phoneNumbers.add(model.getPhone_1());
 
-        textPlacementDate.setText(Utils.getFormatingDate(getContext(), announcement.getAnnouncementCreated()));
-        textNameProduct.setText(announcement.getName());
+        if (model.getPhone_2() != null && !model.getPhone_2().isEmpty())
+            phoneNumbers.add(model.getPhone_2());
 
-        textCostProduct.setText(announcement.getHourlyCost() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        if (model.getPhone_3() != null && !model.getPhone_3().isEmpty())
+            phoneNumbers.add(model.getPhone_3());
 
-        if (announcement.getAddress().isEmpty())
+        textPlacementDate.setText(Utils.getFormatingDate(getContext(), model.getAnnouncementCreated()));
+        textNameProduct.setText(model.getName());
+
+        textCostProduct.setText(model.getHourlyCost() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+
+        if (model.getAddress().isEmpty())
             textAddress.setVisibility(View.GONE);
         else
-            textAddress.setText(announcement.getAddress());
+            textAddress.setText(model.getAddress());
 
-        textRating.setText(String.valueOf(announcement.getAnnouncementRating()));
-        textCountRent.setText(String.valueOf(announcement.getCountRent()));
+        textRating.setText(String.valueOf(model.getAnnouncementRating()));
+        textCountRent.setText(String.valueOf(model.getCountRent()));
 
-        textDescriptionProduct.setText(announcement.getDescription());
+        textDescriptionProduct.setText(model.getDescription());
 
-        GlideUtils.loadAvatar(getContext(), announcement.getUserAvatar(), userCardAvatar);
+        GlideUtils.loadAvatar(getContext(), model.getUserAvatar(), userCardAvatar);
 
-        sharedViewModels.selectUser(announcement.getIdUser());
+        sharedViewModels.selectUser(model.getIdUser());
 
         userCardAvatar.setOnClickListener(v -> containerFragments
                 .open(FragmentViewerUserProfile.Companion.getInstance()));
 
-        iconWithSale.setImageResource(announcement.isWithSale() ? R.drawable.ic_item_check : R.drawable.ic_item_uncheck);
+        iconWithSale.setImageResource(model.isWithSale() ? R.drawable.ic_item_check : R.drawable.ic_item_uncheck);
 
-        userCardLogin.setText(announcement.getLogin());
-        userCardRating.setText(String.valueOf(announcement.getUserRating()));
-        userCardCountAnnouncements.setText(String.valueOf(announcement.getCountAnnouncementsUser()));
-        userCardUserCreated.setText(Utils.getFormatingDate(getContext(), announcement.getUserCreated(), Utils.DatePattern.dd_MM_yyyy));
+        userCardLogin.setText(model.getLogin());
+        userCardRating.setText(String.valueOf(model.getUserRating()));
+        userCardCountAnnouncements.setText(String.valueOf(model.getCountAnnouncementsUser()));
+        userCardUserCreated.setText(Utils.getFormatingDate(getContext(), model.getUserCreated(), Utils.DatePattern.dd_MM_yyyy));
 
-        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(announcement.getID()));
+        btnInsertToFavorite.setOnClickListener(v -> onClickFavorite(model.getID()));
 
-        selectHeart(announcement.isFavorite());
+        selectHeart(model.isFavorite());
 
-        ModelPicture.convertToUris(announcement.getPictures())
+        ModelPicture.convertToUris(model.getPictures())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResourceSingleObserver<List<Uri>>() {

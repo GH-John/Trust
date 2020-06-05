@@ -71,7 +71,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/itemCloseProposal"
+                android:id="@+id/btnCloseProposal"
                 style="@style/DefaultStyleImageBtn"
                 android:layout_width="@dimen/size_indicator_proposals"
                 android:layout_height="@dimen/size_indicator_proposals"

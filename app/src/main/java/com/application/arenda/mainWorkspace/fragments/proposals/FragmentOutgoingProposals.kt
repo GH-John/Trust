@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -23,8 +25,11 @@ import com.application.arenda.entities.serverApi.client.CodeHandler.*
 import com.application.arenda.entities.serverApi.proposal.ApiProposal
 import com.application.arenda.entities.utils.DisplayUtils
 import com.application.arenda.entities.utils.Utils
+import com.application.arenda.mainWorkspace.fragments.FragmentUserChat
 import com.application.arenda.mainWorkspace.fragments.FragmentViewerUserProfile
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -51,7 +56,7 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
     private var sharedViewModels: SharedViewModels? = null
 
-    private var proposalAdapter: OutProposalAdapter = OutProposalAdapter()
+    private var rvAdapter: OutProposalAdapter = OutProposalAdapter()
 
     private var disposable = CompositeDisposable()
     private var containerFragments: ContainerFragments? = null
@@ -111,9 +116,9 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
                     UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
                     }
-//                    NONE_REZULT -> {
-//                        Utils.messageOutput(context, "Нет объявлений")
-//                    }
+                    NONE_REZULT -> {
+                        rvAdapter.isLoading = false
+                    }
                 }
             }
 
@@ -142,13 +147,13 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                proposalAdapter.rewriteCollection(collection)
+                rvAdapter.rewriteCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                proposalAdapter.isLoading = false
+                rvAdapter.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -158,13 +163,13 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                proposalAdapter.addToCollection(collection)
+                rvAdapter.addToCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                proposalAdapter.isLoading = false
+                rvAdapter.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -180,17 +185,75 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
         bind.rvOutgoingProposals.addOnScrollListener(rvOnScrollListener!!)
 
-        proposalAdapter.setItemUserAvatarListener { _, model, _ ->
+        rvAdapter.setItemUserAvatarListener { _, model, _ ->
             run {
                 sharedViewModels!!.selectUser((model as ModelProposal).idUser)
                 containerFragments!!.open(FragmentViewerUserProfile.instance!!)
             }
         }
 
-        rvOnScrollListener!!.setRVAdapter(proposalAdapter)
+        rvAdapter.setBtnSendMessageListener { _, model, _ ->
+            run {
+                sharedViewModels!!.selectUser((model as ModelProposal).idUser)
+                containerFragments!!.open(FragmentUserChat())
+            }
+        }
+
+        rvAdapter.setBtnRejectListener { vh, model, position ->
+            run {
+                vh.itemView.visibility = GONE
+
+                val snackbar = Snackbar
+                        .make(bind.root, getString(R.string.warning_proposal_reject), Snackbar.LENGTH_LONG)
+
+                var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
+                        api!!.rejectOutgoingProposal(userToken, model.id)
+                                .subscribeOn(Schedulers.io())
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .subscribe { response ->
+                                    run {
+                                        when (response.handler) {
+                                            SUCCESS -> rvAdapter.removeFromCollection(position)
+                                            UNSUCCESS -> {
+                                                Utils.messageOutput(context, getString(R.string.error_unsuccess_reject_proposal))
+                                                vh.itemView.visibility = VISIBLE
+                                            }
+                                            NETWORK_ERROR -> {
+                                                Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                                                vh.itemView.visibility = VISIBLE
+                                            }
+                                            PROPOSAL_NOT_FOUND -> {
+                                                Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                                                vh.itemView.visibility = VISIBLE
+                                            }
+                                            else -> {
+                                                Timber.e(response.error)
+                                                Utils.messageOutput(context, getString(R.string.unknown_error))
+                                                vh.itemView.visibility = VISIBLE
+                                            }
+                                        }
+                                    }
+                                }
+                    }
+                }
+
+                snackbar.addCallback(snackbarCallBack)
+
+                snackbar.setAction(getString(R.string.text_cancle)) {
+                    vh.itemView.visibility = VISIBLE
+                    snackbar.removeCallback(snackbarCallBack)
+                }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
+
+                snackbar.show()
+            }
+        }
+
+        rvOnScrollListener!!.setRVAdapter(rvAdapter)
 
 
-        bind.rvOutgoingProposals.adapter = proposalAdapter
+        bind.rvOutgoingProposals.adapter = rvAdapter
     }
 
     private fun initStyles() {
@@ -212,8 +275,8 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
     @Synchronized
     private fun addProposalsToCollection(lastId: Long, rewrite: Boolean) {
-        if (!proposalAdapter.isLoading) {
-            proposalAdapter.isLoading = true
+        if (!rvAdapter.isLoading) {
+            rvAdapter.isLoading = true
             api!!.loadOutgoingProposal(userToken, lastId, 10, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

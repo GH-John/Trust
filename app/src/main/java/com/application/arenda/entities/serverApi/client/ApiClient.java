@@ -5,6 +5,7 @@ import android.net.Uri;
 
 import com.application.arenda.BuildConfig;
 import com.application.arenda.entities.models.Currency;
+import com.application.arenda.entities.models.TypeProposalAnnouncement;
 import com.application.arenda.entities.serverApi.chat.TypeMessage;
 import com.application.arenda.entities.serverApi.client.deserializers.BooleanDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.CodeHandlerDeserializer;
@@ -13,6 +14,7 @@ import com.application.arenda.entities.serverApi.client.deserializers.DateDeseri
 import com.application.arenda.entities.serverApi.client.deserializers.DateTimeDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.TimeDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.TypeMessageDeserializer;
+import com.application.arenda.entities.serverApi.client.deserializers.TypeProposalAnnoncementDeserializer;
 import com.application.arenda.entities.serverApi.client.deserializers.UriDeserializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -43,6 +45,7 @@ public class ApiClient {
             .registerTypeAdapter(CodeHandler.class, new CodeHandlerDeserializer())
             .registerTypeAdapter(Currency.class, new CurrencyDeserializer())
             .registerTypeAdapter(TypeMessage.class, new TypeMessageDeserializer())
+            .registerTypeAdapter(TypeProposalAnnouncement.class, new TypeProposalAnnoncementDeserializer())
             .create();
 
     private static HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY);

@@ -12,6 +12,7 @@ public class InProposalAdapter extends BaseAdapter<ModelProposal, InProposalVH> 
     private OnItemClick btnAcceptListener;
     private OnItemClick btnSendMessageListener;
     private OnItemClick itemUserAvatarListener;
+    private OnItemClick btnRejectListener;
 
     @NonNull
     @Override
@@ -26,6 +27,7 @@ public class InProposalAdapter extends BaseAdapter<ModelProposal, InProposalVH> 
         holder.setBtnAcceptListener(btnAcceptListener);
         holder.setBtnSendMessageListener(btnSendMessageListener);
         holder.setItemUserAvatarListener(itemUserAvatarListener);
+        holder.setBtnRejectListener(btnRejectListener);
     }
 
     public void setBtnAcceptListener(OnItemClick btnAcceptListener) {
@@ -38,5 +40,9 @@ public class InProposalAdapter extends BaseAdapter<ModelProposal, InProposalVH> 
 
     public void setItemUserAvatarListener(OnItemClick itemUserAvatarListener) {
         this.itemUserAvatarListener = itemUserAvatarListener;
+    }
+
+    public void setBtnRejectListener(OnItemClick btnRejectListener) {
+        this.btnRejectListener = btnRejectListener;
     }
 }

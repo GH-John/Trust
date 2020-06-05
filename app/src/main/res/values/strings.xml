@@ -247,4 +247,10 @@
     <string name="itemList_messages">Сообщения</string>
     <string name="error_chat_connect">Не удалось подключиться к чату</string>
     <string name="error_recipient_not_found">Получатель не найден</string>
+    <string name="warning_proposal_reject">Заявка отклонена</string>
+    <string name="text_cancle">Отмена</string>
+    <string name="error_unsuccess_reject_proposal">Неудалось отклонить заявку</string>
+    <string name="error_proposal_not_found">Заявка не найдена</string>
+    <string name="warning_proposal_accept">Заявка принята</string>
+    <string name="error_unsuccess_accept_proposal">Неудалось принять заявку</string>
 </resources>

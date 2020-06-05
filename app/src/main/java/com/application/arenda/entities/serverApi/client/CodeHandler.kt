@@ -1,6 +1,8 @@
 package com.application.arenda.entities.serverApi.client
 
-enum class CodeHandler(val code: Int) {
+enum class CodeHandler(val type: Int) {
+
+    UNKNOW_HANDLER(-1),
     HTTP_NOT_FOUND(404),
     INTERNAL_SERVER_ERROR(500),
     HTTP_VERSION_NOT_SUPPORTED(505),
@@ -31,41 +33,44 @@ enum class CodeHandler(val code: Int) {
     WRONG_EMAIL_LOGIN(-1804),
     WRONG_TOKEN(-1805);
 
+    var code = type
+
     companion object {
         @JvmStatic
-        operator fun get(code: Int): CodeHandler {
-            when (code) {
-                404 -> return HTTP_NOT_FOUND
-                500 -> return INTERNAL_SERVER_ERROR
-                505 -> return HTTP_VERSION_NOT_SUPPORTED
-                521 -> return WEB_SERVER_IS_DOWN
-                1000 -> return NETWORK_ERROR
+        operator fun get(type: Int): CodeHandler {
+            return when (type) {
+                404 -> HTTP_NOT_FOUND
+                500 -> INTERNAL_SERVER_ERROR
+                505 -> HTTP_VERSION_NOT_SUPPORTED
+                521 -> WEB_SERVER_IS_DOWN
+                1000 -> NETWORK_ERROR
 
-                -2000 -> return SUCCESS
-                -2001 -> return UNSUCCESS
-                -2002 -> return NONE_REZULT
-                -2003 -> return NOT_CONNECT_TO_DB
-                -2004 -> return UNKNOW_ERROR
-                -2005 -> return PHP_INI_NOT_LOADED
-                -2006 -> return PICTURES_DONT_LOAD
-                -2007 -> return FILES_EMPTY
-                -2008 -> return ERROR_FOLLOW
-                -2009 -> return ERROR_UNFOLLOW
-                -2010 -> return ALLREADY_FOLLOW
-                -2011 -> return ALLREADY_UNFOLLOW
-                -2012 -> return PROPOSAL_NOT_FOUND
-                -2013 -> return FAILED_CREATE_ROOM
-                -2014 -> return CHAT_NOT_FOUND
-                -2015 -> return RECIPIENT_NOT_FOUND
+                -2000 -> SUCCESS
+                -2001 -> UNSUCCESS
+                -2002 -> NONE_REZULT
+                -2003 -> NOT_CONNECT_TO_DB
+                -2004 -> UNKNOW_ERROR
+                -2005 -> PHP_INI_NOT_LOADED
+                -2006 -> PICTURES_DONT_LOAD
+                -2007 -> FILES_EMPTY
+                -2008 -> ERROR_FOLLOW
+                -2009 -> ERROR_UNFOLLOW
+                -2010 -> ALLREADY_FOLLOW
+                -2011 -> ALLREADY_UNFOLLOW
+                -2012 -> PROPOSAL_NOT_FOUND
+                -2013 -> FAILED_CREATE_ROOM
+                -2014 -> CHAT_NOT_FOUND
+                -2015 -> RECIPIENT_NOT_FOUND
 
-                -1800 -> return USER_WITH_LOGIN_EXISTS
-                -1801 -> return USER_EXISTS
-                -1802 -> return USER_NOT_FOUND
-                -1803 -> return WRONG_PASSWORD
-                -1804 -> return WRONG_EMAIL_LOGIN
-                -1805 -> return WRONG_TOKEN
+                -1800 -> USER_WITH_LOGIN_EXISTS
+                -1801 -> USER_EXISTS
+                -1802 -> USER_NOT_FOUND
+                -1803 -> WRONG_PASSWORD
+                -1804 -> WRONG_EMAIL_LOGIN
+                -1805 -> WRONG_TOKEN
+
+                else -> UNKNOW_HANDLER
             }
-            return UNKNOW_ERROR
         }
     }
 }

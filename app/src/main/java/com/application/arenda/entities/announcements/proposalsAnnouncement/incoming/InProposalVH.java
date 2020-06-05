@@ -37,8 +37,8 @@ public class InProposalVH extends BaseViewHolder {
     @BindView(R.id.userLogin)
     TextView userLogin;
 
-    @BindView(R.id.itemCloseProposal)
-    ImageButton itemCloseProposal;
+    @BindView(R.id.btnCloseProposal)
+    ImageButton btnCloseProposal;
 
     @BindView(R.id.dateRentalStart)
     TextView dateRentalStart;
@@ -122,5 +122,12 @@ public class InProposalVH extends BaseViewHolder {
             return;
 
         itemUserAvatar.setOnClickListener(v -> itemClick.onClick(this, proposal, position));
+    }
+
+    public void setBtnRejectListener(OnItemClick itemClick) {
+        if (itemClick == null)
+            return;
+
+        btnCloseProposal.setOnClickListener(v -> itemClick.onClick(this, proposal, position));
     }
 }

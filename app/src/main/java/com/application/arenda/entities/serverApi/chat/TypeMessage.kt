@@ -8,11 +8,11 @@ enum class TypeMessage(type: Int) {
     companion object {
         @JvmStatic
         operator fun get(type: Int): TypeMessage {
-            when (type) {
-                0 -> return CHAT_MINE
-                1 -> return CHAT_PARTNER
+            return when (type) {
+                0 -> CHAT_MINE
+                1 -> CHAT_PARTNER
+                else -> CHAT_MINE
             }
-            return CHAT_MINE
         }
     }
 }
