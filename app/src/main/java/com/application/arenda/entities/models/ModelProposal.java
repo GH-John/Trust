@@ -23,6 +23,9 @@ public class ModelProposal implements IModel {
     @SerializedName("idUser")
     private long idUser = 0;
 
+    @SerializedName("typeProposal")
+    private TypeProposalAnnouncement typeProposal;
+
     @SerializedName("userLogo")
     private Uri userAvatar;
 
@@ -44,9 +47,6 @@ public class ModelProposal implements IModel {
     @SerializedName("picture")
     private Uri picture;
 
-    @SerializedName("isClosed")
-    private Boolean isClosed = false;
-
     public long getIdAnnouncement() {
         return idAnnouncement;
     }
@@ -61,6 +61,14 @@ public class ModelProposal implements IModel {
 
     public void setIdUser(long idUser) {
         this.idUser = idUser;
+    }
+
+    public TypeProposalAnnouncement getTypeProposal() {
+        return typeProposal;
+    }
+
+    public void setTypeProposal(TypeProposalAnnouncement typeProposal) {
+        this.typeProposal = typeProposal;
     }
 
     public Uri getUserAvatar() {
@@ -117,14 +125,6 @@ public class ModelProposal implements IModel {
 
     public void setPicture(Uri picture) {
         this.picture = picture;
-    }
-
-    public Boolean isClosed() {
-        return isClosed;
-    }
-
-    public void setClosed(Boolean closed) {
-        isClosed = closed;
     }
 
     @Override

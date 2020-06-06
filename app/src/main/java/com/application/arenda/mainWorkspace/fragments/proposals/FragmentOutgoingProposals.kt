@@ -10,16 +10,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.VERTICAL
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentOutgoingProposalsBinding
 import com.application.arenda.entities.announcements.proposalsAnnouncement.outgoing.OutProposalAdapter
+import com.application.arenda.entities.models.IModel
 import com.application.arenda.entities.models.ModelProposal
 import com.application.arenda.entities.models.ModelUser
 import com.application.arenda.entities.models.SharedViewModels
 import com.application.arenda.entities.recyclerView.RVOnScrollListener
 import com.application.arenda.entities.room.LocalCacheManager
 import com.application.arenda.entities.serverApi.OnApiListener
+import com.application.arenda.entities.serverApi.client.ApiHandler
 import com.application.arenda.entities.serverApi.client.CodeHandler
 import com.application.arenda.entities.serverApi.client.CodeHandler.*
 import com.application.arenda.entities.serverApi.proposal.ApiProposal
@@ -50,9 +53,10 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
     private var singleLoaderWithRewriteProposals: SingleObserver<List<ModelProposal>>? = null
     private var singleLoaderWithoutRewriteProposals: SingleObserver<List<ModelProposal>>? = null
 
+    private var сonsumerRejectProposal: Consumer<ApiHandler>? = null
+
     private var consumerUserToken: Consumer<List<ModelUser>>? = null
-    private var listenerFavoriteInsert: OnApiListener? = null
-    private var listenerLoadAnnouncement: OnApiListener? = null
+    private var listenerLoadProposal: OnApiListener? = null
 
     private var sharedViewModels: SharedViewModels? = null
 
@@ -77,7 +81,7 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
         cacheManager = LocalCacheManager.getInstance(context)
 
-        rvLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        rvLayoutManager = LinearLayoutManager(context, VERTICAL, false)
 
         sharedViewModels = ViewModelProvider(requireActivity()).get(SharedViewModels::class.java)
 
@@ -91,26 +95,7 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun initInterfaces() {
-        listenerFavoriteInsert = object : OnApiListener {
-            override fun onComplete(code: CodeHandler) {
-                when (code) {
-                    USER_NOT_FOUND -> {
-                        Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
-                    }
-                    INTERNAL_SERVER_ERROR -> {
-                        Utils.messageOutput(context, resources.getString(R.string.error_on_server))
-                    }
-                    UNKNOW_ERROR -> {
-                        Utils.messageOutput(context, resources.getString(R.string.unknown_error))
-                    }
-                }
-            }
-
-            override fun onFailure(t: Throwable) {
-                Timber.e(t)
-            }
-        }
-        listenerLoadAnnouncement = object : OnApiListener {
+        listenerLoadProposal = object : OnApiListener {
             override fun onComplete(code: CodeHandler) {
                 when (code) {
                     UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
@@ -201,52 +186,7 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
         rvAdapter.setBtnRejectListener { vh, model, position ->
             run {
-                vh.itemView.visibility = GONE
-
-                val snackbar = Snackbar
-                        .make(bind.root, getString(R.string.warning_proposal_reject), Snackbar.LENGTH_LONG)
-
-                var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                        super.onDismissed(transientBottomBar, event)
-                        api!!.rejectOutgoingProposal(userToken, model.id)
-                                .subscribeOn(Schedulers.io())
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .subscribe { response ->
-                                    run {
-                                        when (response.handler) {
-                                            SUCCESS -> rvAdapter.removeFromCollection(position)
-                                            UNSUCCESS -> {
-                                                Utils.messageOutput(context, getString(R.string.error_unsuccess_reject_proposal))
-                                                vh.itemView.visibility = VISIBLE
-                                            }
-                                            NETWORK_ERROR -> {
-                                                Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
-                                                vh.itemView.visibility = VISIBLE
-                                            }
-                                            PROPOSAL_NOT_FOUND -> {
-                                                Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
-                                                vh.itemView.visibility = VISIBLE
-                                            }
-                                            else -> {
-                                                Timber.e(response.error)
-                                                Utils.messageOutput(context, getString(R.string.unknown_error))
-                                                vh.itemView.visibility = VISIBLE
-                                            }
-                                        }
-                                    }
-                                }
-                    }
-                }
-
-                snackbar.addCallback(snackbarCallBack)
-
-                snackbar.setAction(getString(R.string.text_cancle)) {
-                    vh.itemView.visibility = VISIBLE
-                    snackbar.removeCallback(snackbarCallBack)
-                }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
-
-                snackbar.show()
+                snackBarRejectProposal(vh, model, position)
             }
         }
 
@@ -254,6 +194,64 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
 
 
         bind.rvOutgoingProposals.adapter = rvAdapter
+    }
+
+    private fun snackBarRejectProposal(vh: ViewHolder?, model: IModel?, position: Int) {
+        vh?.itemView?.visibility = GONE
+
+        val snackbar = Snackbar
+                .make(bind.root, getString(R.string.warning_proposal_reject), Snackbar.LENGTH_LONG)
+
+        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                model?.id?.let {
+                    api!!.rejectOutgoingProposal(userToken, it)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(getConsumerRejectProposal(vh, model, position))
+                }
+            }
+        }
+
+        snackbar.addCallback(snackbarCallBack)
+
+        snackbar.setAction(getString(R.string.text_cancle)) {
+            vh?.itemView?.visibility = VISIBLE
+            snackbar.removeCallback(snackbarCallBack)
+        }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
+
+        snackbar.show()
+    }
+
+    private fun getConsumerRejectProposal(vh: ViewHolder?, model: IModel?, position: Int?): Consumer<ApiHandler> {
+        if (сonsumerRejectProposal == null)
+            сonsumerRejectProposal = Consumer { response ->
+                run {
+                    when (response.handler) {
+                        SUCCESS -> position?.let { rvAdapter.removeFromCollection(it) }
+                        UNSUCCESS -> {
+                            Utils.messageOutput(context, getString(R.string.error_unsuccess_reject_proposal))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
+                        NETWORK_ERROR -> {
+                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
+                        PROPOSAL_NOT_FOUND -> {
+                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
+                        else -> {
+                            Timber.e(response.error)
+                            Utils.messageOutput(context, getString(R.string.unknown_error))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
+                    }
+                }
+            }
+
+        return сonsumerRejectProposal!!
     }
 
     private fun initStyles() {
@@ -277,7 +275,7 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
     private fun addProposalsToCollection(lastId: Long, rewrite: Boolean) {
         if (!rvAdapter.isLoading) {
             rvAdapter.isLoading = true
-            api!!.loadOutgoingProposal(userToken, lastId, 10, listenerLoadAnnouncement)
+            api!!.loadOutgoingProposal(userToken, lastId, 10, listenerLoadProposal)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((if (rewrite) singleLoaderWithRewriteProposals else singleLoaderWithoutRewriteProposals)!!)

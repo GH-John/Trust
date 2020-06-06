@@ -4,16 +4,17 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView.VERTICAL
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.application.arenda.R
-import com.application.arenda.databinding.FragmentIncomingProposalsBinding
-import com.application.arenda.entities.announcements.proposalsAnnouncement.incoming.InProposalAdapter
+import com.application.arenda.databinding.FragmentReservationProposalsBinding
+import com.application.arenda.entities.announcements.proposalsAnnouncement.reservation.ReservationProposalAdapter
 import com.application.arenda.entities.models.IModel
 import com.application.arenda.entities.models.ModelProposal
 import com.application.arenda.entities.models.ModelUser
@@ -40,7 +41,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class FragmentIncomingProposals private constructor() : Fragment() {
+class FragmentReservationProposals private constructor() : Fragment() {
     private var api: ApiProposal? = null
     private var cacheManager: LocalCacheManager? = null
 
@@ -52,24 +53,26 @@ class FragmentIncomingProposals private constructor() : Fragment() {
     private var singleLoaderWithRewriteProposals: SingleObserver<List<ModelProposal>>? = null
     private var singleLoaderWithoutRewriteProposals: SingleObserver<List<ModelProposal>>? = null
 
-    private var consumerAcceptProposal: Consumer<ApiHandler>? = null
-    private var consumerRejectProposal: Consumer<ApiHandler>? = null
+    private var сonsumerStartProposal: Consumer<ApiHandler>? = null
+    private var consumerCancleReservationProposal: Consumer<ApiHandler>? = null
+    private var consumerRescheduleReservationProposal: Consumer<ApiHandler>? = null
 
     private var consumerUserToken: Consumer<List<ModelUser>>? = null
     private var listenerLoadProposal: OnApiListener? = null
 
     private var sharedViewModels: SharedViewModels? = null
 
-    private var rvAdapter: InProposalAdapter = InProposalAdapter()
+    private var rvAdapter: ReservationProposalAdapter? = null
 
     private var disposable = CompositeDisposable()
+
     private var containerFragments: ContainerFragments? = null
 
-    private lateinit var bind: FragmentIncomingProposalsBinding
+    private lateinit var bind: FragmentReservationProposalsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        bind = FragmentIncomingProposalsBinding.inflate(inflater)
+        bind = FragmentReservationProposalsBinding.inflate(inflater)
 
         init()
 
@@ -81,10 +84,9 @@ class FragmentIncomingProposals private constructor() : Fragment() {
 
         cacheManager = LocalCacheManager.getInstance(context)
 
-        rvLayoutManager = LinearLayoutManager(context, VERTICAL, false)
+        rvLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
         sharedViewModels = ViewModelProvider(requireActivity()).get(SharedViewModels::class.java)
-
         containerFragments = ContainerFragments.getInstance(context)
 
         initInterfaces()
@@ -101,9 +103,9 @@ class FragmentIncomingProposals private constructor() : Fragment() {
                     UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
                     }
-//                    NONE_REZULT -> {
-//                        Utils.messageOutput(context, "Нет объявлений")
-//                    }
+                    NONE_REZULT -> {
+                        rvAdapter?.isLoading = false
+                    }
                 }
             }
 
@@ -126,19 +128,20 @@ class FragmentIncomingProposals private constructor() : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(consumerUserToken)
+
         singleLoaderWithRewriteProposals = object : SingleObserver<List<ModelProposal>> {
             override fun onSubscribe(d: Disposable) {
                 disposable.add(d)
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                rvAdapter.rewriteCollection(collection)
+                rvAdapter?.rewriteCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                rvAdapter.isLoading = false
+                rvAdapter?.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -148,73 +151,78 @@ class FragmentIncomingProposals private constructor() : Fragment() {
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                rvAdapter.addToCollection(collection)
+                rvAdapter?.addToCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                rvAdapter.isLoading = false
+                rvAdapter?.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
     }
 
-    @SuppressLint("CheckResult")
     private fun initAdapters() {
-        bind.rvIncomingProposals.layoutManager = rvLayoutManager
-        bind.rvIncomingProposals.setItemViewCacheSize(50)
-        bind.rvIncomingProposals.setHasFixedSize(true)
+        bind.rvReservationProposals.layoutManager = rvLayoutManager
+        bind.rvReservationProposals.setItemViewCacheSize(50)
+        bind.rvReservationProposals.setHasFixedSize(true)
 
         rvOnScrollListener = RVOnScrollListener(rvLayoutManager)
 
-        bind.rvIncomingProposals.addOnScrollListener(rvOnScrollListener!!)
+        bind.rvReservationProposals.addOnScrollListener(rvOnScrollListener!!)
+        rvAdapter = ReservationProposalAdapter()
+        rvOnScrollListener!!.setRVAdapter(rvAdapter)
 
-        rvAdapter.setItemUserAvatarListener { _, model, _ ->
+        rvAdapter?.setItemUserAvatarListener { _, model, _ ->
             run {
                 sharedViewModels!!.selectUser((model as ModelProposal).idUser)
                 containerFragments!!.open(FragmentViewerUserProfile.instance!!)
             }
         }
 
-        rvAdapter.setBtnSendMessageListener { _, model, _ ->
+        rvAdapter?.setBtnSendMessageListener { _, model, _ ->
             run {
                 sharedViewModels!!.selectUser((model as ModelProposal).idUser)
                 containerFragments!!.open(FragmentUserChat())
             }
         }
 
-        rvAdapter.setBtnAcceptListener { vh, model, position ->
+        rvAdapter?.setBtnStartListener { vh, model, position ->
             run {
-                snackBarAcceptProposal(vh, model, position)
+                snackBarStartProposal(vh, model, position)
             }
         }
 
-        rvAdapter.setBtnRejectListener { vh, model, position ->
+        rvAdapter?.setItemRescheduleReservation { vh, model, position ->
             run {
-                snackBarRejectProposal(vh, model, position)
+                snackBarRescheduleReservationProposal(vh, model, position)
             }
         }
 
-        rvOnScrollListener!!.setRVAdapter(rvAdapter)
+        rvAdapter?.setItemCancleReservation { vh, model, position ->
+            run {
+                snackBarCancleReservationProposal(vh, model, position)
+            }
+        }
 
-        bind.rvIncomingProposals.adapter = rvAdapter
+        bind.rvReservationProposals.adapter = rvAdapter
     }
 
-    private fun snackBarRejectProposal(vh: ViewHolder?, model: IModel?, position: Int) {
-        vh?.itemView?.visibility = View.GONE
+    private fun snackBarCancleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int) {
+        vh?.itemView?.visibility = GONE
 
         val snackbar = Snackbar
-                .make(bind.root, getString(R.string.warning_proposal_reject), Snackbar.LENGTH_LONG)
+                .make(bind.root, getString(R.string.warning_cancle_reservation_start), Snackbar.LENGTH_LONG)
 
         var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 model?.id?.let {
-                    api!!.rejectIncomingProposal(userToken, it)
+                    api!!.cancleReservationProposal(userToken, it)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(getConsumerRejectProposal(vh, model, position))
+                            .subscribe(getConsumerCancleReservationProposal(vh, model, position))
                 }
             }
         }
@@ -229,14 +237,14 @@ class FragmentIncomingProposals private constructor() : Fragment() {
         snackbar.show()
     }
 
-    private fun getConsumerRejectProposal(vh: ViewHolder?, model: IModel, position: Int): Consumer<ApiHandler> {
-        if (consumerRejectProposal == null)
-            consumerRejectProposal = Consumer { response ->
+    private fun getConsumerCancleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int?): Consumer<ApiHandler> {
+        if (consumerCancleReservationProposal == null)
+            consumerCancleReservationProposal = Consumer { response ->
                 run {
                     when (response.handler) {
-                        SUCCESS -> rvAdapter.removeFromCollection(position)
+                        SUCCESS -> position?.let { rvAdapter?.removeFromCollection(it) }
                         UNSUCCESS -> {
-                            Utils.messageOutput(context, getString(R.string.error_unsuccess_reject_proposal))
+                            Utils.messageOutput(context, getString(R.string.error_unsuccess_cancle_reservation_proposal))
                             vh?.itemView?.visibility = VISIBLE
                         }
                         NETWORK_ERROR -> {
@@ -256,23 +264,77 @@ class FragmentIncomingProposals private constructor() : Fragment() {
                 }
             }
 
-        return consumerRejectProposal!!
+        return consumerCancleReservationProposal!!
     }
 
-    private fun snackBarAcceptProposal(vh: ViewHolder?, model: IModel?, position: Int) {
-        vh?.itemView?.visibility = View.GONE
 
+    private fun snackBarRescheduleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int) {
         val snackbar = Snackbar
-                .make(bind.root, getString(R.string.warning_proposal_accept), Snackbar.LENGTH_LONG)
+                .make(bind.root, getString(R.string.warning_reschedule_reservation_start), Snackbar.LENGTH_LONG)
 
         var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 model?.id?.let {
-                    api!!.acceptProposal(userToken, it)
+                    api!!.rescheduleReservationProposal(userToken, it)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(getConsumerAcceptProposal(vh, model, position))
+                            .subscribe(getConsumerRescheduleReservationProposal(vh, model, position))
+                }
+            }
+        }
+
+        snackbar.addCallback(snackbarCallBack)
+
+        snackbar.setAction(getString(R.string.text_cancle)) {
+            snackbar.removeCallback(snackbarCallBack)
+        }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
+
+        snackbar.show()
+    }
+
+    private fun getConsumerRescheduleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int?): Consumer<ApiHandler> {
+        if (consumerRescheduleReservationProposal == null)
+            consumerRescheduleReservationProposal = Consumer { response ->
+                run {
+                    when (response.handler) {
+                        SUCCESS -> {
+                        }
+                        UNSUCCESS -> {
+                            Utils.messageOutput(context, getString(R.string.error_unsuccess_reschedule_reservation_proposal))
+                        }
+                        NETWORK_ERROR -> {
+                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                        }
+                        PROPOSAL_NOT_FOUND -> {
+                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                        }
+                        else -> {
+                            Timber.e(response.error)
+                            Utils.messageOutput(context, getString(R.string.unknown_error))
+                        }
+                    }
+                }
+            }
+
+        return consumerRescheduleReservationProposal!!
+    }
+
+    @SuppressLint("CheckResult")
+    private fun snackBarStartProposal(vh: ViewHolder?, model: IModel?, position: Int?) {
+        vh?.itemView?.visibility = GONE
+
+        val snackbar = Snackbar
+                .make(bind.root, getString(R.string.warning_proposal_start), Snackbar.LENGTH_LONG)
+
+        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                model?.id?.let {
+                    api!!.startProposal(userToken, it)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(getConsumerStartProposal(vh, model, position))
                 }
             }
         }
@@ -287,32 +349,34 @@ class FragmentIncomingProposals private constructor() : Fragment() {
         snackbar.show()
     }
 
-    private fun getConsumerAcceptProposal(vh: ViewHolder?, model: IModel, position: Int): Consumer<ApiHandler> {
-        if (consumerAcceptProposal == null)
-            consumerAcceptProposal = Consumer { response: ApiHandler ->
-                when (response.handler) {
-                    SUCCESS -> rvAdapter.removeFromCollection(position)
-                    UNSUCCESS -> {
-                        Utils.messageOutput(context, getString(R.string.error_unsuccess_accept_proposal))
-                        vh?.itemView?.visibility = VISIBLE
-                    }
-                    NETWORK_ERROR -> {
-                        Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
-                        vh?.itemView?.visibility = VISIBLE
-                    }
-                    PROPOSAL_NOT_FOUND -> {
-                        Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
-                        vh?.itemView?.visibility = VISIBLE
-                    }
-                    else -> {
-                        Timber.e(response.error)
-                        Utils.messageOutput(context, getString(R.string.unknown_error))
-                        vh?.itemView?.visibility = VISIBLE
+    private fun getConsumerStartProposal(vh: ViewHolder?, model: IModel?, position: Int?): Consumer<ApiHandler> {
+        if (сonsumerStartProposal == null)
+            сonsumerStartProposal = Consumer { response ->
+                run {
+                    when (response.handler) {
+                        SUCCESS -> position?.let { rvAdapter?.removeFromCollection(it) }
+                        UNSUCCESS -> {
+                            Utils.messageOutput(context, getString(R.string.error_unsuccess_start_proposal))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
+                        NETWORK_ERROR -> {
+                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
+                        PROPOSAL_NOT_FOUND -> {
+                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
+                        else -> {
+                            Timber.e(response.error)
+                            Utils.messageOutput(context, getString(R.string.unknown_error))
+                            vh?.itemView?.visibility = VISIBLE
+                        }
                     }
                 }
             }
 
-        return consumerAcceptProposal!!
+        return сonsumerStartProposal!!
     }
 
     private fun initStyles() {
@@ -334,9 +398,9 @@ class FragmentIncomingProposals private constructor() : Fragment() {
 
     @Synchronized
     private fun addProposalsToCollection(lastId: Long, rewrite: Boolean) {
-        if (!rvAdapter.isLoading) {
-            rvAdapter.isLoading = true
-            api!!.loadIncomingProposal(userToken, lastId, 10, listenerLoadProposal)
+        if (!rvAdapter?.isLoading!!) {
+            rvAdapter?.isLoading = true
+            api!!.loadReservationProposal(userToken, lastId, 10, listenerLoadProposal)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((if (rewrite) singleLoaderWithRewriteProposals else singleLoaderWithoutRewriteProposals)!!)
@@ -356,11 +420,11 @@ class FragmentIncomingProposals private constructor() : Fragment() {
     }
 
     companion object {
-        private var fragment: FragmentIncomingProposals? = null
+        private var fragment: FragmentReservationProposals? = null
 
-        val instance: FragmentIncomingProposals?
+        val instance: FragmentReservationProposals?
             get() {
-                if (this.fragment == null) this.fragment = FragmentIncomingProposals()
+                if (this.fragment == null) this.fragment = FragmentReservationProposals()
                 return this.fragment
             }
     }

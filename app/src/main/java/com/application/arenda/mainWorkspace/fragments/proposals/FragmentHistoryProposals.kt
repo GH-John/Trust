@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentHistoryProposalsBinding
-import com.application.arenda.entities.announcements.proposalsAnnouncement.incoming.InProposalAdapter
+import com.application.arenda.entities.announcements.proposalsAnnouncement.history.HistoryProposalAdapter
 import com.application.arenda.entities.models.ModelProposal
 import com.application.arenda.entities.models.ModelUser
 import com.application.arenda.entities.models.SharedViewModels
@@ -44,12 +44,11 @@ class FragmentHistoryProposals private constructor() : Fragment() {
     private var singleLoaderWithoutRewriteProposals: SingleObserver<List<ModelProposal>>? = null
 
     private var consumerUserToken: Consumer<List<ModelUser>>? = null
-    private var listenerFavoriteInsert: OnApiListener? = null
-    private var listenerLoadAnnouncement: OnApiListener? = null
+    private var listenerLoadProposal: OnApiListener? = null
 
     private var sharedViewModels: SharedViewModels? = null
 
-    private var proposalAdapter: InProposalAdapter? = null
+    private var rvAdapter: HistoryProposalAdapter? = null
 
     private var disposable = CompositeDisposable()
 
@@ -81,34 +80,15 @@ class FragmentHistoryProposals private constructor() : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun initInterfaces() {
-        listenerFavoriteInsert = object : OnApiListener {
-            override fun onComplete(code: CodeHandler) {
-                when (code) {
-                    USER_NOT_FOUND -> {
-                        Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
-                    }
-                    INTERNAL_SERVER_ERROR -> {
-                        Utils.messageOutput(context, resources.getString(R.string.error_on_server))
-                    }
-                    UNKNOW_ERROR -> {
-                        Utils.messageOutput(context, resources.getString(R.string.unknown_error))
-                    }
-                }
-            }
-
-            override fun onFailure(t: Throwable) {
-                Timber.e(t)
-            }
-        }
-        listenerLoadAnnouncement = object : OnApiListener {
+        listenerLoadProposal = object : OnApiListener {
             override fun onComplete(code: CodeHandler) {
                 when (code) {
                     UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
                     }
-//                    NONE_REZULT -> {
-//                        Utils.messageOutput(context, "Нет объявлений")
-//                    }
+                    NONE_REZULT -> {
+                        rvAdapter?.isLoading = false
+                    }
                 }
             }
 
@@ -137,13 +117,13 @@ class FragmentHistoryProposals private constructor() : Fragment() {
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                proposalAdapter?.rewriteCollection(collection)
+                rvAdapter?.rewriteCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                proposalAdapter?.isLoading = false
+                rvAdapter?.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -153,13 +133,13 @@ class FragmentHistoryProposals private constructor() : Fragment() {
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                proposalAdapter?.addToCollection(collection)
+                rvAdapter?.addToCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                proposalAdapter?.isLoading = false
+                rvAdapter?.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -174,11 +154,10 @@ class FragmentHistoryProposals private constructor() : Fragment() {
         rvOnScrollListener = RVOnScrollListener(rvLayoutManager)
 
         bind.rvHistoryProposals.addOnScrollListener(rvOnScrollListener!!)
-        proposalAdapter = InProposalAdapter()
-        rvOnScrollListener!!.setRVAdapter(proposalAdapter)
+        rvAdapter = HistoryProposalAdapter()
+        rvOnScrollListener!!.setRVAdapter(rvAdapter)
 
-
-        bind.rvHistoryProposals.adapter = proposalAdapter
+        bind.rvHistoryProposals.adapter = rvAdapter
     }
 
     private fun initStyles() {
@@ -200,9 +179,9 @@ class FragmentHistoryProposals private constructor() : Fragment() {
 
     @Synchronized
     private fun addProposalsToCollection(lastId: Long, rewrite: Boolean) {
-        if (!proposalAdapter?.isLoading!!) {
-            proposalAdapter?.isLoading = true
-            api!!.loadHistoryProposal(userToken, lastId, 10, listenerLoadAnnouncement)
+        if (!rvAdapter?.isLoading!!) {
+            rvAdapter?.isLoading = true
+            api!!.loadHistoryProposal(userToken, lastId, 10, listenerLoadProposal)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((if (rewrite) singleLoaderWithRewriteProposals else singleLoaderWithoutRewriteProposals)!!)

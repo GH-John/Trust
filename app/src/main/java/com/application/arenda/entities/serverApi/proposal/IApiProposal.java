@@ -32,6 +32,26 @@ public interface IApiProposal {
                                     @Field("idRent") long idRent);
 
     @FormUrlEncoded
+    @POST(BuildConfig.URL_FINISH_INCOMING_PROPOSAL)
+    Call<ApiHandler> finishProposal(@Field("token") String token,
+                                    @Field("idRent") long idRent);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_START_INCOMING_PROPOSAL)
+    Call<ApiHandler> startProposal(@Field("token") String token,
+                                    @Field("idRent") long idRent);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_RESCHEDULE_RESERVATION_PROPOSAL)
+    Call<ApiHandler> rescheduleReservationProposal(@Field("token") String token,
+                                    @Field("idRent") long idRent);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_CANCLE_RESERVATION_PROPOSAL)
+    Call<ApiHandler> cancleReservationProposal(@Field("token") String token,
+                                    @Field("idRent") long idRent);
+
+    @FormUrlEncoded
     @POST(BuildConfig.URL_REJECT_INCOMING_PROPOSAL)
     Call<ApiHandler> rejectIncomingProposal(@Field("token") String token,
                                     @Field("idRent") long idRent);
@@ -62,6 +82,13 @@ public interface IApiProposal {
     @FormUrlEncoded
     @POST(BuildConfig.URL_LOADING_ACTIVE_PROPOSALS)
     Call<ServerResponse<List<ModelProposal>>> loadActiveProposals(
+            @Field("token") String userToken,
+            @Field("idRent") long idRent,
+            @Field("limitItemsInPage") int limitItemsInPage);
+
+    @FormUrlEncoded
+    @POST(BuildConfig.URL_LOADING_RESERVATION_PROPOSALS)
+    Call<ServerResponse<List<ModelProposal>>> loadReservationProposal(
             @Field("token") String userToken,
             @Field("idRent") long idRent,
             @Field("limitItemsInPage") int limitItemsInPage);

@@ -15,10 +15,16 @@
     <string name="error_select_category">Выберите категорию</string>
     <string name="error_confirm_password">Пароли не совпадают</string>
     <string name="error_incorrect_chars">Некорректные символы</string>
+    <string name="error_proposal_not_found">Заявка не найдена</string>
     <string name="error_user_not_found">Пользователь не найден</string>
+    <string name="error_send_message">Ошибка отправки сообщения</string>
+    <string name="error_recipient_not_found">Получатель не найден</string>
     <string name="error_please_select_category">Выберите категорию</string>
+    <string name="error_chat_connect">Не удалось подключиться к чату</string>
     <string name="error_incorrect_format_email">Неверный формат почты</string>
+    <string name="error_unsuccess_accept_proposal">Неудалось принять заявку</string>
     <string name="error_fail_load_list">Ошибка: не удалось загрузить список</string>
+    <string name="error_unsuccess_reject_proposal">Неудалось отклонить заявку</string>
     <string name="error_weak_password">Пароль должен быть не менее 6 символов</string>
     <string name="error_user_disabled">Ваша учетная запись временно отключена</string>
     <string name="error_user_exists">Пользователь с такой почтой уже существует</string>
@@ -36,6 +42,8 @@
     <string name="error_check_internet_connect">Проверьте интернет соединение и повторите попытку</string>
     <string name="unknown_error">Неизвестная ошибка</string>
 
+    <string name="warning_proposal_accept">Заявка принята</string>
+    <string name="warning_proposal_reject">Заявка отклонена</string>
     <string name="warning_login_required">Требуется авторизация</string>
 
     <string name="success_photos_loaded">Изображения загружены</string>
@@ -45,6 +53,8 @@
     <string name="header_authorization">Авторизация</string>
 
     <string name="ab_title_proposals">Заявки</string>
+    <string name="ab_title_messages">Сообщения</string>
+    <string name="ab_title_favorites">Избранные</string>
     <string name="ab_title_statistics">Статистика</string>
     <string name="ab_title_all_announcements">Все объявления</string>
     <string name="ab_title_user_announcements">Мои объявления</string>
@@ -55,6 +65,7 @@
     <string name="itemList_services">Услуги</string>
     <string name="itemList_proposals">Заявки</string>
     <string name="itemList_message">Сообщения</string>
+    <string name="itemList_messages">Сообщения</string>
     <string name="itemList_favorites">Избранные</string>
     <string name="itemList_regulations">Правила</string>
     <string name="itemList_statistics">Статистика</string>
@@ -70,6 +81,7 @@
     <string name="btn_reconnect">Повторить</string>
     <string name="btn_booking">Забронировать</string>
     <string name="btn_text_message">Сообщения</string>
+    <string name="btn_text_start_proposal">Начать</string>
     <string name="btn_text_following">Подписаться</string>
     <string name="btn_insert_phone">Добавить номер</string>
     <string name="btn_text_accept_proposal">Принять</string>
@@ -159,7 +171,7 @@
     <string name="text_view_reviews">Показать отзывы</string>
     <string name="text_camera">Камера</string>
     <string name="text_galery">Галерея</string>
-    <string name="text_placed_ads">Разместил объявлений:</string>
+    <string name="text_placed_ads">Объявлений:</string>
     <string name="text_authorization_user">На площадке с</string>
     <string name="text_updated">Обновлен:</string>
     <string name="text_some_number">34</string>
@@ -173,6 +185,9 @@
     <string name="text_without_address">Без адреса</string>
     <string name="text_message">Сообщение</string>
     <string name="text_online">online</string>
+    <string name="text_cancle">Отмена</string>
+    <string name="text_request_reschedule_reservation">Запрос на перенос брони</string>
+    <string name="text_cancle_reservation">Отменить бронь</string>
 
     <string name="short_monday">Пн</string>
     <string name="short_tuesday">Вт</string>
@@ -216,18 +231,18 @@
     <string name="full_november">Ноябрь</string>
     <string name="full_december">Декабрь</string>
 
-    <string name="title_pager_incoming_proposals">Входящие</string>
-    <string name="title_pager_outgoing_proposals">Исходящие</string>
     <string name="title_pager_active_proposals">Активные</string>
     <string name="title_pager_history_proposals">История</string>
+    <string name="title_pager_incoming_proposals">Входящие</string>
+    <string name="title_pager_outgoing_proposals">Исходящие</string>
+    <string name="title_pager_reservation_proposals">Забронированные</string>
 
     <string name="title_horizantal_list">Заголовок</string>
-    <string name="title_announcements_landlord">Объявления арендодателя</string>
+    <string name="title_add_address">Добавьте адреса</string>
+    <string name="title_add_phone">Добавьте номера телефонов</string>
     <string name="title_announcements_similar">Похожие объявления</string>
     <string name="title_select_period_rent">Выберите период аренды</string>
-
-    <string name="title_add_phone">Добавьте номера телефонов</string>
-    <string name="title_add_address">Добавьте адреса</string>
+    <string name="title_announcements_landlord">Объявления арендодателя</string>
 
     <string name="calendar_title_year">2020</string>
     <string name="calendar_title_month">Май</string>
@@ -241,16 +256,12 @@
     <string name="instruction_send_to_email">Инструкция по восстановлению отправлена на почту</string>
 
     <string name="some_date">11.01.20</string>
-    <string name="error_send_message">Ошибка отправки сообщения</string>
-    <string name="ab_title_messages">Сообщения</string>
-    <string name="ab_title_favorites">Избранные</string>
-    <string name="itemList_messages">Сообщения</string>
-    <string name="error_chat_connect">Не удалось подключиться к чату</string>
-    <string name="error_recipient_not_found">Получатель не найден</string>
-    <string name="warning_proposal_reject">Заявка отклонена</string>
-    <string name="text_cancle">Отмена</string>
-    <string name="error_unsuccess_reject_proposal">Неудалось отклонить заявку</string>
-    <string name="error_proposal_not_found">Заявка не найдена</string>
-    <string name="warning_proposal_accept">Заявка принята</string>
-    <string name="error_unsuccess_accept_proposal">Неудалось принять заявку</string>
+    <string name="warning_proposal_finish">Заявка завершена</string>
+    <string name="error_unsuccess_finish_proposal">Неудалось завершить заявку</string>
+    <string name="error_unsuccess_start_proposal">Неудалось запустить заявку</string>
+    <string name="warning_proposal_start">Заявка запущена</string>
+    <string name="error_unsuccess_reschedule_reservation_proposal">Неудалось отправить запрос</string>
+    <string name="warning_reschedule_reservation_start">Запрос отправлен</string>
+    <string name="warning_cancle_reservation_start">Бронь отменена</string>
+    <string name="error_unsuccess_cancle_reservation_proposal">Неудалось отменить бронь</string>
 </resources>

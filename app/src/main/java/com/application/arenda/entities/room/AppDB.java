@@ -18,6 +18,7 @@ import com.application.arenda.entities.models.ModelUser;
 import com.application.arenda.entities.room.converters.CurrencyConverter;
 import com.application.arenda.entities.room.converters.DateTimeConverter;
 import com.application.arenda.entities.room.converters.PicturesConverter;
+import com.application.arenda.entities.room.converters.TypeProposalConverter;
 import com.application.arenda.entities.room.converters.UriConverter;
 import com.application.arenda.entities.room.dao.DaoAnnouncement;
 import com.application.arenda.entities.room.dao.DaoPicture;
@@ -30,9 +31,14 @@ import timber.log.Timber;
         ModelPicture.class, ModelProposal.class,
         ModelCategory.class, ModelSubcategory.class,
         ModelFavoriteAnnouncement.class
-},
-        version = BuildConfig.APP_DB_VERSION)
-@TypeConverters({UriConverter.class, PicturesConverter.class, DateTimeConverter.class, CurrencyConverter.class})
+}, version = BuildConfig.APP_DB_VERSION)
+
+@TypeConverters({UriConverter.class,
+        PicturesConverter.class,
+        DateTimeConverter.class,
+        CurrencyConverter.class,
+        TypeProposalConverter.class})
+
 public abstract class AppDB extends RoomDatabase {
     private static AppDB instance;
 

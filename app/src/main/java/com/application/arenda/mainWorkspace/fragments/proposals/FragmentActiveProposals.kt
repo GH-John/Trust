@@ -8,22 +8,29 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.VERTICAL
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.application.arenda.R
 import com.application.arenda.databinding.FragmentActiveProposalsBinding
-import com.application.arenda.entities.announcements.proposalsAnnouncement.incoming.InProposalAdapter
+import com.application.arenda.entities.announcements.proposalsAnnouncement.active.ActiveProposalAdapter
+import com.application.arenda.entities.models.IModel
 import com.application.arenda.entities.models.ModelProposal
 import com.application.arenda.entities.models.ModelUser
 import com.application.arenda.entities.models.SharedViewModels
 import com.application.arenda.entities.recyclerView.RVOnScrollListener
 import com.application.arenda.entities.room.LocalCacheManager
 import com.application.arenda.entities.serverApi.OnApiListener
-import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement
-import com.application.arenda.entities.utils.DisplayUtils
-import com.application.arenda.entities.utils.Utils
+import com.application.arenda.entities.serverApi.client.ApiHandler
 import com.application.arenda.entities.serverApi.client.CodeHandler
 import com.application.arenda.entities.serverApi.client.CodeHandler.*
 import com.application.arenda.entities.serverApi.proposal.ApiProposal
+import com.application.arenda.entities.utils.DisplayUtils
+import com.application.arenda.entities.utils.Utils
+import com.application.arenda.mainWorkspace.fragments.FragmentUserChat
+import com.application.arenda.mainWorkspace.fragments.FragmentViewerUserProfile
+import com.application.arenda.ui.widgets.containerFragments.ContainerFragments
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -32,7 +39,7 @@ import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 
-class FragmentActiveProposals private constructor(): Fragment() {
+class FragmentActiveProposals private constructor() : Fragment() {
     private var api: ApiProposal? = null
     private var cacheManager: LocalCacheManager? = null
 
@@ -44,15 +51,18 @@ class FragmentActiveProposals private constructor(): Fragment() {
     private var singleLoaderWithRewriteProposals: SingleObserver<List<ModelProposal>>? = null
     private var singleLoaderWithoutRewriteProposals: SingleObserver<List<ModelProposal>>? = null
 
+    private var consumerFinishProposal: Consumer<ApiHandler>? = null
+
     private var consumerUserToken: Consumer<List<ModelUser>>? = null
-    private var listenerFavoriteInsert: OnApiListener? = null
-    private var listenerLoadAnnouncement: OnApiListener? = null
+    private var listenerLoadProposal: OnApiListener? = null
 
     private var sharedViewModels: SharedViewModels? = null
 
-    private var proposalAdapter: InProposalAdapter? = null
+    private var rvAdapter: ActiveProposalAdapter? = null
 
     private var disposable = CompositeDisposable()
+
+    private var containerFragments: ContainerFragments? = null
 
     private lateinit var bind: FragmentActiveProposalsBinding
 
@@ -70,9 +80,10 @@ class FragmentActiveProposals private constructor(): Fragment() {
 
         cacheManager = LocalCacheManager.getInstance(context)
 
-        rvLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        rvLayoutManager = LinearLayoutManager(context, VERTICAL, false)
 
         sharedViewModels = ViewModelProvider(requireActivity()).get(SharedViewModels::class.java)
+        containerFragments = ContainerFragments.getInstance(context)
 
         initInterfaces()
         initAdapters()
@@ -82,34 +93,15 @@ class FragmentActiveProposals private constructor(): Fragment() {
 
     @SuppressLint("CheckResult")
     private fun initInterfaces() {
-        listenerFavoriteInsert = object : OnApiListener {
-            override fun onComplete(code: CodeHandler) {
-                when (code) {
-                    USER_NOT_FOUND -> {
-                        Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
-                    }
-                    INTERNAL_SERVER_ERROR -> {
-                        Utils.messageOutput(context, resources.getString(R.string.error_on_server))
-                    }
-                    UNKNOW_ERROR -> {
-                        Utils.messageOutput(context, resources.getString(R.string.unknown_error))
-                    }
-                }
-            }
-
-            override fun onFailure(t: Throwable) {
-                Timber.e(t)
-            }
-        }
-        listenerLoadAnnouncement = object : OnApiListener {
+        listenerLoadProposal = object : OnApiListener {
             override fun onComplete(code: CodeHandler) {
                 when (code) {
                     UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
                     }
-//                    NONE_REZULT -> {
-//                        Utils.messageOutput(context, "Нет объявлений")
-//                    }
+                    NONE_REZULT -> {
+                        rvAdapter?.isLoading = false
+                    }
                 }
             }
 
@@ -139,13 +131,13 @@ class FragmentActiveProposals private constructor(): Fragment() {
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                proposalAdapter?.rewriteCollection(collection)
+                rvAdapter?.rewriteCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                proposalAdapter?.isLoading = false
+                rvAdapter?.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -155,13 +147,13 @@ class FragmentActiveProposals private constructor(): Fragment() {
             }
 
             override fun onSuccess(collection: List<ModelProposal>) {
-                proposalAdapter?.addToCollection(collection)
+                rvAdapter?.addToCollection(collection)
                 bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
-                proposalAdapter?.isLoading = false
+                rvAdapter?.isLoading = false
                 bind.swipeRefreshLayout.isRefreshing = false
             }
         }
@@ -176,11 +168,89 @@ class FragmentActiveProposals private constructor(): Fragment() {
         rvOnScrollListener = RVOnScrollListener(rvLayoutManager)
 
         bind.rvActiveProposals.addOnScrollListener(rvOnScrollListener!!)
-        proposalAdapter = InProposalAdapter()
-        rvOnScrollListener!!.setRVAdapter(proposalAdapter)
 
+        rvAdapter = ActiveProposalAdapter()
+        rvOnScrollListener!!.setRVAdapter(rvAdapter)
 
-        bind.rvActiveProposals.adapter = proposalAdapter
+        rvAdapter?.setItemUserAvatarListener { _, model, _ ->
+            run {
+                sharedViewModels!!.selectUser((model as ModelProposal).idUser)
+                containerFragments!!.open(FragmentViewerUserProfile.instance!!)
+            }
+        }
+
+        rvAdapter?.setBtnSendMessageListener { _, model, _ ->
+            run {
+                sharedViewModels!!.selectUser((model as ModelProposal).idUser)
+                containerFragments!!.open(FragmentUserChat())
+            }
+        }
+
+        rvAdapter?.setBtnFinishListener { vh, model, position ->
+            run {
+                snackBarFinishProposal(vh, model, position)
+            }
+        }
+
+        bind.rvActiveProposals.adapter = rvAdapter
+    }
+
+    private fun snackBarFinishProposal(vh: ViewHolder?, model: IModel?, position: Int) {
+        vh?.itemView?.visibility = View.GONE
+
+        val snackbar = Snackbar
+                .make(bind.root, getString(R.string.warning_proposal_finish), Snackbar.LENGTH_LONG)
+
+        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                super.onDismissed(transientBottomBar, event)
+                model?.id?.let {
+                    api!!.finishProposal(userToken, it)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(getConsumerFinishProposal(vh, model, position))
+                }
+            }
+        }
+
+        snackbar.addCallback(snackbarCallBack)
+
+        snackbar.setAction(getString(R.string.text_cancle)) {
+            vh?.itemView?.visibility = View.VISIBLE
+            snackbar.removeCallback(snackbarCallBack)
+        }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
+
+        snackbar.show()
+    }
+
+    private fun getConsumerFinishProposal(vh: ViewHolder?, model: IModel, position: Int): Consumer<ApiHandler> {
+        if (consumerFinishProposal == null)
+            consumerFinishProposal = Consumer { response ->
+                run {
+                    when (response.handler) {
+                        SUCCESS -> rvAdapter?.removeFromCollection(position)
+                        UNSUCCESS -> {
+                            Utils.messageOutput(context, getString(R.string.error_unsuccess_finish_proposal))
+                            vh?.itemView?.visibility = View.VISIBLE
+                        }
+                        NETWORK_ERROR -> {
+                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                            vh?.itemView?.visibility = View.VISIBLE
+                        }
+                        PROPOSAL_NOT_FOUND -> {
+                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                            vh?.itemView?.visibility = View.VISIBLE
+                        }
+                        else -> {
+                            Timber.e(response.error)
+                            Utils.messageOutput(context, getString(R.string.unknown_error))
+                            vh?.itemView?.visibility = View.VISIBLE
+                        }
+                    }
+                }
+            }
+
+        return consumerFinishProposal!!
     }
 
     private fun initStyles() {
@@ -202,9 +272,9 @@ class FragmentActiveProposals private constructor(): Fragment() {
 
     @Synchronized
     private fun addProposalsToCollection(lastId: Long, rewrite: Boolean) {
-        if (!proposalAdapter?.isLoading!!) {
-            proposalAdapter?.isLoading = true
-            api!!.loadActiveProposal(userToken, lastId, 10, listenerLoadAnnouncement)
+        if (!rvAdapter?.isLoading!!) {
+            rvAdapter?.isLoading = true
+            api!!.loadActiveProposal(userToken, lastId, 10, listenerLoadProposal)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((if (rewrite) singleLoaderWithRewriteProposals else singleLoaderWithoutRewriteProposals)!!)

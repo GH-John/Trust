@@ -39,14 +39,15 @@ class FragmentUserProposals private constructor() : Fragment(), AdapterActionBar
 
         pagerAdapter?.setPagerItem(FragmentIncomingProposals.instance, getString(R.string.title_pager_incoming_proposals))
         pagerAdapter?.setPagerItem(FragmentOutgoingProposals.instance, getString(R.string.title_pager_outgoing_proposals))
+        pagerAdapter?.setPagerItem(FragmentReservationProposals.instance, getString(R.string.title_pager_reservation_proposals))
         pagerAdapter?.setPagerItem(FragmentActiveProposals.instance, getString(R.string.title_pager_active_proposals))
         pagerAdapter?.setPagerItem(FragmentHistoryProposals.instance, getString(R.string.title_pager_history_proposals))
 
         bind.pagerProposals.adapter = pagerAdapter
         bind.pagerTabLayout.setupWithViewPager(bind.pagerProposals)
 
-        bind.pagerTabLayout.getTabAt(0)?.setIcon(R.drawable.indicator_incoming_proposals)
-        bind.pagerTabLayout.getTabAt(1)?.setIcon(R.drawable.indicator_outgoing_proposals)
+        bind.pagerTabLayout.getTabAt(0)?.setIcon(R.drawable.indicator_incoming_proposal)
+        bind.pagerTabLayout.getTabAt(1)?.setIcon(R.drawable.indicator_outgoing_proposal)
     }
 
     override fun getIdPatternResource(): Int {

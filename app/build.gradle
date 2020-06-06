@@ -39,7 +39,7 @@ android {
 
             buildConfigField "String", "NOTIFICATION_CHANNEL_ID", "\"KJSf89sdfhjksd89vlO4IBHfd9fgLKJNgkHdgGghhF8Sdfg7SdglsDnmIsdjfhkv2bjhg43j\""
 
-            buildConfigField "int", "APP_DB_VERSION", "4"
+            buildConfigField "int", "APP_DB_VERSION", "5"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
 
             buildConfigField "String", "URL_CHAT_SOCKET", "\"http://192.168.43.241:3000\""
@@ -74,6 +74,7 @@ android {
 
             buildConfigField "String", "URL_LOADING_ACTIVE_PROPOSALS", "\"php/proposals/active/LoadingActiveProposals.php\""
             buildConfigField "String", "URL_LOADING_HISTORY_PROPOSALS", "\"php/proposals/history/LoadingHistoryProposals.php\""
+            buildConfigField "String", "URL_LOADING_RESERVATION_PROPOSALS", "\"php/proposals/reservation/LoadingReservation.php\""
             buildConfigField "String", "URL_LOADING_INCOMING_PROPOSALS", "\"php/proposals/incoming/LoadingIncomingProposals.php\""
             buildConfigField "String", "URL_LOADING_OUTGOING_PROPOSALS", "\"php/proposals/outgoing/LoadingOutgoingProposals.php\""
             buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/proposals/active/loadPeriods/LoadingPeriodRentAnnouncement.php\""
@@ -82,6 +83,10 @@ android {
             buildConfigField "String", "URL_REJECT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/reject/RejectOutgoingProposal.php\""
 
             buildConfigField "String", "URL_ACCEPT_INCOMING_PROPOSAL", "\"php/proposals/incoming/accept/AcceptIncomingProposal.php\""
+            buildConfigField "String", "URL_FINISH_INCOMING_PROPOSAL", "\"php/proposals/active/finish/FinishProposal.php\""
+            buildConfigField "String", "URL_START_INCOMING_PROPOSAL", "\"php/proposals/reservation/start/StartProposal.php\""
+            buildConfigField "String", "URL_RESCHEDULE_RESERVATION_PROPOSAL", "\"php/proposals/reservation/reschedule/RescheduleReservation.php\""
+            buildConfigField "String", "URL_CANCLE_RESERVATION_PROPOSAL", "\"php/proposals/reservation/cancle/CancleReservation.php\""
             buildConfigField "String", "URL_EDIT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/edit/EditProposal.php\""
         }
 
@@ -92,7 +97,7 @@ android {
 
             buildConfigField "String", "NOTIFICATION_CHANNEL_ID", "\"KJSf89sdfhjksd89vlO4IBHfd9fgLKJNgkHdgGghhF8Sdfg7SdglsDnmIsdjfhkv2bjhg43j\""
 
-            buildConfigField "int", "APP_DB_VERSION", "4"
+            buildConfigField "int", "APP_DB_VERSION", "5"
             buildConfigField "String", "APP_DB_NAME", "\"db_app\""
 
             buildConfigField "String", "URL_CHAT_SOCKET", "\"http://192.168.43.241:3000\""
@@ -127,6 +132,7 @@ android {
 
             buildConfigField "String", "URL_LOADING_ACTIVE_PROPOSALS", "\"php/proposals/active/LoadingActiveProposals.php\""
             buildConfigField "String", "URL_LOADING_HISTORY_PROPOSALS", "\"php/proposals/history/LoadingHistoryProposals.php\""
+            buildConfigField "String", "URL_LOADING_RESERVATION_PROPOSALS", "\"php/proposals/reservation/LoadingReservation.php\""
             buildConfigField "String", "URL_LOADING_INCOMING_PROPOSALS", "\"php/proposals/incoming/LoadingIncomingProposals.php\""
             buildConfigField "String", "URL_LOADING_OUTGOING_PROPOSALS", "\"php/proposals/outgoing/LoadingOutgoingProposals.php\""
             buildConfigField "String", "URL_LOADING_PERIOD_RENT_ANNOUNCEMENT", "\"php/proposals/active/loadPeriods/LoadingPeriodRentAnnouncement.php\""
@@ -135,6 +141,10 @@ android {
             buildConfigField "String", "URL_REJECT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/reject/RejectOutgoingProposal.php\""
 
             buildConfigField "String", "URL_ACCEPT_INCOMING_PROPOSAL", "\"php/proposals/incoming/accept/AcceptIncomingProposal.php\""
+            buildConfigField "String", "URL_FINISH_INCOMING_PROPOSAL", "\"php/proposals/active/finish/FinishProposal.php\""
+            buildConfigField "String", "URL_START_INCOMING_PROPOSAL", "\"php/proposals/reservation/start/StartProposal.php\""
+            buildConfigField "String", "URL_RESCHEDULE_RESERVATION_PROPOSAL", "\"php/proposals/reservation/reschedule/RescheduleReservation.php\""
+            buildConfigField "String", "URL_CANCLE_RESERVATION_PROPOSAL", "\"php/proposals/reservation/cancle/CancleReservation.php\""
             buildConfigField "String", "URL_EDIT_OUTGOING_PROPOSAL", "\"php/proposals/outgoing/edit/EditProposal.php\""
         }
     }
@@ -214,9 +224,9 @@ dependencies {
     kapt "com.android.databinding:compiler:$gradle_version"
 
     //firebase
-    implementation 'com.google.firebase:firebase-analytics:17.4.2'
+    implementation 'com.google.firebase:firebase-analytics:17.4.3'
     implementation 'com.google.firebase:firebase-messaging:20.2.0'
-    implementation 'com.google.firebase:firebase-core:17.4.2'
+    implementation 'com.google.firebase:firebase-core:17.4.3'
 
     //socket.io
     implementation('io.socket:socket.io-client:1.0.0') {
