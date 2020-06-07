@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -52,10 +50,6 @@ class FragmentReservationProposals private constructor() : Fragment() {
 
     private var singleLoaderWithRewriteProposals: SingleObserver<List<ModelProposal>>? = null
     private var singleLoaderWithoutRewriteProposals: SingleObserver<List<ModelProposal>>? = null
-
-    private var сonsumerStartProposal: Consumer<ApiHandler>? = null
-    private var consumerCancleReservationProposal: Consumer<ApiHandler>? = null
-    private var consumerRescheduleReservationProposal: Consumer<ApiHandler>? = null
 
     private var consumerUserToken: Consumer<List<ModelUser>>? = null
     private var listenerLoadProposal: OnApiListener? = null
@@ -209,13 +203,13 @@ class FragmentReservationProposals private constructor() : Fragment() {
         bind.rvReservationProposals.adapter = rvAdapter
     }
 
-    private fun snackBarCancleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int) {
-        vh?.itemView?.visibility = GONE
+    private fun snackBarCancleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int?) {
+        position?.let { rvAdapter?.removeFromCollection(it) }
 
         val snackbar = Snackbar
                 .make(bind.root, getString(R.string.warning_cancle_reservation_start), Snackbar.LENGTH_LONG)
 
-        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        val snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 model?.id?.let {
@@ -230,7 +224,7 @@ class FragmentReservationProposals private constructor() : Fragment() {
         snackbar.addCallback(snackbarCallBack)
 
         snackbar.setAction(getString(R.string.text_cancle)) {
-            vh?.itemView?.visibility = VISIBLE
+            rvAdapter?.addToCollection(model as ModelProposal)
             snackbar.removeCallback(snackbarCallBack)
         }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
 
@@ -238,41 +232,39 @@ class FragmentReservationProposals private constructor() : Fragment() {
     }
 
     private fun getConsumerCancleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int?): Consumer<ApiHandler> {
-        if (consumerCancleReservationProposal == null)
-            consumerCancleReservationProposal = Consumer { response ->
-                run {
-                    when (response.handler) {
-                        SUCCESS -> position?.let { rvAdapter?.removeFromCollection(it) }
-                        UNSUCCESS -> {
-                            Utils.messageOutput(context, getString(R.string.error_unsuccess_cancle_reservation_proposal))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
-                        NETWORK_ERROR -> {
-                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
-                        PROPOSAL_NOT_FOUND -> {
-                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
-                        else -> {
-                            Timber.e(response.error)
-                            Utils.messageOutput(context, getString(R.string.unknown_error))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
+        return Consumer { response ->
+            run {
+                when (response.handler) {
+                    SUCCESS -> {
+                    }
+                    UNSUCCESS -> {
+                        Utils.messageOutput(context, getString(R.string.error_unsuccess_cancle_reservation_proposal))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    NETWORK_ERROR -> {
+                        Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    PROPOSAL_NOT_FOUND -> {
+                        Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    else -> {
+                        Timber.e(response.error)
+                        Utils.messageOutput(context, getString(R.string.unknown_error))
+                        rvAdapter?.addToCollection(model as ModelProposal)
                     }
                 }
             }
-
-        return consumerCancleReservationProposal!!
+        }
     }
 
 
-    private fun snackBarRescheduleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int) {
+    private fun snackBarRescheduleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int?) {
         val snackbar = Snackbar
                 .make(bind.root, getString(R.string.warning_reschedule_reservation_start), Snackbar.LENGTH_LONG)
 
-        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        val snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 model?.id?.let {
@@ -294,40 +286,37 @@ class FragmentReservationProposals private constructor() : Fragment() {
     }
 
     private fun getConsumerRescheduleReservationProposal(vh: ViewHolder?, model: IModel?, position: Int?): Consumer<ApiHandler> {
-        if (consumerRescheduleReservationProposal == null)
-            consumerRescheduleReservationProposal = Consumer { response ->
-                run {
-                    when (response.handler) {
-                        SUCCESS -> {
-                        }
-                        UNSUCCESS -> {
-                            Utils.messageOutput(context, getString(R.string.error_unsuccess_reschedule_reservation_proposal))
-                        }
-                        NETWORK_ERROR -> {
-                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
-                        }
-                        PROPOSAL_NOT_FOUND -> {
-                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
-                        }
-                        else -> {
-                            Timber.e(response.error)
-                            Utils.messageOutput(context, getString(R.string.unknown_error))
-                        }
+        return Consumer { response ->
+            run {
+                when (response.handler) {
+                    SUCCESS -> {
+                    }
+                    UNSUCCESS -> {
+                        Utils.messageOutput(context, getString(R.string.error_unsuccess_reschedule_reservation_proposal))
+                    }
+                    NETWORK_ERROR -> {
+                        Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                    }
+                    PROPOSAL_NOT_FOUND -> {
+                        Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                    }
+                    else -> {
+                        Timber.e(response.error)
+                        Utils.messageOutput(context, getString(R.string.unknown_error))
                     }
                 }
             }
-
-        return consumerRescheduleReservationProposal!!
+        }
     }
 
     @SuppressLint("CheckResult")
     private fun snackBarStartProposal(vh: ViewHolder?, model: IModel?, position: Int?) {
-        vh?.itemView?.visibility = GONE
+        position?.let { rvAdapter?.removeFromCollection(it) }
 
         val snackbar = Snackbar
                 .make(bind.root, getString(R.string.warning_proposal_start), Snackbar.LENGTH_LONG)
 
-        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        val snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 model?.id?.let {
@@ -342,7 +331,7 @@ class FragmentReservationProposals private constructor() : Fragment() {
         snackbar.addCallback(snackbarCallBack)
 
         snackbar.setAction(getString(R.string.text_cancle)) {
-            vh?.itemView?.visibility = VISIBLE
+            rvAdapter?.addToCollection(model as ModelProposal)
             snackbar.removeCallback(snackbarCallBack)
         }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
 
@@ -350,33 +339,31 @@ class FragmentReservationProposals private constructor() : Fragment() {
     }
 
     private fun getConsumerStartProposal(vh: ViewHolder?, model: IModel?, position: Int?): Consumer<ApiHandler> {
-        if (сonsumerStartProposal == null)
-            сonsumerStartProposal = Consumer { response ->
-                run {
-                    when (response.handler) {
-                        SUCCESS -> position?.let { rvAdapter?.removeFromCollection(it) }
-                        UNSUCCESS -> {
-                            Utils.messageOutput(context, getString(R.string.error_unsuccess_start_proposal))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
-                        NETWORK_ERROR -> {
-                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
-                        PROPOSAL_NOT_FOUND -> {
-                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
-                        else -> {
-                            Timber.e(response.error)
-                            Utils.messageOutput(context, getString(R.string.unknown_error))
-                            vh?.itemView?.visibility = VISIBLE
-                        }
+        return Consumer { response ->
+            run {
+                when (response.handler) {
+                    SUCCESS -> {
+                    }
+                    UNSUCCESS -> {
+                        Utils.messageOutput(context, getString(R.string.error_unsuccess_start_proposal))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    NETWORK_ERROR -> {
+                        Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    PROPOSAL_NOT_FOUND -> {
+                        Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    else -> {
+                        Timber.e(response.error)
+                        Utils.messageOutput(context, getString(R.string.unknown_error))
+                        rvAdapter?.addToCollection(model as ModelProposal)
                     }
                 }
             }
-
-        return сonsumerStartProposal!!
+        }
     }
 
     private fun initStyles() {

@@ -51,8 +51,6 @@ class FragmentActiveProposals private constructor() : Fragment() {
     private var singleLoaderWithRewriteProposals: SingleObserver<List<ModelProposal>>? = null
     private var singleLoaderWithoutRewriteProposals: SingleObserver<List<ModelProposal>>? = null
 
-    private var consumerFinishProposal: Consumer<ApiHandler>? = null
-
     private var consumerUserToken: Consumer<List<ModelUser>>? = null
     private var listenerLoadProposal: OnApiListener? = null
 
@@ -195,13 +193,13 @@ class FragmentActiveProposals private constructor() : Fragment() {
         bind.rvActiveProposals.adapter = rvAdapter
     }
 
-    private fun snackBarFinishProposal(vh: ViewHolder?, model: IModel?, position: Int) {
-        vh?.itemView?.visibility = View.GONE
+    private fun snackBarFinishProposal(vh: ViewHolder?, model: IModel?, position: Int?) {
+        position?.let { rvAdapter?.removeFromCollection(it) }
 
         val snackbar = Snackbar
                 .make(bind.root, getString(R.string.warning_proposal_finish), Snackbar.LENGTH_LONG)
 
-        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        val snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 model?.id?.let {
@@ -216,41 +214,39 @@ class FragmentActiveProposals private constructor() : Fragment() {
         snackbar.addCallback(snackbarCallBack)
 
         snackbar.setAction(getString(R.string.text_cancle)) {
-            vh?.itemView?.visibility = View.VISIBLE
+            rvAdapter?.addToCollection(model as ModelProposal)
             snackbar.removeCallback(snackbarCallBack)
         }.setActionTextColor(requireContext().getColor(R.color.colorWhite))
 
         snackbar.show()
     }
 
-    private fun getConsumerFinishProposal(vh: ViewHolder?, model: IModel, position: Int): Consumer<ApiHandler> {
-        if (consumerFinishProposal == null)
-            consumerFinishProposal = Consumer { response ->
-                run {
-                    when (response.handler) {
-                        SUCCESS -> rvAdapter?.removeFromCollection(position)
-                        UNSUCCESS -> {
-                            Utils.messageOutput(context, getString(R.string.error_unsuccess_finish_proposal))
-                            vh?.itemView?.visibility = View.VISIBLE
-                        }
-                        NETWORK_ERROR -> {
-                            Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
-                            vh?.itemView?.visibility = View.VISIBLE
-                        }
-                        PROPOSAL_NOT_FOUND -> {
-                            Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
-                            vh?.itemView?.visibility = View.VISIBLE
-                        }
-                        else -> {
-                            Timber.e(response.error)
-                            Utils.messageOutput(context, getString(R.string.unknown_error))
-                            vh?.itemView?.visibility = View.VISIBLE
-                        }
+    private fun getConsumerFinishProposal(vh: ViewHolder?, model: IModel, position: Int?): Consumer<ApiHandler> {
+        return Consumer { response ->
+            run {
+                when (response.handler) {
+                    SUCCESS -> {
+                    }
+                    UNSUCCESS -> {
+                        Utils.messageOutput(context, getString(R.string.error_unsuccess_finish_proposal))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    NETWORK_ERROR -> {
+                        Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    PROPOSAL_NOT_FOUND -> {
+                        Utils.messageOutput(context, getString(R.string.error_proposal_not_found))
+                        rvAdapter?.addToCollection(model as ModelProposal)
+                    }
+                    else -> {
+                        Timber.e(response.error)
+                        Utils.messageOutput(context, getString(R.string.unknown_error))
+                        rvAdapter?.addToCollection(model as ModelProposal)
                     }
                 }
             }
-
-        return consumerFinishProposal!!
+        }
     }
 
     private fun initStyles() {
