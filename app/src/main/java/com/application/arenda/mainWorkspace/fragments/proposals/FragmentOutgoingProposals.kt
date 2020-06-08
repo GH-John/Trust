@@ -198,7 +198,7 @@ class FragmentOutgoingProposals private constructor() : Fragment() {
         val snackbar = Snackbar
                 .make(bind.root, getString(R.string.warning_proposal_reject), Snackbar.LENGTH_LONG)
 
-        var snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+        val snackbarCallBack = object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
                 model?.id?.let {

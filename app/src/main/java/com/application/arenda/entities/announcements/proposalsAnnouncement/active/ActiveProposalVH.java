@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import com.application.arenda.R;
 import com.application.arenda.entities.models.IModel;
 import com.application.arenda.entities.models.ModelProposal;
-import com.application.arenda.entities.models.TypeProposalAnnouncement;
+import com.application.arenda.entities.models.TypeProposal;
 import com.application.arenda.entities.recyclerView.BaseViewHolder;
 import com.application.arenda.entities.recyclerView.OnItemClick;
 
@@ -66,9 +66,9 @@ public class ActiveProposalVH extends BaseViewHolder {
 
     private ModelProposal proposal;
     private int position;
-    private TypeProposalAnnouncement type;
+    private TypeProposal type;
 
-    public ActiveProposalVH(@NonNull View itemView, TypeProposalAnnouncement type) {
+    public ActiveProposalVH(@NonNull View itemView, TypeProposal type) {
         super(itemView);
 
         this.type = type;
@@ -79,12 +79,12 @@ public class ActiveProposalVH extends BaseViewHolder {
     public static ActiveProposalVH create(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
 
-        final TypeProposalAnnouncement type = TypeProposalAnnouncement.get(viewType);
+        final TypeProposal type = TypeProposal.get(viewType);
         View view = null;
 
-        if (type == TypeProposalAnnouncement.INCOMING)
+        if (type == TypeProposal.INCOMING)
             view = layoutInflater.inflate(R.layout.vh_active_incoming_proposal, parent, false);
-        else if (type == TypeProposalAnnouncement.OUTGOING)
+        else if (type == TypeProposal.OUTGOING)
             view = layoutInflater.inflate(R.layout.vh_active_outgoing_proposal, parent, false);
 
         return new ActiveProposalVH(view, type);
@@ -92,7 +92,7 @@ public class ActiveProposalVH extends BaseViewHolder {
 
     @Override
     public int getResourceLayoutId() {
-        return type == TypeProposalAnnouncement.INCOMING ? R.layout.vh_active_incoming_proposal : R.layout.vh_active_outgoing_proposal;
+        return type == TypeProposal.INCOMING ? R.layout.vh_active_incoming_proposal : R.layout.vh_active_outgoing_proposal;
     }
 
     @Override
@@ -104,11 +104,11 @@ public class ActiveProposalVH extends BaseViewHolder {
         this.position = position;
 
 
-        if (type == TypeProposalAnnouncement.INCOMING) {
+        if (type == TypeProposal.INCOMING) {
             bind(proposal);
             itemTypeProposal.setImageResource(R.drawable.indicator_incoming_proposal);
         }
-        else if (type == TypeProposalAnnouncement.OUTGOING) {
+        else if (type == TypeProposal.OUTGOING) {
             bind(proposal);
             itemTypeProposal.setImageResource(R.drawable.indicator_outgoing_proposal);
         }

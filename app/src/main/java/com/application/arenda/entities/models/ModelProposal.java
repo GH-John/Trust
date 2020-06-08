@@ -24,7 +24,7 @@ public class ModelProposal implements IModel {
     private long idUser = 0;
 
     @SerializedName("typeProposal")
-    private TypeProposalAnnouncement typeProposal;
+    private TypeProposal typeProposal;
 
     @SerializedName("userLogo")
     private Uri userAvatar;
@@ -63,11 +63,11 @@ public class ModelProposal implements IModel {
         this.idUser = idUser;
     }
 
-    public TypeProposalAnnouncement getTypeProposal() {
+    public TypeProposal getTypeProposal() {
         return typeProposal;
     }
 
-    public void setTypeProposal(TypeProposalAnnouncement typeProposal) {
+    public void setTypeProposal(TypeProposal typeProposal) {
         this.typeProposal = typeProposal;
     }
 

@@ -115,18 +115,40 @@
         app:layout_constraintStart_toStartOf="@+id/title3"
         tools:text="@string/text_some_number" />
 
-    <Button
-        android:id="@+id/btnFollowingUnfollowing"
-        style="@style/DefaultStyleBtn.Small"
+    <LinearLayout
+        android:id="@+id/btnsFollow"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@drawable/btn_blue"
-        android:text="@string/btn_text_following"
-        android:textColor="@color/colorWhite"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:padding="4dp"
         app:layout_constraintEnd_toStartOf="@+id/btnSendMessage"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title1" />
+        app:layout_constraintTop_toBottomOf="@+id/title1">
+
+        <Button
+            android:id="@+id/btnFollow"
+            style="@style/DefaultStyleBtn.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/btn_blue"
+            android:text="@string/btn_text_follow"
+            android:textColor="@color/colorWhite"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/btnUnfollow"
+            style="@style/DefaultStyleBtn.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/btn_red"
+            android:text="@string/btn_text_unfollow"
+            android:textColor="@color/colorWhite"
+            android:visibility="gone" />
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/btnSendMessage"
@@ -136,9 +158,9 @@
         android:background="@drawable/btn_white"
         android:text="@string/btn_text_message"
         android:textColor="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="@+id/btnFollowingUnfollowing"
+        app:layout_constraintBottom_toBottomOf="@+id/btnsFollow"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btnFollowingUnfollowing"
-        app:layout_constraintTop_toTopOf="@+id/btnFollowingUnfollowing" />
+        app:layout_constraintStart_toEndOf="@+id/btnsFollow"
+        app:layout_constraintTop_toTopOf="@+id/btnsFollow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

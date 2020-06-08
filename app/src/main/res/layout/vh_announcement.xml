@@ -84,7 +84,7 @@
             android:drawableStart="@drawable/ic_rate"
             android:drawablePadding="12dp"
             android:gravity="center"
-            tools:text="@string/text_rate_announcement" />
+            tools:text="@string/text_some_number" />
 
         <TextView
             android:id="@+id/textCountRent"
@@ -98,7 +98,7 @@
             android:drawablePadding="12dp"
             android:gravity="center"
             tools:ignore="RelativeOverlap"
-            tools:text="@string/text_count_rent" />
+            tools:text="@string/text_some_number" />
 
         <ImageView
             android:id="@+id/imgHeart"

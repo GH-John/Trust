@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/itemTitleSelectCategory"
-        style="@style/DefaultStyleTextRegular.Header"
+        style="@style/DefaultStyleTextRegular.Big"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ab_title_select_category"

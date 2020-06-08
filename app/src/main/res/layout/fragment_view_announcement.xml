@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -79,7 +79,7 @@
 
             <TextView
                 android:id="@+id/textNameProduct"
-                style="@style/DefaultStyleTextRegular.Header"
+                style="@style/DefaultStyleTextRegular.Big"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -122,9 +122,9 @@
             <include
                 android:id="@+id/cardViewInfo"
                 layout="@layout/announcement_info"
-                android:layout_marginTop="32dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textCostProduct" />
@@ -203,7 +203,7 @@
         android:id="@+id/progressBarViewAnnouncement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         tools:visibility="gone" />
 
     <Button
@@ -211,8 +211,8 @@
         style="@style/DefaultStylePrimaryBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/scrollView"
+        android:layout_gravity="bottom"
         android:layout_margin="16dp"
         android:text="@string/btn_booking" />
 
-</RelativeLayout>
+</FrameLayout>

@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.application.arenda.entities.models.AccountType;
 import com.application.arenda.entities.models.ModelUser;
 import com.application.arenda.entities.models.ModelUserProfileToView;
 import com.application.arenda.entities.room.LocalCacheManager;
@@ -13,7 +14,6 @@ import com.application.arenda.entities.serverApi.client.ApiClient;
 import com.application.arenda.entities.serverApi.client.ApiHandler;
 import com.application.arenda.entities.serverApi.client.CodeHandler;
 import com.application.arenda.entities.serverApi.client.ServerResponse;
-import com.application.arenda.entities.models.AccountType;
 import com.application.arenda.entities.utils.retrofit.RetrofitUtils;
 
 import java.net.ConnectException;
@@ -142,6 +142,11 @@ public final class ApiUser {
             public void onResponse(@NonNull Call<ApiHandler> call, @NonNull Response<ApiHandler> response) {
                 if (response.isSuccessful())
                     emitter.onSuccess(response.body().getHandler());
+                else {
+                    emitter.onSuccess(CodeHandler.get(response.code()));
+
+                    Timber.e(response.message());
+                }
             }
 
             @Override
@@ -202,7 +207,7 @@ public final class ApiUser {
         }));
     }
 
-    public synchronized Single<ApiHandler> updateProfile(String token,
+    public synchronized Single<CodeHandler> updateProfile(String token,
                                                          String address_1,
                                                          String address_2,
                                                          String address_3,
@@ -216,7 +221,7 @@ public final class ApiUser {
                     @Override
                     public void onResponse(@NonNull Call<ApiHandler> call, @NonNull Response<ApiHandler> response) {
                         if (response.isSuccessful())
-                            emitter.onSuccess(response.body());
+                            emitter.onSuccess(response.body().getHandler());
                     }
 
                     @Override

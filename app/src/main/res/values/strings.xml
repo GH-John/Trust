@@ -82,7 +82,7 @@
     <string name="btn_booking">Забронировать</string>
     <string name="btn_text_message">Сообщения</string>
     <string name="btn_text_start_proposal">Начать</string>
-    <string name="btn_text_following">Подписаться</string>
+    <string name="btn_text_follow">Подписаться</string>
     <string name="btn_insert_phone">Добавить номер</string>
     <string name="btn_text_accept_proposal">Принять</string>
     <string name="btn_insert_address">Добавить адрес</string>
@@ -119,7 +119,7 @@
     <string name="text_rate">Рейтинг</string>
     <string name="text_address">Адрес</string>
     <string name="text_today">Сегодня</string>
-    <string name="text_count_rent">465</string>
+    <string name="text_count_rent">Количество аренд</string>
     <string name="text_yesterday">Вчера</string>
     <string name="textDescription">Описание</string>
     <string name="text_rate_announcement">5</string>
@@ -264,4 +264,11 @@
     <string name="warning_reschedule_reservation_start">Запрос отправлен</string>
     <string name="warning_cancle_reservation_start">Бронь отменена</string>
     <string name="error_unsuccess_cancle_reservation_proposal">Неудалось отменить бронь</string>
+    <string name="text_views">Просмотры</string>
+    <string name="btn_text_unfollow">Отписаться</string>
+    <string name="error_follow">Неудалось подписаться</string>
+    <string name="error_unfollow">Неудалось отписаться</string>
+    <string name="warning_allready_unfollow">Вы уже отписались</string>
+    <string name="warning_allready_follow">Вы уже подписаны</string>
+    <string name="error_load_profile">Неудалось загрузить профиль</string>
 </resources>

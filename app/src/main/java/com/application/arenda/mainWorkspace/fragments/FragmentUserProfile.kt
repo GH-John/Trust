@@ -12,7 +12,6 @@ import com.application.arenda.R
 import com.application.arenda.databinding.FragmentUserProfileBinding
 import com.application.arenda.entities.models.ModelUser
 import com.application.arenda.entities.room.LocalCacheManager
-import com.application.arenda.entities.serverApi.client.ApiHandler
 import com.application.arenda.entities.serverApi.client.CodeHandler
 import com.application.arenda.entities.serverApi.client.CodeHandler.*
 import com.application.arenda.entities.serverApi.user.ApiUser
@@ -20,18 +19,14 @@ import com.application.arenda.entities.utils.Utils
 import com.application.arenda.entities.utils.glide.GlideUtils
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar
 import com.application.arenda.ui.widgets.containerFragments.ContainerFragments
-import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Consumer
 import io.reactivex.observers.ResourceCompletableObserver
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.user_container_profile.*
 import kotlinx.android.synthetic.main.user_header_profile.*
 import timber.log.Timber
-import java.net.ConnectException
-import java.net.SocketTimeoutException
 
 open class FragmentUserProfile private constructor() : Fragment(), AdapterActionBar {
     private var abBtnBack: ImageButton? = null
@@ -39,7 +34,7 @@ open class FragmentUserProfile private constructor() : Fragment(), AdapterAction
     private var abUserLogin: TextView? = null
 
     private var consumerUserProfile: Consumer<List<ModelUser>>? = null
-    private var consumerLoadProfile: SingleObserver<CodeHandler>? = null
+    private var consumerLoadProfile: Consumer<CodeHandler>? = null
 
     private var api: ApiUser? = null
     private var cacheManager: LocalCacheManager? = null
@@ -53,7 +48,9 @@ open class FragmentUserProfile private constructor() : Fragment(), AdapterAction
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
         bind = FragmentUserProfileBinding.inflate(inflater)
+
         init()
         initListeners()
         initStyles()
@@ -75,32 +72,50 @@ open class FragmentUserProfile private constructor() : Fragment(), AdapterAction
                 } else if (user!!.updated.isBefore(modelUsers[0].updated)) {
                     user = modelUsers[0]
                     userToken = modelUsers[0].token
+
+                    bind.swipeRefreshLayout.isRefreshing = false
+                    bind.progressUserProfile.visibility = View.GONE
                 }
                 setProfile(user!!)
             }
         }
 
-        consumerLoadProfile = object : SingleObserver<CodeHandler> {
-            override fun onSuccess(handler: CodeHandler) {
+        consumerLoadProfile = Consumer { handler ->
+            run {
                 when (handler) {
-                    SUCCESS -> bind.swipeRefreshLayout.isRefreshing = false
-                    USER_NOT_FOUND -> Utils.messageOutput(context, getString(R.string.error_user_not_found))
-                    UNKNOW_ERROR -> Utils.messageOutput(context, getString(R.string.unknown_error))
+                    SUCCESS -> {
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = View.GONE
+                    }
+
+                    UNSUCCESS -> {
+                        Utils.messageOutput(context, getString(R.string.error_load_profile))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = View.GONE
+                    }
+
+                    USER_NOT_FOUND -> {
+                        Utils.messageOutput(context, getString(R.string.error_user_not_found))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = View.GONE
+                    }
+
+                    NETWORK_ERROR -> {
+                        Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = View.GONE
+                    }
+
+                    else -> {
+                        Utils.messageOutput(context, getString(R.string.unknown_error))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = View.GONE
+                    }
                 }
             }
-
-            override fun onSubscribe(d: Disposable) {
-                disposable.add(d)
-            }
-
-            override fun onError(t: Throwable) {
-                if (t is SocketTimeoutException || t is ConnectException)
-                    Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
-
-                Timber.e(t)
-            }
-
         }
+
+        bind.swipeRefreshLayout.isRefreshing = true
 
         disposable.add(cacheManager!!.users()
                 .activeUser
@@ -127,31 +142,31 @@ open class FragmentUserProfile private constructor() : Fragment(), AdapterAction
 
     @SuppressLint("CheckResult")
     private fun updateProfile() {
-        api!!.loadOwnProfile(context, userToken)
+        disposable.add(api!!.loadOwnProfile(context, userToken)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(consumerLoadProfile!!)
+                .subscribe(consumerLoadProfile!!))
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setProfile(model: ModelUser) {
-        GlideUtils.loadAvatar(context, model.avatar, bind.profileHeader.itemUserAvatar, 200, 200)
+    private fun setProfile(model: ModelUser?) {
+        GlideUtils.loadAvatar(context, model?.avatar, bind.profileHeader.itemUserAvatar, 200, 200)
 
-        userLogin.text = model.login
-        abUserLogin?.text = model.login
+        userLogin.text = model?.login
+        abUserLogin?.text = model?.login
 
-        userName.text = model.lastName + " " + model.name
-        countAnnouncementsUser.text = model.countAnnouncementsUser.toString()
-        countUserFollowers.text = model.countFollowers.toString()
-        countUserFollowing.text = model.countFollowing.toString()
+        userName.text = model?.lastName + " " + model?.name
+        countAnnouncementsUser.text = model?.countAnnouncementsUser.toString()
+        countUserFollowers.text = model?.countFollowers.toString()
+        countUserFollowing.text = model?.countFollowing.toString()
 
-        editFirstAddress.setText(model.address_1)
-        editSecondAddress.setText(model.address_2)
-        editThirdAddress.setText(model.address_3)
+        editFirstAddress.setText(model?.address_1)
+        editSecondAddress.setText(model?.address_2)
+        editThirdAddress.setText(model?.address_3)
 
-        editFirstPhone.setText(model.phone_1)
-        editSecondPhone.setText(model.phone_2)
-        editThirdPhone.setText(model.phone_3)
+        editFirstPhone.setText(model?.phone_1)
+        editSecondPhone.setText(model?.phone_2)
+        editThirdPhone.setText(model?.phone_3)
     }
 
     @SuppressLint("CheckResult")
@@ -172,10 +187,14 @@ open class FragmentUserProfile private constructor() : Fragment(), AdapterAction
                 .subscribe(object : ResourceCompletableObserver() {
                     override fun onComplete() {
                         Utils.messageOutput(context, "Сохранено")
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = View.GONE
                     }
 
                     override fun onError(e: Throwable) {
                         Timber.e(e)
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = View.GONE
                     }
                 })
 
@@ -187,25 +206,7 @@ open class FragmentUserProfile private constructor() : Fragment(), AdapterAction
                 user?.phone_3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : SingleObserver<ApiHandler> {
-                    override fun onSuccess(handler: ApiHandler) {
-                        bind.progressUserProfile.visibility = View.GONE
-                        when (handler.handler) {
-                            USER_NOT_FOUND -> Utils.messageOutput(context, getString(R.string.error_user_not_found))
-                            UNKNOW_ERROR -> Utils.messageOutput(context, getString(R.string.unknown_error))
-                        }
-                    }
-
-                    override fun onSubscribe(d: Disposable) {
-                        disposable.add(d)
-                    }
-
-                    override fun onError(e: Throwable) {
-                        bind.progressUserProfile.visibility = View.GONE
-                        Timber.e(e)
-                    }
-
-                })
+                .subscribe(consumerLoadProfile)
     }
 
     override fun onPause() {

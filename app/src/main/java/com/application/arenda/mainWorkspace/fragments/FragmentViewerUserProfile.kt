@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
@@ -17,6 +19,7 @@ import com.application.arenda.entities.models.ModelUserProfileToView
 import com.application.arenda.entities.models.SharedViewModels
 import com.application.arenda.entities.room.LocalCacheManager
 import com.application.arenda.entities.serverApi.client.CodeHandler
+import com.application.arenda.entities.serverApi.client.CodeHandler.*
 import com.application.arenda.entities.serverApi.client.ServerResponse
 import com.application.arenda.entities.serverApi.user.ApiUser
 import com.application.arenda.entities.utils.Utils
@@ -37,9 +40,11 @@ open class FragmentViewerUserProfile private constructor() : Fragment(), Adapter
     private var consumerUserProfile: Consumer<List<ModelUser>>? = null
     private var consumerLoadProfile: Consumer<ServerResponse<ModelUserProfileToView>>? = null
 
+    private lateinit var containerFragments: ContainerFragments
+
     private var api: ApiUser? = null
     private var cacheManager: LocalCacheManager? = null
-    private var sharedViewModels: SharedViewModels? = null
+    private lateinit var sharedViewModels: SharedViewModels
 
     private var userToken: String? = null
 
@@ -50,8 +55,8 @@ open class FragmentViewerUserProfile private constructor() : Fragment(), Adapter
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         bind = FragmentViewerUserProfileBinding.inflate(inflater)
+
         init()
-        initListeners()
         initStyles()
         return bind.root
     }
@@ -61,6 +66,7 @@ open class FragmentViewerUserProfile private constructor() : Fragment(), Adapter
         api = ApiUser.getInstance(context)
         cacheManager = LocalCacheManager.getInstance(context)
         sharedViewModels = ViewModelProvider(requireActivity()).get(SharedViewModels::class.java)
+        containerFragments = ContainerFragments.getInstance(context)
 
         consumerUserProfile = Consumer { modelUsers: List<ModelUser> ->
             if (modelUsers.isNotEmpty()) {
@@ -71,15 +77,39 @@ open class FragmentViewerUserProfile private constructor() : Fragment(), Adapter
 
         consumerLoadProfile = Consumer { response ->
             when (response.handler) {
-                CodeHandler.SUCCESS -> {
+                SUCCESS -> {
                     bind.swipeRefreshLayout.isRefreshing = false
-
+                    bind.progressUserProfile.visibility = GONE
                     setProfile(response.response)
                 }
-                CodeHandler.USER_NOT_FOUND -> Utils.messageOutput(context, getString(R.string.error_user_not_found))
-                CodeHandler.UNKNOW_ERROR -> Utils.messageOutput(context, getString(R.string.unknown_error))
+
+                UNSUCCESS -> {
+                    Utils.messageOutput(context, getString(R.string.error_load_profile))
+                    bind.swipeRefreshLayout.isRefreshing = false
+                    bind.progressUserProfile.visibility = GONE
+                }
+
+                USER_NOT_FOUND -> {
+                    Utils.messageOutput(context, getString(R.string.error_user_not_found))
+                    bind.swipeRefreshLayout.isRefreshing = false
+                    bind.progressUserProfile.visibility = GONE
+                }
+
+                NETWORK_ERROR -> {
+                    Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                    bind.swipeRefreshLayout.isRefreshing = false
+                    bind.progressUserProfile.visibility = GONE
+                }
+
+                else -> {
+                    Utils.messageOutput(context, getString(R.string.unknown_error))
+                    bind.swipeRefreshLayout.isRefreshing = false
+                    bind.progressUserProfile.visibility = GONE
+                }
             }
         }
+
+        bind.swipeRefreshLayout.isRefreshing = true
 
         disposable.add(cacheManager!!.users()
                 .activeUser
@@ -93,16 +123,13 @@ open class FragmentViewerUserProfile private constructor() : Fragment(), Adapter
                 R.color.colorBlue,
                 R.color.colorAccent,
                 R.color.colorRed)
-    }
 
-    private fun initListeners() {
         bind.swipeRefreshLayout.setOnRefreshListener { updateProfile() }
-        bind.profileHeader.btnFollowingUnfollowing.setOnClickListener { }
     }
 
     @SuppressLint("CheckResult")
     private fun updateProfile() {
-        sharedViewModels!!.selectedUser.observe(viewLifecycleOwner, Observer { idUser ->
+        sharedViewModels.selectedUser.observe(viewLifecycleOwner, Observer { idUser ->
             run {
                 disposable.add(api!!.loadProfileToView(userToken, idUser)
                         .subscribeOn(Schedulers.io())
@@ -119,10 +146,114 @@ open class FragmentViewerUserProfile private constructor() : Fragment(), Adapter
         userLogin.text = model.login
         abUserLogin?.text = model.login
 
+        if (model.follow) {
+            bind.profileHeader
+                    .btnFollow
+                    .visibility = GONE
+
+            bind.profileHeader
+                    .btnUnfollow
+                    .visibility = VISIBLE
+        } else {
+            bind.profileHeader
+                    .btnFollow
+                    .visibility = VISIBLE
+
+            bind.profileHeader
+                    .btnUnfollow
+                    .visibility = GONE
+        }
+
+        bind.profileHeader
+                .btnFollow
+                .setOnClickListener {
+                    api!!.followToUser(userToken, model.id, true)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(getConsumerUserFolllow())
+                }
+
+        bind.profileHeader
+                .btnUnfollow
+                .setOnClickListener {
+                    api!!.followToUser(userToken, model.id, false)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(getConsumerUserFolllow())
+                }
+
+        bind.profileHeader.btnSendMessage.setOnClickListener {
+            sharedViewModels.selectUser(model.id)
+            containerFragments.open(FragmentUserChat())
+        }
+
         userName.text = model.lastName + " " + model.name
         countAnnouncementsUser.text = model.countAnnouncementsUser.toString()
         countUserFollowers.text = model.countFollowers.toString()
         countUserFollowing.text = model.countFollowing.toString()
+    }
+
+    private fun getConsumerUserFolllow(): Consumer<CodeHandler> {
+        return Consumer { handler ->
+            run {
+                when (handler) {
+                    SUCCESS -> {
+                        if (bind.profileHeader.btnFollow.visibility == VISIBLE) {
+                            bind.profileHeader.btnUnfollow.visibility = VISIBLE
+                            bind.profileHeader.btnFollow.visibility = GONE
+                        } else {
+                            bind.profileHeader.btnUnfollow.visibility = GONE
+                            bind.profileHeader.btnFollow.visibility = VISIBLE
+                        }
+
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+
+                    ERROR_FOLLOW -> {
+                        Utils.messageOutput(context, getString(R.string.error_follow))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+
+                    ALLREADY_FOLLOW -> {
+                        Utils.messageOutput(context, getString(R.string.warning_allready_follow))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+
+                    ERROR_UNFOLLOW -> {
+                        Utils.messageOutput(context, getString(R.string.error_unfollow))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+
+                    ALLREADY_UNFOLLOW -> {
+                        Utils.messageOutput(context, getString(R.string.warning_allready_unfollow))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+
+                    USER_NOT_FOUND -> {
+                        Utils.messageOutput(context, getString(R.string.error_user_not_found))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+
+                    NETWORK_ERROR -> {
+                        Utils.messageOutput(context, getString(R.string.error_check_internet_connect))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+
+                    else -> {
+                        Utils.messageOutput(context, getString(R.string.unknown_error))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        bind.progressUserProfile.visibility = GONE
+                    }
+                }
+            }
+        }
     }
 
     override fun onPause() {
