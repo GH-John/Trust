@@ -102,7 +102,13 @@ public class UserAnnouncementsVH extends BaseViewHolder {
         textCostProduct.setText(model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
 
         textCountRent.setText(String.valueOf(model.getCountRent()));
-        textLocation.setText(model.getAddress());
+
+        if (model.getAddress().isEmpty()) {
+            textLocation.setVisibility(View.GONE);
+        } else {
+            textLocation.setVisibility(View.VISIBLE);
+            textLocation.setText(model.getAddress());
+        }
     }
 
     public void setOnItemViewClick(OnItemClick itemClick) {

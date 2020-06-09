@@ -23,6 +23,7 @@ import com.application.arenda.entities.room.LocalCacheManager
 import com.application.arenda.entities.serverApi.OnApiListener
 import com.application.arenda.entities.serverApi.announcement.ApiAnnouncement
 import com.application.arenda.entities.serverApi.client.CodeHandler
+import com.application.arenda.entities.serverApi.client.CodeHandler.*
 import com.application.arenda.entities.utils.DisplayUtils
 import com.application.arenda.entities.utils.Utils
 import com.application.arenda.ui.widgets.actionBar.AdapterActionBar
@@ -41,17 +42,17 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
     private var sideBar: SideBar? = null
     private var containerFragments: ContainerFragments? = null
 
-    private var bind: FragmentUserFavoriteAnnouncementsBinding? = null
+    private lateinit var bind: FragmentUserFavoriteAnnouncementsBinding
     private var itemBurgerMenu: ImageButton? = null
     private var rvLayoutManager: LinearLayoutManager? = null
     private var rvOnScrollListener: RVOnScrollListener? = null
     private var rvAdapter: FavoriteAnnouncementsAdapter? = null
 
-    private var api: ApiAnnouncement? = null
+    private lateinit var api: ApiAnnouncement
 
     private var userToken: String? = null
 
-    private var cacheManager: LocalCacheManager? = null
+    private lateinit var cacheManager: LocalCacheManager
 
     private val disposable = CompositeDisposable()
 
@@ -62,7 +63,7 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
     private var singleLoaderWithRewriteAnnouncements: SingleObserver<List<ModelFavoriteAnnouncement>>? = null
     private var singleLoaderWithoutRewriteAnnouncements: SingleObserver<List<ModelFavoriteAnnouncement>>? = null
 
-    private var sharedViewModels: SharedViewModels? = null
+    private lateinit var sharedViewModels: SharedViewModels
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -70,7 +71,7 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
 
         init()
 
-        return bind!!.root
+        return bind.root
     }
 
     private fun init() {
@@ -90,12 +91,16 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
     private fun initInterfaces() {
         listenerFavoriteInsert = object : OnApiListener {
             override fun onComplete(code: CodeHandler) {
-                if (code == CodeHandler.USER_NOT_FOUND) {
-                    Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
-                } else if (code == CodeHandler.INTERNAL_SERVER_ERROR) {
-                    Utils.messageOutput(context, resources.getString(R.string.error_on_server))
-                } else if (code == CodeHandler.UNKNOW_ERROR) {
-                    Utils.messageOutput(context, resources.getString(R.string.unknown_error))
+                when (code) {
+                    USER_NOT_FOUND -> {
+                        Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
+                    }
+                    INTERNAL_SERVER_ERROR -> {
+                        Utils.messageOutput(context, resources.getString(R.string.error_on_server))
+                    }
+                    UNKNOW_ERROR -> {
+                        Utils.messageOutput(context, resources.getString(R.string.unknown_error))
+                    }
                 }
             }
 
@@ -106,9 +111,15 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
         listenerLoadAnnouncement = object : OnApiListener {
             override fun onComplete(code: CodeHandler) {
                 when (code) {
-                    CodeHandler.USER_NOT_FOUND -> Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
-                    CodeHandler.UNKNOW_ERROR, CodeHandler.UNSUCCESS, CodeHandler.NOT_CONNECT_TO_DB, CodeHandler.HTTP_NOT_FOUND, CodeHandler.NETWORK_ERROR -> {
+                    USER_NOT_FOUND -> {
+                        Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        rvAdapter?.isLoading = false
+                    }
+                    UNKNOW_ERROR, UNSUCCESS, NOT_CONNECT_TO_DB, HTTP_NOT_FOUND, NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        rvAdapter?.isLoading = false
                     }
                 }
             }
@@ -120,11 +131,11 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
         consumerUserToken = Consumer { modelUsers: List<ModelUser> ->
             userToken = if (modelUsers.isNotEmpty()) modelUsers[0].token else null
 
-            bind!!.swipeRefreshLayout.isRefreshing = true
+            bind.swipeRefreshLayout.isRefreshing = true
             refreshLayout()
         }
 
-        cacheManager!!
+        cacheManager
                 .users()
                 .activeUser
                 .subscribeOn(Schedulers.io())
@@ -138,13 +149,13 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
 
             override fun onSuccess(collection: List<ModelFavoriteAnnouncement>) {
                 rvAdapter?.rewriteCollection(collection)
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
                 rvAdapter?.isLoading = false
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
         }
 
@@ -155,25 +166,25 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
 
             override fun onSuccess(collection: List<ModelFavoriteAnnouncement>) {
                 rvAdapter?.addToCollection(collection)
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
                 rvAdapter?.isLoading = false
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
         }
     }
 
     @SuppressLint("CheckResult")
     private fun initAdapters() {
-        bind!!.rvFavorites.layoutManager = rvLayoutManager
-        bind!!.rvFavorites.setItemViewCacheSize(50)
-        bind!!.rvFavorites.setHasFixedSize(true)
+        bind.rvFavorites.layoutManager = rvLayoutManager
+        bind.rvFavorites.setItemViewCacheSize(50)
+        bind.rvFavorites.setHasFixedSize(true)
 
         rvOnScrollListener = RVOnScrollListener(rvLayoutManager)
-        bind!!.rvFavorites.addOnScrollListener(rvOnScrollListener!!)
+        bind.rvFavorites.addOnScrollListener(rvOnScrollListener!!)
         rvAdapter = FavoriteAnnouncementsAdapter()
         rvOnScrollListener?.setRVAdapter(rvAdapter)
         rvAdapter?.setItemViewClick { _: RecyclerView.ViewHolder?, model: IModel?, position: Int ->
@@ -181,11 +192,11 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
 //            containerFragments!!.open(FragmentViewAnnouncement())
         }
         rvAdapter?.setItemHeartClick { viewHolder: RecyclerView.ViewHolder, model: IModel, position: Int ->
-            rvAdapter?.getItem(position)?.idAnnouncement?.let {
-                api!!.insertToFavorite(userToken, it, listenerFavoriteInsert)
+            (model as ModelFavoriteAnnouncement).idAnnouncement.let {
+                api.insertToFavorite(userToken, it, listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : SingleObserver<Boolean?> {
+                        .subscribe(object : SingleObserver<Boolean> {
                             override fun onSubscribe(d: Disposable) {
                                 disposable.add(d)
                             }
@@ -201,22 +212,22 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
             }
         }
         rvAdapter?.setItemUserAvatarClick { _: RecyclerView.ViewHolder?, model: IModel, position: Int ->
-            sharedViewModels!!.selectUser((model as ModelFavoriteAnnouncement).idUser)
+            sharedViewModels.selectUser((model as ModelFavoriteAnnouncement).idUser)
             containerFragments!!.open(instance!!)
         }
-        bind!!.rvFavorites.adapter = rvAdapter
+        bind.rvFavorites.adapter = rvAdapter
     }
 
     private fun initStyles() {
-        bind!!.swipeRefreshLayout.setColorSchemeResources(
+        bind.swipeRefreshLayout.setColorSchemeResources(
                 R.color.colorBlue,
                 R.color.colorAccent,
                 R.color.colorRed)
-        bind!!.swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120))
+        bind.swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120))
     }
 
     private fun initListeners() {
-        bind!!.swipeRefreshLayout.setOnRefreshListener { refreshLayout() }
+        bind.swipeRefreshLayout.setOnRefreshListener { refreshLayout() }
         setLoadMoreForAllAnnouncement()
     }
 
@@ -228,13 +239,13 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
     private fun addAnnouncementsToCollection(lastId: Long, rewrite: Boolean) {
         if (!rvAdapter!!.isLoading) {
             rvAdapter?.isLoading = true
-            api!!.loadFavoriteAnnouncements(userToken, lastId, 10, listenerLoadAnnouncement)
+            api.loadFavoriteAnnouncements(userToken, lastId, 10, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(if (rewrite) singleLoaderWithRewriteAnnouncements!! else singleLoaderWithoutRewriteAnnouncements!!)
 
         } else {
-            bind!!.swipeRefreshLayout.isRefreshing = false
+            bind.swipeRefreshLayout.isRefreshing = false
         }
     }
 

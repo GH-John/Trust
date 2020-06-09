@@ -133,46 +133,45 @@
                 android:layout_alignParentEnd="true"
                 tools:text="@string/text_cost_announcement" />
 
-            <FrameLayout
-                android:id="@+id/frameLocation"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textNameProduct"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="60dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:layout_toEndOf="@id/textCountRent">
+                android:layout_marginEnd="8dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textCountRent"
+                    style="@style/DefaultStyleTextRegular"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_weight="0.5"
+                    android:drawableStart="@drawable/ic_count_rent"
+                    android:drawablePadding="8dp"
+                    android:gravity="start"
+                    android:textSize="12sp"
+                    tools:ignore="SmallSp"
+                    tools:text="@string/text_some_number" />
+
 
                 <TextView
                     android:id="@+id/itemLocation"
                     style="@style/DefaultStyleTextRegular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right"
+                    android:layout_gravity="end|bottom"
                     android:drawableStart="@drawable/ic_location"
-                    android:drawablePadding="12dp"
+                    android:drawablePadding="8dp"
                     android:gravity="center|right"
                     android:maxLines="2"
                     android:textSize="12sp"
                     tools:ignore="RtlHardcoded"
                     tools:text="@string/text_lacation_announcement" />
-            </FrameLayout>
-
-
-            <TextView
-                android:id="@+id/textCountRent"
-                style="@style/DefaultStyleTextRegular"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/frameLocation"
-                android:layout_alignBottom="@id/frameLocation"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="8dp"
-                android:drawableStart="@drawable/ic_count_rent"
-                android:drawablePadding="12dp"
-                android:gravity="center_vertical|center_horizontal"
-                android:textSize="12sp"
-                tools:text="@string/text_some_number" />
+            </LinearLayout>
 
         </RelativeLayout>
 

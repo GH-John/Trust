@@ -40,6 +40,7 @@ public class ModelPicture implements IModel {
 
     @SerializedName("picture")
     private Uri uri;
+//    private Uri uri = new Uri.Builder().build();
 
     @SerializedName("isMainPicture")
     private Boolean isMainPicture = false;
@@ -90,12 +91,13 @@ public class ModelPicture implements IModel {
 
     public static Single<Uri> getMainPicture(List<ModelPicture> collection) {
         return Single.create(emitter -> {
-            for (ModelPicture picture : collection) {
-                if (picture.isMainPicture) {
-                    emitter.onSuccess(picture.getUri());
-                    break;
+            if (collection.size() > 0)
+                for (ModelPicture picture : collection) {
+                    if (picture.isMainPicture) {
+                        emitter.onSuccess(picture.getUri());
+                        break;
+                    }
                 }
-            }
         });
     }
 

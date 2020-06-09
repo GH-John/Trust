@@ -10,6 +10,9 @@ import java.lang.reflect.Type
 class UriDeserializer : JsonDeserializer<Uri> {
     @Throws(JsonParseException::class)
     override fun deserialize(json: JsonElement?, typeOfT: Type?, context: JsonDeserializationContext?): Uri {
-        return Uri.parse(json?.asString)
+        if (json == null || json.asString.isEmpty())
+            return Uri.Builder().build()
+
+        return Uri.parse(json.asString)
     }
 }

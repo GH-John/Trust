@@ -223,6 +223,5 @@
             android:textSize="12sp"
             tools:ignore="RtlHardcoded"
             tools:text="@string/text_lacation_announcement" />
-
     </LinearLayout>
 </RelativeLayout>

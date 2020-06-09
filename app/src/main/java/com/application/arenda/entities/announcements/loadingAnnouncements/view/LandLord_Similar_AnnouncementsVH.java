@@ -12,18 +12,15 @@ import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.application.arenda.R;
 import com.application.arenda.entities.models.IModel;
 import com.application.arenda.entities.models.ModelAnnouncement;
-import com.application.arenda.entities.models.ModelPicture;
 import com.application.arenda.entities.recyclerView.BaseViewHolder;
 import com.application.arenda.entities.recyclerView.OnItemClick;
 import com.application.arenda.entities.utils.glide.GlideUtils;
-import com.application.arenda.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class LandLord_Similar_AnnouncementsVH extends BaseViewHolder {
 
@@ -78,10 +75,12 @@ public class LandLord_Similar_AnnouncementsVH extends BaseViewHolder {
 
     @SuppressLint({"CheckResult", "SetTextI18n"})
     private void bind() {
-        ModelPicture.getMainPicture(model.getPictures())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(uri -> GlideUtils.loadImage(itemView.getContext(), uri, itemImgProduct));
+//        ModelPicture.getMainPicture(model.getPictures())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(uri -> GlideUtils.loadImage(itemView.getContext(), uri, itemImgProduct));
+
+        GlideUtils.loadImage(itemView.getContext(), model.getPictures().get(0).getUri(), itemImgProduct);
 
         textNameProduct.setText(model.getName());
         textCountRent.setText(String.valueOf(model.getCountRent()));

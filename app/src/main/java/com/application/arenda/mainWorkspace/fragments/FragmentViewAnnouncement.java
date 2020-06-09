@@ -462,8 +462,10 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
 
         if (model.getAddress().isEmpty())
             textAddress.setVisibility(View.GONE);
-        else
+        else {
+            textAddress.setVisibility(View.VISIBLE);
             textAddress.setText(model.getAddress());
+        }
 
         textRating.setText(String.valueOf(model.getAnnouncementRating()));
         textCountRent.setText(String.valueOf(model.getCountRent()));

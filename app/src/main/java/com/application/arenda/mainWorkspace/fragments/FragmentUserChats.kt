@@ -40,17 +40,17 @@ open class FragmentUserChats private constructor() : Fragment(), AdapterActionBa
     private var sideBar: SideBar? = null
     private var containerFragments: ContainerFragments? = null
 
-    private var bind: FragmentUserChatsBinding? = null
+    private lateinit var bind: FragmentUserChatsBinding
     private var itemBurgerMenu: ImageButton? = null
     private var rvLayoutManager: LinearLayoutManager? = null
     private var rvOnScrollListener: RVOnScrollListener? = null
     private var rvAdapter: ChatsAdapter? = null
 
-    private var api: ApiChat? = null
+    private lateinit var api: ApiChat
 
     private var userToken: String? = null
 
-    private var cacheManager: LocalCacheManager? = null
+    private lateinit var cacheManager: LocalCacheManager
 
     private val disposable = CompositeDisposable()
 
@@ -69,7 +69,7 @@ open class FragmentUserChats private constructor() : Fragment(), AdapterActionBa
 
         init()
 
-        return bind!!.root
+        return bind.root
     }
 
     private fun init() {
@@ -105,9 +105,15 @@ open class FragmentUserChats private constructor() : Fragment(), AdapterActionBa
         listenerLoadChats = object : OnApiListener {
             override fun onComplete(code: CodeHandler) {
                 when (code) {
-                    CodeHandler.USER_NOT_FOUND -> Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
+                    CodeHandler.USER_NOT_FOUND -> {
+                        Utils.messageOutput(context, resources.getString(R.string.warning_login_required))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        rvAdapter?.isLoading = false
+                    }
                     CodeHandler.UNKNOW_ERROR, CodeHandler.UNSUCCESS, CodeHandler.NOT_CONNECT_TO_DB, CodeHandler.HTTP_NOT_FOUND, CodeHandler.NETWORK_ERROR -> {
                         Utils.messageOutput(context, resources.getString(R.string.error_check_internet_connect))
+                        bind.swipeRefreshLayout.isRefreshing = false
+                        rvAdapter?.isLoading = false
                     }
                 }
             }
@@ -119,11 +125,11 @@ open class FragmentUserChats private constructor() : Fragment(), AdapterActionBa
         consumerUserToken = Consumer { modelUsers: List<ModelUser> ->
             userToken = if (modelUsers.isNotEmpty()) modelUsers[0].token else null
 
-            bind!!.swipeRefreshLayout.isRefreshing = true
+            bind.swipeRefreshLayout.isRefreshing = true
             refreshLayout()
         }
 
-        cacheManager!!
+        cacheManager
                 .users()
                 .activeUser
                 .subscribeOn(Schedulers.io())
@@ -137,13 +143,13 @@ open class FragmentUserChats private constructor() : Fragment(), AdapterActionBa
 
             override fun onSuccess(collection: List<ModelChat>) {
                 rvAdapter?.rewriteCollection(collection)
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
                 rvAdapter?.isLoading = false
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
         }
 
@@ -154,44 +160,44 @@ open class FragmentUserChats private constructor() : Fragment(), AdapterActionBa
 
             override fun onSuccess(collection: List<ModelChat>) {
                 rvAdapter?.addToCollection(collection)
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
 
             override fun onError(e: Throwable) {
                 Timber.e(e)
                 rvAdapter?.isLoading = false
-                bind!!.swipeRefreshLayout.isRefreshing = false
+                bind.swipeRefreshLayout.isRefreshing = false
             }
         }
     }
 
     @SuppressLint("CheckResult")
     private fun initAdapters() {
-        bind!!.rvChats.layoutManager = rvLayoutManager
-        bind!!.rvChats.setItemViewCacheSize(50)
-        bind!!.rvChats.setHasFixedSize(true)
+        bind.rvChats.layoutManager = rvLayoutManager
+        bind.rvChats.setItemViewCacheSize(50)
+        bind.rvChats.setHasFixedSize(true)
 
         rvOnScrollListener = RVOnScrollListener(rvLayoutManager)
-        bind!!.rvChats.addOnScrollListener(rvOnScrollListener!!)
+        bind.rvChats.addOnScrollListener(rvOnScrollListener!!)
         rvAdapter = ChatsAdapter()
         rvOnScrollListener?.setRVAdapter(rvAdapter)
         rvAdapter?.setItemViewClick { _: RecyclerView.ViewHolder?, model: IModel?, _: Int ->
             sharedViewModels!!.selectUser((model as ModelChat).idUser)
             containerFragments!!.open(FragmentUserChat())
         }
-        bind!!.rvChats.adapter = rvAdapter
+        bind.rvChats.adapter = rvAdapter
     }
 
     private fun initStyles() {
-        bind!!.swipeRefreshLayout.setColorSchemeResources(
+        bind.swipeRefreshLayout.setColorSchemeResources(
                 R.color.colorBlue,
                 R.color.colorAccent,
                 R.color.colorRed)
-        bind!!.swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120))
+        bind.swipeRefreshLayout.setProgressViewEndTarget(false, DisplayUtils.dpToPx(120))
     }
 
     private fun initListeners() {
-        bind!!.swipeRefreshLayout.setOnRefreshListener { refreshLayout() }
+        bind.swipeRefreshLayout.setOnRefreshListener { refreshLayout() }
         setLoadMoreForAllChats()
     }
 
@@ -203,13 +209,13 @@ open class FragmentUserChats private constructor() : Fragment(), AdapterActionBa
     private fun addChatsToCollection(lastId: Long, rewrite: Boolean) {
         if (!rvAdapter!!.isLoading) {
             rvAdapter?.isLoading = true
-            api!!.loadChats(userToken, lastId, 10, listenerLoadChats!!)
+            api.loadChats(userToken, lastId, 10, listenerLoadChats!!)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(if (rewrite) singleLoaderWithRewriteChats!! else singleLoaderWithoutRewriteChats!!)
 
         } else {
-            bind!!.swipeRefreshLayout.isRefreshing = false
+            bind.swipeRefreshLayout.isRefreshing = false
         }
     }
 

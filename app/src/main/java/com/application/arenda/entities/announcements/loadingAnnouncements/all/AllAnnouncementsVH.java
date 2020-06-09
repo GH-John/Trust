@@ -128,6 +128,7 @@ public class AllAnnouncementsVH extends BaseViewHolder {
         if (model.getAddress().isEmpty()) {
             itemLocation.setVisibility(View.GONE);
         } else {
+            itemLocation.setVisibility(View.VISIBLE);
             itemLocation.setText(model.getAddress());
         }
 
