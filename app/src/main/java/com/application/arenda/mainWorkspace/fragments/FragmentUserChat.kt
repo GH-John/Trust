@@ -50,7 +50,6 @@ import io.socket.emitter.Emitter
 import timber.log.Timber
 
 class FragmentUserChat : Fragment(), AdapterActionBar {
-    private var idChat: Long? = null
     private var bind: FragmentUserChatBinding? = null
     private var socket: Socket? = null
     private var rvAdapter: MessageAdapter? = null
@@ -127,8 +126,6 @@ class FragmentUserChat : Fragment(), AdapterActionBar {
                     idUser_To = idUser
 
                     idUser_To?.let { it -> addMessagesToChat(it, 0, 0, true) }
-
-                    Utils.messageOutput(context, idUser_To.toString())
 
                     initSocket(userToken!!, idUser_To!!)
                 })

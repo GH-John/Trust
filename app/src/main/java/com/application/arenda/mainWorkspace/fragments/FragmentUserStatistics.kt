@@ -72,6 +72,8 @@ class FragmentUserStatistics : Fragment(), AdapterActionBar, ItemSideBar {
                 } else if (user!!.updated.isBefore(modelUsers[0].updated)) {
                     user = modelUsers[0]
                     userToken = modelUsers[0].token
+                } else {
+                    bind.swipeRefreshLayout.isRefreshing = false
                 }
 
                 setStatistic(user!!)

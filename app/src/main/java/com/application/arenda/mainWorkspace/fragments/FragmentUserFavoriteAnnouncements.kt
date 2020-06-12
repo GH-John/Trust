@@ -213,7 +213,7 @@ open class FragmentUserFavoriteAnnouncements private constructor() : Fragment(),
         }
         rvAdapter?.setItemUserAvatarClick { _: RecyclerView.ViewHolder?, model: IModel, position: Int ->
             sharedViewModels.selectUser((model as ModelFavoriteAnnouncement).idUser)
-            containerFragments!!.open(instance!!)
+            containerFragments!!.open(FragmentViewerUserProfile.instance!!)
         }
         bind.rvFavorites.adapter = rvAdapter
     }

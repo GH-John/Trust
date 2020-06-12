@@ -59,7 +59,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
 
     private ImageButton itemBtnBack;
 
-    private AllAnnouncementsAdapter similarAnnouncementsAdapter;
+    private AllAnnouncementsAdapter rvAdapter;
 
     private SingleObserver<List<ModelAnnouncement>> singleLoaderWithRewriteSimilarAnnouncements;
     private SingleObserver<List<ModelAnnouncement>> singleLoaderWithoutRewriteSimilarAnnouncements;
@@ -175,7 +175,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                similarAnnouncementsAdapter.rewriteCollection(collection);
+                rvAdapter.rewriteCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -184,7 +184,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                similarAnnouncementsAdapter.setLoading(false);
+                rvAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
@@ -197,7 +197,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                similarAnnouncementsAdapter.addToCollection(collection);
+                rvAdapter.addToCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -206,7 +206,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                similarAnnouncementsAdapter.setLoading(false);
+                rvAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
@@ -234,13 +234,13 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
 
         recyclerView.addOnScrollListener(rvOnScrollListener);
 
-        similarAnnouncementsAdapter = new AllAnnouncementsAdapter();
+        rvAdapter = new AllAnnouncementsAdapter();
 
-        rvOnScrollListener.setRVAdapter(similarAnnouncementsAdapter);
+        rvOnScrollListener.setRVAdapter(rvAdapter);
 
-        similarAnnouncementsAdapter.setItemViewClick(similarItemClick);
+        rvAdapter.setItemViewClick(similarItemClick);
 
-        similarAnnouncementsAdapter.setItemHeartClick((viewHolder, model, position) ->
+        rvAdapter.setItemHeartClick((viewHolder, model, position) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -261,7 +261,12 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
                             }
                         }));
 
-        recyclerView.setAdapter(similarAnnouncementsAdapter);
+        rvAdapter.setItemUserAvatarClick((viewHolder, model, pos) -> {
+            sharedViewModels.selectUser(((ModelAnnouncement) model).getIdUser());
+            containerFragments.open(FragmentViewerUserProfile.Companion.getInstance());
+        });
+
+        recyclerView.setAdapter(rvAdapter);
     }
 
     private void initStyles() {
@@ -277,7 +282,7 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
         sharedViewModels.getLastSimilarAnnouncements()
                 .observe(getViewLifecycleOwner(), modelAnnouncements -> {
                     idSubcategory = modelAnnouncements.get(0).getIdSubcategory();
-                    similarAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
+                    rvAdapter.rewriteCollection(modelAnnouncements);
                 });
     }
 
@@ -290,8 +295,8 @@ public class FragmentViewAllSimilarAnnounements extends Fragment implements Adap
     }
 
     private synchronized void addSimilarAnnouncementsToCollection(long lastId, String query, boolean rewrite) {
-        if (!similarAnnouncementsAdapter.isLoading()) {
-            similarAnnouncementsAdapter.setLoading(true);
+        if (!rvAdapter.isLoading()) {
+            rvAdapter.setLoading(true);
 
             api.loadSimilarAnnouncements(userToken, idSubcategory, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())

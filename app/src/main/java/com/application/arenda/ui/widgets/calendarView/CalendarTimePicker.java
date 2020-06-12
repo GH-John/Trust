@@ -68,7 +68,10 @@ public class CalendarTimePicker extends Dialog {
     }
 
     public void toggleModeOnOf(boolean isOn) {
-        timePicker.findViewById(timePicker.getResources().getSystem().getIdentifier("toggle_mode", "id", "android")).setVisibility(isOn ? View.VISIBLE : View.GONE);
+        View view = timePicker.findViewById(timePicker.getResources().getSystem().getIdentifier("toggle_mode", "id", "android"));
+
+        if (view != null)
+            view.setVisibility(isOn ? View.VISIBLE : View.GONE);
     }
 
     public int getHour() {

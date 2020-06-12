@@ -71,8 +71,8 @@ open class FragmentViewerUserProfile private constructor() : Fragment(), Adapter
         consumerUserProfile = Consumer { modelUsers: List<ModelUser> ->
             if (modelUsers.isNotEmpty()) {
                 userToken = modelUsers[0].token
-                updateProfile()
             }
+            updateProfile()
         }
 
         consumerLoadProfile = Consumer { response ->

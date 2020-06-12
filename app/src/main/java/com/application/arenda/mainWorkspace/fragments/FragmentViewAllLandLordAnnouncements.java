@@ -59,7 +59,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
 
     private ImageButton itemBtnBack;
 
-    private AllAnnouncementsAdapter allAnnouncementsAdapter;
+    private AllAnnouncementsAdapter rvAdapter;
 
     private SingleObserver<List<ModelAnnouncement>> singleLoaderWithRewriteAnnouncements;
     private SingleObserver<List<ModelAnnouncement>> singleLoaderWithoutRewriteAnnouncements;
@@ -174,7 +174,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                allAnnouncementsAdapter.rewriteCollection(collection);
+                rvAdapter.rewriteCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -183,7 +183,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                allAnnouncementsAdapter.setLoading(false);
+                rvAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
@@ -196,7 +196,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
 
             @Override
             public void onSuccess(List<ModelAnnouncement> collection) {
-                allAnnouncementsAdapter.addToCollection(collection);
+                rvAdapter.addToCollection(collection);
 
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -205,7 +205,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
             public void onError(Throwable e) {
                 Timber.e(e);
 
-                allAnnouncementsAdapter.setLoading(false);
+                rvAdapter.setLoading(false);
                 swipeRefreshLayout.setRefreshing(false);
             }
         };
@@ -234,13 +234,13 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
 
         recyclerView.addOnScrollListener(rvOnScrollListener);
 
-        allAnnouncementsAdapter = new AllAnnouncementsAdapter();
+        rvAdapter = new AllAnnouncementsAdapter();
 
-        rvOnScrollListener.setRVAdapter(allAnnouncementsAdapter);
+        rvOnScrollListener.setRVAdapter(rvAdapter);
 
-        allAnnouncementsAdapter.setItemViewClick(landLordItemClick);
+        rvAdapter.setItemViewClick(landLordItemClick);
 
-        allAnnouncementsAdapter.setItemHeartClick((viewHolder, model, position) ->
+        rvAdapter.setItemHeartClick((viewHolder, model, position) ->
                 api.insertToFavorite(userToken, model.getID(), listenerFavoriteInsert)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -261,7 +261,12 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
                             }
                         }));
 
-        recyclerView.setAdapter(allAnnouncementsAdapter);
+        rvAdapter.setItemUserAvatarClick((viewHolder, model, pos) -> {
+            sharedViewModels.selectUser(((ModelAnnouncement) model).getIdUser());
+            containerFragments.open(FragmentViewerUserProfile.Companion.getInstance());
+        });
+
+        recyclerView.setAdapter(rvAdapter);
     }
 
     private void initStyles() {
@@ -277,7 +282,7 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
         sharedViewModels.getLastLandLordAnnouncements()
                 .observe(getViewLifecycleOwner(), modelAnnouncements -> {
                     idLandLord = modelAnnouncements.get(0).getIdUser();
-                    allAnnouncementsAdapter.rewriteCollection(modelAnnouncements);
+                    rvAdapter.rewriteCollection(modelAnnouncements);
                 });
     }
 
@@ -290,8 +295,8 @@ public class FragmentViewAllLandLordAnnouncements extends Fragment implements Ad
     }
 
     private synchronized void addAnnouncementsToCollection(long lastId, String query, boolean rewrite) {
-        if (!allAnnouncementsAdapter.isLoading()) {
-            allAnnouncementsAdapter.setLoading(true);
+        if (!rvAdapter.isLoading()) {
+            rvAdapter.setLoading(true);
 
             api.loadLandLordAnnouncements(userToken, idLandLord, lastId, 10, query, listenerLoadAnnouncement)
                     .subscribeOn(Schedulers.io())

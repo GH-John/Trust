@@ -75,6 +75,9 @@ open class FragmentUserProfile private constructor() : Fragment(), AdapterAction
 
                     bind.swipeRefreshLayout.isRefreshing = false
                     bind.progressUserProfile.visibility = View.GONE
+                } else {
+                    bind.swipeRefreshLayout.isRefreshing = false
+                    bind.progressUserProfile.visibility = View.GONE
                 }
                 setProfile(user!!)
             }
