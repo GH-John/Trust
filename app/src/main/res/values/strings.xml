@@ -128,9 +128,10 @@
     <string name="text_rent">Колличество аренд</string>
     <string name="text_published">Опубликовано: </string>
     <string name="text_some_text">Какой-то текст</string>
-    <string name="text_cost_announcement">5 $./ч.</string>
     <string name="text_add_photos">Добавить фотографию</string>
     <string name="text_forgot_password">Забыли пароль?</string>
+    <string name="text_hourly_cost_announcement">5 $/ч.</string>
+    <string name="text_daily_cost_announcement">15 $/дн.</string>
     <string name="text_hourly_cost">Почасовая стоимость</string>
     <string name="text_made_for_people">сделано для людей</string>
     <string name="text_select_category">Выберите категорию</string>
@@ -163,7 +164,8 @@
     <string name="text_short_day">дн.</string>
     <string name="text_short_month">мес.</string>
     <string name="text_time_inflater">:00</string>
-    <string name="text_cost_usd_in_hour">$/ч.</string>
+    <string name="text_cost_usd_in_hourly">$/ч.</string>
+    <string name="text_cost_usd_in_daily">$/дн.</string>
     <string name="text_with_sale">Возможно с продажей</string>
     <string name="text_booking_success">Бронирование успешно</string>
     <string name="text_select_period_rental">Выберите период аренды</string>

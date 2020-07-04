@@ -87,7 +87,7 @@ public class FavoriteAnnouncementVH extends BaseViewHolder {
 
         placementDate.setText(Utils.getFormatingDate(itemView.getContext(), this.model.getCreated()));
         nameProduct.setText(this.model.getName());
-        costProduct.setText(this.model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        costProduct.setText(this.model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hourly));
     }
 
     public void setItemUserAvatarClick(OnItemClick itemClick) {

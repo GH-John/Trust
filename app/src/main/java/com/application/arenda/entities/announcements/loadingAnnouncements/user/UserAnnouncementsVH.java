@@ -39,7 +39,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
     TextView textCountRent;
 
     @Nullable
-    @BindView(R.id.textCostProduct)
+    @BindView(R.id.textHourlyCostProduct)
     TextView textCostProduct;
 
     @Nullable
@@ -99,7 +99,7 @@ public class UserAnnouncementsVH extends BaseViewHolder {
         textNameProduct.setText(model.getName());
 
         //в зависимости от предпочтения пользователя будет браться стоимость
-        textCostProduct.setText(model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        textCostProduct.setText(model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hourly));
 
         textCountRent.setText(String.valueOf(model.getCountRent()));
 

@@ -92,7 +92,7 @@
                 tools:text="@string/text_some_text" />
 
             <TextView
-                android:id="@+id/textCostProduct"
+                android:id="@+id/textHourlyCostProduct"
                 style="@style/DefaultStyleTextBoldRegular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -100,7 +100,18 @@
                 android:layout_marginTop="24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textNameProduct"
-                tools:text="@string/text_cost_announcement" />
+                tools:text="@string/text_hourly_cost_announcement" />
+
+            <TextView
+                android:id="@+id/textDailyCostProduct"
+                style="@style/DefaultStyleTextBoldRegular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textHourlyCostProduct"
+                app:layout_constraintStart_toEndOf="@+id/textHourlyCostProduct"
+                app:layout_constraintTop_toTopOf="@+id/textHourlyCostProduct"
+                tools:text="@string/text_daily_cost_announcement" />
 
             <TextView
                 android:id="@+id/itemLocation"
@@ -108,14 +119,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:drawableLeft="@drawable/ic_location"
                 android:drawablePadding="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/textCostProduct"
-                app:layout_constraintTop_toBottomOf="@+id/textNameProduct"
+                app:layout_constraintStart_toEndOf="@+id/textHourlyCostProduct"
+                app:layout_constraintTop_toBottomOf="@+id/textHourlyCostProduct"
                 tools:ignore="RtlHardcoded"
                 tools:text="@string/text_address" />
 
@@ -127,7 +138,7 @@
                 android:layout_marginTop="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textCostProduct" />
+                app:layout_constraintTop_toBottomOf="@+id/itemLocation" />
 
             <TextView
                 android:id="@+id/textDescription"

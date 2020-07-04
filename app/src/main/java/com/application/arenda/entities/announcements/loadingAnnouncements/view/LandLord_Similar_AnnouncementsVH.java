@@ -41,7 +41,7 @@ public class LandLord_Similar_AnnouncementsVH extends BaseViewHolder {
     TextView textCountRent;
 
     @Nullable
-    @BindView(R.id.textCostProduct)
+    @BindView(R.id.textHourlyCostProduct)
     TextView textCostProduct;
 
     private ModelAnnouncement model;
@@ -85,7 +85,7 @@ public class LandLord_Similar_AnnouncementsVH extends BaseViewHolder {
         textNameProduct.setText(model.getName());
         textCountRent.setText(String.valueOf(model.getCountRent()));
 
-        textCostProduct.setText(model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        textCostProduct.setText(model.getHourlyCost() + " " + itemView.getContext().getResources().getString(R.string.text_cost_usd_in_hourly));
 
         setActiveHeart(model.isFavorite());
     }

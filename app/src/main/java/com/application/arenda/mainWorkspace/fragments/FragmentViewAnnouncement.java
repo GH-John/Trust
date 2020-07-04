@@ -101,8 +101,12 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
     TextView textNameProduct;
 
     @Nullable
-    @BindView(R.id.textCostProduct)
-    TextView textCostProduct;
+    @BindView(R.id.textHourlyCostProduct)
+    TextView textHorlyCostProduct;
+
+    @Nullable
+    @BindView(R.id.textDailyCostProduct)
+    TextView textDailyCostProduct;
 
     @Nullable
     @BindView(R.id.itemLocation)
@@ -458,7 +462,8 @@ public class FragmentViewAnnouncement extends Fragment implements AdapterActionB
         textPlacementDate.setText(Utils.getFormatingDate(getContext(), model.getAnnouncementCreated()));
         textNameProduct.setText(model.getName());
 
-        textCostProduct.setText(model.getHourlyCost() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_hour));
+        textHorlyCostProduct.setText(model.getHourlyCost() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_hourly));
+        textDailyCostProduct.setText(model.getDailyCost() + " " + getContext().getResources().getString(R.string.text_cost_usd_in_daily));
 
         if (model.getAddress().isEmpty())
             textAddress.setVisibility(View.GONE);

@@ -121,17 +121,17 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginEnd="24dp"
-                android:layout_toStartOf="@id/textCostProduct"
+                android:layout_toStartOf="@id/textHourlyCostProduct"
                 android:maxLines="3"
                 tools:text="@string/text_name_announcement" />
 
             <TextView
-                android:id="@+id/textCostProduct"
+                android:id="@+id/textHourlyCostProduct"
                 style="@style/DefaultStyleTextBoldRegular"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                tools:text="@string/text_cost_announcement" />
+                tools:text="@string/text_hourly_cost_announcement" />
 
 
             <LinearLayout
